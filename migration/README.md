@@ -12,6 +12,7 @@ Already done in the Shopify store (x1hnz9-tu.myshopify.com):
   price). All published to the Online Store. They fill up automatically as soon as products are imported.
 - [x] **6 pages**: About us, Contact us (FAQ), Returns Policy, Terms & Conditions, Privacy Policy,
   Event Production & Custom Printing.
+- [x] **782 URL redirects** imported through the Admin API (`urlRedirectImportCreate`), 0 failed.
 - [x] **44 page/homepage images** copied into Shopify Files (`shopify/media_map.json`), so the pages
   don't depend on the old server.
 
@@ -20,9 +21,7 @@ Your turn:
 1. **Import products**: Shopify admin → Products → Import → upload `shopify/products.csv`. Leave
    "Publish new products to all sales channels" on. Shopify emails you when it finishes (703 products
    take a few minutes) and lists any rows it rejected.
-2. **Import redirects** when you point babasaleh.com at Shopify: Online Store → Navigation →
-   URL redirects → Import → `shopify/redirects.csv`.
-3. **Customers / orders**: send the WooCommerce exports and they get converted the same way.
+2. **Customers / orders**: send the WooCommerce exports and they get converted the same way.
 
 ## What's here
 
