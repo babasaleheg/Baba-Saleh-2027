@@ -1,0 +1,132 @@
+{
+ "source": "https://babasaleh.com/ (WordPress page 'home-base', Woodmart theme)",
+ "site": {
+  "name": "Baba Saleh Sports Egypt",
+  "tagline": "Sports for everyone",
+  "since": "1971",
+  "currency": "EGP"
+ },
+ "sections": [
+  {
+   "type": "slideshow",
+   "slides": [
+    {
+     "heading": "Beach Floats",
+     "text": "Beach Floats for your kids.",
+     "note": "Starts at EGP 85",
+     "link": "/collections/floats",
+     "image": "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/ChatGPT-Image-May-2-2026-11_00_49-PM.png",
+     "image_2": "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/Toys-26.png"
+    },
+    {
+     "heading": "Kids Toys !",
+     "text": "Exclusive games for your kids.",
+     "note": "Starts at EGP 40",
+     "link": "/collections/toys-2026",
+     "image": "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/ChatGPT-Image-May-2-2026-11_13_37-PM.png"
+    },
+    {
+     "heading": "Sportswear",
+     "text": "Comfortable, breathable clothing designed for exercise and active lifestyles.",
+     "link": "/collections/sportswear"
+    },
+    {
+     "heading": "Fitness & Accessories",
+     "subheading": "The Latest",
+     "text": "From bands to gear, everything you need to level up your workout. Shop now!",
+     "link": "/collections/fitness",
+     "image": "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/ChatGPT-Image-May-25-2025-10_38_37-PM.jpg"
+    }
+   ]
+  },
+  {
+   "type": "collection_list",
+   "heading": "FEATURED CATEGORIES",
+   "collections": [
+    "beach-toys",
+    "floats",
+    "toys-2026",
+    "scooters",
+    "shoes",
+    "resistance-band",
+    "accessories",
+    "fitness",
+    "gym-equipment"
+   ]
+  },
+  {
+   "type": "featured_collection_tabs",
+   "heading": "FEATURED PRODUCTS",
+   "tabs": [
+    {
+     "label": "Latest",
+     "collection": "all",
+     "sort": "created-descending"
+    },
+    {
+     "label": "Fitness",
+     "collection": "fitness"
+    },
+    {
+     "label": "Yoga Equipment",
+     "collection": "yoga-equipment"
+    },
+    {
+     "label": "Pants",
+     "collection": "pants"
+    },
+    {
+     "label": "Backpacks",
+     "collection": "bags-backpacks"
+    },
+    {
+     "label": "Handbags",
+     "collection": "handbags"
+    },
+    {
+     "label": "Sale",
+     "collection": "sale"
+    }
+   ]
+  },
+  {
+   "type": "image_with_text",
+   "heading": "Bags & Backpacks",
+   "link": "/collections/bags-backpacks",
+   "image": "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/Backpacks.png"
+  },
+  {
+   "type": "image_with_text",
+   "heading": "Adjustable Bench Press",
+   "link": "/collections/gym-equipment",
+   "image": "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/Bench-New-1.png"
+  },
+  {
+   "type": "image_with_text",
+   "heading": "Swimming Equipment",
+   "link": "/collections/swimming-equipment",
+   "image": "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/Swim.png"
+  },
+  {
+   "type": "logo_list",
+   "heading": "OUR LATEST BRANDS",
+   "logos": [
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/cougar.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/dunlop.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/ev.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/ku.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/livepro.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/liveup-1.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/Spurt.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/Track.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/Venum.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/Xlya.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/cr.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/manta.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/Wilson-logo.png",
+    "https://cdn.shopify.com/s/files/1/0788/6746/4240/files/Wish.png"
+   ]
+  }
+ ],
+ "branches": "See pages/about-baba-saleh.html (Giza, Maadi, October branches with Google Maps links)"
+}

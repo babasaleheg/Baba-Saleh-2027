@@ -1,0 +1,38 @@
+[
+ {
+  "title": "Event Production & Custom Printing",
+  "handle": "event-production",
+  "file": "pages/event-production.html",
+  "old_url": "https://babasaleh.com/event-production/"
+ },
+ {
+  "title": "Returns Policy",
+  "handle": "returns-policy",
+  "file": "pages/returns-policy.html",
+  "old_url": "https://babasaleh.com/returns-policy/"
+ },
+ {
+  "title": "Terms & Conditions",
+  "handle": "terms-conditions",
+  "file": "pages/terms-conditions.html",
+  "old_url": "https://babasaleh.com/terms-conditions/"
+ },
+ {
+  "title": "Privacy Policy",
+  "handle": "privacy-policy",
+  "file": "pages/privacy-policy.html",
+  "old_url": "https://babasaleh.com/privacy-policy/"
+ },
+ {
+  "title": "Contact us",
+  "handle": "contact-us",
+  "file": "pages/contact-us.html",
+  "old_url": "https://babasaleh.com/contact-us/"
+ },
+ {
+  "title": "About us",
+  "handle": "about-baba-saleh",
+  "file": "pages/about-baba-saleh.html",
+  "old_url": "https://babasaleh.com/about-baba-saleh/"
+ }
+]

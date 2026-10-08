@@ -1,0 +1,235 @@
+# Conversion report
+
+703 products, 2685 variants, 3830 images, 782 redirects.
+
+## Stock tracked on the whole product in WooCommerce (same count copied to every variant — please correct) — 0
+
+
+## Stock not tracked in WooCommerce (imported as untracked, always sellable) — 185
+
+- Boys’ & Teens’ Track Suit — Black / M
+- Boys’ & Teens’ Track Suit — Black / S
+- Boys’ & Teens’ Track Suit — Navy blue / M
+- Boys’ & Teens’ Track Suit — Navy blue / S
+- Boys’ & Teens’ Track Suit — Red / M
+- Boys’ & Teens’ Track Suit — Red / S
+- Kids’ Track Suit — Navy blue
+- Kids’ Track Suit — Black
+- Kids’ Track Suit — Red
+- Girls’ Floral Hooded Track Suit Set — Pink
+- Girls’ Floral Hooded Track Suit Set — Yellow
+- Egypt Flag Scarf
+- Gymnastics Wrist Guards
+- Dove Football (Size 4)
+- Youth Crocs Clogs — 37
+- Youth Crocs Clogs — 38
+- Youth Crocs Clogs — 39
+- Youth Crocs Clogs — 40
+- Track Swimming Backpack
+- Track Swimming Backpack
+- Track Swimming Backpack
+- Track Swimming Backpack
+- Yoga Foam Roller – 33 cm — Pink
+- Yoga Foam Roller – 33 cm — Purple
+- Airplane Kids Tricycle — Red
+- Airplane Kids Tricycle — Yellow
+- Adults Protective Gear Set — Black
+- Adults Protective Gear Set — Red
+- Adults Protective Gear Set — Blue
+- Adults Protective Gear Set — Pink
+- Standing Sandbag190CM
+- Standing Sandbag 165 CM
+- keep fit goalkeeper gloves — Blue / 10
+- keep fit goalkeeper gloves — Blue / 11
+- keep fit goalkeeper gloves — Blue / 9
+- keep fit goalkeeper gloves — Orange / 10
+- keep fit goalkeeper gloves — Orange / 11
+- keep fit goalkeeper gloves — Orange / 9
+- Back Support Brace
+- track swimming goggles — Navy blue
+- track swimming goggles — Baby Blue
+- track swimming goggles — Pink
+- Velvet Blanket — 3 pieces / special offer / Brown
+- Velvet Blanket — 3 pieces / special offer / Burgundy
+- Velvet Blanket — 3 pieces / special offer / Gray
+- Velvet Blanket — 3 pieces / special offer / Navy blue
+- Velvet Blanket — 3kg / special offer / Burgundy
+- Velvet Blanket — 3kg / special offer / Navy blue
+- Velvet Blanket — 3kg / special offer / Brown
+- Velvet Blanket — 3kg / special offer / Gray
+- Men’s Running Shoes — Black / Men / 41
+- Men’s Running Shoes — Black / Men / 42
+- Men’s Running Shoes — Black / Men / 43
+- Men’s Running Shoes — Black / Men / 44
+- Men’s Running Shoes — Black / Men / 45
+- Men’s Running Shoes — Gray / Men / 41
+- Men’s Running Shoes — Gray / Men / 42
+- Men’s Running Shoes — Gray / Men / 43
+- Men’s Running Shoes — Gray / Men / 44
+- Men’s Running Shoes — Gray / Men / 45
+- Men’s Running Shoes — Orange / Men / 41
+- Men’s Running Shoes — Orange / Men / 42
+- Men’s Running Shoes — Orange / Men / 43
+- Men’s Running Shoes — Orange / Men / 44
+- Men’s Running Shoes — Orange / Men / 45
+- Men’s Running Shoes — White / Men / 41
+- Men’s Running Shoes — White / Men / 42
+- Men’s Running Shoes — White / Men / 43
+- Men’s Running Shoes — White / Men / 44
+- Men’s Running Shoes — White / Men / 45
+- Women’s Skechers Shoes — Navy blue / Women / 36
+- Women’s Skechers Shoes — Navy blue / Women / 37
+- Women’s Skechers Shoes — Navy blue / Women / 38
+- Women’s Skechers Shoes — Navy blue / Women / 39
+- Women’s Skechers Shoes — Navy blue / Women / 40
+- Women’s Skechers Shoes — Gray / Women / 36
+- Women’s Skechers Shoes — Gray / Women / 37
+- Women’s Skechers Shoes — Gray / Women / 38
+- Women’s Skechers Shoes — Gray / Women / 39
+- Women’s Skechers Shoes — Gray / Women / 40
+- Men’s Running Shoes — Black / Men / 41
+- Men’s Running Shoes — Black / Men / 42
+- Men’s Running Shoes — Black / Men / 43
+- Men’s Running Shoes — Black / Men / 44
+- Men’s Running Shoes — Black / Men / 45
+- Men’s Running Shoes — Gray / Men / 41
+- Men’s Running Shoes — Gray / Men / 42
+- Men’s Running Shoes — Gray / Men / 43
+- Men’s Running Shoes — Gray / Men / 44
+- Men’s Running Shoes — Gray / Men / 45
+- Men’s Running Shoes — Black / Men / 41
+- Men’s Running Shoes — Black / Men / 42
+- Men’s Running Shoes — Black / Men / 43
+- Men’s Running Shoes — Black / Men / 44
+- Men’s Running Shoes — Black / Men / 45
+- Men’s Running Shoes — Blue / Men / 41
+- Men’s Running Shoes — Blue / Men / 42
+- Men’s Running Shoes — Blue / Men / 43
+- Men’s Running Shoes — Blue / Men / 44
+- Men’s Running Shoes — Blue / Men / 45
+- Men’s Running Shoes — Gray / Men / 41
+- Men’s Running Shoes — Gray / Men / 42
+- Men’s Running Shoes — Gray / Men / 43
+- Men’s Running Shoes — Gray / Men / 44
+- Men’s Running Shoes — Gray / Men / 45
+- Men’s Running Shoes — White / Men / 41
+- Men’s Running Shoes — White / Men / 42
+- Men’s Running Shoes — White / Men / 43
+- Men’s Running Shoes — White / Men / 44
+- Men’s Running Shoes — White / Men / 45
+- Resistance Bands — high resistance bands
+- Resistance Bands — Light resistance bands
+- Resistance Bands — medium Resistance Bands
+- Sleeve T-Shirt — L / dark Gray
+- Sleeve T-Shirt — L / Red
+- Sleeve T-Shirt — L / Gray
+- Sleeve T-Shirt — L / Yellow
+- Sleeve T-Shirt — XL / dark Gray
+- Sleeve T-Shirt — XL / Red
+- Sleeve T-Shirt — XL / Gray
+- Sleeve T-Shirt — XL / Yellow
+- Comfort Slides — Black / 37
+- Comfort Slides — Black / 38
+- Comfort Slides — Green / 37
+- Comfort Slides — Green / 38
+- Comfort Slides — Navy blue / 37
+- Comfort Slides — Navy blue / 38
+- Comfort Slides — Baby Blue / 37
+- Comfort Slides — Baby Blue / 38
+- Comfort Slides — Yellow / 37
+- Comfort Slides — Yellow / 38
+- Flip-Flops — White / 36
+- Flip-Flops — Purple / 36
+- Flip-Flops — Purple / 37
+- Flip-Flops — Purple / 38
+- Flip-Flops — Purple / 39
+- Flip-Flops — Purple / 40
+- Flip-Flops — Blue / 36
+- Flip-Flops — Blue / 37
+- Flip-Flops — Blue / 38
+- Flip-Flops — Blue / 39
+- Flip-Flops — Blue / 40
+- Flip-Flops — White / 37
+- Flip-Flops — White / 38
+- Flip-Flops — White / 39
+- Flip-Flops — White / 40
+- Flip-Flop Slippers — 39
+- Flip-Flop Slippers — 40
+- Flip-Flop Slippers — 41
+- Flip-Flop Slippers — 42
+- Flip-Flop Slippers — 43
+- Flip-Flop Slippers — 44
+- SUP Water Bottle — Black
+- SUP Water Bottle — Purple
+- SUP Water Bottle — White
+- standing sandbag – 165
+- Boxing Dummy Full Body Punching Man Boxing Stand, Silastic Punching Bag
+- Track swimming set — 10
+- Track swimming set — 12
+- Track swimming set — 14
+- Track swimming set — 16
+- Track swimming set — 6
+- Track swimming set — 8
+- Infinity Foot Tensioner
+- Track Cable Cross Tensioner
+- Men’s Tartan Socks — 41 / Baby Blue & Black
+- Men’s Tartan Socks — 41 / Blue
+- Men’s Tartan Socks — 42 / Baby Blue & Black
+- Men’s Tartan Socks — 42 / Blue
+- Men’s Tartan Socks — 43 / Baby Blue & Black
+- Men’s Tartan Socks — 43 / Blue
+- Men’s Tartan Socks — 44 / Baby Blue & Black
+- Men’s Tartan Socks — 44 / Blue
+- Men’s Tartan Socks — 45 / Baby Blue & Black
+- Men’s Tartan Socks — 45 / Blue
+- Professional Wind-Resistant Frisbee Live Pro (Flying Disc) – 5kg
+- Imported Large Plastic Cone 52 cm
+- Sports T Shirt Long Sleeve
+- European League Stars Football
+- Trampoline 50 inches125 cm
+- dumbbell holder 6-piece
+- Two-Wheel Roller Skates – “Large”, Red
+- Two-Wheel Roller Skates – “Large”, black
+- High Pulling Bar
+- Handball
+
+## More than 3 options (extra options merged into the third) — 0
+
+
+## Variation could not be downloaded (used parent price/stock) — 0
+
+
+## No images — 0
+
+
+## No SKU — 29
+
+- Boys’ & Teens’ Track Suit
+- Boys’ & Teens’ Track Suit
+- Boys’ & Teens’ Track Suit
+- Boys’ & Teens’ Track Suit
+- Kids’ Track Suit
+- Kids’ Track Suit
+- Girls’ Floral Hooded Track Suit Set
+- Velvet Blanket
+- Velvet Blanket
+- Velvet Blanket
+- Velvet Blanket
+- Velvet Blanket
+- Velvet Blanket
+- Velvet Blanket
+- Velvet Blanket
+- Men’s Tartan Socks
+- Men’s Tartan Socks
+- Men’s Tartan Socks
+- Men’s Tartan Socks
+- Men’s Tartan Socks
+- Men’s Tartan Socks
+- Men’s Tartan Socks
+- Men’s Tartan Socks
+- Men’s Tartan Socks
+- Men’s Tartan Socks
+- Professional Wind-Resistant Frisbee Live Pro (Flying Disc) – 5kg
+- Sports T Shirt Long Sleeve
+- Two-Wheel Roller Skates – “Large”, Red
+- Two-Wheel Roller Skates – “Large”, black

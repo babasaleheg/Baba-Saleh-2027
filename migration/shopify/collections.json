@@ -1,0 +1,652 @@
+[
+ {
+  "id": 102,
+  "title": "Accessories",
+  "handle": "accessories",
+  "tag": "Accessories",
+  "parent": 0,
+  "count": 29,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Accessories.jpg?ssl=1"
+ },
+ {
+  "id": 447,
+  "title": "Badminton Equipment",
+  "handle": "badimnton-equipment",
+  "tag": "Badminton Equipment",
+  "parent": 297,
+  "count": 3,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/03/Badminton.png?ssl=1"
+ },
+ {
+  "id": 73,
+  "title": "Bags & Backpacks",
+  "handle": "bags-backpacks",
+  "tag": "Bags & Backpacks",
+  "parent": 0,
+  "count": 34,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Backpackk.jpg?ssl=1"
+ },
+ {
+  "id": 425,
+  "title": "Ball Games",
+  "handle": "ball-games",
+  "tag": "Ball Games",
+  "parent": 297,
+  "count": 31,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/08/Ball-Games.jpg?ssl=1"
+ },
+ {
+  "id": 378,
+  "title": "Ballet Equipment",
+  "handle": "ballet-equipment",
+  "tag": "Ballet Equipment",
+  "parent": 297,
+  "count": 2,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Ballet-Category.jpg?ssl=1"
+ },
+ {
+  "id": 396,
+  "title": "Basketball equipment",
+  "handle": "basketball-equipment",
+  "tag": "Basketball equipment",
+  "parent": 297,
+  "count": 10,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Basketball-1.jpg?ssl=1"
+ },
+ {
+  "id": 489,
+  "title": "Beach Bag & Sea hat",
+  "handle": "beach-bag-sea-hat",
+  "tag": "Beach Bag & Sea hat",
+  "parent": 377,
+  "count": 16,
+  "description": "",
+  "image": null
+ },
+ {
+  "id": 377,
+  "title": "Beach Equipment",
+  "handle": "beach-equipment",
+  "tag": "Beach Equipment",
+  "parent": 74,
+  "count": 32,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Beach-Equipment.jpg?ssl=1"
+ },
+ {
+  "id": 481,
+  "title": "Beach Floats",
+  "handle": "floats",
+  "tag": "Beach Floats",
+  "parent": 377,
+  "count": 14,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/05/ChatGPT-Image-May-2-2026-10_52_13-PM.png?ssl=1"
+ },
+ {
+  "id": 399,
+  "title": "Beach Shoes",
+  "handle": "beach-shoes",
+  "tag": "Beach Shoes",
+  "parent": 377,
+  "count": 5,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/08BC7EBD-5AFB-4624-9DD9-34FE90467C01-1.png?ssl=1"
+ },
+ {
+  "id": 483,
+  "title": "Beach Toys",
+  "handle": "beach-toys",
+  "tag": "Beach Toys",
+  "parent": 377,
+  "count": 11,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/05/ChatGPT-Image-May-2-2026-10_50_28-PM.png?ssl=1"
+ },
+ {
+  "id": 394,
+  "title": "Billiard equipment",
+  "handle": "billiard-equipment",
+  "tag": "Billiard equipment",
+  "parent": 297,
+  "count": 6,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Billiard-1.jpg?ssl=1"
+ },
+ {
+  "id": 461,
+  "title": "Blankets",
+  "handle": "blankets",
+  "tag": "Blankets",
+  "parent": 0,
+  "count": 1,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/03/Blanekts.png?ssl=1"
+ },
+ {
+  "id": 395,
+  "title": "Camping equipment",
+  "handle": "camping-equipment",
+  "tag": "Camping equipment",
+  "parent": 297,
+  "count": 5,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Camping-1.jpg?ssl=1"
+ },
+ {
+  "id": 86,
+  "title": "Fitness",
+  "handle": "fitness",
+  "tag": "Fitness",
+  "parent": 0,
+  "count": 113,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/FITT.jpg?ssl=1"
+ },
+ {
+  "id": 444,
+  "title": "Flags",
+  "handle": "flags",
+  "tag": "Flags",
+  "parent": 0,
+  "count": 6,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/03/ChatGPT-Image-Mar-13-2026-11_50_45-PM.png?ssl=1"
+ },
+ {
+  "id": 84,
+  "title": "Football Equipment",
+  "handle": "football-equipment",
+  "tag": "Football Equipment",
+  "parent": 297,
+  "count": 57,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2024/10/football-ball-2-w.jpg?ssl=1"
+ },
+ {
+  "id": 107,
+  "title": "Football Shoes",
+  "handle": "football-shoes",
+  "tag": "Football Shoes",
+  "parent": 298,
+  "count": 1,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Football-Shoes.jpg?ssl=1"
+ },
+ {
+  "id": 77,
+  "title": "Games",
+  "handle": "games",
+  "tag": "Games",
+  "parent": 0,
+  "count": 39,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/games.jpg?ssl=1"
+ },
+ {
+  "id": 105,
+  "title": "Gloves",
+  "handle": "gloves",
+  "tag": "Gloves",
+  "parent": 102,
+  "count": 13,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/ChatGPT-Image-Jun-28-2025-03_03_41-PM.jpg?ssl=1"
+ },
+ {
+  "id": 426,
+  "title": "Goggles",
+  "handle": "goggles",
+  "tag": "Goggles",
+  "parent": 74,
+  "count": 30,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/08/Goggles.jpg?ssl=1"
+ },
+ {
+  "id": 78,
+  "title": "Gym Equipment",
+  "handle": "gym-equipment",
+  "tag": "Gym Equipment",
+  "parent": 0,
+  "count": 74,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/GYM.jpg?ssl=1"
+ },
+ {
+  "id": 365,
+  "title": "Handbags",
+  "handle": "handbags",
+  "tag": "Handbags",
+  "parent": 73,
+  "count": 4,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Handbags-2.jpg?ssl=1"
+ },
+ {
+  "id": 434,
+  "title": "Handball Equipment",
+  "handle": "handball-equipment",
+  "tag": "Handball Equipment",
+  "parent": 297,
+  "count": 4,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/03/Handball.png?ssl=1"
+ },
+ {
+  "id": 108,
+  "title": "Hats",
+  "handle": "hats",
+  "tag": "Hats",
+  "parent": 102,
+  "count": 11,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/ChatGPT-Image-Jun-28-2025-03_06_47-PM.jpg?ssl=1"
+ },
+ {
+  "id": 420,
+  "title": "Hockey equipment",
+  "handle": "hockey-equipment",
+  "tag": "Hockey equipment",
+  "parent": 297,
+  "count": 2,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/08/Hockey.jpg?ssl=1"
+ },
+ {
+  "id": 81,
+  "title": "Home Workout Equipment",
+  "handle": "home-workout-equipment",
+  "tag": "Home Workout Equipment",
+  "parent": 86,
+  "count": 22,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Homeworkout.jpg?ssl=1"
+ },
+ {
+  "id": 467,
+  "title": "Jackets",
+  "handle": "jacket",
+  "tag": "Jackets",
+  "parent": 295,
+  "count": 2,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/03/Jackets.png?ssl=1"
+ },
+ {
+  "id": 492,
+  "title": "Karate equipment",
+  "handle": "karate-equipment",
+  "tag": "Karate equipment",
+  "parent": 297,
+  "count": 3,
+  "description": "",
+  "image": null
+ },
+ {
+  "id": 355,
+  "title": "Kid’s Swimwear",
+  "handle": "kids-swimwear",
+  "tag": "Kid’s Swimwear",
+  "parent": 294,
+  "count": 32,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/05/Kids-thumbnail.jpg?ssl=1"
+ },
+ {
+  "id": 487,
+  "title": "kids suit",
+  "handle": "kids-suit",
+  "tag": "kids suit",
+  "parent": 0,
+  "count": 4,
+  "description": "",
+  "image": null
+ },
+ {
+  "id": 80,
+  "title": "Martial Arts",
+  "handle": "martial-arts",
+  "tag": "Martial Arts",
+  "parent": 0,
+  "count": 30,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Martial-Arts-2.jpg?ssl=1"
+ },
+ {
+  "id": 366,
+  "title": "Medical Equipment",
+  "handle": "medical-equipment",
+  "tag": "Medical Equipment",
+  "parent": 102,
+  "count": 12,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Medical-Equipment-1.jpg?ssl=1"
+ },
+ {
+  "id": 374,
+  "title": "Men Swimwear",
+  "handle": "men-swimwear",
+  "tag": "Men Swimwear",
+  "parent": 294,
+  "count": 14,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/05/Men-Shorts.jpg?ssl=1"
+ },
+ {
+  "id": 397,
+  "title": "Paddle equipment",
+  "handle": "paddle-equipment",
+  "tag": "Paddle equipment",
+  "parent": 297,
+  "count": 2,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Paddle-2.jpg?ssl=1"
+ },
+ {
+  "id": 398,
+  "title": "Pants",
+  "handle": "pants",
+  "tag": "Pants",
+  "parent": 295,
+  "count": 15,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/BB7DB22F-A9C0-4F8D-987F-2FD16B0639EE-1.png?ssl=1"
+ },
+ {
+  "id": 315,
+  "title": "Ping Pong Equipment",
+  "handle": "ping-pong-equipment",
+  "tag": "Ping Pong Equipment",
+  "parent": 77,
+  "count": 16,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Ping-Pong-1.jpg?ssl=1"
+ },
+ {
+  "id": 332,
+  "title": "Racket Equipment",
+  "handle": "racket-equipment",
+  "tag": "Racket Equipment",
+  "parent": 297,
+  "count": 8,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Racket-1.jpg?ssl=1"
+ },
+ {
+  "id": 110,
+  "title": "Resistance Band",
+  "handle": "resistance-band",
+  "tag": "Resistance Band",
+  "parent": 86,
+  "count": 19,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Resistsance-Bands-1.jpg?ssl=1"
+ },
+ {
+  "id": 101,
+  "title": "Roller Skating Equipment",
+  "handle": "roller-skating-equipment",
+  "tag": "Roller Skating Equipment",
+  "parent": 297,
+  "count": 8,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Roller-1.jpg?ssl=1"
+ },
+ {
+  "id": 106,
+  "title": "Running Shoes",
+  "handle": "running-shoes",
+  "tag": "Running Shoes",
+  "parent": 298,
+  "count": 8,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Running-Shoes.jpg?ssl=1"
+ },
+ {
+  "id": 479,
+  "title": "Scooters",
+  "handle": "scooters",
+  "tag": "Scooters",
+  "parent": 0,
+  "count": 5,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/03/Scooters.png?ssl=1"
+ },
+ {
+  "id": 496,
+  "title": "Scout equipment",
+  "handle": "scout-equipment",
+  "tag": "Scout equipment",
+  "parent": 297,
+  "count": 5,
+  "description": "",
+  "image": null
+ },
+ {
+  "id": 459,
+  "title": "Set",
+  "handle": "set",
+  "tag": "Set",
+  "parent": 295,
+  "count": 20,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/12/e55473a8-0c3a-486f-932a-b95644030bef-1.jpeg?ssl=1"
+ },
+ {
+  "id": 375,
+  "title": "Shirts",
+  "handle": "shirts",
+  "tag": "Shirts",
+  "parent": 295,
+  "count": 10,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Shirts-Category.jpg?ssl=1"
+ },
+ {
+  "id": 298,
+  "title": "Shoes",
+  "handle": "shoes",
+  "tag": "Shoes",
+  "parent": 0,
+  "count": 21,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/ChatGPT-Image-May-27-2025-11_16_36-PM.jpg?ssl=1"
+ },
+ {
+  "id": 376,
+  "title": "Shorts",
+  "handle": "shorts",
+  "tag": "Shorts",
+  "parent": 295,
+  "count": 5,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Shorts-category.jpg?ssl=1"
+ },
+ {
+  "id": 100,
+  "title": "Skateboard",
+  "handle": "skateboard",
+  "tag": "Skateboard",
+  "parent": 297,
+  "count": 4,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Skateboard-1.jpg?ssl=1"
+ },
+ {
+  "id": 460,
+  "title": "Slippers",
+  "handle": "slippers",
+  "tag": "Slippers",
+  "parent": 298,
+  "count": 12,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/03/Slippers.png?ssl=1"
+ },
+ {
+  "id": 502,
+  "title": "Speed ball equipment",
+  "handle": "speed-ball-equipment",
+  "tag": "Speed ball equipment",
+  "parent": 297,
+  "count": 4,
+  "description": "",
+  "image": null
+ },
+ {
+  "id": 297,
+  "title": "Sports",
+  "handle": "sports",
+  "tag": "Sports",
+  "parent": 0,
+  "count": 153,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Sports.jpg?ssl=1"
+ },
+ {
+  "id": 104,
+  "title": "Sports Bottle",
+  "handle": "sports-bottle",
+  "tag": "Sports Bottle",
+  "parent": 102,
+  "count": 6,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Water-bottles.jpg?ssl=1"
+ },
+ {
+  "id": 295,
+  "title": "Sportswear",
+  "handle": "sportswear",
+  "tag": "Sportswear",
+  "parent": 0,
+  "count": 55,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Sportswear.jpg?ssl=1"
+ },
+ {
+  "id": 88,
+  "title": "Squash Equipment",
+  "handle": "squash-equipment",
+  "tag": "Squash Equipment",
+  "parent": 297,
+  "count": 1,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Squash-1.jpg?ssl=1"
+ },
+ {
+  "id": 74,
+  "title": "Swimming Equipment",
+  "handle": "swimming-equipment",
+  "tag": "Swimming Equipment",
+  "parent": 0,
+  "count": 93,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/SWIIM.jpg?ssl=1"
+ },
+ {
+  "id": 294,
+  "title": "Swimwear",
+  "handle": "swimwear",
+  "tag": "Swimwear",
+  "parent": 0,
+  "count": 54,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/swimwear.jpg?ssl=1"
+ },
+ {
+  "id": 352,
+  "title": "Taekwondo Equipment",
+  "handle": "taekwondo-equipment",
+  "tag": "Taekwondo Equipment",
+  "parent": 80,
+  "count": 14,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Taekondo.jpg?ssl=1"
+ },
+ {
+  "id": 309,
+  "title": "Tennis Equipment",
+  "handle": "tennis-equipment",
+  "tag": "Tennis Equipment",
+  "parent": 297,
+  "count": 14,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/tennis.jpg?ssl=1"
+ },
+ {
+  "id": 480,
+  "title": "Toys 2026",
+  "handle": "toys-2026",
+  "tag": "Toys 2026",
+  "parent": 0,
+  "count": 72,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/05/Toys-26.jpg?ssl=1"
+ },
+ {
+  "id": 314,
+  "title": "Trophy Cups & Medals",
+  "handle": "trophy-cups-medals",
+  "tag": "Trophy Cups & Medals",
+  "parent": 0,
+  "count": 21,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/05/Trophies-2.jpg?ssl=1"
+ },
+ {
+  "id": 329,
+  "title": "Volleyball Equipment",
+  "handle": "volleyball-equipment",
+  "tag": "Volleyball Equipment",
+  "parent": 297,
+  "count": 7,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Volleyball-1.jpg?ssl=1"
+ },
+ {
+  "id": 325,
+  "title": "Water bottles",
+  "handle": "water-bottles",
+  "tag": "Water bottles",
+  "parent": 0,
+  "count": 5,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/05/Water-bottles.jpg?ssl=1"
+ },
+ {
+  "id": 451,
+  "title": "Weights and Bars",
+  "handle": "weights-and-bars",
+  "tag": "Weights and Bars",
+  "parent": 0,
+  "count": 12,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2026/03/Weights.png?ssl=1"
+ },
+ {
+  "id": 356,
+  "title": "Women Swimwear",
+  "handle": "women-swimwear",
+  "tag": "Women Swimwear",
+  "parent": 294,
+  "count": 12,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/06/Women-thumbnail.jpg?ssl=1"
+ },
+ {
+  "id": 82,
+  "title": "Yoga Equipment",
+  "handle": "yoga-equipment",
+  "tag": "Yoga Equipment",
+  "parent": 0,
+  "count": 5,
+  "description": "",
+  "image": "https://i0.wp.com/babasaleh.com/wp-content/uploads/2025/05/yoga-2.jpg?ssl=1"
+ }
+]
