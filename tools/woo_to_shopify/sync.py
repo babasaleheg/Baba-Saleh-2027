@@ -43,7 +43,8 @@ def http(req, tries=6):
 def wc_get(path, **params):
     auth = base64.b64encode(f"{os.environ['WC_CONSUMER_KEY']}:{os.environ['WC_CONSUMER_SECRET']}".encode()).decode()
     url = f"{WC}/{path}?" + urllib.parse.urlencode(params)
-    body, headers = http(urllib.request.Request(url, headers={"Authorization": f"Basic {auth}"}))
+    # Cloudflare in front of the store rejects urllib's default User-Agent (error 1010)
+    body, headers = http(urllib.request.Request(url, headers={"Authorization": f"Basic {auth}", "User-Agent": "Mozilla/5.0 (woo-to-shopify sync)"}))
     return json.loads(body), int(headers.get("X-WP-TotalPages") or headers.get("x-wp-totalpages") or 1)
 
 
@@ -214,7 +215,7 @@ def variant_index():
     idx = {}
     for o in S:
         if "__parentId" in o:
-            opts = {(x["name"].lower(), x["value"].strip().lower()) for x in o["selectedOptions"] if x["name"] != "Title"}
+            opts = {x["value"].strip().lower() for x in o["selectedOptions"] if x["name"] != "Title"}
             idx.setdefault(handle[o["__parentId"]], []).append((opts, o["id"]))
     return idx
 
@@ -244,12 +245,12 @@ def orders():
             discount += float(li["subtotal"]) - float(li["total"])
             line = {"quantity": qty, "priceSet": money(unit)}
             p = P.get(li["product_id"])
-            want = {(m["display_key"].lower(), str(m["display_value"]).strip().lower())
-                    for m in li["meta_data"] if not m["key"].startswith("_")}
+            # match on option values only: Woo attribute labels don't always equal Shopify option names
+            want = {str(m["display_value"]).strip().lower() for m in li["meta_data"] if not m["key"].startswith("_")}
             if li["variation_id"] in V:
-                want |= {(a["name"].lower(), a["option"].strip().lower()) for a in V[li["variation_id"]]["attributes"] if a["option"]}
+                want |= {a["option"].strip().lower() for a in V[li["variation_id"]]["attributes"] if a["option"]}
             cands = idx.get(urllib.parse.unquote(p["slug"]), []) if p else []
-            match = [vid for opts, vid in cands if opts <= want]
+            match = [vid for opts, vid in cands if opts <= want and (opts or len(cands) == 1)]
             if match:
                 line["variantId"] = match[0]
             else:
@@ -295,6 +296,8 @@ def orders():
                 log("cancel failed", o["number"], c["orderCancelUserErrors"])
         done[key] = r["order"]["id"]
         stats["created"] += 1
+        if os.environ.get("ORDER_LIMIT") and stats["created"] >= int(os.environ["ORDER_LIMIT"]):
+            break
         if stats["created"] % 25 == 0:
             json.dump(done, open(done_path, "w"))
             log("orders", stats)
