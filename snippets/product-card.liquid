@@ -38,7 +38,7 @@
     endfor
     assign quick_add_variants = product.variants | where: 'available'
   -%}
-  <article class="card" {% if index != blank %}data-reveal style="--reveal-index: {{ index | modulo: 4 }}"{% endif %}>
+  <article class="card card--{{ settings.card_image_style | default: 'cover' }}" {% if index != blank %}data-reveal style="--reveal-index: {{ index | modulo: 4 }}"{% endif %}>
     <div class="media card__media">
       {%- if first_image -%}
         {{
@@ -77,7 +77,7 @@
         {%- for tag in product.tags -%}
           {%- assign tag_lower = tag | downcase -%}
           {%- if tag_lower == 'new' or tag_lower == 'جديد' -%}
-            <span class="badge badge--accent">{{ 'products.product.new' | t }}</span>
+            <span class="badge badge--highlight">{{ 'products.product.new' | t }}</span>
             {%- break -%}
           {%- endif -%}
         {%- endfor -%}
@@ -137,9 +137,7 @@
             -%}
             <span class="card__swatch" style="{{ swatch_style }}" title="{{ value | escape }}"></span>
           {%- endfor -%}
-          {%- if color_option.values.size > 5 -%}
-            <span>+{{ color_option.values.size | minus: 5 }}</span>
-          {%- endif -%}
+          <span class="card__swatch-count">{{ 'products.product.colors_count' | t: count: color_option.values.size }}</span>
         </div>
       {%- endif -%}
     </div>

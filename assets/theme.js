@@ -564,6 +564,45 @@
   }
   customElements.define('hero-slideshow', HeroSlideshow);
 
+  /* ---------- Countdown ---------- */
+  class CountdownTimer extends HTMLElement {
+    connectedCallback() {
+      this.parts = {
+        days: this.querySelector('[data-days]'),
+        hours: this.querySelector('[data-hours]'),
+        minutes: this.querySelector('[data-minutes]'),
+        seconds: this.querySelector('[data-seconds]'),
+      };
+      const parsed = Date.parse(this.dataset.end || '');
+      this.fixedEnd = Number.isNaN(parsed) ? null : parsed;
+      this.#tick();
+      this.timer = setInterval(() => this.#tick(), 1000);
+    }
+
+    // With no (or a past) end date the timer runs to the next local midnight, every day.
+    #target() {
+      if (this.fixedEnd && this.fixedEnd > Date.now()) return this.fixedEnd;
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      return midnight.getTime();
+    }
+
+    #tick() {
+      const remaining = Math.max(0, this.#target() - Date.now());
+      const pad = (n) => String(n).padStart(2, '0');
+      const total = Math.floor(remaining / 1000);
+      this.parts.days.textContent = pad(Math.floor(total / 86400));
+      this.parts.hours.textContent = pad(Math.floor((total % 86400) / 3600));
+      this.parts.minutes.textContent = pad(Math.floor((total % 3600) / 60));
+      this.parts.seconds.textContent = pad(total % 60);
+    }
+
+    disconnectedCallback() {
+      clearInterval(this.timer);
+    }
+  }
+  customElements.define('countdown-timer', CountdownTimer);
+
   /* ---------- Announcement bar ---------- */
   class AnnouncementBar extends HTMLElement {
     connectedCallback() {
@@ -598,13 +637,6 @@
       this.mode = this.dataset.sticky;
       this.section = this.closest('.shopify-section');
       this.header = this.querySelector('.header');
-      this.searchToggle = this.querySelector('[data-search-toggle]');
-
-      this.searchToggle?.addEventListener('click', () => {
-        const open = this.header.classList.toggle('is-search-open');
-        this.searchToggle.setAttribute('aria-expanded', String(open));
-        if (open) this.querySelector('.search-form__input')?.focus();
-      });
 
       if (this.mode === 'none' || !this.section) return;
       this.section.classList.add('shopify-section-header-sticky');

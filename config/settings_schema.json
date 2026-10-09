@@ -36,13 +36,13 @@
             "type": "color",
             "id": "accent",
             "label": "t:settings_schema.colors.settings.accent.label",
-            "default": "#D7FF3A"
+            "default": "#1E3AFF"
           },
           {
             "type": "color",
             "id": "accent_text",
             "label": "t:settings_schema.colors.settings.accent_text.label",
-            "default": "#0B0B0C"
+            "default": "#FFFFFF"
           },
           {
             "type": "color",
@@ -75,6 +75,18 @@
         "id": "color_sale",
         "label": "t:settings_schema.colors.settings.color_sale.label",
         "default": "#E5202E"
+      },
+      {
+        "type": "color",
+        "id": "color_highlight",
+        "label": "t:settings_schema.colors.settings.color_highlight.label",
+        "default": "#FFD60A"
+      },
+      {
+        "type": "color",
+        "id": "color_highlight_text",
+        "label": "t:settings_schema.colors.settings.color_highlight_text.label",
+        "default": "#0A0A0A"
       }
     ]
   },
@@ -86,8 +98,12 @@
         "id": "font_pairing",
         "label": "t:settings_schema.typography.settings.font_pairing.label",
         "info": "t:settings_schema.typography.settings.font_pairing.info",
-        "default": "sport",
+        "default": "retail",
         "options": [
+          {
+            "value": "retail",
+            "label": "t:settings_schema.typography.settings.font_pairing.options__4"
+          },
           {
             "value": "sport",
             "label": "t:settings_schema.typography.settings.font_pairing.options__1"
@@ -106,7 +122,7 @@
         "type": "checkbox",
         "id": "heading_uppercase",
         "label": "t:settings_schema.typography.settings.heading_uppercase.label",
-        "default": true
+        "default": false
       },
       {
         "type": "range",
@@ -115,7 +131,7 @@
         "min": 500,
         "max": 900,
         "step": 100,
-        "default": 800
+        "default": 700
       }
     ]
   },
@@ -140,7 +156,7 @@
         "max": 28,
         "step": 2,
         "unit": "px",
-        "default": 16
+        "default": 12
       },
       {
         "type": "select",
@@ -170,6 +186,23 @@
     "name": "t:settings_schema.product_cards.name",
     "settings": [
       {
+        "type": "select",
+        "id": "card_image_style",
+        "label": "t:settings_schema.product_cards.settings.card_image_style.label",
+        "info": "t:settings_schema.product_cards.settings.card_image_style.info",
+        "default": "cutout",
+        "options": [
+          {
+            "value": "cutout",
+            "label": "t:settings_schema.product_cards.settings.card_image_style.options__1"
+          },
+          {
+            "value": "cover",
+            "label": "t:settings_schema.product_cards.settings.card_image_style.options__2"
+          }
+        ]
+      },
+      {
         "type": "checkbox",
         "id": "card_show_secondary_image",
         "label": "t:settings_schema.product_cards.settings.card_show_secondary_image.label",
@@ -179,7 +212,7 @@
         "type": "checkbox",
         "id": "card_show_vendor",
         "label": "t:settings_schema.product_cards.settings.card_show_vendor.label",
-        "default": false
+        "default": true
       },
       {
         "type": "checkbox",

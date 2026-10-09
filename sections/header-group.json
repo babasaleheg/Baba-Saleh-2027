@@ -8,7 +8,7 @@
         "a1": {
           "type": "message",
           "settings": {
-            "text": "Free delivery on orders over 1,500 EGP",
+            "text": "Delivery across all of Egypt",
             "icon": "truck",
             "link": ""
           }
@@ -16,7 +16,7 @@
         "a2": {
           "type": "message",
           "settings": {
-            "text": "Cash on delivery across Egypt",
+            "text": "Cash on delivery available",
             "icon": "cash",
             "link": ""
           }
@@ -24,9 +24,9 @@
         "a3": {
           "type": "message",
           "settings": {
-            "text": "Easy 14-day returns",
-            "icon": "return",
-            "link": ""
+            "text": "Flash sale — up to 50% off",
+            "icon": "bolt",
+            "link": "shopify://collections/sale"
           }
         }
       },
@@ -37,19 +37,27 @@
       ],
       "settings": {
         "interval": 5,
-        "color_scheme": "scheme-3"
+        "color_scheme": "scheme-3",
+        "contact_text": "Need help? Chat on WhatsApp",
+        "contact_link": "",
+        "secondary_text": "Track your order",
+        "secondary_link": "",
+        "show_language": true
       }
     },
     "header": {
       "type": "header",
       "settings": {
         "logo_width": 130,
-        "menu": "main-menu",
+        "menu": "baba-saleh-main",
         "search_placeholder": "",
         "sticky": "on-scroll-up",
         "show_language_selector": true,
         "color_scheme": "scheme-1",
-        "menu_color_scheme": "scheme-1"
+        "menu_color_scheme": "scheme-1",
+        "wordmark": "Baba Saleh",
+        "wordmark_tag": "Sports",
+        "auto_menu_images": true
       }
     }
   },

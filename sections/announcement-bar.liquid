@@ -5,7 +5,19 @@
     role="region"
     aria-label="{{ 'sections.announcement.label' | t }}"
   >
-    <div class="announcement__track page-width">
+    <div class="announcement__inner page-width">
+    {%- liquid
+      assign contact_url = section.settings.contact_link
+      if contact_url == blank and settings.whatsapp_number != blank
+        assign contact_url = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' | prepend: 'https://wa.me/'
+      endif
+    -%}
+    {%- if section.settings.contact_text != blank -%}
+      <a class="announcement__utility announcement__utility--start" href="{{ contact_url | default: routes.root_url }}">
+        {% render 'icon', icon: 'chat' %}{{ section.settings.contact_text }}
+      </a>
+    {%- endif -%}
+    <div class="announcement__track">
       {%- for block in section.blocks -%}
         <p class="announcement__message{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
           {%- if block.settings.icon != 'none' -%}
@@ -18,6 +30,15 @@
           {%- endif -%}
         </p>
       {%- endfor -%}
+    </div>
+    <div class="announcement__utility announcement__utility--end">
+      {%- if section.settings.secondary_text != blank -%}
+        <a href="{{ section.settings.secondary_link | default: '#' }}">{{ section.settings.secondary_text }}</a>
+      {%- endif -%}
+      {%- if section.settings.show_language and localization.available_languages.size > 1 -%}
+        {% render 'language-switcher', id_prefix: 'Announcement', compact: true, label: 'name' %}
+      {%- endif -%}
+    </div>
     </div>
   </announcement-bar>
 {%- endif -%}
@@ -32,12 +53,79 @@
     letter-spacing: 0.02em;
   }
 
+  .announcement__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    gap: 1rem;
+  }
+
   .announcement__track {
     position: relative;
     display: grid;
     min-height: 2.375rem;
     align-items: center;
     overflow: hidden;
+  }
+
+  .announcement__utility {
+    display: none;
+  }
+
+  @media screen and (min-width: 990px) {
+    .announcement__inner {
+      grid-template-columns: 1fr auto 1fr;
+    }
+
+    .announcement__utility {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .announcement__utility a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      text-decoration: none;
+      opacity: 0.85;
+    }
+
+    .announcement__utility a:hover {
+      opacity: 1;
+    }
+
+    .announcement__utility .icon {
+      width: 0.9375rem;
+      height: 0.9375rem;
+    }
+
+    .announcement__utility--start {
+      justify-self: start;
+      gap: 0.375rem;
+      text-decoration: none;
+    }
+
+    .announcement__utility--end {
+      justify-self: end;
+    }
+
+    .announcement__utility .localization__toggle {
+      min-width: 0;
+      height: auto;
+      padding: 0;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: inherit;
+    }
+
+    .announcement__utility .localization__toggle:hover {
+      background: none;
+      text-decoration: underline;
+    }
   }
 
   .announcement__message {
@@ -86,6 +174,34 @@
       "unit": "s",
       "default": 5,
       "label": "t:sections.announcement.settings.interval.label"
+    },
+    {
+      "type": "text",
+      "id": "contact_text",
+      "default": "Need help? Chat on WhatsApp",
+      "label": "t:sections.announcement.settings.contact_text.label"
+    },
+    {
+      "type": "url",
+      "id": "contact_link",
+      "label": "t:sections.announcement.settings.contact_link.label"
+    },
+    {
+      "type": "text",
+      "id": "secondary_text",
+      "default": "Track your order",
+      "label": "t:sections.announcement.settings.secondary_text.label"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "t:sections.announcement.settings.secondary_link.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_language",
+      "default": true,
+      "label": "t:sections.announcement.settings.show_language.label"
     },
     {
       "type": "color_scheme",

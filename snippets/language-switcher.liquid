@@ -2,6 +2,7 @@
   Language (and optional country/currency) switcher.
   - id_prefix: unique prefix for IDs
   - compact: true shows a single toggle button (e.g. "ع" / "EN") for the header
+  - label: 'name' shows the full language name ("العربية") in compact mode
   - show_country: also show the country/currency selector
 {%- endcomment -%}
 {%- assign localization_form_id = id_prefix | append: 'LocalizationForm' -%}
@@ -17,7 +18,13 @@
           lang="{{ language.iso_code }}"
           aria-label="{{ 'localization.switch_to' | t: language: language.endonym_name }}"
         >
-          {%- if language.iso_code == 'ar' -%}ع{%- else -%}{{ language.iso_code | upcase }}{%- endif -%}
+          {%- if label == 'name' -%}
+            {{- language.endonym_name | capitalize -}}
+          {%- elsif language.iso_code == 'ar' -%}
+            ع
+          {%- else -%}
+            {{- language.iso_code | upcase -}}
+          {%- endif -%}
         </button>
         {%- break -%}
       {%- endunless -%}

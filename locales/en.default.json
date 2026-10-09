@@ -65,6 +65,10 @@
         "label": "Quantity",
         "decrease": "Decrease quantity",
         "increase": "Increase quantity"
+      },
+      "colors_count": {
+        "one": "{{ count }} colour",
+        "other": "{{ count }} colours"
       }
     }
   },
@@ -124,6 +128,12 @@
       "placeholder": "Your email",
       "subscribe": "Subscribe",
       "success": "Thanks for subscribing!"
+    },
+    "flash_sale": {
+      "days": "Days",
+      "hours": "Hrs",
+      "minutes": "Min",
+      "seconds": "Sec"
     }
   },
   "templates": {

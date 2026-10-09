@@ -4,6 +4,12 @@
 {%- endcomment -%}
 {%- liquid
   case settings.font_pairing
+    when 'retail'
+      assign font_query = 'family=Poppins:wght@400;500;600;700;800&family=Cairo:wght@400..800'
+      assign latin_heading = "'Poppins'"
+      assign latin_body = "'Poppins'"
+      assign arabic_heading = "'Cairo'"
+      assign arabic_body = "'Cairo'"
     when 'clean'
       assign font_query = 'family=Inter:wght@400..800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700'
       assign latin_heading = "'Inter'"

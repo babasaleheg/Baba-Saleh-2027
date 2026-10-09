@@ -1,0 +1,192 @@
+{%- liquid
+  assign collection = section.settings.collection
+  assign limit = section.settings.products_to_show
+-%}
+<section
+  class="section flash-sale"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <product-tabs class="page-width flash-sale__grid">
+    <div class="flash-sale__panel color-{{ section.settings.color_scheme }}">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="badge badge--highlight">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      <countdown-timer class="flash-sale__timer" data-end="{{ section.settings.end_date | escape }}" role="timer" aria-live="off">
+        <span class="flash-sale__unit"><span data-days>00</span><small>{{ 'sections.flash_sale.days' | t }}</small></span>
+        <span class="flash-sale__unit"><span data-hours>00</span><small>{{ 'sections.flash_sale.hours' | t }}</small></span>
+        <span class="flash-sale__unit"><span data-minutes>00</span><small>{{ 'sections.flash_sale.minutes' | t }}</small></span>
+        <span class="flash-sale__unit"><span data-seconds>00</span><small>{{ 'sections.flash_sale.seconds' | t }}</small></span>
+      </countdown-timer>
+      {%- if section.settings.heading != blank -%}
+        <h2 class="h1 flash-sale__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="flash-sale__text">{{ section.settings.text }}</p>
+      {%- endif -%}
+      <div class="flash-sale__actions">
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ collection.url | default: routes.all_products_collection_url }}" class="button button--light">
+            {{- section.settings.button_label -}}
+            {% render 'icon', icon: 'arrow' %}
+          </a>
+        {%- endif -%}
+        <div class="slider-controls">
+          <button type="button" class="icon-button icon-button--glass" data-slider-prev aria-label="{{ 'general.slider.previous' | t }}">
+            <span class="icon-flip">{% render 'icon', icon: 'arrow' %}</span>
+          </button>
+          <button type="button" class="icon-button icon-button--glass" data-slider-next aria-label="{{ 'general.slider.next' | t }}">
+            {% render 'icon', icon: 'arrow' %}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ul class="slider flash-sale__slider" role="list" data-slider style="--slides-desktop: 3; --slides-tablet: 2; --slide-mobile: 46%;">
+      {%- if collection != blank and collection.products_count > 0 -%}
+        {%- for product in collection.products limit: limit -%}
+          <li>{% render 'product-card', product: product %}</li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..4) -%}
+          <li>{% render 'product-card', product: blank %}</li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </product-tabs>
+</section>
+
+{% stylesheet %}
+  .flash-sale__grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .flash-sale__panel {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 1rem;
+    padding: 1.75rem 1.5rem;
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    color: var(--color-fg);
+    overflow: hidden;
+    position: relative;
+    isolation: isolate;
+  }
+
+  .flash-sale__panel::after {
+    content: '';
+    position: absolute;
+    inset-inline-end: -4rem;
+    inset-block-start: -4rem;
+    width: 14rem;
+    height: 14rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: -1;
+  }
+
+  .flash-sale__timer {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .flash-sale__unit {
+    display: grid;
+    justify-items: center;
+    min-width: 3.5rem;
+    padding: 0.5rem 0.375rem;
+    border-radius: var(--radius-small);
+    background: rgba(255, 255, 255, 0.14);
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .flash-sale__unit small {
+    margin-block-start: 0.375rem;
+    font-family: var(--font-body-family);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .flash-sale__text {
+    opacity: 0.9;
+    max-width: 28rem;
+  }
+
+  .flash-sale__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    margin-block-start: 0.5rem;
+  }
+
+  .button--light {
+    white-space: nowrap;
+    --btn-bg: #fff;
+    --btn-fg: #0a0a0a;
+  }
+
+  .button--light .icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .icon-button--glass {
+    background: rgba(255, 255, 255, 0.16);
+    color: inherit;
+  }
+
+  .icon-button--glass:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  .flash-sale .card__badges .badge--sale {
+    font-size: 0.8125rem;
+  }
+
+  @media screen and (min-width: 990px) {
+    .flash-sale__grid {
+      grid-template-columns: minmax(20rem, 0.9fr) 2.4fr;
+      align-items: stretch;
+      gap: 1.5rem;
+    }
+
+    .flash-sale__panel {
+      padding: 2.5rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.flash_sale.name",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "default": "Limited time", "label": "t:settings.eyebrow" },
+    { "type": "text", "id": "heading", "default": "Flash sale", "label": "t:settings.heading" },
+    { "type": "text", "id": "text", "default": "Big savings on gym, swim and sports gear — while stock lasts.", "label": "t:settings.text" },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "t:sections.flash_sale.settings.end_date.label",
+      "info": "t:sections.flash_sale.settings.end_date.info"
+    },
+    { "type": "collection", "id": "collection", "label": "t:settings.collection" },
+    { "type": "range", "id": "products_to_show", "min": 4, "max": 16, "step": 1, "default": 10, "label": "t:sections.featured_collection.settings.products_to_show.label" },
+    { "type": "text", "id": "button_label", "default": "Shop the sale", "label": "t:settings.button_label" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-6", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40, "label": "t:settings.padding_bottom" }
+  ],
+  "presets": [{ "name": "t:sections.flash_sale.name" }]
+}
+{% endschema %}

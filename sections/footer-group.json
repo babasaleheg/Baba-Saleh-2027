@@ -9,21 +9,21 @@
           "type": "menu",
           "settings": {
             "title": "Shop",
-            "menu": "main-menu"
+            "menu": "baba-saleh-footer-shop"
           }
         },
         "help": {
           "type": "menu",
           "settings": {
             "title": "Help",
-            "menu": "footer"
+            "menu": "baba-saleh-footer-help"
           }
         },
         "contact": {
           "type": "text",
           "settings": {
             "title": "Contact",
-            "text": "<p>support@babasaleh.com</p>"
+            "text": "<p>support@babasaleh.com</p><p>Cairo, Egypt</p>"
           }
         }
       },

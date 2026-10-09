@@ -69,6 +69,14 @@
         "label": "الكمية",
         "decrease": "تقليل الكمية",
         "increase": "زيادة الكمية"
+      },
+      "colors_count": {
+        "zero": "بدون ألوان",
+        "one": "لون واحد",
+        "two": "لونان",
+        "few": "{{ count }} ألوان",
+        "many": "{{ count }} لونًا",
+        "other": "{{ count }} لون"
       }
     }
   },
@@ -135,6 +143,12 @@
       "placeholder": "بريدك الإلكتروني",
       "subscribe": "اشترك",
       "success": "شكرًا لاشتراكك!"
+    },
+    "flash_sale": {
+      "days": "يوم",
+      "hours": "ساعة",
+      "minutes": "دقيقة",
+      "seconds": "ثانية"
     }
   },
   "templates": {

@@ -5,17 +5,22 @@
   <div class="page-width">
     <div class="promo-grid__grid promo-grid__grid--{{ section.blocks.size }}">
       {%- for block in section.blocks -%}
+        {%- liquid
+          assign tile_collection = block.settings.collection
+          assign tile_image = block.settings.image | default: tile_collection.featured_image
+          assign tile_url = block.settings.link | default: tile_collection.url | default: routes.collections_url
+        -%}
         <a
-          href="{{ block.settings.link | default: '#' }}"
+          href="{{ tile_url }}"
           class="promo-tile color-{{ block.settings.color_scheme }}"
           data-reveal
           style="--reveal-index: {{ forloop.index0 }}"
           {{ block.shopify_attributes }}
         >
           <div class="promo-tile__media">
-            {%- if block.settings.image != blank -%}
+            {%- if tile_image != blank -%}
               {{
-                block.settings.image
+                tile_image
                 | image_url: width: 1800
                 | image_tag:
                   loading: 'lazy',
@@ -166,6 +171,7 @@
       "name": "t:sections.promo_grid.blocks.tile.name",
       "settings": [
         { "type": "image_picker", "id": "image", "label": "t:settings.image" },
+        { "type": "collection", "id": "collection", "label": "t:settings.collection", "info": "t:sections.promo_grid.blocks.tile.settings.collection.info" },
         { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
         { "type": "text", "id": "heading", "default": "Gym essentials", "label": "t:settings.heading" },
         { "type": "text", "id": "text", "label": "t:settings.text" },

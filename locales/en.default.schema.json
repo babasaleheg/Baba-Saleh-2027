@@ -80,6 +80,12 @@
         },
         "color_sale": {
           "label": "Sale price & badge"
+        },
+        "color_highlight": {
+          "label": "Highlight (tags & badges)"
+        },
+        "color_highlight_text": {
+          "label": "Text on highlight"
         }
       }
     },
@@ -91,7 +97,8 @@
           "info": "Each pairing includes a matching Arabic typeface.",
           "options__1": "Sport — Archivo + Alexandria",
           "options__2": "Clean — Inter + IBM Plex Sans Arabic",
-          "options__3": "Geometric — Readex Pro"
+          "options__3": "Geometric — Readex Pro",
+          "options__4": "Retail — Poppins + Cairo"
         },
         "heading_uppercase": {
           "label": "Uppercase headings (Latin only)"
@@ -131,6 +138,12 @@
         },
         "card_quick_add": {
           "label": "Enable quick add"
+        },
+        "card_image_style": {
+          "label": "Image style",
+          "info": "Cut-out blends white product backgrounds into a soft grey tile.",
+          "options__1": "Cut-out on grey",
+          "options__2": "Full-bleed photo"
         }
       }
     },
@@ -176,6 +189,22 @@
       "settings": {
         "interval": {
           "label": "Change every"
+        },
+        "contact_text": {
+          "label": "Help link text (desktop)"
+        },
+        "contact_link": {
+          "label": "Help link",
+          "info": "Defaults to your WhatsApp number."
+        },
+        "secondary_text": {
+          "label": "Second link text (desktop)"
+        },
+        "secondary_link": {
+          "label": "Second link"
+        },
+        "show_language": {
+          "label": "Show language link"
         }
       },
       "blocks": {
@@ -212,6 +241,16 @@
         },
         "menu_color_scheme": {
           "label": "Menu color scheme"
+        },
+        "wordmark": {
+          "label": "Text logo",
+          "info": "Shown when no logo image is uploaded."
+        },
+        "wordmark_tag": {
+          "label": "Text logo tag"
+        },
+        "auto_menu_images": {
+          "label": "Show collection images in mega menu"
         }
       },
       "blocks": {
@@ -272,7 +311,13 @@
       },
       "blocks": {
         "slide": {
-          "name": "Slide"
+          "name": "Slide",
+          "settings": {
+            "collection": {
+              "label": "Collection",
+              "info": "With no image, the slide shows a product collage from this collection."
+            }
+          }
         }
       }
     },
@@ -313,7 +358,12 @@
       "name": "Promo tiles",
       "blocks": {
         "tile": {
-          "name": "Tile"
+          "name": "Tile",
+          "settings": {
+            "collection": {
+              "info": "Used for the image and link when they're empty."
+            }
+          }
         }
       }
     },
@@ -495,6 +545,15 @@
     },
     "main_password": {
       "name": "Password page"
+    },
+    "flash_sale": {
+      "name": "Flash sale countdown",
+      "settings": {
+        "end_date": {
+          "label": "Sale ends",
+          "info": "e.g. 2026-12-31 23:59. Leave blank to count down to midnight every day."
+        }
+      }
     }
   }
 }

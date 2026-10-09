@@ -4,76 +4,90 @@
       "scheme-1": {
         "settings": {
           "background": "#FFFFFF",
-          "text": "#0B0B0C",
-          "surface": "#F3F3F1",
-          "accent": "#D7FF3A",
-          "accent_text": "#0B0B0C",
-          "button": "#0B0B0C",
+          "text": "#0A0A0A",
+          "surface": "#F4F4F5",
+          "accent": "#1E3AFF",
+          "accent_text": "#FFFFFF",
+          "button": "#0A0A0A",
           "button_text": "#FFFFFF"
         }
       },
       "scheme-2": {
         "settings": {
-          "background": "#F3F3F1",
-          "text": "#0B0B0C",
+          "background": "#F4F4F5",
+          "text": "#0A0A0A",
           "surface": "#FFFFFF",
-          "accent": "#D7FF3A",
-          "accent_text": "#0B0B0C",
-          "button": "#0B0B0C",
+          "accent": "#1E3AFF",
+          "accent_text": "#FFFFFF",
+          "button": "#0A0A0A",
           "button_text": "#FFFFFF"
         }
       },
       "scheme-3": {
         "settings": {
-          "background": "#0B0B0C",
+          "background": "#0A0A0A",
           "text": "#FFFFFF",
-          "surface": "#1C1C1F",
-          "accent": "#D7FF3A",
-          "accent_text": "#0B0B0C",
+          "surface": "#1A1A1D",
+          "accent": "#FFD60A",
+          "accent_text": "#0A0A0A",
           "button": "#FFFFFF",
-          "button_text": "#0B0B0C"
+          "button_text": "#0A0A0A"
         }
       },
       "scheme-4": {
         "settings": {
-          "background": "#D7FF3A",
-          "text": "#0B0B0C",
-          "surface": "#C6EE2B",
-          "accent": "#0B0B0C",
-          "accent_text": "#D7FF3A",
-          "button": "#0B0B0C",
-          "button_text": "#FFFFFF"
+          "background": "#1E3AFF",
+          "text": "#FFFFFF",
+          "surface": "#3350FF",
+          "accent": "#FFD60A",
+          "accent_text": "#0A0A0A",
+          "button": "#FFFFFF",
+          "button_text": "#1E3AFF"
         }
       },
       "scheme-5": {
         "settings": {
-          "background": "#1F3BFF",
+          "background": "#FFD60A",
+          "text": "#0A0A0A",
+          "surface": "#F5C800",
+          "accent": "#0A0A0A",
+          "accent_text": "#FFFFFF",
+          "button": "#0A0A0A",
+          "button_text": "#FFFFFF"
+        }
+      },
+      "scheme-6": {
+        "settings": {
+          "background": "#E5202E",
           "text": "#FFFFFF",
-          "surface": "#2E4AFF",
-          "accent": "#D7FF3A",
-          "accent_text": "#0B0B0C",
+          "surface": "#C81825",
+          "accent": "#FFD60A",
+          "accent_text": "#0A0A0A",
           "button": "#FFFFFF",
-          "button_text": "#1F3BFF"
+          "button_text": "#0A0A0A"
         }
       }
     },
     "color_sale": "#E5202E",
-    "font_pairing": "sport",
-    "heading_uppercase": true,
-    "heading_weight": 800,
+    "font_pairing": "retail",
+    "heading_uppercase": false,
+    "heading_weight": 700,
     "page_width": 1480,
-    "corner_radius": 16,
+    "corner_radius": 12,
     "button_style": "pill",
     "animations_enabled": true,
     "card_show_secondary_image": true,
-    "card_show_vendor": false,
+    "card_show_vendor": true,
     "card_quick_add": true,
     "cart_type": "drawer",
     "free_shipping_threshold": 1500,
     "cart_show_note": true,
     "cart_color_scheme": "scheme-1",
     "whatsapp_number": "",
-    "sections": {}
+    "sections": {},
+    "color_highlight": "#FFD60A",
+    "color_highlight_text": "#0A0A0A",
+    "card_image_style": "cutout"
   },
   "presets": {
     "Default": {
@@ -81,75 +95,89 @@
         "scheme-1": {
           "settings": {
             "background": "#FFFFFF",
-            "text": "#0B0B0C",
-            "surface": "#F3F3F1",
-            "accent": "#D7FF3A",
-            "accent_text": "#0B0B0C",
-            "button": "#0B0B0C",
+            "text": "#0A0A0A",
+            "surface": "#F4F4F5",
+            "accent": "#1E3AFF",
+            "accent_text": "#FFFFFF",
+            "button": "#0A0A0A",
             "button_text": "#FFFFFF"
           }
         },
         "scheme-2": {
           "settings": {
-            "background": "#F3F3F1",
-            "text": "#0B0B0C",
+            "background": "#F4F4F5",
+            "text": "#0A0A0A",
             "surface": "#FFFFFF",
-            "accent": "#D7FF3A",
-            "accent_text": "#0B0B0C",
-            "button": "#0B0B0C",
+            "accent": "#1E3AFF",
+            "accent_text": "#FFFFFF",
+            "button": "#0A0A0A",
             "button_text": "#FFFFFF"
           }
         },
         "scheme-3": {
           "settings": {
-            "background": "#0B0B0C",
+            "background": "#0A0A0A",
             "text": "#FFFFFF",
-            "surface": "#1C1C1F",
-            "accent": "#D7FF3A",
-            "accent_text": "#0B0B0C",
+            "surface": "#1A1A1D",
+            "accent": "#FFD60A",
+            "accent_text": "#0A0A0A",
             "button": "#FFFFFF",
-            "button_text": "#0B0B0C"
+            "button_text": "#0A0A0A"
           }
         },
         "scheme-4": {
           "settings": {
-            "background": "#D7FF3A",
-            "text": "#0B0B0C",
-            "surface": "#C6EE2B",
-            "accent": "#0B0B0C",
-            "accent_text": "#D7FF3A",
-            "button": "#0B0B0C",
-            "button_text": "#FFFFFF"
+            "background": "#1E3AFF",
+            "text": "#FFFFFF",
+            "surface": "#3350FF",
+            "accent": "#FFD60A",
+            "accent_text": "#0A0A0A",
+            "button": "#FFFFFF",
+            "button_text": "#1E3AFF"
           }
         },
         "scheme-5": {
           "settings": {
-            "background": "#1F3BFF",
+            "background": "#FFD60A",
+            "text": "#0A0A0A",
+            "surface": "#F5C800",
+            "accent": "#0A0A0A",
+            "accent_text": "#FFFFFF",
+            "button": "#0A0A0A",
+            "button_text": "#FFFFFF"
+          }
+        },
+        "scheme-6": {
+          "settings": {
+            "background": "#E5202E",
             "text": "#FFFFFF",
-            "surface": "#2E4AFF",
-            "accent": "#D7FF3A",
-            "accent_text": "#0B0B0C",
+            "surface": "#C81825",
+            "accent": "#FFD60A",
+            "accent_text": "#0A0A0A",
             "button": "#FFFFFF",
-            "button_text": "#1F3BFF"
+            "button_text": "#0A0A0A"
           }
         }
       },
       "color_sale": "#E5202E",
-      "font_pairing": "sport",
-      "heading_uppercase": true,
-      "heading_weight": 800,
+      "font_pairing": "retail",
+      "heading_uppercase": false,
+      "heading_weight": 700,
       "page_width": 1480,
-      "corner_radius": 16,
+      "corner_radius": 12,
       "button_style": "pill",
       "animations_enabled": true,
       "card_show_secondary_image": true,
-      "card_show_vendor": false,
+      "card_show_vendor": true,
       "card_quick_add": true,
       "cart_type": "drawer",
       "free_shipping_threshold": 1500,
       "cart_show_note": true,
       "cart_color_scheme": "scheme-1",
-      "whatsapp_number": ""
+      "whatsapp_number": "",
+      "color_highlight": "#FFD60A",
+      "color_highlight_text": "#0A0A0A",
+      "card_image_style": "cutout"
     }
   }
 }
