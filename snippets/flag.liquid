@@ -1,0 +1,21 @@
+{%- comment -%}
+  Inline SVG flag for a language switcher button.
+  - language: language iso code ('ar' → Egypt, 'en' → England)
+  Renders nothing for languages without a flag.
+{%- endcomment -%}
+{%- assign flag_code = language | slice: 0, 2 | downcase -%}
+{%- case flag_code -%}
+  {%- when 'ar' -%}
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true" focusable="false">
+      <rect width="30" height="20" fill="#fff"/>
+      <rect width="30" height="6.67" fill="#ce1126"/>
+      <rect y="13.33" width="30" height="6.67" fill="#000"/>
+      <path d="M15 7.4c-.6 0-1 .4-1.1.9l-1.6-.6.4 2.3-.9 1.6 1.4-.3.6 1.1h2.4l.6-1.1 1.4.3-.9-1.6.4-2.3-1.6.6c-.1-.5-.5-.9-1.1-.9z" fill="#c09300"/>
+    </svg>
+  {%- when 'en' -%}
+    <svg class="flag" viewBox="0 0 30 20" aria-hidden="true" focusable="false">
+      <rect width="30" height="20" fill="#fff"/>
+      <rect x="12.5" width="5" height="20" fill="#ce1124"/>
+      <rect y="7.5" width="30" height="5" fill="#ce1124"/>
+    </svg>
+{%- endcase -%}
