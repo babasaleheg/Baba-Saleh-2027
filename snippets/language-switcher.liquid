@@ -1,8 +1,7 @@
 {%- comment -%}
   Language (and optional country/currency) switcher.
   - id_prefix: unique prefix for IDs
-  - compact: true shows a single toggle button with the target language's flag
-    (Egypt flag → Arabic, England flag → English)
+  - compact: true shows a single toggle button (e.g. "ع" / "EN") for the header
   - label: 'name' shows the full language name ("العربية") in compact mode
   - show_country: also show the country/currency selector
 {%- endcomment -%}
@@ -15,14 +14,16 @@
           type="submit"
           name="language_code"
           value="{{ language.iso_code }}"
-          class="localization__toggle{% if label == 'name' %} localization__toggle--named{% endif %}"
+          class="localization__toggle"
           lang="{{ language.iso_code }}"
           aria-label="{{ 'localization.switch_to' | t: language: language.endonym_name }}"
-          title="{{ language.endonym_name | capitalize }}"
         >
-          {%- render 'flag', language: language.iso_code -%}
           {%- if label == 'name' -%}
-            <span>{{- language.endonym_name | capitalize -}}</span>
+            {{- language.endonym_name | capitalize -}}
+          {%- elsif language.iso_code == 'ar' -%}
+            ع
+          {%- else -%}
+            {{- language.iso_code | upcase -}}
           {%- endif -%}
         </button>
         {%- break -%}
@@ -43,8 +44,7 @@
               aria-current="true"
             {% endif %}
           >
-            {%- render 'flag', language: language.iso_code -%}
-            <span>{{- language.endonym_name | capitalize -}}</span>
+            {{- language.endonym_name | capitalize -}}
           </button>
         {%- endfor -%}
       </div>
@@ -87,22 +87,10 @@
     font-size: 0.875rem;
   }
 
-  .localization__toggle--named {
-    display: inline-flex;
-    gap: 0.5rem;
-  }
-
-  .localization .flag {
-    flex-shrink: 0;
-    width: 1.5rem;
-    height: 1rem;
-    border-radius: 3px;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
-  }
-
-  .localization__toggle--named .flag {
-    width: 1.25rem;
-    height: 0.8333rem;
+  .localization__toggle[lang='ar'] {
+    font-family: var(--font-heading-family);
+    font-size: 1.25rem;
+    line-height: 1;
   }
 
   .localization__toggle:hover {
@@ -135,10 +123,6 @@
 
   .localization__pill {
     flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
     padding: 0.625rem 1rem;
     border: 1px solid var(--color-border);
     border-radius: 999px;
