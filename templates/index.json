@@ -669,6 +669,70 @@
         "padding_top": 56,
         "padding_bottom": 56
       }
+    },
+    "seo": {
+      "type": "seo-content",
+      "blocks": {
+        "faq_1": {
+          "type": "question",
+          "settings": {
+            "question": "What does Baba Saleh sell?",
+            "answer": "<p>Baba Saleh (بابا صالح) sells sports equipment and sportswear in Egypt: gym and fitness equipment, swimming gear and swimwear, football, basketball, racket sports, martial arts, beach gear, trophies and medals, and kids' toys.</p>"
+          }
+        },
+        "faq_2": {
+          "type": "question",
+          "settings": {
+            "question": "Do you deliver to all of Egypt?",
+            "answer": "<p>Yes. We deliver to every governorate in Egypt, usually within 2–5 days.</p>"
+          }
+        },
+        "faq_3": {
+          "type": "question",
+          "settings": {
+            "question": "Can I pay cash on delivery?",
+            "answer": "<p>Yes. You can pay in cash when your order arrives, anywhere in Egypt.</p>"
+          }
+        },
+        "faq_4": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>You can return eligible items within 14 days. See our <a href=\"/policies/refund-policy\">refund policy</a> for details.</p>"
+          }
+        },
+        "faq_5": {
+          "type": "question",
+          "settings": {
+            "question": "Which brands do you carry?",
+            "answer": "<p>Wilson, Everlast, Venum, Cressi, Dunlop, Track, Kuna, Spurt, LivePro, LiveUp, Cougar, Kiko, Manta, Wish and our own Baba Saleh range.</p>"
+          }
+        },
+        "faq_6": {
+          "type": "question",
+          "settings": {
+            "question": "How can I contact Baba Saleh?",
+            "answer": "<p>Message us on WhatsApp or email support@babasaleh.com — real people reply fast.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6"
+      ],
+      "settings": {
+        "eyebrow": "Baba Saleh · بابا صالح",
+        "heading": "Egypt's sports equipment store",
+        "text": "<p><strong>Baba Saleh (بابا صالح)</strong> is a sports equipment store in Egypt with more than 1,300 products for every sport and every age. Shop <a href=\"/collections/gym-equipment\">gym equipment</a> and <a href=\"/collections/home-workout-equipment\">home workout gear</a>, <a href=\"/collections/swimming-equipment\">swimming equipment</a>, <a href=\"/collections/swimwear\">swimwear</a> and <a href=\"/collections/goggles\">swimming goggles</a>, <a href=\"/collections/football-equipment\">football</a>, <a href=\"/collections/basketball-equipment\">basketball</a>, <a href=\"/collections/tennis-equipment\">tennis</a> and <a href=\"/collections/ping-pong-equipment\">table tennis</a>, <a href=\"/collections/martial-arts\">martial arts</a>, <a href=\"/collections/beach-equipment\">beach gear</a>, <a href=\"/collections/trophy-cups-medals\">trophies and medals</a> and <a href=\"/collections/toys-2026\">kids' toys</a>.</p><h3>Top sports brands</h3><p>We carry Wilson, Everlast, Venum, Cressi, Dunlop, Track, Kuna, Spurt, LivePro, LiveUp, Cougar, Kiko, Manta and Wish, alongside our own Baba Saleh range.</p><h3>Easy shopping across Egypt</h3><p>Order online in Arabic or English and pay cash on delivery. We deliver to every governorate in Egypt, usually within 2–5 days, with easy 14-day returns and friendly WhatsApp support.</p>",
+        "faq_heading": "Frequently asked questions",
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
     }
   },
   "order": [
@@ -684,6 +748,7 @@
     "brands",
     "toys",
     "marquee",
+    "seo",
     "newsletter"
   ]
 }

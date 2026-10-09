@@ -6,10 +6,11 @@
     <div class="image-with-text__grid{% if section.settings.image_position == 'end' %} image-with-text__grid--reverse{% endif %}">
       <div class="media image-with-text__media" data-reveal>
         {%- if section.settings.image != blank -%}
+          {%- assign image_alt = section.settings.image.alt | default: section.settings.heading | strip_html -%}
           {{
             section.settings.image
             | image_url: width: 1600
-            | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 50vw, 100vw', widths: '400, 600, 900, 1200, 1600'
+            | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 50vw, 100vw', widths: '400, 600, 900, 1200, 1600', alt: image_alt
           }}
         {%- else -%}
           {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}

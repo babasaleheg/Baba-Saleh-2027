@@ -185,6 +185,52 @@
           "info": "Shown when the homepage or a page without its own image is shared on WhatsApp, Facebook, etc. 1200 × 628px recommended."
         }
       }
+    },
+    "seo": {
+      "name": "SEO & tracking",
+      "settings": {
+        "header_tracking": {
+          "content": "Tracking"
+        },
+        "gtm_id": {
+          "label": "Google Tag Manager container ID",
+          "info": "Loads GTM on every page and pushes view_item, add_to_cart and search to the dataLayer. Track checkout with Shopify's Google & YouTube app."
+        },
+        "ga4_id": {
+          "label": "Google Analytics 4 measurement ID",
+          "info": "Only needed if you don't load GA4 through Tag Manager or the Google & YouTube app."
+        },
+        "meta_pixel_id": {
+          "label": "Meta (Facebook) Pixel ID",
+          "info": "Only needed if you don't use Shopify's Facebook & Instagram app."
+        },
+        "header_verification": {
+          "content": "Site verification"
+        },
+        "google_site_verification": {
+          "label": "Google Search Console verification code",
+          "info": "The content value of the google-site-verification meta tag."
+        },
+        "bing_site_verification": {
+          "label": "Bing Webmaster verification code"
+        },
+        "facebook_domain_verification": {
+          "label": "Facebook domain verification code"
+        },
+        "header_business": {
+          "content": "Business details for Google"
+        },
+        "business_phone": {
+          "label": "Phone number",
+          "info": "Used in Google's business information. Falls back to the WhatsApp number."
+        },
+        "business_street": {
+          "label": "Street address"
+        },
+        "business_city": {
+          "label": "City"
+        }
+      }
     }
   },
   "sections": {
@@ -556,6 +602,27 @@
         "end_date": {
           "label": "Sale ends",
           "info": "e.g. 2026-12-31 23:59. Leave blank to count down to midnight every day."
+        }
+      }
+    },
+    "seo_content": {
+      "name": "About & FAQ (SEO)",
+      "settings": {
+        "faq_heading": {
+          "label": "FAQ heading"
+        }
+      },
+      "blocks": {
+        "question": {
+          "name": "Question",
+          "settings": {
+            "question": {
+              "label": "Question"
+            },
+            "answer": {
+              "label": "Answer"
+            }
+          }
         }
       }
     }

@@ -27,7 +27,12 @@
                       assign priority = 'high'
                     endif
                   -%}
-                  {%- assign media_alt = media.alt | default: product.title -%}
+                  {%- liquid
+                    assign media_alt = media.alt
+                    if media_alt == blank or media_alt == product.title
+                      assign media_alt = 'seo.image_alt_numbered' | t: title: product.title, number: forloop.index
+                    endif
+                  -%}
                   {{
                     media
                     | image_url: width: 1800
@@ -293,10 +298,6 @@
     </button>
   </div>
 </product-info>
-
-<script type="application/ld+json">
-  {{ product | structured_data }}
-</script>
 
 {%- assign model_media = product.media | where: 'media_type', 'model' -%}
 {%- if model_media.size > 0 -%}

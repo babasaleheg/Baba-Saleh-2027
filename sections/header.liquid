@@ -21,7 +21,6 @@
         {% render 'icon', icon: 'menu' %}
       </button>
 
-      {%- if request.page_type == 'index' -%}<h1 class="header__heading">{%- endif -%}
       <a href="{{ routes.root_url }}" class="header__logo">
         {%- if section.settings.logo != blank -%}
           {%- assign logo_width_2x = section.settings.logo_width | times: 2 -%}
@@ -44,7 +43,6 @@
           </span>
         {%- endif -%}
       </a>
-      {%- if request.page_type == 'index' -%}</h1>{%- endif -%}
     </div>
 
     <nav class="header__nav" aria-label="{{ 'header.main_navigation' | t }}">
@@ -103,10 +101,11 @@
                       <a href="{{ block.settings.link | default: link.url }}" class="mega__promo" {{ block.shopify_attributes }}>
                         <div class="media media--portrait">
                           {%- if block.settings.image != blank -%}
+                            {%- assign promo_alt = block.settings.image.alt | default: block.settings.heading | default: link.title -%}
                             {{
                               block.settings.image
                               | image_url: width: 600
-                              | image_tag: loading: 'lazy', sizes: '300px', widths: '300, 450, 600'
+                              | image_tag: loading: 'lazy', sizes: '300px', widths: '300, 450, 600', alt: promo_alt
                             }}
                           {%- else -%}
                             {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}

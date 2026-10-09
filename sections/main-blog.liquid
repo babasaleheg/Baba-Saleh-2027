@@ -8,7 +8,7 @@
             <a href="{{ article.url }}" class="article-card">
               <div class="media media--landscape">
                 {%- if article.image -%}
-                  {{ article.image | image_url: width: 1000 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 33vw, 100vw', widths: '400, 600, 800, 1000' }}
+                  {{ article.image | image_url: width: 1000 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 33vw, 100vw', widths: '400, 600, 800, 1000', alt: article.title }}
                 {%- else -%}
                   {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
                 {%- endif -%}

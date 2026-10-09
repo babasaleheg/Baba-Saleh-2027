@@ -176,5 +176,18 @@
       "shop_link": "Start shopping",
       "print": "Print"
     }
+  },
+  "seo": {
+    "brand": "Baba Saleh",
+    "brand_alt": "بابا صالح",
+    "title_suffix": "Baba Saleh Egypt",
+    "home_title": "Baba Saleh Sports Egypt – Gym, Swimming & Football Gear | بابا صالح",
+    "home_description": "Shop 1,300+ sports products at Baba Saleh (بابا صالح) Egypt: gym equipment, swimwear, goggles, football, martial arts and kids' toys from Wilson, Everlast, Venum and Cressi. Cash on delivery, fast delivery across Egypt.",
+    "home_h1": "Baba Saleh – sports equipment store in Egypt",
+    "product_description": "Buy {{ title }} by {{ vendor }} for {{ price }} at Baba Saleh Egypt. Original sports gear, cash on delivery and fast delivery to every governorate.",
+    "collection_description": "Shop {{ title }} at Baba Saleh Egypt – {{ count }} products from top sports brands. Cash on delivery and fast delivery across Egypt.",
+    "default_description": "Baba Saleh (بابا صالح) – sports equipment, swimwear and gym gear in Egypt. Cash on delivery and fast delivery across Egypt.",
+    "image_alt": "{{ title }} – Baba Saleh Egypt",
+    "image_alt_numbered": "{{ title }} – image {{ number }} – Baba Saleh Egypt"
   }
 }

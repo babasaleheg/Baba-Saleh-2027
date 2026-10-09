@@ -40,6 +40,9 @@
       assign on_sale = true
     endif
     assign card_alt = first_image.alt | default: product.title
+    if first_image.alt == blank
+      assign card_alt = 'seo.image_alt' | t: title: product.title
+    endif
     assign color_option = blank
     for option in product.options_with_values
       assign option_name = option.name | downcase

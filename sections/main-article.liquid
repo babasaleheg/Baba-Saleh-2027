@@ -6,7 +6,7 @@
     </header>
     {%- if article.image -%}
       <div class="media media--landscape main-article__image">
-        {{ article.image | image_url: width: 2000 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 900px, 100vw', widths: '600, 900, 1200, 1600, 2000' }}
+        {{ article.image | image_url: width: 2000 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 900px, 100vw', widths: '600, 900, 1200, 1600, 2000', alt: article.title }}
       </div>
     {%- endif -%}
     <div class="rte">{{ article.content }}</div>

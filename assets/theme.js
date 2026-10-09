@@ -276,6 +276,7 @@
         body,
       });
       const data = await readCartResponse(response);
+      trackAddToCart(data);
 
       const cart = await (await fetch(`${routes.cart}.js`)).json();
       updateCartCount(cart.item_count);
@@ -299,6 +300,39 @@
       for (const button of buttons) button?.classList.remove('is-loading');
     }
   });
+
+  /* ---------- Analytics (GTM dataLayer, GA4, Meta Pixel) ---------- */
+  function trackAddToCart(item) {
+    if (!item || !item.variant_id) return;
+    const currency = window.Shopify?.currency?.active;
+    const value = (item.final_line_price ?? item.price * item.quantity) / 100;
+    const ecommerce = {
+      currency,
+      value,
+      items: [{
+        item_id: item.sku || String(item.product_id),
+        item_name: item.product_title,
+        item_brand: item.vendor,
+        item_category: item.product_type,
+        item_variant: item.variant_title || undefined,
+        price: item.price / 100,
+        quantity: item.quantity,
+      }],
+    };
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push({ event: 'add_to_cart', ecommerce });
+    if (typeof window.gtag === 'function') window.gtag('event', 'add_to_cart', ecommerce);
+    if (typeof window.fbq === 'function') {
+      window.fbq('track', 'AddToCart', {
+        content_ids: [String(item.variant_id)],
+        content_name: item.product_title,
+        content_type: 'product',
+        value,
+        currency,
+      });
+    }
+  }
 
   /* ---------- Quick add on product cards ---------- */
   class QuickAdd extends HTMLElement {

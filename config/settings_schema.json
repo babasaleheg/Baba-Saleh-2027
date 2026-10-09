@@ -325,5 +325,77 @@
         "info": "t:settings_schema.favicon.settings.share_image.info"
       }
     ]
+  },
+  {
+    "name": "t:settings_schema.seo.name",
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:settings_schema.seo.settings.header_tracking.content"
+      },
+      {
+        "type": "text",
+        "id": "gtm_id",
+        "label": "t:settings_schema.seo.settings.gtm_id.label",
+        "info": "t:settings_schema.seo.settings.gtm_id.info",
+        "placeholder": "GTM-XXXXXXX"
+      },
+      {
+        "type": "text",
+        "id": "ga4_id",
+        "label": "t:settings_schema.seo.settings.ga4_id.label",
+        "info": "t:settings_schema.seo.settings.ga4_id.info",
+        "placeholder": "G-XXXXXXXXXX"
+      },
+      {
+        "type": "text",
+        "id": "meta_pixel_id",
+        "label": "t:settings_schema.seo.settings.meta_pixel_id.label",
+        "info": "t:settings_schema.seo.settings.meta_pixel_id.info",
+        "placeholder": "123456789012345"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.seo.settings.header_verification.content"
+      },
+      {
+        "type": "text",
+        "id": "google_site_verification",
+        "label": "t:settings_schema.seo.settings.google_site_verification.label",
+        "info": "t:settings_schema.seo.settings.google_site_verification.info"
+      },
+      {
+        "type": "text",
+        "id": "bing_site_verification",
+        "label": "t:settings_schema.seo.settings.bing_site_verification.label"
+      },
+      {
+        "type": "text",
+        "id": "facebook_domain_verification",
+        "label": "t:settings_schema.seo.settings.facebook_domain_verification.label"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.seo.settings.header_business.content"
+      },
+      {
+        "type": "text",
+        "id": "business_phone",
+        "label": "t:settings_schema.seo.settings.business_phone.label",
+        "info": "t:settings_schema.seo.settings.business_phone.info",
+        "placeholder": "+20 …"
+      },
+      {
+        "type": "text",
+        "id": "business_street",
+        "label": "t:settings_schema.seo.settings.business_street.label"
+      },
+      {
+        "type": "text",
+        "id": "business_city",
+        "label": "t:settings_schema.seo.settings.business_city.label",
+        "default": "Cairo"
+      }
+    ]
   }
 ]

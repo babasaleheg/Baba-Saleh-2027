@@ -1,0 +1,141 @@
+{%- comment -%}
+  Keyword-rich "about the store" text plus an FAQ list.
+  The FAQ is also emitted as FAQPage JSON-LD for Google and AI answer engines.
+{%- endcomment -%}
+<section
+  class="section seo-content color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width seo-content__grid">
+    <div class="seo-content__about">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="h2">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="rte seo-content__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="seo-content__faq">
+        {%- if section.settings.faq_heading != blank -%}
+          <h2 class="h3">{{ section.settings.faq_heading }}</h2>
+        {%- endif -%}
+        {%- for block in section.blocks -%}
+          <details class="accordion" {{ block.shopify_attributes }}>
+            <summary>
+              <h3 class="seo-content__question">{{ block.settings.question }}</h3>
+              {%- render 'icon', icon: 'plus' -%}
+            </summary>
+            <div class="accordion__content rte">{{ block.settings.answer }}</div>
+          </details>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- if section.blocks.size > 0 -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "inLanguage": {{ request.locale.iso_code | json }},
+      "mainEntity": [
+        {%- for block in section.blocks -%}
+          {
+            "@type": "Question",
+            "name": {{ block.settings.question | strip_html | json }},
+            "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.answer | strip_html | strip | json }} }
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .seo-content__grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .seo-content__about {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
+
+  .seo-content__text {
+    color: var(--color-muted);
+    line-height: 1.75;
+  }
+
+  .seo-content__text h3 {
+    color: var(--color-fg);
+    font-size: 1.0625rem;
+    margin-block-start: 0.5rem;
+  }
+
+  .seo-content__faq {
+    display: grid;
+    gap: 0;
+    align-content: start;
+  }
+
+  .seo-content__faq > h2 {
+    margin-block-end: 0.75rem;
+  }
+
+  .seo-content__question {
+    margin: 0;
+    font-family: var(--font-body-family);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  @media screen and (min-width: 990px) {
+    .seo-content__grid {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 5rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.seo_content.name",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
+    { "type": "text", "id": "heading", "default": "Egypt's sports store", "label": "t:settings.heading" },
+    { "type": "richtext", "id": "text", "label": "t:settings.text" },
+    { "type": "text", "id": "faq_heading", "default": "Frequently asked questions", "label": "t:sections.seo_content.settings.faq_heading.label" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_bottom" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "t:sections.seo_content.blocks.question.name",
+      "settings": [
+        { "type": "text", "id": "question", "default": "Do you offer cash on delivery?", "label": "t:sections.seo_content.blocks.question.settings.question.label" },
+        { "type": "richtext", "id": "answer", "default": "<p>Yes. You can pay in cash when your order arrives, anywhere in Egypt.</p>", "label": "t:sections.seo_content.blocks.question.settings.answer.label" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.seo_content.name",
+      "blocks": [{ "type": "question" }]
+    }
+  ]
+}
+{% endschema %}

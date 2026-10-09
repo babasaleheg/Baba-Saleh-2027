@@ -1,30 +1,128 @@
+{%- comment -%}
+  <title>, meta description, Open Graph, Twitter and site-verification tags.
+  Merchant-entered SEO titles/descriptions (Shopify admin → Search engine listing)
+  always win; otherwise localized fallbacks from locales/*.json `seo.*` are used,
+  so every page has a unique, keyword-rich title and description in EN and AR.
+{%- endcomment -%}
 {%- liquid
-  assign og_title = page_title | default: shop.name
-  assign og_url = canonical_url | default: request.origin
+  assign brand = 'seo.brand' | t
+  assign suffix = 'seo.title_suffix' | t
+  assign locale_lang = request.locale.iso_code | split: '-' | first
+
+  # ----- Title -----
+  if request.page_type == 'index'
+    assign seo_title = 'seo.home_title' | t
+  else
+    assign seo_title = page_title
+    if current_tags
+      assign meta_tags = current_tags | join: ', '
+      assign tags_text = 'general.meta.tags' | t: tags: meta_tags
+      assign seo_title = seo_title | append: ' – ' | append: tags_text
+    endif
+    if current_page and current_page > 1
+      assign page_text = 'general.meta.page' | t: page: current_page
+      assign seo_title = seo_title | append: ' – ' | append: page_text
+    endif
+    unless seo_title contains brand
+      assign seo_title = seo_title | append: ' | ' | append: suffix
+    endunless
+  endif
+
+  # ----- Description -----
+  assign seo_description = page_description | strip_html | strip_newlines | strip
+  if seo_description == blank or request.page_type == 'index'
+    case request.page_type
+      when 'index'
+        if page_description != blank and page_description != shop.name
+          assign seo_description = page_description
+        else
+          assign seo_description = 'seo.home_description' | t
+        endif
+      when 'product'
+        assign product_price = product.price | money_without_trailing_zeros | strip_html
+        assign seo_description = 'seo.product_description' | t: title: product.title, vendor: product.vendor, price: product_price
+      when 'collection'
+        assign seo_description = 'seo.collection_description' | t: title: collection.title, count: collection.products_count
+      else
+        assign seo_description = 'seo.default_description' | t
+    endcase
+  endif
+  assign seo_description = seo_description | truncate: 300
+
+  # ----- Social -----
   assign og_type = 'website'
-  assign og_description = page_description | default: shop.description | default: shop.name
   if request.page_type == 'product'
     assign og_type = 'product'
+  elsif request.page_type == 'article'
+    assign og_type = 'article'
   endif
-  # Pages without their own image (home, policies…) fall back to the theme's share image.
   assign og_image = page_image | default: settings.share_image
+  if og_image == blank and request.page_type == 'collection'
+    assign og_image = collection.featured_image
+  endif
+  assign og_url = canonical_url | default: request.origin
+
+  case locale_lang
+    when 'ar'
+      assign og_locale = 'ar_EG'
+      assign og_locale_alt = 'en_US'
+    else
+      assign og_locale = 'en_US'
+      assign og_locale_alt = 'ar_EG'
+  endcase
 -%}
-<meta property="og:site_name" content="{{ shop.name }}">
+<title>{{ seo_title | strip_newlines | escape }}</title>
+<meta name="description" content="{{ seo_description | escape }}">
+{%- if request.page_type == 'search' or template.directory == 'customers' or request.page_type == 'cart' or request.page_type == 'password' %}
+  <meta name="robots" content="noindex, follow">
+{%- else %}
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+{%- endif %}
+<meta name="application-name" content="{{ brand | escape }}">
+<meta name="apple-mobile-web-app-title" content="{{ brand | escape }}">
+<meta name="theme-color" content="{{ settings.color_schemes['scheme-1'].settings.background | default: '#ffffff' }}">
+
+<meta property="og:site_name" content="{{ brand | escape }}">
 <meta property="og:url" content="{{ og_url }}">
-<meta property="og:title" content="{{ og_title | escape }}">
+<meta property="og:title" content="{{ seo_title | strip_newlines | escape }}">
 <meta property="og:type" content="{{ og_type }}">
-<meta property="og:description" content="{{ og_description | escape }}">
-{%- if og_image -%}
+<meta property="og:description" content="{{ seo_description | escape }}">
+<meta property="og:locale" content="{{ og_locale }}">
+<meta property="og:locale:alternate" content="{{ og_locale_alt }}">
+{%- if og_image != blank %}
   <meta property="og:image" content="https:{{ og_image | image_url: width: 1200 }}">
   <meta property="og:image:secure_url" content="https:{{ og_image | image_url: width: 1200 }}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="{{ 1200 | divided_by: og_image.aspect_ratio | round }}">
-  <meta name="twitter:image" content="https:{{ og_image | image_url: width: 1200 }}">
-{%- endif -%}
-{%- if request.page_type == 'product' -%}
-  <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
+  <meta property="og:image:alt" content="{{ og_image.alt | default: seo_title | escape }}">
+{%- endif %}
+{%- if request.page_type == 'product' %}
+  <meta property="product:brand" content="{{ product.vendor | escape }}">
+  <meta property="product:availability" content="{% if product.available %}in stock{% else %}out of stock{% endif %}">
+  <meta property="product:condition" content="new">
+  <meta property="product:price:amount" content="{{ product.price | divided_by: 100.0 }}">
+  <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+  <meta property="og:price:amount" content="{{ product.price | divided_by: 100.0 }}">
   <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
-{%- endif -%}
+{%- endif %}
+
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ og_title | escape }}">
-<meta name="twitter:description" content="{{ og_description | escape }}">
+<meta name="twitter:title" content="{{ seo_title | strip_newlines | escape }}">
+<meta name="twitter:description" content="{{ seo_description | escape }}">
+{%- if og_image != blank %}
+  <meta name="twitter:image" content="https:{{ og_image | image_url: width: 1200 }}">
+{%- endif %}
+{%- if settings.social_x_link != blank %}
+  {%- assign x_handle = settings.social_x_link | split: '/' | last | remove: '@' %}
+  <meta name="twitter:site" content="@{{ x_handle }}">
+{%- endif %}
+
+{%- if settings.google_site_verification != blank %}
+  <meta name="google-site-verification" content="{{ settings.google_site_verification | escape }}">
+{%- endif %}
+{%- if settings.bing_site_verification != blank %}
+  <meta name="msvalidate.01" content="{{ settings.bing_site_verification | escape }}">
+{%- endif %}
+{%- if settings.facebook_domain_verification != blank %}
+  <meta name="facebook-domain-verification" content="{{ settings.facebook_domain_verification | escape }}">
+{%- endif %}

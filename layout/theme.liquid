@@ -20,18 +20,9 @@
       <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
     {%- endif -%}
 
-    <title>
-      {{ page_title }}
-      {%- if current_tags -%}{%- assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}{% endif -%}
-      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
-      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
-    </title>
-
-    {% if page_description %}
-      <meta name="description" content="{{ page_description | escape }}">
-    {% endif %}
-
     {% render 'meta-tags' %}
+    {% render 'structured-data' %}
+    {% render 'tracking', part: 'head' %}
     {% render 'fonts' %}
     {% render 'css-variables' %}
 
@@ -65,11 +56,15 @@
   </head>
 
   <body class="color-scheme-1 template-{{ template.name | handle }}{% if settings.animations_enabled %} has-animations{% endif %}">
+    {% render 'tracking', part: 'body' %}
     <a class="skip-link button" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
 
     {% sections 'header-group' %}
 
     <main id="MainContent" class="main-content" role="main" tabindex="-1">
+      {%- if request.page_type == 'index' -%}
+        <h1 class="visually-hidden">{{ 'seo.home_h1' | t }}</h1>
+      {%- endif -%}
       {{ content_for_layout }}
     </main>
 

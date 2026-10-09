@@ -12,7 +12,8 @@
         <header class="collection__header{% if section.settings.show_image and collection.image %} collection__header--image{% endif %}">
           {%- if section.settings.show_image and collection.image -%}
             <div class="media collection__banner">
-              {{ collection.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750, 1100, 1500, 2000, 2400' }}
+              {%- assign collection_alt = collection.image.alt | default: collection.title -%}
+              {{ collection.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750, 1100, 1500, 2000, 2400', alt: collection_alt }}
             </div>
           {%- endif -%}
           <div class="collection__header-text">

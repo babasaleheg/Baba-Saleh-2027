@@ -1,0 +1,90 @@
+{%- comment -%}
+  Google Tag Manager, Google Analytics 4 and Meta Pixel, configured in
+  Theme settings → SEO & tracking. Each loads only when its ID is filled in.
+  Ecommerce events (view_item, add_to_cart, search) are pushed to dataLayer
+  by theme.js via window.theme.track(), and mirrored to GA4/Meta when present.
+  Checkout and purchase events come from Shopify's Google & YouTube and
+  Facebook & Instagram apps (Shopify Customer Events), not the theme.
+  - part: 'head' | 'body'
+{%- endcomment -%}
+{%- liquid
+  assign gtm_id = settings.gtm_id | strip
+  assign ga4_id = settings.ga4_id | strip
+  assign pixel_id = settings.meta_pixel_id | strip
+-%}
+{%- if part == 'head' -%}
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    {%- if request.page_type == 'product' %}
+    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push({
+      event: 'view_item',
+      ecommerce: {
+        currency: {{ cart.currency.iso_code | json }},
+        value: {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+        items: [{
+          item_id: {{ product.selected_or_first_available_variant.sku | default: product.id | json }},
+          item_name: {{ product.title | json }},
+          item_brand: {{ product.vendor | json }},
+          item_category: {{ product.type | json }},
+          item_variant: {{ product.selected_or_first_available_variant.title | json }},
+          price: {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }}
+        }]
+      }
+    });
+    {%- elsif request.page_type == 'search' and search.terms != blank %}
+    window.dataLayer.push({ event: 'search', search_term: {{ search.terms | json }} });
+    {%- endif %}
+  </script>
+
+  {%- if gtm_id != blank -%}
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+      var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
+      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer',{{ gtm_id | json }});
+    </script>
+  {%- endif -%}
+
+  {%- if ga4_id != blank -%}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id | url_encode }}"></script>
+    <script>
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', {{ ga4_id | json }});
+      {%- if request.page_type == 'product' %}
+      gtag('event', 'view_item', window.dataLayer.find(function (e) { return e.event === 'view_item'; }).ecommerce);
+      {%- endif %}
+    </script>
+  {%- endif -%}
+
+  {%- if pixel_id != blank -%}
+    <script>
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', {{ pixel_id | json }});
+      fbq('track', 'PageView');
+      {%- if request.page_type == 'product' %}
+      fbq('track', 'ViewContent', {
+        content_ids: [{{ product.selected_or_first_available_variant.id | json }}],
+        content_name: {{ product.title | json }},
+        content_type: 'product',
+        value: {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+        currency: {{ cart.currency.iso_code | json }}
+      });
+      {%- elsif request.page_type == 'search' and search.terms != blank %}
+      fbq('track', 'Search', { search_string: {{ search.terms | json }} });
+      {%- endif %}
+    </script>
+  {%- endif -%}
+{%- elsif part == 'body' -%}
+  {%- if gtm_id != blank -%}
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ gtm_id | url_encode }}" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
+  {%- endif -%}
+  {%- if pixel_id != blank -%}
+    <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id={{ pixel_id | url_encode }}&ev=PageView&noscript=1"></noscript>
+  {%- endif -%}
+{%- endif -%}
