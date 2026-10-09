@@ -196,10 +196,20 @@ def money(x):
     return {"shopMoney": {"amount": str(round(float(x), 2)), "currencyCode": "EGP"}}
 
 
+def phone(p):
+    """Woo stores local Egyptian numbers (01xxxxxxxxx); Shopify wants E.164 (+201xxxxxxxxx)."""
+    d = "".join(c for c in (p or "") if c.isdigit())
+    if not d:
+        return None
+    if (p or "").strip().startswith("+") or d.startswith("20"):
+        return "+" + d
+    return "+20" + d.lstrip("0") if d.startswith("0") else "+" + d
+
+
 def address(a):
     st = (a.get("state") or "").upper()
     out = {"firstName": a["first_name"], "lastName": a["last_name"], "address1": a["address_1"],
-           "address2": a["address_2"], "city": a["city"], "zip": a["postcode"], "phone": a.get("phone"),
+           "address2": a["address_2"], "city": a["city"], "zip": a["postcode"], "phone": phone(a.get("phone")),
            "company": a["company"], "countryCode": a["country"] or "EG"}
     if st.startswith(a["country"] or "EG"):
         st = st[len(a["country"] or "EG"):]
@@ -260,7 +270,7 @@ def orders():
         status = o["status"]
         order = {
             "name": f"#{o['number']}", "currency": "EGP", "processedAt": o["date_created_gmt"] + "Z",
-            "email": o["billing"]["email"] or None, "phone": o["billing"]["phone"] or None,
+            "email": o["billing"]["email"] or None, "phone": phone(o["billing"]["phone"]),
             "billingAddress": address(o["billing"]), "shippingAddress": address(o["shipping"] if o["shipping"]["address_1"] else o["billing"]),
             "lineItems": lines, "note": o["customer_note"] or None,
             "tags": ["woocommerce", f"woo-{o['id']}", f"woo-status-{status}"],
@@ -285,6 +295,11 @@ def orders():
         if r["userErrors"] and any("province" in json.dumps(e).lower() for e in r["userErrors"]):
             for a in ("billingAddress", "shippingAddress"):
                 order[a].pop("provinceCode", None)
+            r = gql(ORDER_CREATE, {"order": order, "options": opts})["orderCreate"]
+        if r["userErrors"] and any("phone" in json.dumps(e).lower() for e in r["userErrors"]):
+            order.pop("phone", None)
+            for a in ("billingAddress", "shippingAddress"):
+                order[a].pop("phone", None)
             r = gql(ORDER_CREATE, {"order": order, "options": opts})["orderCreate"]
         if r["userErrors"] or not r["order"]:
             stats["failed"] += 1
