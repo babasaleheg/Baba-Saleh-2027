@@ -6,17 +6,20 @@
   if request.page_type == 'product'
     assign og_type = 'product'
   endif
+  # Pages without their own image (home, policies…) fall back to the theme's share image.
+  assign og_image = page_image | default: settings.share_image
 -%}
 <meta property="og:site_name" content="{{ shop.name }}">
 <meta property="og:url" content="{{ og_url }}">
 <meta property="og:title" content="{{ og_title | escape }}">
 <meta property="og:type" content="{{ og_type }}">
 <meta property="og:description" content="{{ og_description | escape }}">
-{%- if page_image -%}
-  <meta property="og:image" content="http:{{ page_image | image_url: width: 1200 }}">
-  <meta property="og:image:secure_url" content="https:{{ page_image | image_url: width: 1200 }}">
-  <meta property="og:image:width" content="{{ page_image.width }}">
-  <meta property="og:image:height" content="{{ page_image.height }}">
+{%- if og_image -%}
+  <meta property="og:image" content="https:{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image:secure_url" content="https:{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="{{ 1200 | divided_by: og_image.aspect_ratio | round }}">
+  <meta name="twitter:image" content="https:{{ og_image | image_url: width: 1200 }}">
 {%- endif -%}
 {%- if request.page_type == 'product' -%}
   <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html }}">

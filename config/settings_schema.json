@@ -317,6 +317,12 @@
         "type": "image_picker",
         "id": "favicon",
         "label": "t:settings_schema.favicon.settings.favicon.label"
+      },
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "t:settings_schema.favicon.settings.share_image.label",
+        "info": "t:settings_schema.favicon.settings.share_image.info"
       }
     ]
   }

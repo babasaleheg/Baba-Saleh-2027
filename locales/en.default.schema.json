@@ -175,10 +175,14 @@
       }
     },
     "favicon": {
-      "name": "Favicon",
+      "name": "Favicon & sharing",
       "settings": {
         "favicon": {
           "label": "Favicon image"
+        },
+        "share_image": {
+          "label": "Social sharing image",
+          "info": "Shown when the homepage or a page without its own image is shared on WhatsApp, Facebook, etc. 1200 × 628px recommended."
         }
       }
     }
