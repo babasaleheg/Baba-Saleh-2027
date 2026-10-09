@@ -5,7 +5,7 @@ Usage (stdlib only):
     python3 sync.py products   # create missing products, fix changed ones, correct stock, publish
     python3 sync.py orders     # import Woo orders as backdated Shopify orders (no emails, no stock change)
 
-Env: WC_CONSUMER_KEY, WC_CONSUMER_SECRET, SHOPIFY_ADMIN_TOKEN,
+Env: WC_CONSUMER_KEY, WC_CONSUMER_SECRET, and SHOPIFY_ADMIN_TOKEN or SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET,
      WC_URL (default https://babasaleh.com), SHOPIFY_STORE (default babasaleh.myshopify.com),
      DATA_DIR (default ./woo_data)
 
@@ -47,10 +47,24 @@ def wc_get(path, **params):
     return json.loads(body), int(headers.get("X-WP-TotalPages") or headers.get("x-wp-totalpages") or 1)
 
 
+_token = {"value": os.environ.get("SHOPIFY_ADMIN_TOKEN"), "expires": float("inf")}
+
+
+def shopify_token():
+    """Static SHOPIFY_ADMIN_TOKEN, or a Dev Dashboard app's client-credentials token (refreshed before it expires)."""
+    if not _token["value"] or time.time() > _token["expires"]:
+        form = urllib.parse.urlencode({"grant_type": "client_credentials", "client_id": os.environ["SHOPIFY_CLIENT_ID"],
+                                       "client_secret": os.environ["SHOPIFY_CLIENT_SECRET"]}).encode()
+        out = json.loads(http(urllib.request.Request(f"https://{SHOP}/admin/oauth/access_token", data=form,
+                                                     headers={"Content-Type": "application/x-www-form-urlencoded"}))[0])
+        _token.update(value=out["access_token"], expires=time.time() + out.get("expires_in", 86400) - 600)
+    return _token["value"]
+
+
 def gql(query, variables=None):
     req = lambda: urllib.request.Request(
         API, data=json.dumps({"query": query, "variables": variables or {}}).encode(),
-        headers={"Content-Type": "application/json", "X-Shopify-Access-Token": os.environ["SHOPIFY_ADMIN_TOKEN"]})
+        headers={"Content-Type": "application/json", "X-Shopify-Access-Token": shopify_token()})
     while True:
         out = json.loads(http(req())[0])
         errs = out.get("errors")
