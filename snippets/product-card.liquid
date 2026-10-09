@@ -157,12 +157,19 @@
 {%- endif -%}
 
 {% stylesheet %}
+  /* The open panel fills the image area so it is never clipped by the card media. */
+  .card__quick-add:has(.quick-add__panel:not([hidden])) {
+    inset: 0.5rem;
+    opacity: 1;
+    translate: none;
+  }
+
   .quick-add__panel {
-    position: absolute;
-    inset-block-end: 0;
-    inset-inline-end: 0;
-    width: min(16rem, calc(100vw - 3rem));
-    padding: 0.875rem;
+    box-sizing: border-box;
+    height: 100%;
+    overflow-y: auto;
+    align-content: end;
+    padding: 0.75rem;
     border-radius: var(--radius);
     background: var(--color-bg);
     color: var(--color-fg);
@@ -170,7 +177,7 @@
     display: grid;
     gap: 0.625rem;
     animation: pop-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-    transform-origin: bottom right;
+    transform-origin: bottom center;
   }
 
   .quick-add__label {

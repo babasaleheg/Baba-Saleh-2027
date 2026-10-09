@@ -102,14 +102,22 @@
         if (event.target.closest('[data-drawer-close]')) this.close();
       });
       this.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') this.close();
         if (event.key === 'Tab') this.#trapFocus(event);
       });
+      // Escape closes the drawer even if focus has left the panel.
+      this.onKeyup = (event) => {
+        if (event.key === 'Escape') this.close();
+      };
+    }
+
+    disconnectedCallback() {
+      document.removeEventListener('keyup', this.onKeyup);
     }
 
     open(opener) {
       this.opener = opener ?? document.activeElement;
       this.setAttribute('open', '');
+      document.addEventListener('keyup', this.onKeyup);
       document.body.classList.add('scroll-lock');
       this.opener?.setAttribute?.('aria-expanded', 'true');
       requestAnimationFrame(() => this.querySelector('.drawer__panel')?.focus());
@@ -118,6 +126,7 @@
     close() {
       if (!this.hasAttribute('open')) return;
       this.removeAttribute('open');
+      document.removeEventListener('keyup', this.onKeyup);
       document.body.classList.remove('scroll-lock');
       if (!this.opener?.isConnected || this.opener.closest('[hidden]')) {
         this.opener = document.querySelector(`[data-drawer-open="${this.id}"]`);

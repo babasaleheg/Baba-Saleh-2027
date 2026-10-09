@@ -57,7 +57,7 @@
           <select id="{{ id_prefix }}Country" name="country_code" class="select__select" data-autosubmit>
             {%- for country in localization.available_countries -%}
               <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
-                {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+                {{ country.name }} &#x2068;({{ country.currency.iso_code }} {{ country.currency.symbol }})&#x2069;
               </option>
             {%- endfor -%}
           </select>

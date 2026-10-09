@@ -72,8 +72,8 @@ blockquote {
   margin: 0;
 }
 
-ul[role='list'],
-ol[role='list'] {
+/* :where() keeps the reset at zero specificity so components (e.g. .slider) can set padding. */
+:where(ul[role='list'], ol[role='list']) {
   list-style: none;
   padding: 0;
 }
@@ -435,6 +435,11 @@ h4,
   border-radius: var(--radius-small);
   background: var(--color-bg);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field__input::placeholder {
+  color: currentColor;
+  opacity: 0.6;
 }
 
 .field__input:focus,
@@ -1084,8 +1089,9 @@ body.scroll-lock {
 }
 
 @media screen and (min-width: 990px) {
+  /* The desktop sticky add-to-cart bar sits bottom-end; keep the chat button above it. */
   .template-product .whatsapp-fab {
-    inset-block-end: 1.25rem;
+    inset-block-end: 7rem;
   }
 }
 
