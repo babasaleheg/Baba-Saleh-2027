@@ -1,0 +1,95 @@
+<cart-drawer id="CartDrawer" class="drawer color-{{ settings.cart_color_scheme }}">
+  <div class="drawer__overlay" data-drawer-close></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="{{ 'cart.title' | t }}" tabindex="-1">
+    <div class="drawer__header">
+      <span class="h4">
+        {{- 'cart.title' | t -}}
+        {%- if cart.item_count > 0 %} <span class="text-muted">({{ cart.item_count }})</span>{% endif -%}
+      </span>
+      <button type="button" class="icon-button" data-drawer-close aria-label="{{ 'general.close' | t }}">
+        {% render 'icon', icon: 'close' %}
+      </button>
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+      <div class="drawer__body cart-drawer__body">
+        {% render 'shipping-progress' %}
+        {% render 'cart-items', context: 'drawer' %}
+      </div>
+      <div class="drawer__footer">
+        {%- for discount in cart.cart_level_discount_applications -%}
+          <div class="cart-drawer__line cart-drawer__line--discount">
+            <span>{{ discount.title }}</span>
+            <span>-{{ discount.total_allocated_amount | money }}</span>
+          </div>
+        {%- endfor -%}
+        <div class="cart-drawer__line cart-drawer__total">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <span>{{ cart.total_price | money_with_currency }}</span>
+        </div>
+        <p class="cart-drawer__note text-muted">{{ 'cart.taxes_and_shipping' | t }}</p>
+        <form action="{{ routes.cart_url }}" method="post" class="cart-drawer__actions">
+          <a href="{{ routes.cart_url }}" class="button button--secondary">{{ 'cart.view_cart' | t }}</a>
+          <button type="submit" name="checkout" class="button">{{ 'cart.checkout' | t }}</button>
+        </form>
+      </div>
+    {%- else -%}
+      <div class="drawer__body empty-state cart-drawer__empty">
+        {% render 'icon', icon: 'cart' %}
+        <p class="h3">{{ 'cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</cart-drawer>
+
+{% stylesheet %}
+  .cart-drawer__body {
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+  }
+
+  .cart-drawer__line {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.9375rem;
+  }
+
+  .cart-drawer__line--discount {
+    color: var(--color-sale);
+  }
+
+  .cart-drawer__total {
+    font-weight: 800;
+    font-size: 1.125rem;
+  }
+
+  .cart-drawer__note {
+    font-size: 0.8125rem;
+  }
+
+  .cart-drawer__actions {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 0.5rem;
+  }
+
+  .cart-drawer__empty {
+    align-content: center;
+  }
+
+  .cart-drawer__empty > .icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    color: var(--color-muted);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.cart_drawer.name",
+  "settings": []
+}
+{% endschema %}

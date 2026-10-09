@@ -1,0 +1,503 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-slideshow",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "New season",
+            "heading": "Built for the game",
+            "text": "Football, gym, swim and beach gear — delivered across Egypt.",
+            "text_position": "start",
+            "button_label": "Shop now",
+            "button_link": "shopify://collections/all",
+            "button_label_2": "Shop by sport",
+            "button_link_2": "shopify://collections",
+            "overlay": 20
+          }
+        },
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Gym & fitness",
+            "heading": "Train harder at home",
+            "text": "Dumbbells, mats, bands and more for every routine.",
+            "text_position": "start",
+            "button_label": "Shop gym",
+            "button_link": "shopify://collections/gym-equipment",
+            "overlay": 25
+          }
+        }
+      },
+      "block_order": [
+        "slide_1",
+        "slide_2"
+      ],
+      "settings": {
+        "height": "large",
+        "autoplay": true,
+        "interval": 6,
+        "color_scheme": "scheme-3"
+      }
+    },
+    "usp": {
+      "type": "usp-bar",
+      "blocks": {
+        "usp_1": {
+          "type": "usp",
+          "settings": {
+            "icon": "truck",
+            "title": "Fast delivery",
+            "text": "Across all of Egypt"
+          }
+        },
+        "usp_2": {
+          "type": "usp",
+          "settings": {
+            "icon": "cash",
+            "title": "Cash on delivery",
+            "text": "Pay when it arrives"
+          }
+        },
+        "usp_3": {
+          "type": "usp",
+          "settings": {
+            "icon": "return",
+            "title": "Easy returns",
+            "text": "14 days, no hassle"
+          }
+        },
+        "usp_4": {
+          "type": "usp",
+          "settings": {
+            "icon": "chat",
+            "title": "WhatsApp support",
+            "text": "Real people, fast replies"
+          }
+        }
+      },
+      "block_order": [
+        "usp_1",
+        "usp_2",
+        "usp_3",
+        "usp_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "sports": {
+      "type": "collection-list",
+      "blocks": {
+        "collection_1": {
+          "type": "collection",
+          "settings": {
+            "collection": "football-equipment",
+            "title": ""
+          }
+        },
+        "collection_2": {
+          "type": "collection",
+          "settings": {
+            "collection": "gym-equipment",
+            "title": ""
+          }
+        },
+        "collection_3": {
+          "type": "collection",
+          "settings": {
+            "collection": "fitness",
+            "title": ""
+          }
+        },
+        "collection_4": {
+          "type": "collection",
+          "settings": {
+            "collection": "home-workout-equipment",
+            "title": "Home workout"
+          }
+        },
+        "collection_5": {
+          "type": "collection",
+          "settings": {
+            "collection": "goggles",
+            "title": "Swimming"
+          }
+        },
+        "collection_6": {
+          "type": "collection",
+          "settings": {
+            "collection": "beach-equipment",
+            "title": "Beach"
+          }
+        },
+        "collection_7": {
+          "type": "collection",
+          "settings": {
+            "collection": "ball-games",
+            "title": ""
+          }
+        },
+        "collection_8": {
+          "type": "collection",
+          "settings": {
+            "collection": "basketball-equipment",
+            "title": "Basketball"
+          }
+        },
+        "collection_9": {
+          "type": "collection",
+          "settings": {
+            "collection": "bags-backpacks",
+            "title": ""
+          }
+        },
+        "collection_10": {
+          "type": "collection",
+          "settings": {
+            "collection": "camping-equipment",
+            "title": "Camping"
+          }
+        },
+        "collection_11": {
+          "type": "collection",
+          "settings": {
+            "collection": "billiard-equipment",
+            "title": "Billiard"
+          }
+        },
+        "collection_12": {
+          "type": "collection",
+          "settings": {
+            "collection": "badimnton-equipment",
+            "title": "Badminton"
+          }
+        }
+      },
+      "block_order": [
+        "collection_1",
+        "collection_2",
+        "collection_3",
+        "collection_4",
+        "collection_5",
+        "collection_6",
+        "collection_7",
+        "collection_8",
+        "collection_9",
+        "collection_10",
+        "collection_11",
+        "collection_12"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Shop by sport",
+        "layout": "circles",
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 56,
+        "padding_bottom": 24
+      }
+    },
+    "trending": {
+      "type": "featured-collection",
+      "blocks": {
+        "tab_1": {
+          "type": "tab",
+          "settings": {
+            "collection": "gym-equipment",
+            "label": "Gym"
+          }
+        },
+        "tab_2": {
+          "type": "tab",
+          "settings": {
+            "collection": "football-equipment",
+            "label": "Football"
+          }
+        },
+        "tab_3": {
+          "type": "tab",
+          "settings": {
+            "collection": "bags-backpacks",
+            "label": "Bags"
+          }
+        },
+        "tab_4": {
+          "type": "tab",
+          "settings": {
+            "collection": "goggles",
+            "label": "Swim"
+          }
+        }
+      },
+      "block_order": [
+        "tab_1",
+        "tab_2",
+        "tab_3",
+        "tab_4"
+      ],
+      "settings": {
+        "eyebrow": "Just landed",
+        "heading": "Trending now",
+        "products_to_show": 12,
+        "columns_desktop": 4,
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 48
+      }
+    },
+    "promos": {
+      "type": "promo-grid",
+      "blocks": {
+        "tile_1": {
+          "type": "tile",
+          "settings": {
+            "eyebrow": "Summer",
+            "heading": "Beach season",
+            "text": "Floats, toys, shoes and bags for the coast.",
+            "button_label": "Shop beach",
+            "link": "shopify://collections/beach-equipment",
+            "color_scheme": "scheme-3"
+          }
+        },
+        "tile_2": {
+          "type": "tile",
+          "settings": {
+            "eyebrow": "",
+            "heading": "Football",
+            "text": "Balls, boots, gloves and training gear.",
+            "button_label": "Shop football",
+            "link": "shopify://collections/football-equipment",
+            "color_scheme": "scheme-3"
+          }
+        },
+        "tile_3": {
+          "type": "tile",
+          "settings": {
+            "eyebrow": "",
+            "heading": "Home workout",
+            "text": "",
+            "button_label": "Shop now",
+            "link": "shopify://collections/home-workout-equipment",
+            "color_scheme": "scheme-3"
+          }
+        }
+      },
+      "block_order": [
+        "tile_1",
+        "tile_2",
+        "tile_3"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "padding_top": 24,
+        "padding_bottom": 24
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "m1": {
+          "type": "text",
+          "settings": {
+            "text": "Free delivery over 1,500 EGP"
+          }
+        },
+        "m2": {
+          "type": "text",
+          "settings": {
+            "text": "Cash on delivery"
+          }
+        },
+        "m3": {
+          "type": "text",
+          "settings": {
+            "text": "1,300+ products"
+          }
+        },
+        "m4": {
+          "type": "text",
+          "settings": {
+            "text": "Play harder"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4"
+      ],
+      "settings": {
+        "speed": 35,
+        "color_scheme": "scheme-4"
+      }
+    },
+    "best_sellers": {
+      "type": "featured-collection",
+      "blocks": {
+        "tab_1": {
+          "type": "tab",
+          "settings": {
+            "collection": "fitness",
+            "label": "Fitness"
+          }
+        }
+      },
+      "block_order": [
+        "tab_1"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Fitness favourites",
+        "products_to_show": 12,
+        "columns_desktop": 4,
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 56,
+        "padding_bottom": 48
+      }
+    },
+    "categories": {
+      "type": "collection-list",
+      "blocks": {
+        "c1": {
+          "type": "collection",
+          "settings": {
+            "collection": "gym-equipment",
+            "title": ""
+          }
+        },
+        "c2": {
+          "type": "collection",
+          "settings": {
+            "collection": "football-equipment",
+            "title": ""
+          }
+        },
+        "c3": {
+          "type": "collection",
+          "settings": {
+            "collection": "goggles",
+            "title": "Swimming"
+          }
+        },
+        "c4": {
+          "type": "collection",
+          "settings": {
+            "collection": "bags-backpacks",
+            "title": ""
+          }
+        },
+        "c5": {
+          "type": "collection",
+          "settings": {
+            "collection": "games",
+            "title": ""
+          }
+        },
+        "c6": {
+          "type": "collection",
+          "settings": {
+            "collection": "handbags",
+            "title": ""
+          }
+        },
+        "c7": {
+          "type": "collection",
+          "settings": {
+            "collection": "gloves",
+            "title": ""
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7"
+      ],
+      "settings": {
+        "eyebrow": "Explore",
+        "heading": "Top categories",
+        "layout": "bento",
+        "show_view_all": true,
+        "color_scheme": "scheme-2",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "story": {
+      "type": "image-with-text",
+      "blocks": {
+        "e": {
+          "type": "eyebrow",
+          "settings": {
+            "text": "Baba Saleh Sports"
+          }
+        },
+        "h": {
+          "type": "heading",
+          "settings": {
+            "heading": "Everything you need to play"
+          }
+        },
+        "t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>From the pitch to the pool to your living room — we stock the gear Egyptian athletes and families trust, at prices that make sense.</p>"
+          }
+        },
+        "b": {
+          "type": "button",
+          "settings": {
+            "label": "Shop all",
+            "link": "shopify://collections/all",
+            "style": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "e",
+        "h",
+        "t",
+        "b"
+      ],
+      "settings": {
+        "image_position": "start",
+        "color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Join the team",
+        "text": "<p>Be first to hear about new drops, restocks and exclusive offers.</p>",
+        "color_scheme": "scheme-4",
+        "padding_top": 24,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "usp",
+    "sports",
+    "trending",
+    "promos",
+    "marquee",
+    "best_sellers",
+    "categories",
+    "story",
+    "newsletter"
+  ]
+}

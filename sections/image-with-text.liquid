@@ -1,0 +1,139 @@
+<section
+  class="section image-with-text color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <div class="image-with-text__grid{% if section.settings.image_position == 'end' %} image-with-text__grid--reverse{% endif %}">
+      <div class="media image-with-text__media" data-reveal>
+        {%- if section.settings.image != blank -%}
+          {{
+            section.settings.image
+            | image_url: width: 1600
+            | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 50vw, 100vw', widths: '400, 600, 900, 1200, 1600'
+          }}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </div>
+      <div class="image-with-text__content" data-reveal style="--reveal-index: 1">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'eyebrow' -%}
+              <span class="eyebrow" {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+            {%- when 'heading' -%}
+              <h2 class="h1" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
+            {%- when 'text' -%}
+              <div class="rte text-muted" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+            {%- when 'button' -%}
+              {%- if block.settings.label != blank -%}
+                <a
+                  href="{{ block.settings.link | default: '#' }}"
+                  class="button{% if block.settings.style == 'secondary' %} button--secondary{% elsif block.settings.style == 'accent' %} button--accent{% endif %}"
+                  {{ block.shopify_attributes }}
+                >
+                  {{- block.settings.label -}}
+                </a>
+              {%- endif -%}
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .image-with-text__grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .image-with-text__media {
+    aspect-ratio: 4 / 5;
+  }
+
+  .image-with-text__content {
+    display: grid;
+    justify-items: start;
+    gap: 1.25rem;
+  }
+
+  @media screen and (min-width: 990px) {
+    .image-with-text__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+    }
+
+    .image-with-text__grid--reverse .image-with-text__media {
+      order: 2;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.image_with_text.name",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "t:settings.image" },
+    {
+      "type": "select",
+      "id": "image_position",
+      "default": "start",
+      "label": "t:sections.image_with_text.settings.image_position.label",
+      "options": [
+        { "value": "start", "label": "t:settings.position_options.start" },
+        { "value": "end", "label": "t:settings.position_options.end" }
+      ]
+    },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-2", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_bottom" }
+  ],
+  "blocks": [
+    {
+      "type": "eyebrow",
+      "name": "t:settings.eyebrow",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "default": "Our story", "label": "t:settings.text" }]
+    },
+    {
+      "type": "heading",
+      "name": "t:settings.heading",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "heading", "default": "Gear up since day one", "label": "t:settings.heading" }]
+    },
+    {
+      "type": "text",
+      "name": "t:settings.text",
+      "limit": 1,
+      "settings": [{ "type": "richtext", "id": "text", "default": "<p>Tell customers what makes your store the place to gear up.</p>", "label": "t:settings.text" }]
+    },
+    {
+      "type": "button",
+      "name": "t:settings.button_label",
+      "limit": 2,
+      "settings": [
+        { "type": "text", "id": "label", "default": "Discover more", "label": "t:settings.button_label" },
+        { "type": "url", "id": "link", "label": "t:settings.link" },
+        {
+          "type": "select",
+          "id": "style",
+          "default": "primary",
+          "label": "t:settings.button_style",
+          "options": [
+            { "value": "primary", "label": "t:settings.button_style_options.primary" },
+            { "value": "secondary", "label": "t:settings.button_style_options.secondary" },
+            { "value": "accent", "label": "t:settings.button_style_options.accent" }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.image_with_text.name",
+      "blocks": [{ "type": "eyebrow" }, { "type": "heading" }, { "type": "text" }, { "type": "button" }]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,39 @@
+{%- comment -%}
+  Loads the selected font pairing. Each pairing has a Latin face and an Arabic face.
+  Google Fonts serves Arabic glyphs through unicode-range, so English pages never download the Arabic files.
+{%- endcomment -%}
+{%- liquid
+  case settings.font_pairing
+    when 'clean'
+      assign font_query = 'family=Inter:wght@400..800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700'
+      assign latin_heading = "'Inter'"
+      assign latin_body = "'Inter'"
+      assign arabic_heading = "'IBM Plex Sans Arabic'"
+      assign arabic_body = "'IBM Plex Sans Arabic'"
+    when 'geometric'
+      assign font_query = 'family=Readex+Pro:wght@300..700'
+      assign latin_heading = "'Readex Pro'"
+      assign latin_body = "'Readex Pro'"
+      assign arabic_heading = "'Readex Pro'"
+      assign arabic_body = "'Readex Pro'"
+    else
+      assign font_query = 'family=Archivo:wdth,wght@62..125,400..900&family=Inter:wght@400..700&family=Alexandria:wght@400..800&family=IBM+Plex+Sans+Arabic:wght@400;500;600'
+      assign latin_heading = "'Archivo'"
+      assign latin_body = "'Inter'"
+      assign arabic_heading = "'Alexandria'"
+      assign arabic_body = "'IBM Plex Sans Arabic'"
+  endcase
+-%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{ font_query }}&display=swap">
+<style>
+  :root {
+    --font-heading-family: {{ latin_heading }}, {{ arabic_heading }}, system-ui, sans-serif;
+    --font-body-family: {{ latin_body }}, {{ arabic_body }}, system-ui, sans-serif;
+  }
+  [dir='rtl'] {
+    --font-heading-family: {{ arabic_heading }}, {{ latin_heading }}, system-ui, sans-serif;
+    --font-body-family: {{ arabic_body }}, {{ latin_body }}, system-ui, sans-serif;
+  }
+</style>

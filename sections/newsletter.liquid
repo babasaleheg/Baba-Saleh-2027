@@ -1,0 +1,86 @@
+<section
+  class="section newsletter color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <div class="newsletter__card">
+      <div class="newsletter__text">
+        {%- if section.settings.heading != blank -%}<h2 class="h1">{{ section.settings.heading }}</h2>{%- endif -%}
+        {%- if section.settings.text != blank -%}<div class="rte">{{ section.settings.text }}</div>{%- endif -%}
+      </div>
+      {%- assign newsletter_form_id = 'NewsletterForm-' | append: section.id -%}
+      {%- form 'customer', id: newsletter_form_id, class: 'newsletter__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <label for="NewsletterEmail-{{ section.id }}" class="visually-hidden">{{ 'sections.newsletter.placeholder' | t }}</label>
+        <input
+          id="NewsletterEmail-{{ section.id }}"
+          type="email"
+          name="contact[email]"
+          class="field__input"
+          autocomplete="email"
+          required
+          placeholder="{{ 'sections.newsletter.placeholder' | t }}"
+        >
+        <button type="submit" class="button">{{ 'sections.newsletter.subscribe' | t }}</button>
+        {%- if form.posted_successfully? -%}
+          <p class="form-message newsletter__message">{{ 'sections.newsletter.success' | t }}</p>
+        {%- elsif form.errors -%}
+          <p class="form-message form-message--error newsletter__message">{{ form.errors | default_errors }}</p>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .newsletter__card {
+    display: grid;
+    gap: 2rem;
+    padding: 2.5rem 1.5rem;
+    border-radius: calc(var(--radius) * 1.5);
+    background: var(--color-surface);
+  }
+
+  .newsletter__text {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .newsletter__form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-self: center;
+  }
+
+  .newsletter__form .field__input {
+    flex: 1 1 14rem;
+    border-radius: var(--radius-button);
+  }
+
+  .newsletter__message {
+    flex-basis: 100%;
+  }
+
+  @media screen and (min-width: 990px) {
+    .newsletter__card {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      padding: 4rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.newsletter.name",
+  "settings": [
+    { "type": "text", "id": "heading", "default": "Join the team", "label": "t:settings.heading" },
+    { "type": "richtext", "id": "text", "default": "<p>Be first to hear about new drops, restocks and exclusive offers.</p>", "label": "t:settings.text" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-4", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_bottom" }
+  ],
+  "presets": [{ "name": "t:sections.newsletter.name" }]
+}
+{% endschema %}

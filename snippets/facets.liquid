@@ -1,0 +1,214 @@
+{%- comment -%}
+  Filter drawer shared by collection and search pages.
+  - results: collection or search object (for .filters)
+  - results_url: base URL the form submits to
+  - terms: search terms (search page only)
+{%- endcomment -%}
+{%- liquid
+  if results.products_count
+    assign count = results.products_count
+  else
+    assign count = results.results_count
+  endif
+-%}
+<drawer-panel id="FilterDrawer" class="drawer drawer--start">
+  <div class="drawer__overlay" data-drawer-close></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="{{ 'collections.filter.title' | t }}" tabindex="-1">
+    <div class="drawer__header">
+      <span class="h4">{{ 'collections.filter.title' | t }}</span>
+      <button type="button" class="icon-button" data-drawer-close aria-label="{{ 'general.close' | t }}">{% render 'icon', icon: 'close' %}</button>
+    </div>
+    <form id="FacetForm" class="drawer__body facets" action="{{ results_url }}" method="get">
+      {%- if terms != blank -%}
+        <input type="hidden" name="q" value="{{ terms | escape }}">
+        <input type="hidden" name="options[prefix]" value="last">
+      {%- endif -%}
+      {%- for filter in results.filters -%}
+        <details class="accordion" {% if forloop.index <= 3 or filter.active_values.size > 0 %}open{% endif %}>
+          <summary>{{ filter.label }}{% render 'icon', icon: 'plus' %}</summary>
+          <div class="accordion__content facets__content">
+            {%- case filter.type -%}
+              {%- when 'list', 'boolean' -%}
+                <ul class="facets__list{% if filter.presentation == 'swatch' %} facets__list--swatch{% endif %}" role="list">
+                  {%- for value in filter.values -%}
+                    <li>
+                      <label class="facets__option{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+                        <input
+                          type="checkbox"
+                          name="{{ value.param_name }}"
+                          value="{{ value.value }}"
+                          data-facet-input
+                          {% if value.active %}
+                            checked
+                          {% endif %}
+                          {% if value.count == 0 and value.active == false %}
+                            disabled
+                          {% endif %}
+                        >
+                        {%- if filter.presentation == 'swatch' -%}
+                          {%- liquid
+                            assign facet_swatch = ''
+                            if value.swatch.image
+                              assign facet_swatch_url = value.swatch.image | image_url: width: 60
+                              assign facet_swatch = 'background-image:url(' | append: facet_swatch_url | append: ')'
+                            elsif value.swatch.color
+                              assign facet_swatch = 'background-color:' | append: value.swatch.color
+                            endif
+                          -%}
+                          <span class="facets__swatch" style="{{ facet_swatch }}"></span>
+                        {%- else -%}
+                          <span class="facets__check">{% render 'icon', icon: 'check' %}</span>
+                        {%- endif -%}
+                        <span class="facets__label">{{ value.label }}</span>
+                        <span class="facets__count">{{ value.count }}</span>
+                      </label>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- when 'price_range' -%}
+                <div class="facets__price">
+                  <div class="field">
+                    <label class="field__label" for="Price-gte">{{ 'collections.filter.from' | t }}</label>
+                    <input
+                      class="field__input"
+                      id="Price-gte"
+                      type="number"
+                      inputmode="decimal"
+                      name="{{ filter.min_value.param_name }}"
+                      value="{{ filter.min_value.value | money_without_currency | remove: ',' }}"
+                      placeholder="0"
+                      min="0"
+                      data-facet-input
+                    >
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="Price-lte">{{ 'collections.filter.to' | t }}</label>
+                    <input
+                      class="field__input"
+                      id="Price-lte"
+                      type="number"
+                      inputmode="decimal"
+                      name="{{ filter.max_value.param_name }}"
+                      value="{{ filter.max_value.value | money_without_currency | remove: ',' }}"
+                      placeholder="{{ filter.range_max | money_without_currency | remove: ',' }}"
+                      min="0"
+                      data-facet-input
+                    >
+                  </div>
+                </div>
+            {%- endcase -%}
+          </div>
+        </details>
+      {%- endfor -%}
+    </form>
+    <div class="drawer__footer facets__footer">
+      <a href="{{ results_url }}{% if terms != blank %}?q={{ terms | url_encode }}&options%5Bprefix%5D=last{% endif %}" class="button button--secondary" data-facet-link>
+        {{- 'collections.filter.clear_all' | t -}}
+      </a>
+      <button type="button" class="button" data-drawer-close>
+        {{- 'collections.filter.show_results' | t: count: count -}}
+      </button>
+    </div>
+  </div>
+</drawer-panel>
+
+{% stylesheet %}
+  .facets {
+    padding-block-start: 0;
+  }
+
+  .facets__list {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+  }
+
+  .facets__list--swatch {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .facets__option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-block: 0.375rem;
+    color: var(--color-fg);
+    cursor: pointer;
+    font-size: 0.9375rem;
+  }
+
+  .facets__option.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .facets__option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .facets__check {
+    display: grid;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 1.5px solid var(--color-border);
+    border-radius: 0.375rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .facets__check .icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    opacity: 0;
+    stroke-width: 3;
+  }
+
+  .facets__option input:checked + .facets__check {
+    background: var(--color-fg);
+    border-color: var(--color-fg);
+    color: var(--color-bg);
+  }
+
+  .facets__option input:checked + .facets__check .icon {
+    opacity: 1;
+  }
+
+  .facets__option input:focus-visible + span {
+    outline: 2px solid var(--color-fg);
+    outline-offset: 2px;
+  }
+
+  .facets__swatch {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background-size: cover;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  }
+
+  .facets__option input:checked + .facets__swatch {
+    outline: 2px solid var(--color-fg);
+    outline-offset: 2px;
+  }
+
+  .facets__label {
+    flex: 1;
+  }
+
+  .facets__count {
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+
+  .facets__price {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .facets__footer {
+    grid-template-columns: 1fr 1.4fr;
+  }
+{% endstylesheet %}

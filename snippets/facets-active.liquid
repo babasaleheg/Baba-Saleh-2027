@@ -1,0 +1,52 @@
+{%- comment -%}
+  Active filter chips.
+  - results: collection or search object
+{%- endcomment -%}
+<div class="collection__active">
+  {%- for filter in results.filters -%}
+    {%- for value in filter.active_values -%}
+      <a href="{{ value.url_to_remove }}" class="collection__chip" data-facet-link>
+        {{ value.label }} {% render 'icon', icon: 'close' %}
+      </a>
+    {%- endfor -%}
+    {%- if filter.type == 'price_range' -%}
+      {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+        <a href="{{ filter.url_to_remove }}" class="collection__chip" data-facet-link>
+          {{ filter.min_value.value | default: 0 | money }}–{{ filter.max_value.value | default: filter.range_max | money }}
+          {% render 'icon', icon: 'close' %}
+        </a>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+  .collection__active {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block-end: 1.5rem;
+  }
+
+  .collection__active:empty {
+    display: none;
+  }
+
+  .collection__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    background: var(--color-surface);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .collection__chip .icon {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+{% endstylesheet %}

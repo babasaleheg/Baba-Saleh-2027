@@ -1,0 +1,97 @@
+{%- paginate search.results by 24 -%}
+  <facet-filters class="section search color-{{ section.settings.color_scheme }}" data-section-id="{{ section.id }}" style="--section-pt: 2rem; --section-pb: 4rem;">
+    <div class="page-width">
+      <header class="search__header">
+        <h1 class="h1">{{ 'templates.search.title' | t }}</h1>
+        <div class="search__form">{% render 'search-form', id_prefix: 'Main' %}</div>
+      </header>
+
+      {%- if search.performed -%}
+        <div class="collection__toolbar">
+          {%- if search.filters.size > 0 -%}
+            <button type="button" class="button button--secondary button--small" data-drawer-open="FilterDrawer" aria-controls="FilterDrawer">
+              {% render 'icon', icon: 'filter' %}
+              {{ 'collections.filter.title' | t }}
+            </button>
+          {%- endif -%}
+          <p class="collection__count text-muted" role="status">
+            {{ 'templates.search.results_count' | t: count: search.results_count, terms: search.terms }}
+          </p>
+        </div>
+
+        {% render 'facets-active', results: search %}
+
+        <div class="collection__results" data-results>
+          {%- if search.results_count > 0 -%}
+            <ul class="product-grid" role="list" data-product-grid>
+              {%- for item in search.results -%}
+                <li>
+                  {%- case item.object_type -%}
+                    {%- when 'product' -%}
+                      {% render 'product-card', product: item, index: forloop.index0 %}
+                    {%- else -%}
+                      <a href="{{ item.url }}" class="search__article">
+                        <span class="eyebrow">{{ item.object_type }}</span>
+                        <span class="h4">{{ item.title }}</span>
+                        <span class="text-muted">{{ item.content | strip_html | truncatewords: 20 }}</span>
+                      </a>
+                  {%- endcase -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+            {%- if paginate.pages > 1 -%}
+              {% render 'pagination', paginate: paginate %}
+            {%- endif -%}
+          {%- else -%}
+            <div class="empty-state">
+              <p class="h3">{{ 'templates.search.no_results' | t: terms: search.terms }}</p>
+              <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- if search.filters.size > 0 -%}
+          {% render 'facets', results: search, results_url: routes.search_url, terms: search.terms %}
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </facet-filters>
+{%- endpaginate -%}
+
+{% stylesheet %}
+  .search__header {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: center;
+    text-align: center;
+    margin-block-end: 2rem;
+  }
+
+  .search__form {
+    width: min(40rem, 100%);
+  }
+
+  .search__form .search-form__input {
+    height: 3.5rem;
+    font-size: 1.0625rem;
+  }
+
+  .search__article {
+    display: grid;
+    gap: 0.5rem;
+    height: 100%;
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    text-decoration: none;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main_search.name",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" }
+  ]
+}
+{% endschema %}

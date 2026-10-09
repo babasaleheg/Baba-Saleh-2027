@@ -1,0 +1,47 @@
+{%- comment -%}
+  Product price.
+  - product: product object
+  - variant: optional variant (defaults to selected or first available)
+  - show_badge: show "-20%" next to the price
+{%- endcomment -%}
+{%- liquid
+  assign target = variant | default: product.selected_or_first_available_variant
+  assign price = target.price
+  assign compare = target.compare_at_price
+  assign on_sale = false
+  if compare > price
+    assign on_sale = true
+  endif
+  assign varies = false
+  if variant == blank and product.price_varies
+    assign varies = true
+    assign price = product.price_min
+  endif
+-%}
+<div class="price{% if on_sale %} price--on-sale{% endif %}" data-price>
+  <span class="price__current">
+    {%- if varies -%}
+      {%- assign price_money = price | money -%}
+      {{ 'products.product.price_from' | t: price: price_money }}
+    {%- else -%}
+      {{ price | money }}
+    {%- endif -%}
+  </span>
+  {%- if on_sale -%}
+    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+    <s class="price__compare">{{ compare | money }}</s>
+    {%- if show_badge -%}
+      {%- assign saving = compare | minus: price | times: 100.0 | divided_by: compare | round -%}
+      <span class="badge badge--sale" dir="ltr">-{{ saving }}%</span>
+    {%- endif -%}
+  {%- endif -%}
+  {%- if target.unit_price_measurement -%}
+    <span class="price__unit">
+      {{- target.unit_price | money }}/
+      {%- if target.unit_price_measurement.reference_value != 1 -%}
+        {{- target.unit_price_measurement.reference_value -}}
+      {%- endif -%}
+      {{ target.unit_price_measurement.reference_unit }}
+    </span>
+  {%- endif -%}
+</div>

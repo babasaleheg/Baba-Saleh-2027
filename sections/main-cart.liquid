@@ -1,0 +1,107 @@
+<cart-page class="section cart-page color-{{ section.settings.color_scheme }}" data-section-id="{{ section.id }}" style="--section-pt: 2rem; --section-pb: 4rem;">
+  <div class="page-width">
+    <h1 class="h1 cart-page__title">{{ 'cart.title' | t }}</h1>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" id="CartForm" class="cart-page__grid">
+        <div class="cart-page__items">
+          {% render 'cart-items', context: 'page' %}
+        </div>
+
+        <aside class="cart-page__summary">
+          {% render 'shipping-progress' %}
+
+          {%- if settings.cart_show_note -%}
+            <div class="field">
+              <label for="CartNote" class="field__label">{{ 'cart.note' | t }}</label>
+              <textarea id="CartNote" name="note" class="field__input" rows="3">{{ cart.note }}</textarea>
+            </div>
+          {%- endif -%}
+
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <div class="cart-page__line cart-page__line--discount">
+              <span>{{ discount.title }}</span>
+              <span>-{{ discount.total_allocated_amount | money }}</span>
+            </div>
+          {%- endfor -%}
+
+          <div class="cart-page__line cart-page__total">
+            <span>{{ 'cart.subtotal' | t }}</span>
+            <span>{{ cart.total_price | money_with_currency }}</span>
+          </div>
+          <p class="text-muted cart-page__note">{{ 'cart.taxes_and_shipping' | t }}</p>
+
+          <button type="submit" name="checkout" class="button button--full">{{ 'cart.checkout' | t }}</button>
+          {%- if additional_checkout_buttons -%}
+            <div class="cart-page__dynamic">{{ content_for_additional_checkout_buttons }}</div>
+          {%- endif -%}
+        </aside>
+      </form>
+    {%- else -%}
+      <div class="empty-state">
+        <p class="h3">{{ 'cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</cart-page>
+
+{% stylesheet %}
+  .cart-page__title {
+    margin-block-end: 2rem;
+  }
+
+  .cart-page__grid {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .cart-page__summary {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+  }
+
+  .cart-page__line {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .cart-page__line--discount {
+    color: var(--color-sale);
+  }
+
+  .cart-page__total {
+    font-weight: 800;
+    font-size: 1.25rem;
+  }
+
+  .cart-page__note {
+    font-size: 0.8125rem;
+  }
+
+  @media screen and (min-width: 990px) {
+    .cart-page__grid {
+      grid-template-columns: 1.6fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .cart-page__summary {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main_cart.name",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" }
+  ]
+}
+{% endschema %}

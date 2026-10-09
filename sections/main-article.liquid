@@ -1,0 +1,42 @@
+<article class="section main-article color-{{ section.settings.color_scheme }}">
+  <div class="page-width main-article__inner">
+    <header class="main-article__header">
+      <span class="eyebrow">{{ article.published_at | time_tag: format: 'date' }}</span>
+      <h1 class="h1">{{ article.title }}</h1>
+    </header>
+    {%- if article.image -%}
+      <div class="media media--landscape main-article__image">
+        {{ article.image | image_url: width: 2000 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 900px, 100vw', widths: '600, 900, 1200, 1600, 2000' }}
+      </div>
+    {%- endif -%}
+    <div class="rte">{{ article.content }}</div>
+    <a href="{{ blog.url }}" class="link-arrow"><span class="icon-flip">{% render 'icon', icon: 'arrow' %}</span>{{ 'blogs.back' | t: title: blog.title }}</a>
+  </div>
+</article>
+
+{% stylesheet %}
+  .main-article__inner {
+    display: grid;
+    gap: 2rem;
+    max-width: 56rem;
+  }
+
+  .main-article__header {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .main-article .rte {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main_article.name",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,166 @@
+{
+  "accessibility": {
+    "skip_to_content": "Skip to content"
+  },
+  "general": {
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "close": "Close",
+    "continue_shopping": "Continue shopping",
+    "view_all": "View all",
+    "view_all_in": "View all {{ title }}",
+    "whatsapp": "Chat with us on WhatsApp",
+    "search": {
+      "search": "Search",
+      "placeholder": "Search for products, sports, brands…",
+      "products": "Products",
+      "no_results": "No results for “{{ terms }}”",
+      "view_all": "See all results for “{{ terms }}”"
+    },
+    "slider": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page"
+    }
+  },
+  "header": {
+    "menu": "Menu",
+    "main_navigation": "Main navigation",
+    "account": "Account",
+    "log_in": "Log in",
+    "cart": "Cart",
+    "view_all": "Shop all {{ title }}"
+  },
+  "localization": {
+    "language": "Language",
+    "country": "Country / currency",
+    "switch_to": "Switch to {{ language }}"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "added": "Added to your cart",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "choose_options": "Choose options",
+      "quick_add": "Pick an option",
+      "new": "New",
+      "placeholder_title": "Product title",
+      "price_from": "From {{ price }}",
+      "regular_price": "Regular price",
+      "taxes_included": "Taxes included.",
+      "description": "Description",
+      "share": "Share",
+      "low_stock": {
+        "one": "Only {{ count }} left",
+        "other": "Only {{ count }} left"
+      },
+      "quantity": {
+        "label": "Quantity",
+        "decrease": "Decrease quantity",
+        "increase": "Increase quantity"
+      }
+    }
+  },
+  "collections": {
+    "product_count": {
+      "zero": "No products",
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
+    "showing": "Showing {{ shown }} of {{ total }}",
+    "load_more": "Load more",
+    "sort": {
+      "label": "Sort by"
+    },
+    "filter": {
+      "title": "Filter & sort",
+      "from": "From",
+      "to": "To",
+      "clear_all": "Clear all",
+      "show_results": {
+        "one": "Show {{ count }} result",
+        "other": "Show {{ count }} results"
+      }
+    },
+    "empty": {
+      "title": "No products found",
+      "text": "Try removing a filter or browsing another category."
+    }
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "taxes_and_shipping": "Taxes and shipping calculated at checkout.",
+    "checkout": "Checkout",
+    "view_cart": "View cart",
+    "note": "Order note",
+    "error": "Something went wrong. Please try again.",
+    "free_shipping": {
+      "remaining_html": "You're <strong>{{ amount }}</strong> away from free delivery",
+      "unlocked": "You've unlocked free delivery!"
+    }
+  },
+  "sections": {
+    "announcement": {
+      "label": "Announcements"
+    },
+    "slideshow": {
+      "go_to": "Go to slide {{ index }}"
+    },
+    "collection_list": {
+      "placeholder": "Collection"
+    },
+    "newsletter": {
+      "label": "Get new drops and offers first",
+      "placeholder": "Your email",
+      "subscribe": "Subscribe",
+      "success": "Thanks for subscribing!"
+    }
+  },
+  "templates": {
+    "search": {
+      "title": "Search",
+      "results_count": {
+        "one": "{{ count }} result for “{{ terms }}”",
+        "other": "{{ count }} results for “{{ terms }}”"
+      },
+      "no_results": "No results for “{{ terms }}”. Try another search."
+    },
+    "404": {
+      "title": "Page not found",
+      "subtext": "The page you're looking for doesn't exist. Try searching instead."
+    },
+    "list_collections": {
+      "title": "All categories"
+    },
+    "password": {
+      "notify": "Notify me",
+      "enter_using_password": "Enter using password",
+      "password": "Password",
+      "enter": "Enter"
+    }
+  },
+  "blogs": {
+    "back": "Back to {{ title }}"
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "Here's your {{ value }} gift card",
+      "expired": "Expired on {{ expiry }}",
+      "code": "Gift card code",
+      "balance": "Balance",
+      "add_to_apple_wallet": "Add to Apple Wallet",
+      "shop_link": "Start shopping",
+      "print": "Print"
+    }
+  }
+}

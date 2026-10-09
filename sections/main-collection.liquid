@@ -1,0 +1,173 @@
+{%- liquid
+  assign per_page = section.settings.products_per_page
+  assign results = collection
+  assign results_url = collection.url
+  assign terms = blank
+-%}
+
+{%- paginate collection.products by per_page -%}
+  <facet-filters class="section collection color-{{ section.settings.color_scheme }}" data-section-id="{{ section.id }}" style="--section-pt: 2rem; --section-pb: 4rem;">
+    <div class="page-width">
+      {%- if request.page_type == 'collection' -%}
+        <header class="collection__header{% if section.settings.show_image and collection.image %} collection__header--image{% endif %}">
+          {%- if section.settings.show_image and collection.image -%}
+            <div class="media collection__banner">
+              {{ collection.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750, 1100, 1500, 2000, 2400' }}
+            </div>
+          {%- endif -%}
+          <div class="collection__header-text">
+            <h1 class="h1">{{ collection.title }}</h1>
+            {%- if section.settings.show_description and collection.description != blank -%}
+              <div class="rte collection__description">{{ collection.description }}</div>
+            {%- endif -%}
+          </div>
+        </header>
+      {%- endif -%}
+
+      <div class="collection__toolbar">
+        <button type="button" class="button button--secondary button--small" data-drawer-open="FilterDrawer" aria-controls="FilterDrawer">
+          {% render 'icon', icon: 'filter' %}
+          {{ 'collections.filter.title' | t }}
+          {%- assign active_count = 0 -%}
+          {%- for filter in collection.filters -%}
+            {%- assign active_count = active_count | plus: filter.active_values.size -%}
+            {%- if filter.min_value.value or filter.max_value.value -%}{%- assign active_count = active_count | plus: 1 -%}{%- endif -%}
+          {%- endfor -%}
+          {%- if active_count > 0 -%}<span class="badge badge--accent">{{ active_count }}</span>{%- endif -%}
+        </button>
+
+        <p class="collection__count text-muted" role="status">
+          {{ 'collections.product_count' | t: count: collection.products_count }}
+        </p>
+
+        {%- if request.page_type == 'collection' -%}
+          <div class="select collection__sort">
+            <label for="SortBy" class="visually-hidden">{{ 'collections.sort.label' | t }}</label>
+            <select id="SortBy" name="sort_by" class="select__select" form="FacetForm" data-facet-input>
+              {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value | escape }}" {% if option.value == sort_by %}selected{% endif %}>{{ option.name }}</option>
+              {%- endfor -%}
+            </select>
+            {% render 'icon', icon: 'chevron-down' %}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {% render 'facets-active', results: results %}
+
+      <div class="collection__results" data-results>
+        {%- if collection.products.size > 0 -%}
+          <ul
+            class="product-grid"
+            role="list"
+            data-product-grid
+            style="--columns-desktop: {{ section.settings.columns_desktop }}; --columns-tablet: 3;"
+          >
+            {%- for product in collection.products -%}
+              <li>{% render 'product-card', product: product, index: forloop.index0 %}</li>
+            {%- endfor -%}
+          </ul>
+
+          {%- if paginate.pages > 1 -%}
+            {%- if section.settings.pagination == 'load_more' and paginate.next -%}
+              <div class="collection__more">
+                {%- assign shown = paginate.current_offset | plus: collection.products.size -%}
+                <p class="text-muted">{{ 'collections.showing' | t: shown: shown, total: paginate.items }}</p>
+                <a href="{{ paginate.next.url }}" class="button button--secondary" data-load-more>{{ 'collections.load_more' | t }}</a>
+              </div>
+            {%- elsif section.settings.pagination == 'pages' -%}
+              {% render 'pagination', paginate: paginate %}
+            {%- endif -%}
+          {%- endif -%}
+        {%- else -%}
+          <div class="empty-state">
+            <p class="h3">{{ 'collections.empty.title' | t }}</p>
+            <p class="text-muted">{{ 'collections.empty.text' | t }}</p>
+            <a href="{{ collection.url }}" class="button">{{ 'collections.filter.clear_all' | t }}</a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {% render 'facets', results: results, results_url: results_url, terms: terms %}
+  </facet-filters>
+{%- endpaginate -%}
+
+{% stylesheet %}
+  .collection__header {
+    display: grid;
+    gap: 1rem;
+    margin-block-end: 2rem;
+  }
+
+  .collection__header--image {
+    position: relative;
+    color: #fff;
+  }
+
+  .collection__banner {
+    aspect-ratio: 16 / 9;
+    max-height: 26rem;
+    width: 100%;
+  }
+
+  .collection__header--image .collection__banner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 60%);
+  }
+
+  .collection__header--image .collection__header-text {
+    position: absolute;
+    inset-inline: 1.5rem;
+    inset-block-end: 1.5rem;
+    z-index: 1;
+  }
+
+  @media screen and (min-width: 750px) {
+    .collection__banner {
+      aspect-ratio: 21 / 7;
+    }
+
+    .collection__header--image .collection__header-text {
+      inset-inline: 2.5rem;
+      inset-block-end: 2.5rem;
+    }
+  }
+
+  .collection__header-text {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .collection__description {
+    max-width: 44rem;
+    opacity: 0.85;
+  }
+
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main_collection.name",
+  "settings": [
+    { "type": "checkbox", "id": "show_image", "default": true, "label": "t:sections.main_collection.settings.show_image.label" },
+    { "type": "checkbox", "id": "show_description", "default": true, "label": "t:sections.main_collection.settings.show_description.label" },
+    { "type": "range", "id": "products_per_page", "min": 12, "max": 48, "step": 4, "default": 24, "label": "t:sections.main_collection.settings.products_per_page.label" },
+    { "type": "range", "id": "columns_desktop", "min": 3, "max": 5, "step": 1, "default": 4, "label": "t:settings.columns_desktop" },
+    {
+      "type": "select",
+      "id": "pagination",
+      "default": "load_more",
+      "label": "t:sections.main_collection.settings.pagination.label",
+      "options": [
+        { "value": "load_more", "label": "t:sections.main_collection.settings.pagination.options__1" },
+        { "value": "pages", "label": "t:sections.main_collection.settings.pagination.options__2" }
+      ]
+    },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" }
+  ]
+}
+{% endschema %}

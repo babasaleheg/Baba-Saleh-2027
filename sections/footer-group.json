@@ -1,0 +1,49 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "shop": {
+          "type": "menu",
+          "settings": {
+            "title": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "help": {
+          "type": "menu",
+          "settings": {
+            "title": "Help",
+            "menu": "footer"
+          }
+        },
+        "contact": {
+          "type": "text",
+          "settings": {
+            "title": "Contact",
+            "text": "<p>support@babasaleh.com</p>"
+          }
+        }
+      },
+      "block_order": [
+        "shop",
+        "help",
+        "contact"
+      ],
+      "settings": {
+        "heading": "Play harder.",
+        "show_newsletter": true,
+        "newsletter_text": "",
+        "show_localization": true,
+        "show_payment_icons": true,
+        "show_policies": true,
+        "color_scheme": "scheme-3"
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

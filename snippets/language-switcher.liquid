@@ -1,0 +1,131 @@
+{%- comment -%}
+  Language (and optional country/currency) switcher.
+  - id_prefix: unique prefix for IDs
+  - compact: true shows a single toggle button (e.g. "ع" / "EN") for the header
+  - show_country: also show the country/currency selector
+{%- endcomment -%}
+{%- assign localization_form_id = id_prefix | append: 'LocalizationForm' -%}
+{%- form 'localization', id: localization_form_id, class: 'localization' -%}
+  {%- if compact -%}
+    {%- for language in localization.available_languages -%}
+      {%- unless language.iso_code == localization.language.iso_code -%}
+        <button
+          type="submit"
+          name="language_code"
+          value="{{ language.iso_code }}"
+          class="localization__toggle"
+          lang="{{ language.iso_code }}"
+          aria-label="{{ 'localization.switch_to' | t: language: language.endonym_name }}"
+        >
+          {%- if language.iso_code == 'ar' -%}ع{%- else -%}{{ language.iso_code | upcase }}{%- endif -%}
+        </button>
+        {%- break -%}
+      {%- endunless -%}
+    {%- endfor -%}
+  {%- else -%}
+    <div class="localization__group">
+      <span class="localization__label">{% render 'icon', icon: 'globe' %}{{ 'localization.language' | t }}</span>
+      <div class="localization__pills">
+        {%- for language in localization.available_languages -%}
+          <button
+            type="submit"
+            name="language_code"
+            value="{{ language.iso_code }}"
+            class="localization__pill"
+            lang="{{ language.iso_code }}"
+            {% if language.iso_code == localization.language.iso_code %}
+              aria-current="true"
+            {% endif %}
+          >
+            {{- language.endonym_name | capitalize -}}
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- if show_country and localization.available_countries.size > 1 -%}
+      <div class="localization__group">
+        <label class="localization__label" for="{{ id_prefix }}Country">{{ 'localization.country' | t }}</label>
+        <div class="select">
+          <select id="{{ id_prefix }}Country" name="country_code" class="select__select" data-autosubmit>
+            {%- for country in localization.available_countries -%}
+              <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
+                {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+              </option>
+            {%- endfor -%}
+          </select>
+          {% render 'icon', icon: 'chevron-down' %}
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+{%- endform -%}
+
+{% stylesheet %}
+  .localization {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .localization__toggle {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    padding-inline: 0.5rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    font-weight: 700;
+    font-size: 0.875rem;
+  }
+
+  .localization__toggle[lang='ar'] {
+    font-family: var(--font-heading-family);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .localization__toggle:hover {
+    background: rgba(var(--color-fg-rgb), 0.07);
+  }
+
+  .localization__group {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .localization__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-muted);
+  }
+
+  .localization__label .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .localization__pills {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .localization__pill {
+    flex: 1;
+    padding: 0.625rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    font-weight: 600;
+  }
+
+  .localization__pill[aria-current='true'] {
+    background: var(--color-fg);
+    color: var(--color-bg);
+    border-color: var(--color-fg);
+  }
+{% endstylesheet %}

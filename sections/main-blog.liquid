@@ -1,0 +1,73 @@
+<section class="section main-blog color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <h1 class="h1 main-blog__title">{{ blog.title }}</h1>
+    {%- paginate blog.articles by 12 -%}
+      <ul class="main-blog__grid" role="list">
+        {%- for article in blog.articles -%}
+          <li data-reveal style="--reveal-index: {{ forloop.index0 | modulo: 3 }}">
+            <a href="{{ article.url }}" class="article-card">
+              <div class="media media--landscape">
+                {%- if article.image -%}
+                  {{ article.image | image_url: width: 1000 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 33vw, 100vw', widths: '400, 600, 800, 1000' }}
+                {%- else -%}
+                  {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+              <span class="eyebrow">{{ article.published_at | time_tag: format: 'date' }}</span>
+              <h2 class="h3">{{ article.title }}</h2>
+              <p class="text-muted">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+      {%- if paginate.pages > 1 -%}{% render 'pagination', paginate: paginate %}{%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .main-blog__title {
+    margin-block-end: 2rem;
+  }
+
+  .main-blog__grid {
+    display: grid;
+    gap: 2.5rem 1.5rem;
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .main-blog__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .main-blog__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .article-card {
+    display: grid;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+
+  .article-card img {
+    transition: transform 0.6s ease;
+  }
+
+  .article-card:hover img {
+    transform: scale(1.04);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main_blog.name",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" }
+  ]
+}
+{% endschema %}

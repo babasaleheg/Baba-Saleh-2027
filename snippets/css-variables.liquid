@@ -1,0 +1,35 @@
+{%- style -%}
+  :root {
+    --page-width: {{ settings.page_width }}px;
+    --radius: {{ settings.corner_radius }}px;
+    --radius-small: {{ settings.corner_radius | divided_by: 2 }}px;
+    --radius-button: {% if settings.button_style == 'pill' %}999px{% else %}{{ settings.corner_radius | divided_by: 2 }}px{% endif %};
+    --heading-transform: {% if settings.heading_uppercase %}uppercase{% else %}none{% endif %};
+    --heading-weight: {{ settings.heading_weight }};
+    --heading-stretch: {% if settings.font_pairing == 'sport' %}82%{% else %}100%{% endif %};
+    --color-sale: {{ settings.color_sale }};
+    --color-success: #1f9d55;
+  }
+
+  {% for scheme in settings.color_schemes %}
+    {%- liquid
+      assign bg = scheme.settings.background
+      assign fg = scheme.settings.text
+      assign accent = scheme.settings.accent
+      assign accent_text = scheme.settings.accent_text
+    -%}
+    .color-{{ scheme.id }} {
+      --color-bg: {{ bg }};
+      --color-bg-rgb: {{ bg.red }}, {{ bg.green }}, {{ bg.blue }};
+      --color-fg: {{ fg }};
+      --color-fg-rgb: {{ fg.red }}, {{ fg.green }}, {{ fg.blue }};
+      --color-muted: rgba({{ fg.red }}, {{ fg.green }}, {{ fg.blue }}, 0.64);
+      --color-surface: {{ scheme.settings.surface }};
+      --color-border: rgba({{ fg.red }}, {{ fg.green }}, {{ fg.blue }}, 0.12);
+      --color-accent: {{ accent }};
+      --color-accent-text: {{ accent_text }};
+      --color-button: {{ scheme.settings.button }};
+      --color-button-text: {{ scheme.settings.button_text }};
+    }
+  {% endfor %}
+{%- endstyle -%}

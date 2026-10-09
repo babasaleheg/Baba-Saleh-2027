@@ -1,0 +1,60 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "a1": {
+          "type": "message",
+          "settings": {
+            "text": "Free delivery on orders over 1,500 EGP",
+            "icon": "truck",
+            "link": ""
+          }
+        },
+        "a2": {
+          "type": "message",
+          "settings": {
+            "text": "Cash on delivery across Egypt",
+            "icon": "cash",
+            "link": ""
+          }
+        },
+        "a3": {
+          "type": "message",
+          "settings": {
+            "text": "Easy 14-day returns",
+            "icon": "return",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3"
+      ],
+      "settings": {
+        "interval": 5,
+        "color_scheme": "scheme-3"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_width": 130,
+        "menu": "main-menu",
+        "search_placeholder": "",
+        "sticky": "on-scroll-up",
+        "show_language_selector": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": [
+    "announcement",
+    "header"
+  ]
+}

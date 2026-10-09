@@ -1,0 +1,106 @@
+<section class="marquee color-{{ section.settings.color_scheme }}" style="--marquee-speed: {{ section.settings.speed }}s;">
+  <div class="marquee__track" aria-hidden="true">
+    {%- for i in (1..2) -%}
+      <ul class="marquee__group" role="list">
+        {%- for block in section.blocks -%}
+          <li class="marquee__item" {% if i == 1 %}{{ block.shopify_attributes }}{% endif %}>
+            <span>{{ block.settings.text }}</span>
+            <span class="marquee__sep">{% render 'icon', icon: 'bolt' %}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endfor -%}
+  </div>
+  <p class="visually-hidden">
+    {%- for block in section.blocks -%}{{ block.settings.text }}{% unless forloop.last %}, {% endunless %}{%- endfor -%}
+  </p>
+</section>
+
+{% stylesheet %}
+  .marquee {
+    display: block;
+    overflow: hidden;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    padding-block: 1rem;
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee var(--marquee-speed, 30s) linear infinite;
+  }
+
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+
+  .marquee__group {
+    display: flex;
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  .marquee__item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-inline-end: 1.5rem;
+    font-family: var(--font-heading-family);
+    font-weight: var(--heading-weight);
+    font-stretch: var(--heading-stretch);
+    text-transform: var(--heading-transform);
+    font-size: clamp(1.25rem, 3vw, 2.25rem);
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .marquee__sep .icon {
+    width: 1.25em;
+    height: 1.25em;
+    color: var(--color-accent);
+    fill: currentColor;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  [dir='rtl'] .marquee__track {
+    animation-name: marquee-rtl;
+  }
+
+  @keyframes marquee-rtl {
+    to {
+      transform: translateX(50%);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.marquee.name",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "range", "id": "speed", "min": 10, "max": 80, "step": 5, "unit": "s", "default": 35, "label": "t:sections.marquee.settings.speed.label" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-4", "label": "t:settings.color_scheme" }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "t:sections.marquee.blocks.text.name",
+      "settings": [
+        { "type": "text", "id": "text", "default": "Free delivery over 1,500 EGP", "label": "t:settings.text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.marquee.name",
+      "blocks": [{ "type": "text" }, { "type": "text" }, { "type": "text" }]
+    }
+  ]
+}
+{% endschema %}

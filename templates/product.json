@@ -1,0 +1,83 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "vendor"
+        },
+        "title": {
+          "type": "title"
+        },
+        "price": {
+          "type": "price"
+        },
+        "variants": {
+          "type": "variant_picker"
+        },
+        "buy": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_quantity": true,
+            "show_dynamic_checkout": true,
+            "low_stock_threshold": 5
+          }
+        },
+        "perks": {
+          "type": "perks",
+          "settings": {
+            "perk_1": "Delivery in 2–5 days across Egypt",
+            "perk_2": "Cash on delivery available",
+            "perk_3": "Easy 14-day returns"
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "open": true
+          }
+        },
+        "shipping": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Delivery & returns",
+            "content": "<p>We deliver to every governorate in Egypt. Orders are usually delivered within 2–5 working days. Unused items can be returned within 14 days.</p>"
+          }
+        },
+        "share": {
+          "type": "share"
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "variants",
+        "buy",
+        "perks",
+        "description",
+        "shipping",
+        "share"
+      ],
+      "settings": {
+        "gallery_layout": "grid",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "related": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You may also like",
+        "intent": "related",
+        "products_to_show": 8,
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related"
+  ]
+}

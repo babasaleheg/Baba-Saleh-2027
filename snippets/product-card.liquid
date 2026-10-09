@@ -1,0 +1,201 @@
+{%- comment -%}
+  Product card.
+  - product: product object (blank renders a placeholder card)
+  - index: position, used for staggered reveal and eager loading
+  - sizes: image sizes attribute
+{%- endcomment -%}
+{%- liquid
+  assign image_sizes = sizes | default: '(min-width: 1100px) 320px, (min-width: 750px) 33vw, 50vw'
+  assign loading = 'lazy'
+  if index != blank and index < 4
+    assign loading = 'eager'
+  endif
+-%}
+
+{%- if product == blank -%}
+  <div class="card card--placeholder">
+    <div class="media card__media">{{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+    <div class="card__info">
+      <p class="card__title">{{ 'products.product.placeholder_title' | t }}</p>
+      <div class="price"><span class="price__current">{{ 1999 | money }}</span></div>
+    </div>
+  </div>
+{%- else -%}
+  {%- liquid
+    assign first_image = product.featured_media
+    assign second_image = product.media[1]
+    assign variant = product.selected_or_first_available_variant
+    assign on_sale = false
+    if product.compare_at_price > product.price
+      assign on_sale = true
+    endif
+    assign color_option = blank
+    for option in product.options_with_values
+      assign option_name = option.name | downcase
+      if option_name == 'color' or option_name == 'colour' or option_name == 'اللون'
+        assign color_option = option
+      endif
+    endfor
+    assign quick_add_variants = product.variants | where: 'available'
+  -%}
+  <article class="card" {% if index != blank %}data-reveal style="--reveal-index: {{ index | modulo: 4 }}"{% endif %}>
+    <div class="media card__media">
+      {%- if first_image -%}
+        {{
+          first_image
+          | image_url: width: 900
+          | image_tag:
+            loading: loading,
+            sizes: image_sizes,
+            widths: '240, 360, 480, 640, 900',
+            alt: first_image.alt | default: product.title,
+            class: 'card__image'
+        }}
+        {%- if settings.card_show_secondary_image and second_image -%}
+          {{
+            second_image
+            | image_url: width: 900
+            | image_tag:
+              loading: 'lazy',
+              sizes: image_sizes,
+              widths: '240, 360, 480, 640, 900',
+              alt: '',
+              class: 'card__image card__image--secondary'
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+
+      <div class="card__badges">
+        {%- if product.available == false -%}
+          <span class="badge badge--muted">{{ 'products.product.sold_out' | t }}</span>
+        {%- elsif on_sale -%}
+          {%- assign saving = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+          <span class="badge badge--sale" dir="ltr">-{{ saving }}%</span>
+        {%- endif -%}
+        {%- for tag in product.tags -%}
+          {%- assign tag_lower = tag | downcase -%}
+          {%- if tag_lower == 'new' or tag_lower == 'جديد' -%}
+            <span class="badge badge--accent">{{ 'products.product.new' | t }}</span>
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- if settings.card_quick_add and product.available -%}
+        <quick-add class="card__quick-add">
+          {%- if product.has_only_default_variant -%}
+            {%- form 'product', product, class: 'quick-add__form', data-product-form: '' -%}
+              <input type="hidden" name="id" value="{{ variant.id }}">
+              <button type="submit" class="icon-button" aria-label="{{ 'products.product.add_to_cart' | t }}: {{ product.title | escape }}">
+                {% render 'icon', icon: 'plus' %}
+              </button>
+            {%- endform -%}
+          {%- elsif quick_add_variants.size <= 12 -%}
+            <button type="button" class="icon-button" aria-expanded="false" data-quick-add-toggle aria-label="{{ 'products.product.choose_options' | t }}: {{ product.title | escape }}">
+              {% render 'icon', icon: 'plus' %}
+            </button>
+            {%- form 'product', product, class: 'quick-add__panel', data-product-form: '', hidden: '' -%}
+              <p class="quick-add__label">{{ 'products.product.quick_add' | t }}</p>
+              <div class="quick-add__options">
+                {%- for v in quick_add_variants -%}
+                  <button type="submit" name="id" value="{{ v.id }}" class="quick-add__option">{{ v.title }}</button>
+                {%- endfor -%}
+              </div>
+            {%- endform -%}
+          {%- else -%}
+            <a href="{{ product.url }}" class="icon-button" aria-label="{{ 'products.product.choose_options' | t }}: {{ product.title | escape }}">
+              {% render 'icon', icon: 'plus' %}
+            </a>
+          {%- endif -%}
+        </quick-add>
+      {%- endif -%}
+    </div>
+
+    <div class="card__info">
+      {%- if settings.card_show_vendor -%}
+        <span class="card__vendor">{{ product.vendor }}</span>
+      {%- endif -%}
+      <h3 class="card__title">
+        <a href="{{ product.url }}" class="card__link">{{ product.title }}</a>
+      </h3>
+      {% render 'price', product: product %}
+      {%- if color_option and color_option.values.size > 1 -%}
+        <div class="card__swatches">
+          {%- for value in color_option.values limit: 5 -%}
+            {%- liquid
+              assign swatch_style = ''
+              if value.swatch.image
+                assign swatch_url = value.swatch.image | image_url: width: 40
+                assign swatch_style = 'background-image:url(' | append: swatch_url | append: ')'
+              elsif value.swatch.color
+                assign swatch_style = 'background-color:' | append: value.swatch.color
+              else
+                assign swatch_style = 'background-color:' | append: value | downcase | remove: ' '
+              endif
+            -%}
+            <span class="card__swatch" style="{{ swatch_style }}" title="{{ value | escape }}"></span>
+          {%- endfor -%}
+          {%- if color_option.values.size > 5 -%}
+            <span>+{{ color_option.values.size | minus: 5 }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </article>
+{%- endif -%}
+
+{% stylesheet %}
+  .quick-add__panel {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: 0;
+    width: min(16rem, calc(100vw - 3rem));
+    padding: 0.875rem;
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    color: var(--color-fg);
+    box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.35);
+    display: grid;
+    gap: 0.625rem;
+    animation: pop-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-origin: bottom right;
+  }
+
+  .quick-add__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+  }
+
+  .quick-add__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .quick-add__option {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .quick-add__option:hover {
+    background: var(--color-fg);
+    color: var(--color-bg);
+  }
+
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+  }
+{% endstylesheet %}

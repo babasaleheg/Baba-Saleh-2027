@@ -1,0 +1,43 @@
+<section
+  class="section related-products color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <product-recommendations
+    class="page-width"
+    data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_to_show }}&intent={{ section.settings.intent }}"
+  >
+    {%- if recommendations.performed and recommendations.products_count > 0 -%}
+      <div class="section-header">
+        <div class="section-header__text"><h2 class="h2">{{ section.settings.heading }}</h2></div>
+      </div>
+      <ul class="slider" role="list" data-slider style="--slides-desktop: 4; --slides-tablet: 3; --slide-mobile: 46%;">
+        {%- for recommendation in recommendations.products -%}
+          <li>{% render 'product-card', product: recommendation %}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </product-recommendations>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.related_products.name",
+  "settings": [
+    { "type": "text", "id": "heading", "default": "You may also like", "label": "t:settings.heading" },
+    {
+      "type": "select",
+      "id": "intent",
+      "default": "related",
+      "label": "t:sections.related_products.settings.intent.label",
+      "options": [
+        { "value": "related", "label": "t:sections.related_products.settings.intent.options__1" },
+        { "value": "complementary", "label": "t:sections.related_products.settings.intent.options__2" }
+      ]
+    },
+    { "type": "range", "id": "products_to_show", "min": 2, "max": 10, "step": 1, "default": 8, "label": "t:sections.featured_collection.settings.products_to_show.label" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_bottom" }
+  ]
+}
+{% endschema %}

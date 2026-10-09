@@ -1,0 +1,24 @@
+<section class="section main-404 color-{{ section.settings.color_scheme }}">
+  <div class="page-width empty-state">
+    <p class="h0">404</p>
+    <h1 class="h2">{{ 'templates.404.title' | t }}</h1>
+    <p class="text-muted">{{ 'templates.404.subtext' | t }}</p>
+    <div class="main-404__search">{% render 'search-form', id_prefix: 'NotFound' %}</div>
+    <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+  </div>
+</section>
+
+{% stylesheet %}
+  .main-404__search {
+    width: min(32rem, 100%);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main_404.name",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" }
+  ]
+}
+{% endschema %}
