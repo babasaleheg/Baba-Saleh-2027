@@ -366,7 +366,7 @@
       const idInput = this.section?.querySelector('[data-variant-id]');
       const addButtons = this.section?.querySelectorAll('[data-add-button]') ?? [];
 
-      const paymentButton = this.section?.querySelector('.shopify-payment-button');
+      const paymentButton = this.section?.querySelector('.product__payment');
       this.abort?.abort();
 
       if (!variant) {
@@ -943,6 +943,21 @@
           { rootMargin: '0px 0px -8% 0px' }
         )
       : null;
+
+  // Fallback: a fast scroll can skip past an element without it ever intersecting,
+  // which would leave it invisible. Reveal anything that is already above the fold.
+  window.addEventListener(
+    'scroll',
+    debounce(() => {
+      for (const el of document.querySelectorAll('[data-reveal]:not(.is-revealed)')) {
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+          el.classList.add('is-revealed');
+          revealObserver?.unobserve(el);
+        }
+      }
+    }, 120),
+    { passive: true }
+  );
 
   function revealAll(root = document) {
     for (const el of root.querySelectorAll('[data-reveal]:not(.is-revealed)')) {

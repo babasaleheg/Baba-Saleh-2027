@@ -12,7 +12,7 @@
       {%- for block in section.blocks -%}
         {%- assign brand_url = block.settings.name | url_for_vendor -%}
         <li {{ block.shopify_attributes }}>
-          <a href="{{ block.settings.link | default: brand_url }}" class="brand-logos__item" aria-label="{{ block.settings.name | escape }}">
+          <a href="{{ block.settings.link | default: brand_url }}" class="brand-logos__item{% if block.settings.logo == blank %} brand-logos__item--text{% endif %}" aria-label="{{ block.settings.name | escape }}">
             {%- if block.settings.logo != blank -%}
               {{ block.settings.logo | image_url: width: 320 | image_tag: loading: 'lazy', alt: block.settings.name }}
             {%- else -%}
@@ -68,17 +68,12 @@
   }
 
   .brand-logos__item img {
+    width: 100%;
+    max-width: 9rem;
+    height: 100%;
     max-height: 3rem;
-    width: auto;
     object-fit: contain;
-    filter: grayscale(1);
-    opacity: 0.8;
-    transition: filter 0.25s ease, opacity 0.25s ease;
-  }
-
-  .brand-logos__item:hover img {
-    filter: none;
-    opacity: 1;
+    mix-blend-mode: multiply;
   }
 
   .brand-logos__name {
@@ -92,7 +87,8 @@
     line-height: 1.1;
   }
 
-  .brand-logos__item:hover {
+  /* Text-only tiles invert on hover; logo tiles just lift, so dark logos stay visible. */
+  .brand-logos__item--text:hover {
     background: var(--color-fg);
     color: var(--color-bg);
   }

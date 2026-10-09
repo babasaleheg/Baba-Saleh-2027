@@ -194,8 +194,10 @@
                         </span>
                       </button>
                     </div>
-                    {%- if block.settings.show_dynamic_checkout -%}
-                      {{ form | payment_button }}
+                    {%- if block.settings.show_dynamic_checkout and product.available -%}
+                      <div class="product__payment"{% unless product.selected_or_first_available_variant.available %} hidden{% endunless %}>
+                        {{ form | payment_button }}
+                      </div>
                     {%- endif -%}
                     <p class="form-message form-message--error" data-form-error hidden></p>
                   {%- endform -%}
@@ -222,10 +224,20 @@
               </ul>
 
             {%- when 'description' -%}
-              {%- if product.description != blank -%}
+              {%- liquid
+                capture description_html
+                  render 'clean-description', html: product.description
+                endcapture
+                assign description_text = description_html | strip_html | strip
+                assign description_has_media = false
+                if description_html contains '<img' or description_html contains '<iframe' or description_html contains '<video'
+                  assign description_has_media = true
+                endif
+              -%}
+              {%- if description_text != blank or description_has_media -%}
                 <details class="accordion" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
                   <summary>{{ 'products.product.description' | t }}{% render 'icon', icon: 'plus' %}</summary>
-                  <div class="accordion__content rte">{{ product.description }}</div>
+                  <div class="accordion__content rte">{{ description_html }}</div>
                 </details>
               {%- endif -%}
 

@@ -464,55 +464,64 @@
         "brand_1": {
           "type": "brand",
           "settings": {
-            "name": "Wilson"
+            "name": "Wilson",
+            "logo": "shopify://shop_images/Wilson-logo.png"
           }
         },
         "brand_2": {
           "type": "brand",
           "settings": {
-            "name": "Everlast"
+            "name": "Everlast",
+            "logo": "shopify://shop_images/ev.png"
           }
         },
         "brand_3": {
           "type": "brand",
           "settings": {
-            "name": "Venum"
+            "name": "Venum",
+            "logo": "shopify://shop_images/Venum.png"
           }
         },
         "brand_4": {
           "type": "brand",
           "settings": {
-            "name": "Cressi"
+            "name": "Cressi",
+            "logo": "shopify://shop_images/cr.png"
           }
         },
         "brand_5": {
           "type": "brand",
           "settings": {
-            "name": "Dunlop"
+            "name": "Dunlop",
+            "logo": "shopify://shop_images/dunlop.png"
           }
         },
         "brand_6": {
           "type": "brand",
           "settings": {
-            "name": "Spurt"
+            "name": "Spurt",
+            "logo": "shopify://shop_images/Spurt.png"
           }
         },
         "brand_7": {
           "type": "brand",
           "settings": {
-            "name": "Livepro"
+            "name": "Livepro",
+            "logo": "shopify://shop_images/livepro.png"
           }
         },
         "brand_8": {
           "type": "brand",
           "settings": {
-            "name": "Liveup"
+            "name": "Liveup",
+            "logo": "shopify://shop_images/liveup-1.png"
           }
         },
         "brand_9": {
           "type": "brand",
           "settings": {
-            "name": "Cougar"
+            "name": "Cougar",
+            "logo": "shopify://shop_images/cougar.png"
           }
         },
         "brand_10": {
@@ -524,7 +533,8 @@
         "brand_11": {
           "type": "brand",
           "settings": {
-            "name": "Kuna"
+            "name": "Kuna",
+            "logo": "shopify://shop_images/ku.png"
           }
         },
         "brand_12": {
@@ -536,19 +546,22 @@
         "brand_13": {
           "type": "brand",
           "settings": {
-            "name": "Manta"
+            "name": "Manta",
+            "logo": "shopify://shop_images/manta.png"
           }
         },
         "brand_14": {
           "type": "brand",
           "settings": {
-            "name": "Track"
+            "name": "Track",
+            "logo": "shopify://shop_images/Track.png"
           }
         },
         "brand_15": {
           "type": "brand",
           "settings": {
-            "name": "Wish"
+            "name": "Wish",
+            "logo": "shopify://shop_images/Wish.png"
           }
         },
         "brand_16": {

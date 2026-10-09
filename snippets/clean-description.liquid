@@ -1,0 +1,38 @@
+{%- comment -%}
+  Outputs a product description with the old WordPress gallery markup removed.
+  Products imported from babasaleh.com carry links to /wp-content/uploads images
+  whose <img> lost its src (or still points at the old, bot-protected site), so they
+  render as broken images. The same photos are already in the product's media.
+  - html: the description HTML
+{%- endcomment -%}
+{%- liquid
+  # 1. Drop every <a href="https://babasaleh.com/wp-content/…">…</a> gallery link.
+  assign parts = html | split: '<a href="https://babasaleh.com/wp-content/'
+  assign cleaned = ''
+  for part in parts
+    if forloop.first
+      assign cleaned = cleaned | append: part
+    else
+      assign link_body = part | split: '</a>' | first
+      assign rest = part | remove_first: link_body | remove_first: '</a>'
+      assign cleaned = cleaned | append: rest
+    endif
+  endfor
+
+  # 2. Drop any remaining <img src="https://babasaleh.com/…"> tags.
+  assign parts = cleaned | split: '<img src="https://babasaleh.com/'
+  assign cleaned = ''
+  for part in parts
+    if forloop.first
+      assign cleaned = cleaned | append: part
+    else
+      assign img_attrs = part | split: '>' | first
+      assign rest = part | remove_first: img_attrs | remove_first: '>'
+      assign cleaned = cleaned | append: rest
+    endif
+  endfor
+
+  # 3. Drop images that lost their src during import.
+  assign cleaned = cleaned | remove: '<img>'
+-%}
+{{- cleaned -}}
