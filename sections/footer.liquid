@@ -232,6 +232,11 @@
     max-width: 22rem;
   }
 
+  /* No social links configured: don't reserve a column or gap for the empty list. */
+  .footer__social:empty {
+    display: none;
+  }
+
   @media screen and (min-width: 750px) {
     .footer__top {
       grid-template-columns: 1.1fr 1.4fr;
@@ -257,12 +262,19 @@
     }
 
     .footer__bottom {
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1.5rem 2rem;
+    }
+
+    .footer__localization {
+      flex: 1 1 18rem;
     }
 
     .footer__copyright {
-      grid-column: 1 / -1;
+      flex-basis: 100%;
     }
   }
 {% endstylesheet %}

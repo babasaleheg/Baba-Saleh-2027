@@ -68,6 +68,11 @@
 
     .promo-grid__grid--3 {
       grid-template-columns: 1.4fr 1fr;
+      grid-template-rows: repeat(2, minmax(15rem, auto));
+    }
+
+    .promo-grid__grid--3 .promo-tile {
+      min-height: 0;
     }
 
     .promo-grid__grid--3 > :first-child {
@@ -147,7 +152,11 @@
 
   @media screen and (min-width: 990px) {
     .promo-tile {
-      min-height: 30rem;
+      min-height: 24rem;
+    }
+
+    .promo-grid__grid--3 {
+      grid-template-rows: repeat(2, minmax(17rem, auto));
     }
 
     .promo-tile__content {
