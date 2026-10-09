@@ -25,14 +25,25 @@
     assign first_image = product.featured_media
     assign second_image = product.media[1]
     assign variant = product.selected_or_first_available_variant
+    # Badge and price both follow the cheapest variant, so the % matches the struck-through price.
+    assign card_variant = variant
+    if product.price_varies
+      for v in product.variants
+        if v.price == product.price_min
+          assign card_variant = v
+          break
+        endif
+      endfor
+    endif
     assign on_sale = false
-    if product.compare_at_price > product.price
+    if card_variant.compare_at_price > card_variant.price
       assign on_sale = true
     endif
+    assign card_alt = first_image.alt | default: product.title
     assign color_option = blank
     for option in product.options_with_values
       assign option_name = option.name | downcase
-      if option_name == 'color' or option_name == 'colour' or option_name == 'اللون'
+      if option_name contains 'colo' or option_name contains 'لون' or option_name contains 'ألوان' or option_name contains 'الوان'
         assign color_option = option
       endif
     endfor
@@ -48,7 +59,7 @@
             loading: loading,
             sizes: image_sizes,
             widths: '240, 360, 480, 640, 900',
-            alt: first_image.alt | default: product.title,
+            alt: card_alt,
             class: 'card__image'
         }}
         {%- if settings.card_show_secondary_image and second_image -%}
@@ -71,7 +82,7 @@
         {%- if product.available == false -%}
           <span class="badge badge--muted">{{ 'products.product.sold_out' | t }}</span>
         {%- elsif on_sale -%}
-          {%- assign saving = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+          {%- assign saving = card_variant.compare_at_price | minus: card_variant.price | times: 100.0 | divided_by: card_variant.compare_at_price | round -%}
           <span class="badge badge--sale" dir="ltr">-{{ saving }}%</span>
         {%- endif -%}
         {%- for tag in product.tags -%}
@@ -134,6 +145,7 @@
               else
                 assign swatch_style = 'background-color:' | append: value | downcase | remove: ' '
               endif
+              assign swatch_style = swatch_style | escape
             -%}
             <span class="card__swatch" style="{{ swatch_style }}" title="{{ value | escape }}"></span>
           {%- endfor -%}

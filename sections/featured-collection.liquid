@@ -32,6 +32,7 @@
             id="Tab-{{ block.id }}"
             aria-controls="TabPanel-{{ block.id }}"
             aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
             {{ block.shopify_attributes }}
           >
             {{- block.settings.label | default: block.settings.collection.title -}}

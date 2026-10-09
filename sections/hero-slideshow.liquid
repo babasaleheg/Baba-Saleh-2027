@@ -400,8 +400,12 @@
     }
   }
 
-  .hero__slide--collage ~ .hero__controls .hero__dot::before {
+  .hero:has(.hero__slide--collage.is-active) .hero__dot::before {
     background: rgba(var(--color-fg-rgb), 0.25);
+  }
+
+  .hero:has(.hero__slide--collage.is-active) .hero__dot-fill {
+    background: var(--color-fg);
   }
 
   .hero__dots {

@@ -27,6 +27,7 @@
                       assign priority = 'high'
                     endif
                   -%}
+                  {%- assign media_alt = media.alt | default: product.title -%}
                   {{
                     media
                     | image_url: width: 1800
@@ -35,7 +36,7 @@
                       fetchpriority: priority,
                       sizes: '(min-width: 990px) 33vw, 100vw',
                       widths: '400, 600, 800, 1000, 1400, 1800',
-                      alt: media.alt | default: product.title
+                      alt: media_alt
                   }}
                 {%- when 'video', 'external_video' -%}
                   {{ media | media_tag: image_size: '1200x', autoplay: false, loop: true, controls: true, muted: true }}
@@ -86,7 +87,7 @@
                     {%- liquid
                       assign option_name = option.name | downcase
                       assign is_color = false
-                      if option_name == 'color' or option_name == 'colour' or option_name == 'اللون'
+                      if option_name contains 'colo' or option_name contains 'لون' or option_name contains 'ألوان' or option_name contains 'الوان'
                         assign is_color = true
                       endif
                     -%}
@@ -99,14 +100,15 @@
                           {%- liquid
                             assign input_id = section.id | append: '-' | append: forloop.parentloop.index0 | append: '-' | append: forloop.index0
                             assign swatch_style = ''
+                            assign value_swatch = false
                             if is_color
                               if value.swatch.image
+                                assign value_swatch = true
                                 assign swatch_url = value.swatch.image | image_url: width: 80
                                 assign swatch_style = '--swatch: url(' | append: swatch_url | append: ')'
                               elsif value.swatch.color
+                                assign value_swatch = true
                                 assign swatch_style = '--swatch: ' | append: value.swatch.color
-                              else
-                                assign swatch_style = '--swatch: ' | append: value | downcase | remove: ' '
                               endif
                             endif
                           -%}
@@ -125,14 +127,18 @@
                           >
                           <label
                             for="{{ input_id }}"
-                            class="option__label{% if is_color %} option__label--swatch{% endif %}{% unless value.available %} is-unavailable{% endunless %}"
-                            {% if is_color %}
-                              style="{{ swatch_style }}" title="{{ value | escape }}"
+                            class="option__label{% if value_swatch %} option__label--swatch{% endif %}{% unless value.available %} is-unavailable{% endunless %}"
+                            {% if value_swatch %}
+                              style="{{ swatch_style | escape }}" title="{{ value | escape }}"
                             {% endif %}
                           >
-                            {%- if is_color -%}
+                            {%- if value_swatch -%}
                               <span class="visually-hidden">{{ value }}</span>
                             {%- else -%}
+                              {%- if is_color -%}
+                                {%- assign dot_color = value | downcase | remove: ' ' | escape -%}
+                                <span class="option__dot" style="background-color: {{ dot_color }}" aria-hidden="true"></span>
+                              {%- endif -%}
                               {{ value }}
                             {%- endif -%}
                           </label>
@@ -280,6 +286,17 @@
   {{ product | structured_data }}
 </script>
 
+{%- assign model_media = product.media | where: 'media_type', 'model' -%}
+{%- if model_media.size > 0 -%}
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (document.querySelector('.product__media model-viewer') && window.Shopify?.loadFeatures) {
+        Shopify.loadFeatures([{ name: 'model-viewer-ui', version: '1.0' }]);
+      }
+    });
+  </script>
+{%- endif -%}
+
 {% stylesheet %}
   .product__grid {
     display: grid;
@@ -326,7 +343,8 @@
 
   .product__media img,
   .product__media video,
-  .product__media iframe {
+  .product__media iframe,
+  .product__media model-viewer {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -463,6 +481,17 @@
   .option__label.is-unavailable {
     color: var(--color-muted);
     background-image: linear-gradient(to bottom right, transparent calc(50% - 0.5px), var(--color-border) 50%, transparent calc(50% + 0.5px));
+  }
+
+  .option__dot {
+    display: inline-block;
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-inline-end: 0.375rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    vertical-align: -0.125rem;
   }
 
   .option__label--swatch {

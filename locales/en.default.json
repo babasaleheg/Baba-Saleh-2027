@@ -143,7 +143,11 @@
         "one": "{{ count }} result for “{{ terms }}”",
         "other": "{{ count }} results for “{{ terms }}”"
       },
-      "no_results": "No results for “{{ terms }}”. Try another search."
+      "no_results": "No results for “{{ terms }}”. Try another search.",
+      "types": {
+        "article": "Article",
+        "page": "Page"
+      }
     },
     "404": {
       "title": "Page not found",

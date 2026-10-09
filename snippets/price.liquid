@@ -16,6 +16,18 @@
   if variant == blank and product.price_varies
     assign varies = true
     assign price = product.price_min
+    # "From" price: only strike through the compare price of the cheapest variant.
+    assign compare = nil
+    assign on_sale = false
+    for v in product.variants
+      if v.price == price
+        if v.compare_at_price > v.price
+          assign compare = v.compare_at_price
+          assign on_sale = true
+        endif
+        break
+      endif
+    endfor
   endif
 -%}
 <div class="price{% if on_sale %} price--on-sale{% endif %}" data-price>

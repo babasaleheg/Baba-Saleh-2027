@@ -38,7 +38,7 @@
             {%- case block.type -%}
               {%- when 'menu' -%}
                 {%- assign block_menu = linklists[block.settings.menu] -%}
-                <details class="footer__details" data-desktop-open>
+                <details class="footer__details" data-desktop-open open>
                   <summary class="footer__title">
                     {{ block.settings.title | default: block_menu.title }}
                     {% render 'icon', icon: 'chevron-down' %}

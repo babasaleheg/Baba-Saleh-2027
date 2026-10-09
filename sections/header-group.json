@@ -41,7 +41,7 @@
         "contact_text": "Need help? Chat on WhatsApp",
         "contact_link": "",
         "secondary_text": "Track your order",
-        "secondary_link": "",
+        "secondary_link": "/account",
         "show_language": true
       }
     },

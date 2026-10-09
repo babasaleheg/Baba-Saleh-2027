@@ -98,7 +98,7 @@
                   {%- for block in promos -%}
                     {%- assign promo_target = block.settings.menu_item | strip | downcase -%}
                     {%- assign link_title = link.title | strip | downcase -%}
-                    {%- if promo_target == link_title -%}
+                    {%- if promo_target == link_title or promo_target == link.handle -%}
                       {%- assign promo_rendered = true -%}
                       <a href="{{ block.settings.link | default: link.url }}" class="mega__promo" {{ block.shopify_attributes }}>
                         <div class="media media--portrait">
@@ -274,7 +274,12 @@
   .shopify-section-header-sticky {
     position: sticky;
     top: 0;
-    z-index: 30;
+    z-index: 50;
+  }
+
+  /* The section box stays in place while the bar slides away; let taps through. */
+  .shopify-section-header-hidden {
+    pointer-events: none;
   }
 
   .shopify-section-header-hidden .header-wrapper {
@@ -328,6 +333,16 @@
     text-transform: uppercase;
     font-stretch: var(--heading-stretch);
     line-height: 1;
+  }
+
+  @media screen and (max-width: 399px) {
+    .header {
+      gap: 0.5rem 0.25rem;
+    }
+
+    .header__wordmark-tag {
+      display: none;
+    }
   }
 
   .header__wordmark-tag {
@@ -395,25 +410,18 @@
 
   @media screen and (min-width: 990px) {
     .header {
-      grid-template-columns: auto 1fr minmax(16rem, 22rem) auto;
-      grid-template-areas: 'logo nav search end';
-      gap: 1.5rem;
+      grid-template-columns: auto auto minmax(0, 1fr) auto;
+      grid-template-areas: 'start logo search end';
+      gap: 0 1.5rem;
       min-height: 4.5rem;
-    }
-
-    .header__menu-toggle {
-      display: none;
-    }
-
-    .header__nav {
-      grid-area: nav;
-      display: block;
-      align-self: stretch;
     }
 
     .header__search {
       grid-area: search;
       grid-column: auto;
+      justify-self: center;
+      width: 100%;
+      max-width: 40rem;
       padding: 0;
     }
 
@@ -423,6 +431,37 @@
 
     .header__end .localization {
       display: none;
+    }
+  }
+
+  /* Hover-capable desktops get the full navigation row; touch tablets keep the drawer. */
+  @media screen and (min-width: 990px) and (hover: hover) {
+    .header {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas:
+        'logo search end'
+        'nav nav nav';
+    }
+
+    .header__menu-toggle {
+      display: none;
+    }
+
+    .header__nav {
+      grid-area: nav;
+      display: block;
+      min-width: 0;
+      margin-inline: -0.75rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .header__nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .header__nav .nav {
+      height: 3rem;
     }
   }
 

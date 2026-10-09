@@ -36,7 +36,7 @@
                         <input
                           type="checkbox"
                           name="{{ value.param_name }}"
-                          value="{{ value.value }}"
+                          value="{{ value.value | escape }}"
                           data-facet-input
                           {% if value.active %}
                             checked

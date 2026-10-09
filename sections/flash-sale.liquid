@@ -11,7 +11,7 @@
       {%- if section.settings.eyebrow != blank -%}
         <span class="badge badge--highlight">{{ section.settings.eyebrow }}</span>
       {%- endif -%}
-      <countdown-timer class="flash-sale__timer" data-end="{{ section.settings.end_date | escape }}" role="timer" aria-live="off">
+      <countdown-timer class="flash-sale__timer" data-end="{% if section.settings.end_date != blank %}{{ section.settings.end_date | date: '%s' }}{% endif %}" role="timer" aria-live="off">
         <span class="flash-sale__unit"><span data-days>00</span><small>{{ 'sections.flash_sale.days' | t }}</small></span>
         <span class="flash-sale__unit"><span data-hours>00</span><small>{{ 'sections.flash_sale.hours' | t }}</small></span>
         <span class="flash-sale__unit"><span data-minutes>00</span><small>{{ 'sections.flash_sale.minutes' | t }}</small></span>

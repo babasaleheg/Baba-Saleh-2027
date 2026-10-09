@@ -56,11 +56,40 @@
 
   const renderCartSections = (sections) => {
     if (!sections) return;
+    const drawer = document.getElementById('CartDrawer');
     if (sections['cart-drawer']) swapFromHTML(sections['cart-drawer'], '#CartDrawer .drawer__panel');
     const page = document.querySelector('cart-page');
     if (page && sections[page.dataset.sectionId]) {
-      swapFromHTML(sections[page.dataset.sectionId], 'cart-page');
+      const doc = parseHTML(sections[page.dataset.sectionId]);
+      // Swap only the dynamic parts so express checkout buttons are left alone.
+      for (const selector of ['[data-cart-items]', '[data-cart-summary]']) {
+        const fresh = doc.querySelector(selector);
+        const current = page.querySelector(selector);
+        if (fresh && current) current.innerHTML = fresh.innerHTML;
+      }
+      // Cart emptied: re-render the whole section to show the empty state.
+      if (!doc.querySelector('[data-cart-items]') || !page.querySelector('[data-cart-items]')) {
+        swapFromHTML(sections[page.dataset.sectionId], 'cart-page');
+      }
     }
+    // Keep keyboard focus inside the open drawer after its content is replaced.
+    if (drawer?.hasAttribute('open') && !drawer.contains(document.activeElement)) {
+      drawer.querySelector('.drawer__panel')?.focus();
+    }
+  };
+
+  /** Read an Ajax API response; only show Shopify's own message for 422 errors. */
+  const readCartResponse = async (response) => {
+    let data = null;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error(strings.cartError);
+    }
+    if (!response.ok || data.status) {
+      throw new Error((response.status === 422 && (data.description || data.message)) || strings.cartError);
+    }
+    return data;
   };
 
   /* ---------- Focus trap for dialogs ---------- */
@@ -90,6 +119,9 @@
       if (!this.hasAttribute('open')) return;
       this.removeAttribute('open');
       document.body.classList.remove('scroll-lock');
+      if (!this.opener?.isConnected || this.opener.closest('[hidden]')) {
+        this.opener = document.querySelector(`[data-drawer-open="${this.id}"]`);
+      }
       this.opener?.setAttribute?.('aria-expanded', 'false');
       this.opener?.focus?.();
     }
@@ -128,30 +160,43 @@
   });
 
   /* ---------- Cart line updates (drawer + page) ---------- */
-  const changeLine = async (line, quantity, scope) => {
-    const item = scope.querySelector(`.cart-item[data-line="${line}"]`);
-    item?.classList.add('is-loading');
-    try {
-      const response = await fetch(`${routes.cartChange}.js`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ line, quantity, sections: sectionIdsForCart(), sections_url: window.location.pathname }),
-      });
-      const cart = await response.json();
-      if (!response.ok) throw new Error(cart.description || cart.message);
-      renderCartSections(cart.sections);
-      updateCartCount(cart.item_count);
-    } catch (error) {
-      item?.classList.remove('is-loading');
-      toast(error.message || strings.cartError);
-    }
+  // Cart requests run one after another so line changes never race each other.
+  let cartQueue = Promise.resolve();
+
+  const changeLine = (key, quantity, scope) => {
+    cartQueue = cartQueue.then(async () => {
+      const item = scope.querySelector(`.cart-item[data-key="${CSS.escape(key)}"]`);
+      item?.classList.add('is-loading');
+      try {
+        const response = await fetch(`${routes.cartChange}.js`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ id: key, quantity, sections: sectionIdsForCart(), sections_url: window.location.pathname }),
+        });
+        const cart = await readCartResponse(response);
+        renderCartSections(cart.sections);
+        updateCartCount(cart.item_count);
+      } catch (error) {
+        item?.classList.remove('is-loading');
+        const input = item?.querySelector('[data-cart-quantity]');
+        if (input) input.value = input.defaultValue;
+        toast(error.message || strings.cartError);
+      }
+    });
+    return cartQueue;
   };
 
   function bindCartControls(scope) {
-    const onQuantity = debounce((input) => changeLine(Number(input.dataset.line), Number(input.value), scope), 400);
+    const timers = new Map();
     scope.addEventListener('change', (event) => {
       const input = event.target.closest('[data-cart-quantity]');
-      if (input) onQuantity(input);
+      if (input) {
+        const key = input.closest('.cart-item')?.dataset.key;
+        if (key && input.value !== '') {
+          clearTimeout(timers.get(key));
+          timers.set(key, setTimeout(() => changeLine(key, Math.max(0, Number(input.value)), scope), 400));
+        }
+      }
       const note = event.target.closest('textarea[name="note"]');
       if (note) {
         fetch(`${routes.cartUpdate}.js`, {
@@ -163,7 +208,8 @@
     });
     scope.addEventListener('click', (event) => {
       const remove = event.target.closest('[data-cart-remove]');
-      if (remove) changeLine(Number(remove.dataset.line), 0, scope);
+      const key = remove?.closest('.cart-item')?.dataset.key;
+      if (key) changeLine(key, 0, scope);
     });
   }
 
@@ -220,8 +266,7 @@
         headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
         body,
       });
-      const data = await response.json();
-      if (!response.ok || data.status) throw new Error(data.description || data.message || strings.cartError);
+      const data = await readCartResponse(response);
 
       const cart = await (await fetch(`${routes.cart}.js`)).json();
       updateCartCount(cart.item_count);
@@ -236,10 +281,10 @@
       }
     } catch (err) {
       if (error) {
-        error.textContent = err.message;
+        error.textContent = err.message || strings.cartError;
         error.hidden = false;
       } else {
-        toast(err.message);
+        toast(err.message || strings.cartError);
       }
     } finally {
       for (const button of buttons) button?.classList.remove('is-loading');
@@ -259,6 +304,16 @@
       this.onOutside = (event) => {
         if (!this.contains(event.target)) this.close();
       };
+      this.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !this.panel.hidden) {
+          this.close();
+          this.toggle.focus();
+        }
+      });
+    }
+
+    disconnectedCallback() {
+      document.removeEventListener('click', this.onOutside);
     }
 
     open() {
@@ -302,18 +357,29 @@
       const idInput = this.section?.querySelector('[data-variant-id]');
       const addButtons = this.section?.querySelectorAll('[data-add-button]') ?? [];
 
+      const paymentButton = this.section?.querySelector('.shopify-payment-button');
+      this.abort?.abort();
+
       if (!variant) {
+        if (idInput) idInput.disabled = true;
+        paymentButton?.setAttribute('hidden', '');
         for (const button of addButtons) {
           button.disabled = true;
-          button.querySelector('[data-add-label]').textContent = strings.unavailable;
+          const label = button.querySelector('[data-add-label]');
+          if (label) label.textContent = strings.unavailable;
         }
         return;
       }
 
-      if (idInput) idInput.value = variant.id;
+      if (idInput) {
+        idInput.disabled = false;
+        idInput.value = variant.id;
+      }
+      paymentButton?.toggleAttribute('hidden', !variant.available);
       for (const button of addButtons) {
         button.disabled = !variant.available;
-        button.querySelector('[data-add-label]').textContent = variant.available ? strings.addToCart : strings.soldOut;
+        const label = button.querySelector('[data-add-label]');
+        if (label) label.textContent = variant.available ? strings.addToCart : strings.soldOut;
       }
 
       const url = new URL(window.location.href);
@@ -326,8 +392,11 @@
       const sectionId = this.dataset.sectionId;
       const productUrl = this.section?.dataset.url;
       if (!sectionId || !productUrl) return;
+      this.abort = new AbortController();
       try {
-        const html = await (await fetch(`${productUrl}?variant=${variant.id}&section_id=${sectionId}`)).text();
+        const response = await fetch(`${productUrl}?variant=${variant.id}&section_id=${sectionId}`, { signal: this.abort.signal });
+        if (!response.ok) return;
+        const html = await response.text();
         const doc = parseHTML(html);
         const freshPrices = doc.querySelectorAll('[data-price-container]');
         const currentPrices = this.section.querySelectorAll('[data-price-container]');
@@ -423,6 +492,7 @@
     next.addEventListener('click', () => step(1));
     for (const s of root.querySelectorAll('[data-slider]')) s.addEventListener('scroll', debounce(update, 50), { passive: true });
     root.addEventListener('slider:refresh', update);
+    if ('ResizeObserver' in window) new ResizeObserver(() => update()).observe(root);
     update();
   };
 
@@ -515,9 +585,13 @@
       if (this.dataset.autoplay === 'true' && this.slides.length > 1 && !reduced) {
         this.play();
         this.addEventListener('mouseenter', () => this.pause());
-        this.addEventListener('mouseleave', () => this.play());
+        this.addEventListener('mouseleave', () => {
+          if (!this.contains(document.activeElement)) this.play();
+        });
         this.addEventListener('focusin', () => this.pause());
-        this.addEventListener('focusout', () => this.play());
+        this.addEventListener('focusout', (event) => {
+          if (!this.contains(event.relatedTarget) && !this.matches(':hover')) this.play();
+        });
       }
     }
 
@@ -555,7 +629,7 @@
     }
 
     restart() {
-      if (this.dataset.autoplay === 'true' && this.timer) this.play();
+      if (this.dataset.autoplay === 'true' && this.timer && !this.classList.contains('is-paused')) this.play();
     }
 
     disconnectedCallback() {
@@ -573,8 +647,9 @@
         minutes: this.querySelector('[data-minutes]'),
         seconds: this.querySelector('[data-seconds]'),
       };
-      const parsed = Date.parse(this.dataset.end || '');
-      this.fixedEnd = Number.isNaN(parsed) ? null : parsed;
+      // data-end is a Unix timestamp (seconds) rendered in the shop's time zone by Liquid.
+      const end = Number(this.dataset.end) * 1000;
+      this.fixedEnd = end > 0 ? end : null;
       this.#tick();
       this.timer = setInterval(() => this.#tick(), 1000);
     }
@@ -610,8 +685,20 @@
       if (this.messages.length < 2) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       this.index = 0;
-      this.timer = setInterval(() => this.#next(), Number(this.dataset.interval) || 5000);
-      this.addEventListener('mouseenter', () => clearInterval(this.timer));
+      const start = () => {
+        clearInterval(this.timer);
+        this.timer = setInterval(() => this.#next(), Number(this.dataset.interval) || 5000);
+      };
+      const stop = () => clearInterval(this.timer);
+      start();
+      this.addEventListener('mouseenter', stop);
+      this.addEventListener('mouseleave', () => {
+        if (!this.contains(document.activeElement)) start();
+      });
+      this.addEventListener('focusin', stop);
+      this.addEventListener('focusout', (event) => {
+        if (!this.contains(event.relatedTarget)) start();
+      });
     }
 
     #next() {
@@ -641,8 +728,20 @@
       if (this.mode === 'none' || !this.section) return;
       this.section.classList.add('shopify-section-header-sticky');
       this.lastY = window.scrollY;
-      window.addEventListener('scroll', () => this.#onScroll(), { passive: true });
+      this.onScroll = () => this.#onScroll();
+      window.addEventListener('scroll', this.onScroll, { passive: true });
       this.#setOffset();
+      if ('ResizeObserver' in window) {
+        this.resizeObserver = new ResizeObserver(() => {
+          if (!this.section.classList.contains('shopify-section-header-hidden')) this.#setOffset();
+        });
+        this.resizeObserver.observe(this);
+      }
+    }
+
+    disconnectedCallback() {
+      if (this.onScroll) window.removeEventListener('scroll', this.onScroll);
+      this.resizeObserver?.disconnect();
     }
 
     #setOffset() {
@@ -685,15 +784,16 @@
 
     async #search() {
       const terms = this.input.value.trim();
+      this.controller?.abort();
       if (!terms) {
         this.#toggle(false);
         return;
       }
-      this.controller?.abort();
       this.controller = new AbortController();
       try {
         const url = `${routes.predictiveSearch}?q=${encodeURIComponent(terms)}&resources[type]=product,collection,query&resources[limit]=6&section_id=predictive-search`;
         const response = await fetch(url, { signal: this.controller.signal });
+        if (!response.ok) throw new Error(String(response.status));
         const html = await response.text();
         const fresh = parseHTML(html).querySelector('#predictive-search-results');
         this.results.innerHTML = fresh ? fresh.outerHTML : '';
@@ -729,7 +829,12 @@
           this.#loadMore(more);
         }
       });
-      window.addEventListener('popstate', () => this.#render(window.location.href, false));
+      this.onPop = () => this.#render(window.location.href, false);
+      window.addEventListener('popstate', this.onPop);
+    }
+
+    disconnectedCallback() {
+      window.removeEventListener('popstate', this.onPop);
     }
 
     #onChange = debounce(() => {
@@ -748,8 +853,13 @@
       const results = this.querySelector('[data-results]');
       results?.classList.add('is-loading');
       url.searchParams.set('section_id', this.sectionId);
+      const active = document.activeElement;
+      const focusName = this.contains(active) ? active.name : null;
+      const focusValue = this.contains(active) ? active.value : null;
       try {
-        const html = await (await fetch(url)).text();
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(String(response.status));
+        const html = await response.text();
         const doc = parseHTML(html);
         const fresh = doc.querySelector('facet-filters');
         if (!fresh) return;
@@ -770,6 +880,16 @@
         url.searchParams.delete('section_id');
         if (push) window.history.pushState({}, '', url);
         revealAll(this);
+
+        if (focusName) {
+          const target = [...this.querySelectorAll(`[name="${CSS.escape(focusName)}"]`)].find(
+            (el) => el.value === focusValue || el.type !== 'checkbox'
+          );
+          target?.focus();
+        }
+      } catch {
+        url.searchParams.delete('section_id');
+        window.location.href = url.toString();
       } finally {
         this.querySelector('[data-results]')?.classList.remove('is-loading');
       }
@@ -780,7 +900,9 @@
       const url = new URL(link.href, window.location.origin);
       url.searchParams.set('section_id', this.sectionId);
       try {
-        const html = await (await fetch(url)).text();
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(String(response.status));
+        const html = await response.text();
         const doc = parseHTML(html);
         const grid = this.querySelector('[data-product-grid]');
         const freshGrid = doc.querySelector('[data-product-grid]');
@@ -789,6 +911,8 @@
         const freshMore = doc.querySelector('.collection__more');
         if (more) freshMore ? (more.innerHTML = freshMore.innerHTML) : more.remove();
         revealAll(this);
+      } catch {
+        window.location.href = link.href;
       } finally {
         link.classList.remove('is-loading');
       }
@@ -846,5 +970,9 @@
       slideshow.pause();
       slideshow.goTo(slideshow.slides.indexOf(event.target));
     }
+  });
+  document.addEventListener('shopify:block:deselect', (event) => {
+    const slideshow = event.target.closest('hero-slideshow');
+    if (slideshow && slideshow.dataset.autoplay === 'true') slideshow.play();
   });
 })();

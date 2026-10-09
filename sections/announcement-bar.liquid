@@ -12,8 +12,8 @@
         assign contact_url = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' | prepend: 'https://wa.me/'
       endif
     -%}
-    {%- if section.settings.contact_text != blank -%}
-      <a class="announcement__utility announcement__utility--start" href="{{ contact_url | default: routes.root_url }}">
+    {%- if section.settings.contact_text != blank and contact_url != blank -%}
+      <a class="announcement__utility announcement__utility--start" href="{{ contact_url }}">
         {% render 'icon', icon: 'chat' %}{{ section.settings.contact_text }}
       </a>
     {%- endif -%}
@@ -32,8 +32,8 @@
       {%- endfor -%}
     </div>
     <div class="announcement__utility announcement__utility--end">
-      {%- if section.settings.secondary_text != blank -%}
-        <a href="{{ section.settings.secondary_link | default: '#' }}">{{ section.settings.secondary_text }}</a>
+      {%- if section.settings.secondary_text != blank and section.settings.secondary_link != blank -%}
+        <a href="{{ section.settings.secondary_link }}">{{ section.settings.secondary_text }}</a>
       {%- endif -%}
       {%- if section.settings.show_language and localization.available_languages.size > 1 -%}
         {% render 'language-switcher', id_prefix: 'Announcement', compact: true, label: 'name' %}
@@ -136,13 +136,18 @@
     gap: 0.5rem;
     text-align: center;
     opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
     transform: translateY(100%);
-    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.45s;
   }
 
   .announcement__message.is-active {
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
     transform: none;
+    transition-delay: 0s;
   }
 
   .announcement__message.is-leaving {
