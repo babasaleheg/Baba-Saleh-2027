@@ -23,17 +23,36 @@
 
       <a href="{{ routes.root_url }}" class="header__logo">
         {%- if section.settings.logo != blank -%}
-          {%- assign logo_width_2x = section.settings.logo_width | times: 2 -%}
+          {%- liquid
+            assign logo_alt = 'seo.brand' | t
+            assign logo_width_2x = section.settings.logo_width | times: 2
+            assign desktop_class = 'header__logo-image'
+            if section.settings.logo_mobile != blank
+              assign desktop_class = 'header__logo-image header__logo-image--desktop'
+            endif
+          -%}
           {{
             section.settings.logo
             | image_url: width: logo_width_2x
             | image_tag:
               width: section.settings.logo_width,
-              alt: shop.name,
+              alt: logo_alt,
               loading: 'eager',
-              class: 'header__logo-image',
-              style: 'max-width:var(--logo-width)'
+              fetchpriority: 'high',
+              class: desktop_class
           }}
+          {%- if section.settings.logo_mobile != blank -%}
+            {%- assign logo_mobile_width_2x = section.settings.logo_width_mobile | times: 2 -%}
+            {{
+              section.settings.logo_mobile
+              | image_url: width: logo_mobile_width_2x
+              | image_tag:
+                width: section.settings.logo_width_mobile,
+                alt: logo_alt,
+                loading: 'eager',
+                class: 'header__logo-image header__logo-image--mobile'
+            }}
+          {%- endif -%}
         {%- else -%}
           <span class="header__wordmark">
             <span class="header__wordmark-main">{{ section.settings.wordmark | default: shop.name }}</span>
@@ -255,7 +274,7 @@
 </drawer-panel>
 
 <style>
-  #shopify-section-{{ section.id }} { --logo-width: {{ section.settings.logo_width }}px; }
+  #shopify-section-{{ section.id }} { --logo-width: {{ section.settings.logo_width }}px; --logo-width-mobile: {{ section.settings.logo_width_mobile }}px; }
 </style>
 
 {% stylesheet %}
@@ -315,6 +334,31 @@
     display: inline-flex;
     align-items: center;
     text-decoration: none;
+  }
+
+  .header__logo-image {
+    display: block;
+    width: var(--logo-width);
+    max-width: 100%;
+    height: auto;
+  }
+
+  .header__logo-image--mobile {
+    display: none;
+  }
+
+  @media screen and (max-width: 989px) {
+    .header__logo-image {
+      width: var(--logo-width-mobile, var(--logo-width));
+    }
+
+    .header__logo-image--desktop {
+      display: none;
+    }
+
+    .header__logo-image--mobile {
+      display: block;
+    }
   }
 
   .header__wordmark {
@@ -684,11 +728,27 @@
       "type": "range",
       "id": "logo_width",
       "min": 60,
-      "max": 260,
+      "max": 320,
+      "step": 5,
+      "unit": "px",
+      "default": 200,
+      "label": "t:sections.header.settings.logo_width.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_mobile",
+      "label": "t:sections.header.settings.logo_mobile.label",
+      "info": "t:sections.header.settings.logo_mobile.info"
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "min": 60,
+      "max": 240,
       "step": 5,
       "unit": "px",
       "default": 130,
-      "label": "t:sections.header.settings.logo_width.label"
+      "label": "t:sections.header.settings.logo_width_mobile.label"
     },
     {
       "type": "text",
@@ -725,9 +785,18 @@
       "type": "select",
       "id": "sticky",
       "options": [
-        { "value": "none", "label": "t:sections.header.settings.sticky.options__1" },
-        { "value": "always", "label": "t:sections.header.settings.sticky.options__2" },
-        { "value": "on-scroll-up", "label": "t:sections.header.settings.sticky.options__3" }
+        {
+          "value": "none",
+          "label": "t:sections.header.settings.sticky.options__1"
+        },
+        {
+          "value": "always",
+          "label": "t:sections.header.settings.sticky.options__2"
+        },
+        {
+          "value": "on-scroll-up",
+          "label": "t:sections.header.settings.sticky.options__3"
+        }
       ],
       "default": "on-scroll-up",
       "label": "t:sections.header.settings.sticky.label"

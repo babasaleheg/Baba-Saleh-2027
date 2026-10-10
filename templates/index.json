@@ -567,7 +567,8 @@
         "brand_16": {
           "type": "brand",
           "settings": {
-            "name": "Baba Saleh"
+            "name": "Baba Saleh",
+            "logo": "shopify://shop_images/baba-saleh-logo-desktop.png"
           }
         }
       },

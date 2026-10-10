@@ -87,7 +87,9 @@
     "sections": {},
     "color_highlight": "#FFD60A",
     "color_highlight_text": "#0A0A0A",
-    "card_image_style": "cutout"
+    "card_image_style": "cutout",
+    "favicon": "shopify://shop_images/baba-saleh-favicon.png",
+    "share_image": "shopify://shop_images/baba-saleh-share.jpg"
   },
   "presets": {
     "Default": {

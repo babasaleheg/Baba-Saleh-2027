@@ -301,6 +301,13 @@
         },
         "auto_menu_images": {
           "label": "Show collection images in mega menu"
+        },
+        "logo_mobile": {
+          "label": "Mobile logo",
+          "info": "Shown on phones and tablets. Leave empty to use the main logo."
+        },
+        "logo_width_mobile": {
+          "label": "Mobile logo width"
         }
       },
       "blocks": {
