@@ -134,6 +134,7 @@
       <h3 class="card__title">
         <a href="{{ product.url }}" class="card__link">{{ product.title }}</a>
       </h3>
+      {%- render 'product-category', product: product, class: 'card__category' -%}
       {% render 'price', product: product %}
       {%- if color_option and color_option.values.size > 1 -%}
         <div class="card__swatches">

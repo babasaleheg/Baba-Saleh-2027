@@ -76,6 +76,7 @@
 
             {%- when 'title' -%}
               <h1 class="product__title h2" {{ block.shopify_attributes }}>{{ product.title }}</h1>
+              {%- render 'product-category', product: product, style: 'trail' -%}
 
             {%- when 'price' -%}
               <div class="product__price" data-price-container {{ block.shopify_attributes }}>

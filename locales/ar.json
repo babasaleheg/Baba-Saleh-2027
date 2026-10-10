@@ -44,6 +44,7 @@
   },
   "products": {
     "product": {
+      "category": "الفئة",
       "add_to_cart": "أضف إلى السلة",
       "added": "تمت الإضافة إلى السلة",
       "sold_out": "نفدت الكمية",

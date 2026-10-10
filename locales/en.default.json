@@ -44,6 +44,7 @@
   },
   "products": {
     "product": {
+      "category": "Category",
       "add_to_cart": "Add to cart",
       "added": "Added to your cart",
       "sold_out": "Sold out",

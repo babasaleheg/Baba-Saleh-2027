@@ -733,6 +733,53 @@ h4,
   z-index: 1;
 }
 
+/* Faded category link (product card + product page) */
+.product-category {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-muted);
+}
+
+.product-category__link {
+  color: var(--color-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.product-category__link:hover,
+.product-category__link:focus-visible {
+  color: var(--color-fg);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.product-category--trail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+}
+
+.product-category__sep {
+  opacity: 0.6;
+}
+
+[dir='rtl'] .product-category__sep {
+  transform: scaleX(-1);
+}
+
+/* Sits above the card's full-cover link so it stays clickable */
+.card__category {
+  position: relative;
+  z-index: 2;
+  justify-self: start;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .card__swatches {
   display: flex;
   gap: 0.25rem;
