@@ -3,14 +3,20 @@
 Usage (stdlib only):
     python3 sync.py fetch      # download Woo products, variations, orders + Shopify catalog into DATA_DIR
     python3 sync.py products   # create missing products, fix changed ones, correct stock, publish
-    python3 sync.py orders     # import Woo orders as backdated Shopify orders (no emails, no stock change)
+    python3 sync.py orders     # import Woo orders as backdated Shopify orders (no emails, no stock change);
+                               # cancelled Woo orders become draft orders so they never count as sales
+    python3 sync.py cancelled-to-drafts   # one-off: move already-imported cancelled orders to draft orders
 
 Env: WC_CONSUMER_KEY, WC_CONSUMER_SECRET, and SHOPIFY_ADMIN_TOKEN or SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET,
      WC_URL (default https://babasaleh.com), SHOPIFY_STORE (default babasaleh.myshopify.com),
      DATA_DIR (default ./woo_data)
 
 Every step is safe to re-run: products are upserted by handle and orders are
-skipped when a Shopify order tagged woo-<id> already exists.
+skipped when a Shopify order or draft order tagged woo-<id> already exists.
+
+Cancelled orders are kept as draft orders, not cancelled orders: Shopify books a
+cancellation as a sales reversal on the day it happens (it can't be backdated),
+so importing cancelled orders would put one large negative day in the reports.
 """
 import base64, glob, html, json, os, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
 
@@ -186,10 +192,11 @@ def products():
 # ---------------------------------------------------------------- orders
 ORDER_CREATE = """mutation($order: OrderCreateOrderInput!, $options: OrderCreateOptionsInput) {
   orderCreate(order: $order, options: $options) { order { id name } userErrors { field message code } } }"""
-ORDER_CANCEL = """mutation($id: ID!) { orderCancel(orderId: $id, reason: OTHER, refund: false, restock: false,
-  notifyCustomer: false, staffNote: "Cancelled in WooCommerce") {
-  job { id } orderCancelUserErrors { field message code } } }"""
-ORDER_EXISTS = """query($q: String!) { orders(first: 1, query: $q) { nodes { id } } }"""
+DRAFT_CREATE = """mutation($input: DraftOrderInput!) {
+  draftOrderCreate(input: $input) { draftOrder { id name } userErrors { field message } } }"""
+ORDER_DELETE = """mutation($id: ID!) { orderDelete(orderId: $id) { deletedId userErrors { field message } } }"""
+ORDER_EXISTS = """query($q: String!) { orders(first: 1, query: $q) { nodes { id } } draftOrders(first: 1, query: $q) { nodes { id } } }"""
+CUSTOMER_BY_EMAIL = """query($q: String!) { customers(first: 1, query: $q) { nodes { id } } }"""
 
 
 def money(x):
@@ -230,95 +237,178 @@ def variant_index():
     return idx
 
 
-def orders():
+def load_orders():
     P = {p["id"]: p for p in map(json.loads, open(f"{D}/products.ndjson"))}
     V = {v["id"]: v for f in glob.glob(f"{D}/var/*.json") for v in json.load(open(f))}
-    idx = variant_index()
+    O = sorted(map(json.loads, open(f"{D}/orders.ndjson")), key=lambda o: o["id"])
+    return P, V, variant_index(), O
+
+
+def build_order(o, P, V, idx, stats):
+    """Woo order -> OrderCreateOrderInput."""
+    lines, discount = [], 0.0
+    for li in o["line_items"]:
+        qty = li["quantity"] or 1
+        unit = float(li["subtotal"]) / qty
+        discount += float(li["subtotal"]) - float(li["total"])
+        line = {"quantity": qty, "priceSet": money(unit)}
+        p = P.get(li["product_id"])
+        # match on option values only: Woo attribute labels don't always equal Shopify option names
+        want = {str(m["display_value"]).strip().lower() for m in li["meta_data"] if not m["key"].startswith("_")}
+        if li["variation_id"] in V:
+            want |= {a["option"].strip().lower() for a in V[li["variation_id"]]["attributes"] if a["option"]}
+        cands = idx.get(urllib.parse.unquote(p["slug"]), []) if p else []
+        match = [vid for opts, vid in cands if opts <= want and (opts or len(cands) == 1)]
+        if match:
+            line["variantId"] = match[0]
+        else:
+            stats["custom_lines"] += 1
+            line.update(title=html.unescape(li["name"].replace("<span> - </span>", " - ")), sku=li["sku"] or None)
+        lines.append(line)
+    status = o["status"]
+    order = {
+        "name": f"#{o['number']}", "currency": "EGP", "processedAt": o["date_created_gmt"] + "Z",
+        "email": o["billing"]["email"] or None, "phone": phone(o["billing"]["phone"]),
+        "billingAddress": address(o["billing"]), "shippingAddress": address(o["shipping"] if o["shipping"]["address_1"] else o["billing"]),
+        "lineItems": lines, "note": o["customer_note"] or None,
+        "tags": ["woocommerce", f"woo-{o['id']}", f"woo-status-{status}"],
+        "sourceIdentifier": str(o["id"]), "sourceName": "woocommerce",
+        "shippingLines": [{"title": s["method_title"], "code": s["method_id"], "priceSet": money(s["total"])} for s in o["shipping_lines"]],
+        "financialStatus": "PAID" if status == "completed" else "PENDING",
+    }
+    if o["billing"]["email"]:
+        order["customer"] = {"toUpsert": {"email": o["billing"]["email"], "firstName": o["billing"]["first_name"],
+                                          "lastName": o["billing"]["last_name"]}}
+    if discount > 0.005:
+        order["discountCode"] = {"itemFixedDiscountCode": {"code": "WOO-DISCOUNT", "amountSet": money(discount)}}
+    if status == "completed":
+        order["fulfillmentStatus"] = "FULFILLED"
+        order["transactions"] = [{"kind": "SALE", "status": "SUCCESS", "gateway": o["payment_method_title"] or "Cash on Delivery",
+                                  "amountSet": money(o["total"]), "processedAt": (o["date_paid_gmt"] or o["date_created_gmt"]) + "Z"}]
+    if o["date_completed_gmt"] and status == "completed":
+        order["closedAt"] = o["date_completed_gmt"] + "Z"
+    return {k: v for k, v in order.items() if v not in (None, [], "")}
+
+
+def as_draft(order, o):
+    """OrderCreateOrderInput -> DraftOrderInput, for cancelled Woo orders (drafts never count as sales)."""
+    amount = lambda m: {"amount": m["shopMoney"]["amount"], "currencyCode": "EGP"}
+    lines = []
+    for li in order["lineItems"]:
+        if "variantId" in li:
+            lines.append({"variantId": li["variantId"], "quantity": li["quantity"], "priceOverride": amount(li["priceSet"])})
+        else:
+            lines.append({k: v for k, v in {"title": li["title"], "sku": li.get("sku"), "quantity": li["quantity"],
+                                            "originalUnitPriceWithCurrency": amount(li["priceSet"])}.items() if v})
+    placed = o["date_created_gmt"][:10]
+    note = f"Cancelled WooCommerce order {order['name']}, placed {placed}. Kept for records; not a sale."
+    draft = {
+        "lineItems": lines, "email": order.get("email"), "phone": order.get("phone"),
+        "billingAddress": order.get("billingAddress"), "shippingAddress": order.get("shippingAddress"),
+        "note": note + (f"\n\nCustomer note: {order['note']}" if order.get("note") else ""),
+        "tags": order["tags"] + ["woo-cancelled"], "sourceName": "woocommerce", "presentmentCurrencyCode": "EGP",
+    }
+    if order.get("shippingLines"):
+        s = order["shippingLines"][0]
+        draft["shippingLine"] = {"title": s["title"], "priceWithCurrency": amount(s["priceSet"])}
+    if order.get("discountCode"):
+        d = order["discountCode"]["itemFixedDiscountCode"]["amountSet"]["shopMoney"]["amount"]
+        draft["appliedDiscount"] = {"title": "WOO-DISCOUNT", "value": float(d), "valueType": "FIXED_AMOUNT"}
+    if order.get("email"):
+        hit = gql(CUSTOMER_BY_EMAIL, {"q": f"email:'{order['email']}'"})["customers"]["nodes"]
+        if hit:
+            draft["purchasingEntity"] = {"customerId": hit[0]["id"]}
+    return {k: v for k, v in draft.items() if v not in (None, [], "")}
+
+
+def create_with_retries(mutation, field, payload_key, payload, extra=None):
+    """Run a create mutation, retrying without province / phone / email when Shopify rejects them."""
+    vars_ = lambda: dict({payload_key: payload}, **(extra or {}))
+    r = gql(mutation, vars_())[field]
+    for bad in ("province", "phone", "email"):
+        if r["userErrors"] and any(bad in json.dumps(e).lower() for e in r["userErrors"]):
+            if bad == "province":
+                for a in ("billingAddress", "shippingAddress"):
+                    (payload.get(a) or {}).pop("provinceCode", None)
+            elif bad == "phone":
+                payload.pop("phone", None)
+                for a in ("billingAddress", "shippingAddress"):
+                    (payload.get(a) or {}).pop("phone", None)
+            else:  # e.g. test@test.com: "invalid domain name"
+                payload.pop("email", None)
+                payload.pop("customer", None)
+                payload.pop("purchasingEntity", None)
+            r = gql(mutation, vars_())[field]
+    return r
+
+
+def orders():
+    P, V, idx, O = load_orders()
     done_path = f"{D}/orders_done.json"
     done = json.load(open(done_path)) if os.path.exists(done_path) else {}
-    O = sorted(map(json.loads, open(f"{D}/orders.ndjson")), key=lambda o: o["id"])
-    stats = {"created": 0, "skipped": 0, "failed": 0, "custom_lines": 0}
+    stats = {"created": 0, "drafts": 0, "skipped": 0, "failed": 0, "custom_lines": 0}
+    opts = {"sendReceipt": False, "sendFulfillmentReceipt": False, "inventoryBehaviour": "BYPASS"}
     for o in O:
         key = str(o["id"])
         if key in done:
             stats["skipped"] += 1
             continue
-        hit = gql(ORDER_EXISTS, {"q": f"tag:'woo-{o['id']}'"})["orders"]["nodes"]
+        hit = gql(ORDER_EXISTS, {"q": f"tag:'woo-{o['id']}'"})
+        hit = hit["orders"]["nodes"] + hit["draftOrders"]["nodes"]
         if hit:
             done[key] = hit[0]["id"]
             stats["skipped"] += 1
             continue
-        lines, discount = [], 0.0
-        for li in o["line_items"]:
-            qty = li["quantity"] or 1
-            unit = float(li["subtotal"]) / qty
-            discount += float(li["subtotal"]) - float(li["total"])
-            line = {"quantity": qty, "priceSet": money(unit)}
-            p = P.get(li["product_id"])
-            # match on option values only: Woo attribute labels don't always equal Shopify option names
-            want = {str(m["display_value"]).strip().lower() for m in li["meta_data"] if not m["key"].startswith("_")}
-            if li["variation_id"] in V:
-                want |= {a["option"].strip().lower() for a in V[li["variation_id"]]["attributes"] if a["option"]}
-            cands = idx.get(urllib.parse.unquote(p["slug"]), []) if p else []
-            match = [vid for opts, vid in cands if opts <= want and (opts or len(cands) == 1)]
-            if match:
-                line["variantId"] = match[0]
-            else:
-                stats["custom_lines"] += 1
-                line.update(title=html.unescape(li["name"].replace("<span> - </span>", " - ")), sku=li["sku"] or None)
-            lines.append(line)
-        status = o["status"]
-        order = {
-            "name": f"#{o['number']}", "currency": "EGP", "processedAt": o["date_created_gmt"] + "Z",
-            "email": o["billing"]["email"] or None, "phone": phone(o["billing"]["phone"]),
-            "billingAddress": address(o["billing"]), "shippingAddress": address(o["shipping"] if o["shipping"]["address_1"] else o["billing"]),
-            "lineItems": lines, "note": o["customer_note"] or None,
-            "tags": ["woocommerce", f"woo-{o['id']}", f"woo-status-{status}"],
-            "sourceIdentifier": key, "sourceName": "woocommerce",
-            "shippingLines": [{"title": s["method_title"], "code": s["method_id"], "priceSet": money(s["total"])} for s in o["shipping_lines"]],
-            "financialStatus": "PAID" if status == "completed" else "PENDING",
-        }
-        if o["billing"]["email"]:
-            order["customer"] = {"toUpsert": {"email": o["billing"]["email"], "firstName": o["billing"]["first_name"],
-                                              "lastName": o["billing"]["last_name"]}}
-        if discount > 0.005:
-            order["discountCode"] = {"itemFixedDiscountCode": {"code": "WOO-DISCOUNT", "amountSet": money(discount)}}
-        if status == "completed":
-            order["fulfillmentStatus"] = "FULFILLED"
-            order["transactions"] = [{"kind": "SALE", "status": "SUCCESS", "gateway": o["payment_method_title"] or "Cash on Delivery",
-                                      "amountSet": money(o["total"]), "processedAt": (o["date_paid_gmt"] or o["date_created_gmt"]) + "Z"}]
-        if o["date_completed_gmt"] and status == "completed":
-            order["closedAt"] = o["date_completed_gmt"] + "Z"
-        order = {k: v for k, v in order.items() if v not in (None, [], "")}
-        opts = {"sendReceipt": False, "sendFulfillmentReceipt": False, "inventoryBehaviour": "BYPASS"}
-        r = gql(ORDER_CREATE, {"order": order, "options": opts})["orderCreate"]
-        if r["userErrors"] and any("province" in json.dumps(e).lower() for e in r["userErrors"]):
-            for a in ("billingAddress", "shippingAddress"):
-                order[a].pop("provinceCode", None)
-            r = gql(ORDER_CREATE, {"order": order, "options": opts})["orderCreate"]
-        if r["userErrors"] and any("phone" in json.dumps(e).lower() for e in r["userErrors"]):
-            order.pop("phone", None)
-            for a in ("billingAddress", "shippingAddress"):
-                order[a].pop("phone", None)
-            r = gql(ORDER_CREATE, {"order": order, "options": opts})["orderCreate"]
-        if r["userErrors"] or not r["order"]:
+        order = build_order(o, P, V, idx, stats)
+        if o["status"] == "cancelled":
+            r = create_with_retries(DRAFT_CREATE, "draftOrderCreate", "input", as_draft(order, o))
+            created = r.get("draftOrder")
+        else:
+            r = create_with_retries(ORDER_CREATE, "orderCreate", "order", order, {"options": opts})
+            created = r.get("order")
+        if r["userErrors"] or not created:
             stats["failed"] += 1
             log("FAILED order", o["number"], r["userErrors"])
             continue
-        if status == "cancelled":
-            c = gql(ORDER_CANCEL, {"id": r["order"]["id"]})["orderCancel"]
-            if c["orderCancelUserErrors"]:
-                log("cancel failed", o["number"], c["orderCancelUserErrors"])
-        done[key] = r["order"]["id"]
-        stats["created"] += 1
-        if os.environ.get("ORDER_LIMIT") and stats["created"] >= int(os.environ["ORDER_LIMIT"]):
+        done[key] = created["id"]
+        stats["drafts" if o["status"] == "cancelled" else "created"] += 1
+        if os.environ.get("ORDER_LIMIT") and stats["created"] + stats["drafts"] >= int(os.environ["ORDER_LIMIT"]):
             break
-        if stats["created"] % 25 == 0:
+        if (stats["created"] + stats["drafts"]) % 25 == 0:
             json.dump(done, open(done_path, "w"))
             log("orders", stats)
     json.dump(done, open(done_path, "w"))
     log("orders done", stats)
 
 
+def cancelled_to_drafts():
+    """Replace already-imported cancelled orders with draft orders, then delete the cancelled order."""
+    P, V, idx, O = load_orders()
+    stats = {"drafts": 0, "deleted": 0, "skipped": 0, "failed": 0, "custom_lines": 0}
+    for o in O:
+        if o["status"] != "cancelled":
+            continue
+        found = gql(ORDER_EXISTS, {"q": f"tag:'woo-{o['id']}'"})
+        orders_, drafts = found["orders"]["nodes"], found["draftOrders"]["nodes"]
+        if not drafts:
+            r = create_with_retries(DRAFT_CREATE, "draftOrderCreate", "input", as_draft(build_order(o, P, V, idx, stats), o))
+            if r["userErrors"] or not r["draftOrder"]:
+                stats["failed"] += 1
+                log("FAILED draft", o["number"], r["userErrors"])
+                continue  # keep the order: never delete without a draft in place
+            stats["drafts"] += 1
+        else:
+            stats["skipped"] += 1
+        for n in orders_:
+            d = gql(ORDER_DELETE, {"id": n["id"]})["orderDelete"]
+            if d["userErrors"]:
+                log("delete failed", o["number"], d["userErrors"])
+            else:
+                stats["deleted"] += 1
+        if os.environ.get("ORDER_LIMIT") and stats["drafts"] >= int(os.environ["ORDER_LIMIT"]):
+            break
+    log("cancelled-to-drafts done", stats)
+
 if __name__ == "__main__":
-    {"fetch": fetch, "products": products, "orders": orders, "export": export_shopify}[sys.argv[1]]()
+    {"fetch": fetch, "products": products, "orders": orders, "export": export_shopify,
+     "cancelled-to-drafts": cancelled_to_drafts}[sys.argv[1]]()
