@@ -88,7 +88,7 @@
           "settings": {
             "icon": "return",
             "title": "Easy returns",
-            "text": "14 days, no hassle"
+            "text": "7 days, no hassle"
           }
         },
         "usp_4": {
@@ -699,7 +699,7 @@
           "type": "question",
           "settings": {
             "question": "What is your return policy?",
-            "answer": "<p>You can return eligible items within 14 days. See our <a href=\"/policies/refund-policy\">refund policy</a> for details.</p>"
+            "answer": "<p>You can return eligible items within 7 days. See our <a href=\"/policies/refund-policy\">refund policy</a> for details.</p>"
           }
         },
         "faq_5": {

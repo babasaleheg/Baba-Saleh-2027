@@ -28,7 +28,7 @@
           "settings": {
             "perk_1": "Delivery in 2–5 days across Egypt",
             "perk_2": "Cash on delivery available",
-            "perk_3": "Easy 14-day returns"
+            "perk_3": "Easy 7-day returns"
           }
         },
         "description": {
@@ -41,7 +41,7 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Delivery & returns",
-            "content": "<p>We deliver to every governorate in Egypt. Orders are usually delivered within 2–5 working days. Unused items can be returned within 14 days.</p>"
+            "content": "<p>We deliver to every governorate in Egypt. Orders are usually delivered within 2–5 working days. Unused items can be returned within 7 days of delivery.</p>"
           }
         },
         "share": {
