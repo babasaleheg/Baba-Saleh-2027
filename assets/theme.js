@@ -693,13 +693,21 @@
       // data-end is a Unix timestamp (seconds) rendered in the shop's time zone by Liquid.
       const end = Number(this.dataset.end) * 1000;
       this.fixedEnd = end > 0 ? end : null;
+      this.cycle = Number(this.dataset.cycleHours) * 3600 * 1000 || 0;
       this.#tick();
       this.timer = setInterval(() => this.#tick(), 1000);
     }
 
-    // With no (or a past) end date the timer runs to the next local midnight, every day.
+    // With no (or a past) end date the timer restarts every `cycle` (e.g. 4½ days), counted from a
+    // fixed start (1 Jan 2026, 00:00 Cairo) so every visitor sees the same time left;
+    // with no cycle it runs to the next local midnight, every day.
     #target() {
-      if (this.fixedEnd && this.fixedEnd > Date.now()) return this.fixedEnd;
+      const now = Date.now();
+      if (this.fixedEnd && this.fixedEnd > now) return this.fixedEnd;
+      if (this.cycle > 0) {
+        const start = Date.UTC(2025, 11, 31, 22);
+        return start + (Math.floor((now - start) / this.cycle) + 1) * this.cycle;
+      }
       const midnight = new Date();
       midnight.setHours(24, 0, 0, 0);
       return midnight.getTime();

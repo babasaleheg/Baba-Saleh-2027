@@ -11,7 +11,7 @@
       {%- if section.settings.eyebrow != blank -%}
         <span class="badge badge--highlight">{{ section.settings.eyebrow }}</span>
       {%- endif -%}
-      <countdown-timer class="flash-sale__timer" data-end="{% if section.settings.end_date != blank %}{{ section.settings.end_date | date: '%s' }}{% endif %}" role="timer" aria-live="off">
+      <countdown-timer class="flash-sale__timer" data-end="{% if section.settings.end_date != blank %}{{ section.settings.end_date | date: '%s' }}{% endif %}" data-cycle-hours="{{ section.settings.cycle_hours }}" role="timer" aria-live="off">
         <span class="flash-sale__unit"><span data-days>00</span><small>{{ 'sections.flash_sale.days' | t }}</small></span>
         <span class="flash-sale__unit"><span data-hours>00</span><small>{{ 'sections.flash_sale.hours' | t }}</small></span>
         <span class="flash-sale__unit"><span data-minutes>00</span><small>{{ 'sections.flash_sale.minutes' | t }}</small></span>
@@ -179,6 +179,13 @@
       "id": "end_date",
       "label": "t:sections.flash_sale.settings.end_date.label",
       "info": "t:sections.flash_sale.settings.end_date.info"
+    },
+    {
+      "type": "number",
+      "id": "cycle_hours",
+      "default": 108,
+      "label": "Restart the countdown every (hours)",
+      "info": "Used when no sale end date is set. 108 hours = 4½ days. Every visitor sees the same countdown. Set 0 to count down to midnight daily."
     },
     { "type": "collection", "id": "collection", "label": "t:settings.collection" },
     { "type": "range", "id": "products_to_show", "min": 4, "max": 16, "step": 1, "default": 10, "label": "t:sections.featured_collection.settings.products_to_show.label" },
