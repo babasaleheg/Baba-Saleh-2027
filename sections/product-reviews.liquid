@@ -1,0 +1,533 @@
+{%- comment -%}
+  Product reviews, no app. Data comes from product metafields written by
+  `tools/woo_to_shopify/sync.py reviews-sync` (see docs/reviews.md):
+    reviews.rating / reviews.rating_count  average + count of approved reviews
+    babasaleh.reviews                      approved product_review metaobjects, newest first
+  The summary, bars and list render only when there is at least one approved review.
+  "Write a review" posts Shopify's contact form (hCaptcha / bot protection is automatic);
+  the owner receives it by email and approves it in admin.
+{%- endcomment -%}
+{%- liquid
+  assign rating_count = product.metafields.reviews.rating_count.value | default: 0
+  assign rating = product.metafields.reviews.rating.value.rating
+  assign reviews = product.metafields.babasaleh.reviews.value
+  assign has_reviews = false
+  if rating_count > 0 and rating != blank
+    assign has_reviews = true
+  endif
+  assign page_size = section.settings.reviews_per_page
+  assign form_id = 'ReviewForm-' | append: section.id
+  assign heading = section.settings.heading
+  if heading == blank
+    assign heading = 'reviews.heading' | t
+  endif
+-%}
+
+{%- if has_reviews or section.settings.show_form -%}
+  <section
+    id="reviews"
+    class="section product-reviews color-{{ section.settings.color_scheme }}"
+    style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+    aria-labelledby="ReviewsHeading-{{ section.id }}"
+  >
+    <product-reviews class="page-width product-reviews__grid" data-page-size="{{ page_size }}">
+      <div class="product-reviews__aside">
+        <h2 class="h2" id="ReviewsHeading-{{ section.id }}">{{ heading | escape }}</h2>
+
+        {%- if has_reviews -%}
+          {%- assign rating_rounded = rating | round: 1 -%}
+          <div class="product-reviews__score">
+            <p class="product-reviews__average" aria-hidden="true">{{ rating_rounded }}</p>
+            <div>
+              {% render 'rating-stars', rating: rating, label: false, class: 'stars--large' %}
+              <p class="product-reviews__based text-muted" aria-hidden="true">{{ 'reviews.based_on' | t: count: rating_count }}</p>
+              <p class="visually-hidden">{{ 'reviews.summary_label' | t: rating: rating_rounded, count: rating_count }}</p>
+            </div>
+          </div>
+
+          {%- if reviews.size > 0 -%}
+            <ul class="product-reviews__bars" role="list">
+              {%- for stars in (1..5) reversed -%}
+                {%- liquid
+                  assign star_count = 0
+                  for review in reviews
+                    assign review_stars = review.rating.value.rating | round
+                    if review_stars == stars
+                      assign star_count = star_count | plus: 1
+                    endif
+                  endfor
+                  assign star_pct = star_count | times: 100.0 | divided_by: reviews.size | round
+                -%}
+                <li class="product-reviews__bar-row">
+                  <span class="visually-hidden">{{ 'reviews.distribution' | t: stars: stars, count: star_count }}</span>
+                  <span class="product-reviews__bar-label" aria-hidden="true">{{ stars }}{% render 'icon', icon: 'star' %}</span>
+                  <span class="product-reviews__bar" aria-hidden="true"><span style="inline-size: {{ star_pct }}%"></span></span>
+                  <span class="product-reviews__bar-count text-muted" aria-hidden="true">{{ star_count }}</span>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        {%- elsif section.settings.show_form -%}
+          <p class="text-muted">{{ 'reviews.empty' | t }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.show_form -%}
+          <review-form
+            class="review-form"
+            data-error-fast="{{ 'reviews.form.too_fast' | t | escape }}"
+            data-error-blocked="{{ 'reviews.form.blocked' | t | escape }}"
+          >
+            {%- form 'contact', id: form_id, class: 'review-form__form' -%}
+              {%- if form.posted_successfully? -%}
+                <p class="form-message review-form__message" role="status" tabindex="-1" data-review-message>
+                  {% render 'icon', icon: 'check' %}
+                  {{ 'reviews.form.success' | t }}
+                </p>
+              {%- else -%}
+                <details class="review-form__details" {% if form.errors %}open{% endif %}>
+                  <summary class="button button--secondary review-form__toggle">{{ 'reviews.write' | t }}</summary>
+                  <div class="review-form__fields">
+                    {%- if form.errors -%}
+                      <p class="form-message form-message--error" role="alert" tabindex="-1" data-review-message>{{ form.errors | default_errors }}</p>
+                    {%- endif -%}
+                    <p class="form-message form-message--error" role="alert" data-review-error hidden></p>
+
+                    <input type="hidden" name="contact[type]" value="review">
+                    <input type="hidden" name="contact[product]" value="{{ product.title | escape }}">
+                    <input type="hidden" name="contact[product_handle]" value="{{ product.handle }}">
+                    <input type="hidden" name="contact[product_id]" value="{{ product.id }}">
+                    <input type="hidden" name="contact[product_url]" value="{{ request.origin }}{{ product.url }}">
+                    <input type="hidden" name="contact[language]" value="{{ request.locale.iso_code }}">
+
+                    <fieldset class="star-picker">
+                      <legend class="field__label">{{ 'reviews.form.rating' | t }}</legend>
+                      <div class="star-picker__stars">
+                        {%- for value in (1..5) -%}
+                          <input
+                            class="star-picker__input visually-hidden"
+                            type="radio"
+                            id="{{ form_id }}-rating-{{ value }}"
+                            name="contact[rating]"
+                            value="{{ value }}"
+                            {% if forloop.first %}
+                              required
+                            {% endif %}
+                          >
+                          <label class="star-picker__label" for="{{ form_id }}-rating-{{ value }}">
+                            {% render 'icon', icon: 'star' %}
+                            <span class="visually-hidden">{{ 'reviews.form.star' | t: count: value }}</span>
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                    </fieldset>
+
+                    <div class="field">
+                      <label class="field__label" for="{{ form_id }}-body">{{ 'reviews.form.comment' | t }}</label>
+                      <textarea
+                        class="field__input review-form__textarea"
+                        id="{{ form_id }}-body"
+                        name="contact[body]"
+                        rows="4"
+                        maxlength="500"
+                        required
+                        aria-describedby="{{ form_id }}-body-hint"
+                        placeholder="{{ 'reviews.form.comment_placeholder' | t | escape }}"
+                      >{{ form.body }}</textarea>
+                      <p class="review-form__hint text-muted" id="{{ form_id }}-body-hint">{{ 'reviews.form.comment_hint' | t }}</p>
+                    </div>
+
+                    <div class="review-form__row">
+                      <div class="field">
+                        <label class="field__label" for="{{ form_id }}-name">{{ 'reviews.form.name' | t }}</label>
+                        <input
+                          class="field__input"
+                          type="text"
+                          id="{{ form_id }}-name"
+                          name="contact[name]"
+                          maxlength="60"
+                          autocomplete="name"
+                          required
+                          value="{% if form.name %}{{ form.name | escape }}{% elsif customer %}{{ customer.first_name | escape }}{% endif %}"
+                        >
+                      </div>
+                      <div class="field">
+                        <label class="field__label" for="{{ form_id }}-email">{{ 'reviews.form.email' | t }}</label>
+                        <input
+                          class="field__input"
+                          type="email"
+                          id="{{ form_id }}-email"
+                          name="contact[email]"
+                          autocomplete="email"
+                          spellcheck="false"
+                          required
+                          aria-describedby="{{ form_id }}-email-hint"
+                          value="{% if form.email %}{{ form.email | escape }}{% elsif customer %}{{ customer.email | escape }}{% endif %}"
+                        >
+                        <p class="review-form__hint text-muted" id="{{ form_id }}-email-hint">{{ 'reviews.form.email_note' | t }}</p>
+                      </div>
+                    </div>
+
+                    {%- comment -%} Honeypot: invisible to people, filled in by bots. {%- endcomment -%}
+                    <div class="review-form__hp" aria-hidden="true">
+                      <label for="{{ form_id }}-website">{{ 'reviews.form.honeypot' | t }}</label>
+                      <input type="text" id="{{ form_id }}-website" name="contact[website]" tabindex="-1" autocomplete="off" data-honeypot>
+                    </div>
+
+                    <p class="review-form__hint text-muted">{{ 'reviews.form.moderation_note' | t }}</p>
+                    <button type="submit" class="button review-form__submit">{{ 'reviews.form.submit' | t }}</button>
+                  </div>
+                </details>
+              {%- endif -%}
+            {%- endform -%}
+          </review-form>
+        {%- endif -%}
+      </div>
+
+      {%- if has_reviews and reviews.size > 0 -%}
+        <div class="product-reviews__main">
+          <ol class="product-reviews__list" role="list">
+            {%- for review in reviews -%}
+              {%- liquid
+                assign review_rating = review.rating.value.rating
+                assign author = review.author_name.value | strip
+                if author == blank
+                  assign author = 'reviews.anonymous' | t
+                endif
+              -%}
+              <li class="review" data-review tabindex="-1" {% if forloop.index > page_size %}hidden{% endif %}>
+                <div class="review__head">
+                  {% render 'rating-stars', rating: review_rating %}
+                  {%- if review.verified_buyer.value -%}
+                    <span class="review__verified">{% render 'icon', icon: 'shield' %}{{ 'reviews.verified' | t }}</span>
+                  {%- endif -%}
+                </div>
+                {%- if review.title.value != blank -%}
+                  <h3 class="review__title">{{ review.title.value | escape }}</h3>
+                {%- endif -%}
+                {%- if review.body.value != blank -%}
+                  <p class="review__body">{{ review.body.value | escape | newline_to_br }}</p>
+                {%- endif -%}
+                <p class="review__meta text-muted">
+                  <span class="review__author">{{ author | escape }}</span>
+                  {%- if review.submitted_at.value != blank -%}
+                    <span aria-hidden="true">·</span>
+                    {{ review.submitted_at.value | time_tag: format: 'review_date' }}
+                  {%- endif -%}
+                </p>
+              </li>
+            {%- endfor -%}
+          </ol>
+          {%- if reviews.size > page_size -%}
+            <button type="button" class="button button--secondary product-reviews__more" data-reviews-more hidden>
+              {{ 'reviews.show_more' | t }}
+            </button>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </product-reviews>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .product-reviews,
+  .review-form__form {
+    scroll-margin-top: 5rem;
+  }
+
+  .product-reviews__grid {
+    display: grid;
+    gap: 2rem;
+  }
+
+  @media screen and (min-width: 990px) {
+    .product-reviews__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .product-reviews__aside {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+
+  .product-reviews__aside {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+  }
+
+  .product-reviews__score {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .product-reviews__average {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .product-reviews__based {
+    margin-block-start: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .product-reviews__bars {
+    display: grid;
+    gap: 0.375rem;
+    margin: 0;
+    padding: 0;
+    font-size: 0.8125rem;
+  }
+
+  .product-reviews__bar-row {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr) 2rem;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .product-reviews__bar-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 600;
+  }
+
+  .product-reviews__bar-label .icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    fill: var(--color-star);
+    stroke: none;
+  }
+
+  .product-reviews__bar {
+    height: 0.5rem;
+    border-radius: 999px;
+    background: rgba(var(--color-fg-rgb), 0.1);
+    overflow: hidden;
+  }
+
+  .product-reviews__bar > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-star);
+  }
+
+  .product-reviews__bar-count {
+    text-align: end;
+  }
+
+  .product-reviews__main {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+  }
+
+  .product-reviews__list {
+    display: grid;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .review {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: 1.25rem;
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .review:first-child {
+    padding-block-start: 0;
+  }
+
+  .review:focus {
+    outline: none;
+  }
+
+  .review__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+  }
+
+  .review__verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-success);
+  }
+
+  .review__verified .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .review__title {
+    font-family: var(--font-body-family);
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .review__body {
+    overflow-wrap: anywhere;
+  }
+
+  .review__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+  }
+
+  .review__author {
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+
+  /* Write a review */
+  .review-form__details > summary {
+    list-style: none;
+    width: fit-content;
+  }
+
+  .review-form__details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .review-form__details[open] > summary {
+    display: none;
+  }
+
+  .review-form__fields,
+  .review-form__form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .review-form__message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .review-form__message .icon {
+    flex: none;
+    color: var(--color-success);
+  }
+
+  .review-form__row {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .review-form__row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+
+  .review-form__textarea {
+    min-height: 7rem;
+    resize: vertical;
+  }
+
+  .review-form__hint {
+    font-size: 0.8125rem;
+  }
+
+  .review-form__submit {
+    justify-self: start;
+  }
+
+  .review-form__hp {
+    position: absolute;
+    inset-inline-start: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /* Star picker: native radios, so arrow keys, touch and screen readers just work */
+  .star-picker {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .star-picker legend {
+    padding: 0;
+    margin-block-end: 0.375rem;
+  }
+
+  .star-picker__stars {
+    display: flex;
+    width: fit-content;
+  }
+
+  .star-picker__label {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    cursor: pointer;
+    color: rgba(var(--color-fg-rgb), 0.25);
+    transition: color 0.12s ease, transform 0.12s ease;
+  }
+
+  .star-picker__label .icon {
+    width: 2rem;
+    height: 2rem;
+    fill: currentColor;
+    stroke: none;
+  }
+
+  /* Fill every star up to the checked / hovered one, then clear the ones after it */
+  .star-picker__stars:has(:checked) .star-picker__label,
+  .star-picker__stars:hover .star-picker__label {
+    color: var(--color-star);
+  }
+
+  .star-picker__stars:not(:hover) .star-picker__input:checked + .star-picker__label ~ .star-picker__label,
+  .star-picker__stars:hover .star-picker__label:hover ~ .star-picker__label {
+    color: rgba(var(--color-fg-rgb), 0.25);
+  }
+
+  .star-picker__input:focus-visible + .star-picker__label {
+    outline: 2px solid var(--color-fg);
+    outline-offset: -2px;
+    border-radius: var(--radius-small);
+  }
+
+  .star-picker__label:active {
+    transform: scale(0.9);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.product_reviews.name",
+  "tag": "div",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    { "type": "text", "id": "heading", "label": "t:settings.heading", "info": "t:sections.product_reviews.settings.heading.info" },
+    { "type": "range", "id": "reviews_per_page", "min": 3, "max": 20, "step": 1, "default": 5, "label": "t:sections.product_reviews.settings.reviews_per_page.label" },
+    { "type": "checkbox", "id": "show_form", "default": true, "label": "t:sections.product_reviews.settings.show_form.label", "info": "t:sections.product_reviews.settings.show_form.info" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_bottom" }
+  ],
+  "presets": [{ "name": "t:sections.product_reviews.name" }]
+}
+{% endschema %}

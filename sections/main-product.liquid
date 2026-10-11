@@ -77,6 +77,12 @@
             {%- when 'title' -%}
               <h1 class="product__title h2" {{ block.shopify_attributes }}>{{ product.title }}</h1>
               {%- render 'product-category', product: product, style: 'trail' -%}
+              {%- assign rating_count = product.metafields.reviews.rating_count.value | default: 0 -%}
+              {%- if rating_count > 0 and product.metafields.reviews.rating.value != blank -%}
+                <a href="#reviews" class="product__rating">
+                  {%- render 'rating-stars', rating: product.metafields.reviews.rating.value.rating, count: rating_count -%}
+                </a>
+              {%- endif -%}
 
             {%- when 'price' -%}
               <div class="product__price" data-price-container {{ block.shopify_attributes }}>

@@ -13,7 +13,7 @@ A modern, bilingual (English / العربية) Online Store 2.0 theme for **Baba
 | --- | --- |
 | Header | Sticky glass header (hides on scroll down), 3-level mega menu with optional promo image, predictive search, one-tap **EN ⇄ ع** language switch, mobile drawer menu |
 | Home | Hero slideshow (desktop/mobile images, progress dots), perks bar, shop-by-sport circles, tabbed product carousels, promo tiles, scrolling marquee, bento category grid, brand logos, image with text, newsletter |
-| Product | Large-first-image gallery (swipe on mobile), colour swatches + size pills, low-stock pulse, delivery/COD/returns perks, accordions, WhatsApp/Facebook/X share, sticky add-to-cart bar, related products |
+| Product | Large-first-image gallery (swipe on mobile), colour swatches + size pills, low-stock pulse, delivery/COD/returns perks, accordions, WhatsApp/Facebook/X share, sticky add-to-cart bar, related products, customer reviews with moderation (no app — see [docs/reviews.md](docs/reviews.md)) |
 | Collection / search | Filter & sort drawer (Shopify Search & Discovery filters), active filter chips, AJAX filtering, "Load more" pagination |
 | Cart | Slide-out cart drawer + cart page, free-delivery progress bar, order note |
 | Global | Floating WhatsApp button, colour schemes, corner radius, pill/rounded buttons, scroll-reveal animations (respects reduced motion) |
