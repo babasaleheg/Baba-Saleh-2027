@@ -4,7 +4,10 @@
 {%- endcomment -%}
 <ul class="cart-items" role="list">
   {%- for item in cart.items -%}
-    <li class="cart-item" data-line="{{ forloop.index }}" data-key="{{ item.key }}">
+    {%- capture analytics_item -%}
+      {"item_id":{{ item.sku | default: item.product_id | json }},"item_name":{{ item.product.title | json }},"item_brand":{{ item.vendor | json }},"item_category":{{ item.product.type | json }},"item_variant":{{ item.variant.title | json }},"price":{{ item.final_price | divided_by: 100.0 | json }},"quantity":{{ item.quantity }}}
+    {%- endcapture -%}
+    <li class="cart-item" data-line="{{ forloop.index }}" data-key="{{ item.key }}" data-item="{{ analytics_item | strip | escape }}">
       <a href="{{ item.url }}" class="media media--square cart-item__media" tabindex="-1" aria-hidden="true">
         {%- if item.image -%}
           {{ item.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: item.product.title, sizes: '120px', widths: '120, 200, 300' }}

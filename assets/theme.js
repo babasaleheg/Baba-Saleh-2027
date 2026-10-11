@@ -176,6 +176,7 @@
     cartQueue = cartQueue.then(async () => {
       const item = scope.querySelector(`.cart-item[data-key="${CSS.escape(key)}"]`);
       item?.classList.add('is-loading');
+      const tracked = item && readItem(item);
       try {
         const response = await fetch(`${routes.cartChange}.js`, {
           method: 'POST',
@@ -183,6 +184,10 @@
           body: JSON.stringify({ id: key, quantity, sections: sectionIdsForCart(), sections_url: window.location.pathname }),
         });
         const cart = await readCartResponse(response);
+        if (tracked && quantity < tracked.quantity) {
+          const removed = { ...tracked, quantity: tracked.quantity - quantity };
+          pushEcommerce('remove_from_cart', { currency: currency(), value: removed.price * removed.quantity, items: [removed] });
+        }
         renderCartSections(cart.sections);
         updateCartCount(cart.item_count);
       } catch (error) {
@@ -333,6 +338,56 @@
       });
     }
   }
+
+  /* ---------- Product list analytics (view_item_list, select_item, remove_from_cart) ---------- */
+  const pushEcommerce = (event, ecommerce) => {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push({ event, ecommerce });
+    if (typeof window.gtag === 'function') window.gtag('event', event, ecommerce);
+  };
+  const readItem = (el) => {
+    try {
+      return JSON.parse(el.dataset.item);
+    } catch {
+      return null;
+    }
+  };
+  const listName = (el) =>
+    el.closest('section, .shopify-section')?.querySelector('h1, h2, [aria-selected="true"]')?.textContent.trim() || document.title;
+  const currency = () => window.theme?.currency || window.Shopify?.currency?.active;
+
+  const listObserver =
+    'IntersectionObserver' in window
+      ? new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              listObserver.unobserve(entry.target);
+              const name = listName(entry.target);
+              const items = [...entry.target.querySelectorAll('[data-item]')]
+                .map((card, index) => ({ ...readItem(card), index, item_list_name: name }))
+                .filter((item) => item.item_id);
+              if (items.length) pushEcommerce('view_item_list', { item_list_name: name, currency: currency(), items });
+            }
+          },
+          { threshold: 0.25 }
+        )
+      : null;
+  const observeLists = (root = document) => {
+    for (const list of root.querySelectorAll('[data-product-grid], [data-slider]')) {
+      if (list.dataset.listTracked || !list.querySelector('[data-item]')) continue;
+      list.dataset.listTracked = 'true';
+      listObserver?.observe(list);
+    }
+  };
+
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('.card__link');
+    const card = link?.closest('[data-item]');
+    const item = card && readItem(card);
+    if (item) pushEcommerce('select_item', { item_list_name: listName(card), currency: currency(), items: [{ ...item, item_list_name: listName(card) }] });
+  });
 
   /* ---------- Quick add on product cards ---------- */
   class QuickAdd extends HTMLElement {
@@ -1022,6 +1077,7 @@
   );
 
   function revealAll(root = document) {
+    observeLists(root);
     for (const el of root.querySelectorAll('[data-reveal]:not(.is-revealed)')) {
       if (revealObserver) revealObserver.observe(el);
       else el.classList.add('is-revealed');

@@ -53,7 +53,10 @@
     endfor
     assign quick_add_variants = product.variants | where: 'available'
   -%}
-  <article class="card card--{{ settings.card_image_style | default: 'cover' }}{% unless product.available %} card--sold-out{% endunless %}" {% if index != blank %}data-reveal style="--reveal-index: {{ index | modulo: 4 }}"{% endif %}>
+  {%- capture analytics_item -%}
+    {"item_id":{{ variant.sku | default: product.id | json }},"item_name":{{ product.title | json }},"item_brand":{{ product.vendor | json }},"item_category":{{ product.type | json }},"price":{{ card_variant.price | divided_by: 100.0 | json }}}
+  {%- endcapture -%}
+  <article class="card card--{{ settings.card_image_style | default: 'cover' }}{% unless product.available %} card--sold-out{% endunless %}" data-item="{{ analytics_item | strip | escape }}" {% if index != blank %}data-reveal style="--reveal-index: {{ index | modulo: 4 }}"{% endif %}>
     <div class="media card__media">
       {%- if first_image -%}
         {{

@@ -47,6 +47,7 @@
           added: {{ 'products.product.added' | t | json }}
         },
         cartType: {{ settings.cart_type | json }},
+        currency: {{ cart.currency.iso_code | json }},
         direction: {{ text_direction | json }}
       };
     </script>
