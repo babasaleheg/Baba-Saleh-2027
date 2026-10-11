@@ -1,7 +1,7 @@
 {%- comment -%}
   Language (and optional country/currency) switcher.
   - id_prefix: unique prefix for IDs
-  - compact: true shows a single toggle button (e.g. "ع" / "EN") for the header
+  - compact: true shows a single toggle button for the header (Egypt flag → Arabic, "EN" → English)
   - label: 'name' shows the full language name ("العربية") in compact mode
   - show_country: also show the country/currency selector
 {%- endcomment -%}
@@ -21,7 +21,7 @@
           {%- if label == 'name' -%}
             {{- language.endonym_name | capitalize -}}
           {%- elsif language.iso_code == 'ar' -%}
-            ع
+            {%- render 'flag' -%}
           {%- else -%}
             {{- language.iso_code | upcase -}}
           {%- endif -%}
@@ -87,10 +87,11 @@
     font-size: 0.875rem;
   }
 
-  .localization__toggle[lang='ar'] {
-    font-family: var(--font-heading-family);
-    font-size: 1.25rem;
-    line-height: 1;
+  .localization .flag {
+    width: 1.5rem;
+    height: 1rem;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
   }
 
   .localization__toggle:hover {
