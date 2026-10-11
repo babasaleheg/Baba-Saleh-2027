@@ -79,7 +79,10 @@
     overflow-y: hidden;
     scroll-snap-type: x proximity;
     scrollbar-width: none;
-    padding-block-end: 0.25rem;
+    /* Room for the hover ring (2px + 3px offset) so the scroller doesn't clip it */
+    padding: 0.375rem;
+    margin-inline: -0.375rem;
+    scroll-padding-inline: 0.375rem;
   }
 
   .collection-list__grid--circles::-webkit-scrollbar {
@@ -99,8 +102,10 @@
     transition: outline-color 0.2s ease;
   }
 
-  .collection-tile--circles .collection-tile__link:hover .collection-tile__media {
-    outline-color: var(--color-accent);
+  /* Same yellow as babasaleh.com */
+  .collection-tile--circles .collection-tile__link:hover .collection-tile__media,
+  .collection-tile--circles .collection-tile__link:focus-visible .collection-tile__media {
+    outline-color: #febd19;
   }
 
   .collection-tile--circles .collection-tile__title {
@@ -158,6 +163,8 @@
       grid-template-columns: repeat(var(--circle-cols, 8), minmax(0, 1fr));
       row-gap: 2rem;
       overflow: visible;
+      padding: 0;
+      margin-inline: 0;
     }
 
     .collection-tile--circles .collection-tile__media {
