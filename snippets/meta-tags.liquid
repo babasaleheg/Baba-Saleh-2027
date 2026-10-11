@@ -39,7 +39,7 @@
           assign seo_description = 'seo.home_description' | t
         endif
       when 'product'
-        assign product_price = product.price | money_without_trailing_zeros | strip_html
+        assign product_price = product.price | money_without_currency | remove: '.00' | prepend: 'EGP ' | strip_html
         assign seo_description = 'seo.product_description' | t: title: product.title, vendor: product.vendor, price: product_price
       when 'collection'
         assign seo_description = 'seo.collection_description' | t: title: collection.title, count: collection.products_count

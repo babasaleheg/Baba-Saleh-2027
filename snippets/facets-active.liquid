@@ -12,7 +12,7 @@
     {%- if filter.type == 'price_range' -%}
       {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
         <a href="{{ filter.url_to_remove }}" class="collection__chip" data-facet-link>
-          {{ filter.min_value.value | default: 0 | money }}–{{ filter.max_value.value | default: filter.range_max | money }}
+          {{ filter.min_value.value | default: 0 | money_without_currency | remove: '.00' | prepend: 'EGP ' }}–{{ filter.max_value.value | default: filter.range_max | money_without_currency | remove: '.00' | prepend: 'EGP ' }}
           {% render 'icon', icon: 'close' %}
         </a>
       {%- endif -%}

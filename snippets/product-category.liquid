@@ -86,4 +86,7 @@
   {%- else -%}
     <a href="{{ leaf.url }}" class="product-category product-category__link {{ class }}">{{ leaf.title }}</a>
   {%- endif -%}
+{%- elsif product.type != blank -%}
+  {%- comment -%} No category collection: still show the product type so every card has a category line {%- endcomment -%}
+  <span class="product-category {{ class }}">{{ product.type }}</span>
 {%- endif -%}

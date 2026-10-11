@@ -89,7 +89,7 @@
         assign product_url = request.origin | append: product.url
         assign product_description = product.description | strip_html | strip_newlines | strip | truncate: 5000
         if product_description == blank
-          assign product_price = product.price | money_without_trailing_zeros | strip_html
+          assign product_price = product.price | money_without_currency | remove: '.00' | prepend: 'EGP ' | strip_html
           assign product_description = 'seo.product_description' | t: title: product.title, vendor: product.vendor, price: product_price
         endif
         assign valid_until = 'now' | date: '%s' | plus: 31536000 | date: '%Y-12-31'

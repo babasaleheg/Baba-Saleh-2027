@@ -17,7 +17,7 @@
     <div class="media card__media">{{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
     <div class="card__info">
       <p class="card__title">{{ 'products.product.placeholder_title' | t }}</p>
-      <div class="price"><span class="price__current">{{ 1999 | money }}</span></div>
+      <div class="price"><span class="price__current">{{ 1999 | money_without_currency | remove: '.00' | prepend: 'EGP ' }}</span></div>
     </div>
   </div>
 {%- else -%}
@@ -52,7 +52,7 @@
     endfor
     assign quick_add_variants = product.variants | where: 'available'
   -%}
-  <article class="card card--{{ settings.card_image_style | default: 'cover' }}" {% if index != blank %}data-reveal style="--reveal-index: {{ index | modulo: 4 }}"{% endif %}>
+  <article class="card card--{{ settings.card_image_style | default: 'cover' }}{% unless product.available %} card--sold-out{% endunless %}" {% if index != blank %}data-reveal style="--reveal-index: {{ index | modulo: 4 }}"{% endif %}>
     <div class="media card__media">
       {%- if first_image -%}
         {{
@@ -83,7 +83,7 @@
 
       <div class="card__badges">
         {%- if product.available == false -%}
-          <span class="badge badge--muted">{{ 'products.product.sold_out' | t }}</span>
+          <span class="badge badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
         {%- elsif on_sale -%}
           {%- assign saving = card_variant.compare_at_price | minus: card_variant.price | times: 100.0 | divided_by: card_variant.compare_at_price | round -%}
           <span class="badge badge--sale" dir="ltr">-{{ saving }}%</span>

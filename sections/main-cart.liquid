@@ -15,13 +15,13 @@
             {%- for discount in cart.cart_level_discount_applications -%}
               <div class="cart-page__line cart-page__line--discount">
                 <span>{{ discount.title }}</span>
-                <span>-{{ discount.total_allocated_amount | money }}</span>
+                <span>-{{ discount.total_allocated_amount | money_without_currency | remove: '.00' | prepend: 'EGP ' }}</span>
               </div>
             {%- endfor -%}
 
             <div class="cart-page__line cart-page__total">
               <span>{{ 'cart.subtotal' | t }}</span>
-              <span>{{ cart.total_price | money_with_currency }}</span>
+              <span>{{ cart.total_price | money_without_currency | remove: '.00' | prepend: 'EGP ' }}</span>
             </div>
             <p class="text-muted cart-page__note">{{ 'cart.taxes_and_shipping' | t }}</p>
           </div>

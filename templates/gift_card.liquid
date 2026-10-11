@@ -1,5 +1,5 @@
 {%- layout none -%}
-{%- assign initial_value = gift_card.initial_value | money_without_trailing_zeros -%}
+{%- assign initial_value = gift_card.initial_value | money_without_currency | remove: '.00' | prepend: 'EGP ' -%}
 {%- assign expiry = gift_card.expires_on | date: format: 'date' -%}
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}" dir="{% if request.locale.iso_code == 'ar' %}rtl{% else %}ltr{% endif %}">
@@ -24,7 +24,7 @@
         <input class="field__input" type="text" value="{{ gift_card.code }}" readonly aria-label="{{ 'gift_cards.issued.code' | t }}" onclick="this.select()">
       </div>
       <div id="QrCode" data-identifier="{{ gift_card.qr_identifier }}"></div>
-      <p class="text-muted">{{ 'gift_cards.issued.balance' | t }}: {{ gift_card.balance | money }}</p>
+      <p class="text-muted">{{ 'gift_cards.issued.balance' | t }}: {{ gift_card.balance | money_without_currency | remove: '.00' | prepend: 'EGP ' }}</p>
       {%- if gift_card.pass_url -%}
         <a href="{{ gift_card.pass_url }}"><img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" width="120" height="40" alt="{{ 'gift_cards.issued.add_to_apple_wallet' | t }}" loading="lazy"></a>
       {%- endif -%}

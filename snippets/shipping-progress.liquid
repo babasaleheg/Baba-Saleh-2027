@@ -13,7 +13,7 @@
   <div class="shipping-progress" style="--progress: {{ progress }}%">
     <p class="shipping-progress__text">
       {%- if remaining > 0 -%}
-        {%- assign remaining_money = remaining | money -%}
+        {%- assign remaining_money = remaining | money_without_currency | remove: '.00' | prepend: 'EGP ' -%}
         {{ 'cart.free_shipping.remaining_html' | t: amount: remaining_money }}
       {%- else -%}
         {% render 'icon', icon: 'check' %}{{ 'cart.free_shipping.unlocked' | t }}

@@ -22,7 +22,7 @@
           {%- endif -%}
         {%- endfor -%}
         {%- for discount in item.line_level_discount_allocations -%}
-          <p class="cart-item__discount">{{ discount.discount_application.title }} (-{{ discount.amount | money }})</p>
+          <p class="cart-item__discount">{{ discount.discount_application.title }} (-{{ discount.amount | money_without_currency | remove: '.00' | prepend: 'EGP ' }})</p>
         {%- endfor -%}
 
         <div class="cart-item__row">
@@ -47,9 +47,9 @@
 
           <div class="cart-item__price">
             {%- if item.original_line_price != item.final_line_price -%}
-              <s class="text-muted">{{ item.original_line_price | money }}</s>
+              <s class="text-muted">{{ item.original_line_price | money_without_currency | remove: '.00' | prepend: 'EGP ' }}</s>
             {%- endif -%}
-            <span>{{ item.final_line_price | money }}</span>
+            <span>{{ item.final_line_price | money_without_currency | remove: '.00' | prepend: 'EGP ' }}</span>
           </div>
         </div>
 

@@ -513,6 +513,11 @@ h4,
   color: var(--color-highlight-text);
 }
 
+.badge--sold-out {
+  background: var(--color-fg);
+  color: var(--color-bg);
+}
+
 .badge--muted {
   background: var(--color-surface);
   color: var(--color-fg);
@@ -637,6 +642,21 @@ h4,
   font-size: 0.9375rem;
 }
 
+/* Sold out: faded image and grey price, so in-stock items stand out */
+.card--sold-out .card__media img {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+
+.card--sold-out .card__image--secondary {
+  display: none;
+}
+
+.card--sold-out .price,
+.card--sold-out .price--on-sale .price__current {
+  color: var(--color-muted);
+}
+
 @media (hover: hover) {
   .card:hover .card__image--secondary {
     opacity: 1;
@@ -746,11 +766,11 @@ h4,
   transition: color 0.2s ease;
 }
 
+/* Stays faded grey with no underline, even on hover */
 .product-category__link:hover,
 .product-category__link:focus-visible {
-  color: var(--color-fg);
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
+  color: var(--color-muted);
+  text-decoration: none;
 }
 
 .product-category--trail {
