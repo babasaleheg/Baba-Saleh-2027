@@ -8,7 +8,7 @@ Usage (stdlib only):
     python3 sync.py cancelled-to-drafts   # one-off: move already-imported cancelled orders to draft orders
     python3 sync.py sort-stock # every collection: in-stock products first, sold-out last (re-run as stock changes)
     python3 sync.py seo        # fill empty SEO titles/descriptions and image alt text (products + collections)
-    python3 sync.py reviews-setup   # create the product_review metaobject + product rating metafield definitions
+    python3 sync.py reviews-setup   # create the customer_review metaobject + product rating metafield definitions
     python3 sync.py reviews-sync    # approved reviews -> reviews.rating, reviews.rating_count, babasaleh.reviews
     python3 sync.py reviews-add HANDLE RATING "NAME" "COMMENT" [--title T] [--verified] [--date YYYY-MM-DD]
                                     # add an approved review (e.g. from the review email), then sync that product
@@ -606,14 +606,14 @@ def seo():
 
 
 # ---------------------------------------------------------------- product reviews
-# Reviews live in Shopify itself, no app: one `product_review` metaobject per review (editable in
+# Reviews live in Shopify itself, no app: one `customer_review` metaobject per review (editable in
 # admin → Content → Metaobjects → Product reviews) and three product metafields the theme renders:
 #   reviews.rating        rating 1–5   average of approved reviews (Shopify's standard reviews namespace,
 #   reviews.rating_count  integer      which Google Shopping and Shopify Search also read)
-#   babasaleh.reviews     list of product_review references: approved only, newest first
+#   babasaleh.reviews     list of customer_review references: approved only, newest first
 # Products without an approved review have none of the three, so the theme shows no stars at all.
 # App scopes: write_metaobject_definitions, write_metaobjects (+ write_products for the metafields).
-REVIEW_TYPE = "product_review"
+REVIEW_TYPE = "customer_review"
 REVIEW_STATUSES = ["pending", "approved", "rejected"]
 REVIEWS_LIST_MAX = 100  # newest approved reviews rendered on the page (the average still uses all of them)
 RATING_SCALE = [{"name": "scale_min", "value": "1"}, {"name": "scale_max", "value": "5"}]
@@ -646,7 +646,7 @@ MF_DEF_CREATE = """mutation($d: MetafieldDefinitionInput!) { metafieldDefinition
   createdDefinition { id } userErrors { field message code } } }"""
 MF_DEF_STANDARD = """mutation($ns: String!, $key: String!) { standardMetafieldDefinitionEnable(ownerType: PRODUCT, namespace: $ns,
   key: $key, pin: true, access: { storefront: PUBLIC_READ }) { createdDefinition { id } userErrors { field message code } } }"""
-REVIEWS_Q = """query($after: String) { metaobjects(type: "product_review", first: 100, after: $after) {
+REVIEWS_Q = """query($after: String) { metaobjects(type: "customer_review", first: 100, after: $after) {
   pageInfo { hasNextPage endCursor }
   nodes { id updatedAt capabilities { publishable { status } } fields { key value } } } }"""
 PRODUCT_REVIEW_MF_Q = """query($after: String, $q: String) { products(first: 100, after: $after, query: $q) {
@@ -673,7 +673,7 @@ def reviews_setup():
         r = gql(REVIEW_DEF_CREATE, {"d": {
             "type": REVIEW_TYPE, "name": "Product reviews", "displayNameKey": "author_name",
             "description": "Customer reviews. Set status to approved, then run reviews-sync (or wait for the nightly run).",
-            "access": {"admin": "MERCHANT_READ_WRITE", "storefront": "PUBLIC_READ"},
+            "access": {"storefront": "PUBLIC_READ"},
             "capabilities": {"publishable": {"enabled": True}},
             "fieldDefinitions": REVIEW_FIELDS}})["metaobjectDefinitionCreate"]
         if r["userErrors"] or not r["metaobjectDefinition"]:

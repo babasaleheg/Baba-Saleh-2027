@@ -8,7 +8,7 @@ rating in Google's structured data).
 
 ```
 Customer ──"Write a review" (Shopify contact form + hCaptcha)──▶ email to the store
-You      ──approve in admin, or `sync.py reviews-add`──────────▶ product_review metaobject (status: approved)
+You      ──approve in admin, or `sync.py reviews-add`──────────▶ customer_review metaobject (status: approved)
 sync.py reviews-sync (by hand or nightly) ─────────────────────▶ product metafields ──▶ theme + JSON-LD
 ```
 
@@ -17,14 +17,14 @@ sync.py reviews-sync (by hand or nightly) ────────────�
   honeypot field (`contact[website]`) and a minimum of 3 seconds between page load and submit. The
   email you receive includes `type: review`, the product title, handle, ID and URL, the rating, the comment,
   the name, the email and the language.
-- **Storing**: each review is a `product_review` metaobject (admin → **Content → Metaobjects → Product reviews**).
+- **Storing**: each review is a `customer_review` metaobject (admin → **Content → Metaobjects → Product reviews**).
 - **Showing**: `reviews-sync` writes three metafields on each product. The theme reads only these, so it adds no network requests:
   the reviews section (average, count, 5→1 star bars, list with "Show more"), stars + count under
   the product title and on product cards, and `AggregateRating` + `Review` in the Product JSON-LD.
 
 ## Data model
 
-**Metaobject `product_review`** (storefront access: public read; publishable: Active = approved)
+**Metaobject `customer_review`** (storefront access: public read; publishable: Active = approved)
 
 | Field | Type | Notes |
 | --- | --- | --- |
@@ -43,7 +43,7 @@ sync.py reviews-sync (by hand or nightly) ────────────�
 | --- | --- | --- |
 | `reviews.rating` | rating (1–5) | average of approved reviews, 1 decimal |
 | `reviews.rating_count` | integer | number of approved reviews |
-| `babasaleh.reviews` | list of `product_review` references | approved, newest first, at most 100 |
+| `babasaleh.reviews` | list of `customer_review` references | approved, newest first, at most 100 |
 
 `reviews.rating` / `reviews.rating_count` are Shopify's standard review metafields, which Shopify
 and Google Shopping understand. If a product has none of the three metafields, it shows no rating.
@@ -71,7 +71,7 @@ All commands are in `tools/woo_to_shopify/sync.py` and are safe to re-run.
 
 | Command | What it does |
 | --- | --- |
-| `reviews-setup` | One-off: creates the `product_review` metaobject definition and the three product metafield definitions (pinned, storefront-readable). It skips any that already exist. |
+| `reviews-setup` | One-off: creates the `customer_review` metaobject definition and the three product metafield definitions (pinned, storefront-readable). It skips any that already exist. |
 | `reviews-sync` | Reads every review. Approved reviews are set to Active and all others to Draft. It writes `reviews.rating`, `reviews.rating_count` and `babasaleh.reviews` only on products whose values changed, and clears them on products with no approved review left. |
 | `reviews-add HANDLE RATING NAME COMMENT [--title T] [--verified] [--date YYYY-MM-DD]` | Creates an approved review and syncs that product. |
 

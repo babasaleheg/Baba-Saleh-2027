@@ -117,8 +117,15 @@ def brand_ar(vendor):
     return BRANDS_AR.get(vendor, vendor)
 
 
+# The brand as a word in English: "Track Backpack", not "Track Suit"/"Tracksuit" (a garment)
+TRACK_BRAND = re.compile(r"\bTrack\b(?!\s*-?\s*suits?\b)", re.I)
+
+
 def fix_track(text):
-    return TRACK_WRONG.sub("تراك", text) if text else text
+    """Arabic text: Latin "Track" and wrong Arabic renderings of the brand become تراك."""
+    if not text:
+        return text
+    return TRACK_WRONG.sub("تراك", TRACK_BRAND.sub("تراك", text))
 
 
 def category_handle(p):
@@ -202,10 +209,11 @@ def main():
                 stats["no_ar_title"] += 1
                 continue
             # Only Track-branded products: elsewhere words like مسار may be correct
-            track_related = p["vendor"] == "Track" or re.search(r"\bTrack\b", p["title"])
-            fixed = fix_track(title_ar) if track_related else title_ar
+            # Only when the English title names the brand Track; elsewhere words like مسار may be correct
+            brand_in_title = bool(TRACK_BRAND.search(p["title"]))
+            fixed = fix_track(title_ar) if brand_in_title else title_ar
             force = ()
-            if track_related and "تراك" not in fixed and re.search(r"\bTrack\b", p["title"]):
+            if brand_in_title and "تراك" not in fixed:
                 fixed = f"{fixed} تراك"
             if fixed != title_ar:
                 stats["track_fixed"] += 1
