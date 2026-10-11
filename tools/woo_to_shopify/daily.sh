@@ -9,3 +9,4 @@ python3 sync.py orders
 python3 sync.py sort-stock
 python3 sync.py seo
 python3 seo_bilingual.py
+python3 sync.py reviews-sync
