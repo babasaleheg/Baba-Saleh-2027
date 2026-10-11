@@ -1,0 +1,32 @@
+{%- comment -%}
+  - paginate: paginate object
+{%- endcomment -%}
+<nav aria-label="{{ 'general.pagination.label' | t }}">
+  <ul class="pagination" role="list">
+    {%- if paginate.previous -%}
+      <li>
+        <a href="{{ paginate.previous.url }}" aria-label="{{ 'general.pagination.previous' | t }}">
+          <span class="icon-flip">{% render 'icon', icon: 'chevron' %}</span>
+        </a>
+      </li>
+    {%- endif -%}
+    {%- for part in paginate.parts -%}
+      <li>
+        {%- if part.is_link -%}
+          <a href="{{ part.url }}">{{ part.title }}</a>
+        {%- elsif part.title == paginate.current_page -%}
+          <span aria-current="page">{{ part.title }}</span>
+        {%- else -%}
+          <span>{{ part.title }}</span>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+    {%- if paginate.next -%}
+      <li>
+        <a href="{{ paginate.next.url }}" aria-label="{{ 'general.pagination.next' | t }}">
+          {% render 'icon', icon: 'chevron' %}
+        </a>
+      </li>
+    {%- endif -%}
+  </ul>
+</nav>

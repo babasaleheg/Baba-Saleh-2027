@@ -1,0 +1,755 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-slideshow",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "collection": "swimming-equipment",
+            "color_scheme": "scheme-4",
+            "eyebrow": "Summer 2026",
+            "heading": "Dive into summer",
+            "text": "Goggles, swimwear, floats and beach gear for the whole family.",
+            "text_position": "start",
+            "button_label": "Shop swimming",
+            "button_link": "shopify://collections/swimming-equipment",
+            "button_label_2": "Beach gear",
+            "button_link_2": "shopify://collections/beach-equipment",
+            "overlay": 20
+          }
+        },
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "collection": "gym-equipment",
+            "color_scheme": "scheme-3",
+            "eyebrow": "Gym & fitness",
+            "heading": "Train like a pro",
+            "text": "Weights, bands, mats and machines for home and gym.",
+            "text_position": "start",
+            "button_label": "Shop gym",
+            "button_link": "shopify://collections/gym-equipment",
+            "button_label_2": "Home workout",
+            "button_link_2": "shopify://collections/home-workout-equipment",
+            "overlay": 20
+          }
+        },
+        "slide_3": {
+          "type": "slide",
+          "settings": {
+            "collection": "football-equipment",
+            "color_scheme": "scheme-5",
+            "eyebrow": "Football",
+            "heading": "Own the pitch",
+            "text": "Balls, gloves, goals and training kit for every level.",
+            "text_position": "start",
+            "button_label": "Shop football",
+            "button_link": "shopify://collections/football-equipment",
+            "button_label_2": "",
+            "overlay": 20
+          }
+        }
+      },
+      "block_order": [
+        "slide_1",
+        "slide_2",
+        "slide_3"
+      ],
+      "settings": {
+        "height": "medium",
+        "autoplay": true,
+        "interval": 6,
+        "accessibility_label": "Featured campaigns",
+        "color_scheme": "scheme-3"
+      }
+    },
+    "usp": {
+      "type": "usp-bar",
+      "blocks": {
+        "usp_1": {
+          "type": "usp",
+          "settings": {
+            "icon": "truck",
+            "title": "Delivery across Egypt",
+            "text": "Fast shipping to every governorate"
+          }
+        },
+        "usp_2": {
+          "type": "usp",
+          "settings": {
+            "icon": "cash",
+            "title": "Cash on delivery",
+            "text": "Pay when your order arrives"
+          }
+        },
+        "usp_3": {
+          "type": "usp",
+          "settings": {
+            "icon": "return",
+            "title": "Easy returns",
+            "text": "14 days, no hassle"
+          }
+        },
+        "usp_4": {
+          "type": "usp",
+          "settings": {
+            "icon": "chat",
+            "title": "WhatsApp support",
+            "text": "Real people, fast replies"
+          }
+        }
+      },
+      "block_order": [
+        "usp_1",
+        "usp_2",
+        "usp_3",
+        "usp_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "padding_top": 24,
+        "padding_bottom": 24
+      }
+    },
+    "sports": {
+      "type": "collection-list",
+      "blocks": {
+        "sport_1": {
+          "type": "collection",
+          "settings": {
+            "collection": "football-equipment",
+            "title": "Football"
+          }
+        },
+        "sport_2": {
+          "type": "collection",
+          "settings": {
+            "collection": "swimming-equipment",
+            "title": "Swimming"
+          }
+        },
+        "sport_3": {
+          "type": "collection",
+          "settings": {
+            "collection": "gym-equipment",
+            "title": "Gym"
+          }
+        },
+        "sport_4": {
+          "type": "collection",
+          "settings": {
+            "collection": "basketball-equipment",
+            "title": "Basketball"
+          }
+        },
+        "sport_5": {
+          "type": "collection",
+          "settings": {
+            "collection": "tennis-equipment",
+            "title": "Tennis"
+          }
+        },
+        "sport_6": {
+          "type": "collection",
+          "settings": {
+            "collection": "ping-pong-equipment",
+            "title": "Ping pong"
+          }
+        },
+        "sport_7": {
+          "type": "collection",
+          "settings": {
+            "collection": "volleyball-equipment",
+            "title": "Volleyball"
+          }
+        },
+        "sport_8": {
+          "type": "collection",
+          "settings": {
+            "collection": "martial-arts",
+            "title": "Martial arts"
+          }
+        },
+        "sport_9": {
+          "type": "collection",
+          "settings": {
+            "collection": "yoga-equipment",
+            "title": "Yoga"
+          }
+        },
+        "sport_10": {
+          "type": "collection",
+          "settings": {
+            "collection": "racket-equipment",
+            "title": "Racket"
+          }
+        },
+        "sport_11": {
+          "type": "collection",
+          "settings": {
+            "collection": "roller-skating-equipment",
+            "title": "Skating"
+          }
+        },
+        "sport_12": {
+          "type": "collection",
+          "settings": {
+            "collection": "scooters",
+            "title": "Scooters"
+          }
+        },
+        "sport_13": {
+          "type": "collection",
+          "settings": {
+            "collection": "beach-equipment",
+            "title": "Beach"
+          }
+        },
+        "sport_14": {
+          "type": "collection",
+          "settings": {
+            "collection": "camping-equipment",
+            "title": "Camping"
+          }
+        }
+      },
+      "block_order": [
+        "sport_1",
+        "sport_2",
+        "sport_3",
+        "sport_4",
+        "sport_5",
+        "sport_6",
+        "sport_7",
+        "sport_8",
+        "sport_9",
+        "sport_10",
+        "sport_11",
+        "sport_12",
+        "sport_13",
+        "sport_14"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Shop by sport",
+        "layout": "circles",
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 16
+      }
+    },
+    "trending": {
+      "type": "featured-collection",
+      "blocks": {
+        "tab_1": {
+          "type": "tab",
+          "settings": {
+            "collection": "gym-equipment",
+            "label": "Gym"
+          }
+        },
+        "tab_2": {
+          "type": "tab",
+          "settings": {
+            "collection": "swimming-equipment",
+            "label": "Swimming"
+          }
+        },
+        "tab_3": {
+          "type": "tab",
+          "settings": {
+            "collection": "football-equipment",
+            "label": "Football"
+          }
+        },
+        "tab_4": {
+          "type": "tab",
+          "settings": {
+            "collection": "toys-2026",
+            "label": "Toys"
+          }
+        }
+      },
+      "block_order": [
+        "tab_1",
+        "tab_2",
+        "tab_3",
+        "tab_4"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Trending now",
+        "products_to_show": 12,
+        "columns_desktop": 5,
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "flash_sale": {
+      "type": "flash-sale",
+      "settings": {
+        "eyebrow": "Limited time",
+        "heading": "Flash sale",
+        "text": "Big savings on gym, swim and sports gear — while stock lasts.",
+        "end_date": "",
+        "collection": "sale",
+        "products_to_show": 10,
+        "button_label": "Shop the sale",
+        "color_scheme": "scheme-6",
+        "padding_top": 24,
+        "padding_bottom": 40
+      }
+    },
+    "categories": {
+      "type": "collection-list",
+      "blocks": {
+        "cat_1": {
+          "type": "collection",
+          "settings": {
+            "collection": "sportswear",
+            "title": "Sportswear"
+          }
+        },
+        "cat_2": {
+          "type": "collection",
+          "settings": {
+            "collection": "swimwear",
+            "title": "Swimwear"
+          }
+        },
+        "cat_3": {
+          "type": "collection",
+          "settings": {
+            "collection": "shoes",
+            "title": "Shoes"
+          }
+        },
+        "cat_4": {
+          "type": "collection",
+          "settings": {
+            "collection": "bags-backpacks",
+            "title": "Bags"
+          }
+        },
+        "cat_5": {
+          "type": "collection",
+          "settings": {
+            "collection": "toys-2026",
+            "title": "Toys"
+          }
+        }
+      },
+      "block_order": [
+        "cat_1",
+        "cat_2",
+        "cat_3",
+        "cat_4",
+        "cat_5"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Shop by category",
+        "layout": "bento",
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "swimming": {
+      "type": "featured-collection",
+      "blocks": {
+        "tab_1": {
+          "type": "tab",
+          "settings": {
+            "collection": "swimming-equipment",
+            "label": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_1"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Swimming essentials",
+        "products_to_show": 12,
+        "columns_desktop": 5,
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "promos": {
+      "type": "promo-grid",
+      "blocks": {
+        "tile_1": {
+          "type": "tile",
+          "settings": {
+            "collection": "martial-arts",
+            "eyebrow": "Fight club",
+            "heading": "Martial arts",
+            "text": "Gloves, pads and uniforms for karate, taekwondo and boxing.",
+            "button_label": "Shop martial arts",
+            "color_scheme": "scheme-3"
+          }
+        },
+        "tile_2": {
+          "type": "tile",
+          "settings": {
+            "collection": "kids-swimwear",
+            "eyebrow": "Kids",
+            "heading": "Kids' swimwear",
+            "text": "",
+            "button_label": "Shop now",
+            "color_scheme": "scheme-3"
+          }
+        },
+        "tile_3": {
+          "type": "tile",
+          "settings": {
+            "collection": "trophy-cups-medals",
+            "eyebrow": "Winners",
+            "heading": "Trophies & medals",
+            "text": "",
+            "button_label": "Shop now",
+            "color_scheme": "scheme-3"
+          }
+        }
+      },
+      "block_order": [
+        "tile_1",
+        "tile_2",
+        "tile_3"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "padding_top": 24,
+        "padding_bottom": 24
+      }
+    },
+    "sportswear": {
+      "type": "featured-collection",
+      "blocks": {
+        "tab_1": {
+          "type": "tab",
+          "settings": {
+            "collection": "sportswear",
+            "label": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_1"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Sportswear",
+        "products_to_show": 12,
+        "columns_desktop": 5,
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "brands": {
+      "type": "brand-logos",
+      "blocks": {
+        "brand_1": {
+          "type": "brand",
+          "settings": {
+            "name": "Wilson",
+            "logo": "shopify://shop_images/Wilson-logo.png"
+          }
+        },
+        "brand_2": {
+          "type": "brand",
+          "settings": {
+            "name": "Everlast",
+            "logo": "shopify://shop_images/ev.png"
+          }
+        },
+        "brand_3": {
+          "type": "brand",
+          "settings": {
+            "name": "Venum",
+            "logo": "shopify://shop_images/Venum.png"
+          }
+        },
+        "brand_4": {
+          "type": "brand",
+          "settings": {
+            "name": "Cressi",
+            "logo": "shopify://shop_images/cr.png"
+          }
+        },
+        "brand_5": {
+          "type": "brand",
+          "settings": {
+            "name": "Dunlop",
+            "logo": "shopify://shop_images/dunlop.png"
+          }
+        },
+        "brand_6": {
+          "type": "brand",
+          "settings": {
+            "name": "Spurt",
+            "logo": "shopify://shop_images/Spurt.png"
+          }
+        },
+        "brand_7": {
+          "type": "brand",
+          "settings": {
+            "name": "Livepro",
+            "logo": "shopify://shop_images/livepro.png"
+          }
+        },
+        "brand_8": {
+          "type": "brand",
+          "settings": {
+            "name": "Liveup",
+            "logo": "shopify://shop_images/liveup-1.png"
+          }
+        },
+        "brand_9": {
+          "type": "brand",
+          "settings": {
+            "name": "Cougar",
+            "logo": "shopify://shop_images/cougar.png"
+          }
+        },
+        "brand_10": {
+          "type": "brand",
+          "settings": {
+            "name": "Kiko"
+          }
+        },
+        "brand_11": {
+          "type": "brand",
+          "settings": {
+            "name": "Kuna",
+            "logo": "shopify://shop_images/ku.png"
+          }
+        },
+        "brand_12": {
+          "type": "brand",
+          "settings": {
+            "name": "Lamer"
+          }
+        },
+        "brand_13": {
+          "type": "brand",
+          "settings": {
+            "name": "Manta",
+            "logo": "shopify://shop_images/manta.png"
+          }
+        },
+        "brand_14": {
+          "type": "brand",
+          "settings": {
+            "name": "Track",
+            "logo": "shopify://shop_images/Track.png"
+          }
+        },
+        "brand_15": {
+          "type": "brand",
+          "settings": {
+            "name": "Wish",
+            "logo": "shopify://shop_images/Wish.png"
+          }
+        },
+        "brand_16": {
+          "type": "brand",
+          "settings": {
+            "name": "Baba Saleh",
+            "logo": "shopify://shop_images/baba-saleh-logo-desktop.png"
+          }
+        }
+      },
+      "block_order": [
+        "brand_1",
+        "brand_2",
+        "brand_3",
+        "brand_4",
+        "brand_5",
+        "brand_6",
+        "brand_7",
+        "brand_8",
+        "brand_9",
+        "brand_10",
+        "brand_11",
+        "brand_12",
+        "brand_13",
+        "brand_14",
+        "brand_15",
+        "brand_16"
+      ],
+      "settings": {
+        "heading": "Shop by brand",
+        "color_scheme": "scheme-1",
+        "padding_top": 32,
+        "padding_bottom": 40
+      }
+    },
+    "toys": {
+      "type": "featured-collection",
+      "blocks": {
+        "tab_1": {
+          "type": "tab",
+          "settings": {
+            "collection": "toys-2026",
+            "label": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_1"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Toys & games",
+        "products_to_show": 12,
+        "columns_desktop": 5,
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 48
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "m1": {
+          "type": "text",
+          "settings": {
+            "text": "Delivery across Egypt"
+          }
+        },
+        "m2": {
+          "type": "text",
+          "settings": {
+            "text": "Cash on delivery"
+          }
+        },
+        "m3": {
+          "type": "text",
+          "settings": {
+            "text": "1,300+ products"
+          }
+        },
+        "m4": {
+          "type": "text",
+          "settings": {
+            "text": "16 top brands"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4"
+      ],
+      "settings": {
+        "speed": 40,
+        "color_scheme": "scheme-5"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Join the team",
+        "text": "<p>Be first to hear about new arrivals, restocks and exclusive offers.</p>",
+        "color_scheme": "scheme-4",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "seo": {
+      "type": "seo-content",
+      "blocks": {
+        "faq_1": {
+          "type": "question",
+          "settings": {
+            "question": "What does Baba Saleh sell?",
+            "answer": "<p>Baba Saleh (بابا صالح) sells sports equipment and sportswear in Egypt: gym and fitness equipment, swimming gear and swimwear, football, basketball, racket sports, martial arts, beach gear, trophies and medals, and kids' toys.</p>"
+          }
+        },
+        "faq_2": {
+          "type": "question",
+          "settings": {
+            "question": "Do you deliver to all of Egypt?",
+            "answer": "<p>Yes. We deliver to every governorate in Egypt, usually within 2–5 days.</p>"
+          }
+        },
+        "faq_3": {
+          "type": "question",
+          "settings": {
+            "question": "Can I pay cash on delivery?",
+            "answer": "<p>Yes. You can pay in cash when your order arrives, anywhere in Egypt.</p>"
+          }
+        },
+        "faq_4": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>You can return eligible items within 14 days. See our <a href=\"/policies/refund-policy\">refund policy</a> for details.</p>"
+          }
+        },
+        "faq_5": {
+          "type": "question",
+          "settings": {
+            "question": "Which brands do you carry?",
+            "answer": "<p>Wilson, Everlast, Venum, Cressi, Dunlop, Track, Kuna, Spurt, LivePro, LiveUp, Cougar, Kiko, Manta, Wish and our own Baba Saleh range.</p>"
+          }
+        },
+        "faq_6": {
+          "type": "question",
+          "settings": {
+            "question": "How can I contact Baba Saleh?",
+            "answer": "<p>Message us on WhatsApp or email support@babasaleh.com — real people reply fast.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6"
+      ],
+      "settings": {
+        "eyebrow": "Baba Saleh · بابا صالح",
+        "heading": "Egypt's sports equipment store",
+        "text": "<p><strong>Baba Saleh (بابا صالح)</strong> is a sports equipment store in Egypt with more than 1,300 products for every sport and every age. Shop <a href=\"/collections/gym-equipment\">gym equipment</a> and <a href=\"/collections/home-workout-equipment\">home workout gear</a>, <a href=\"/collections/swimming-equipment\">swimming equipment</a>, <a href=\"/collections/swimwear\">swimwear</a> and <a href=\"/collections/goggles\">swimming goggles</a>, <a href=\"/collections/football-equipment\">football</a>, <a href=\"/collections/basketball-equipment\">basketball</a>, <a href=\"/collections/tennis-equipment\">tennis</a> and <a href=\"/collections/ping-pong-equipment\">table tennis</a>, <a href=\"/collections/martial-arts\">martial arts</a>, <a href=\"/collections/beach-equipment\">beach gear</a>, <a href=\"/collections/trophy-cups-medals\">trophies and medals</a> and <a href=\"/collections/toys-2026\">kids' toys</a>.</p><h3>Top sports brands</h3><p>We carry Wilson, Everlast, Venum, Cressi, Dunlop, Track, Kuna, Spurt, LivePro, LiveUp, Cougar, Kiko, Manta and Wish, alongside our own Baba Saleh range.</p><h3>Easy shopping across Egypt</h3><p>Order online in Arabic or English and pay cash on delivery. We deliver to every governorate in Egypt, usually within 2–5 days, with easy 14-day returns and friendly WhatsApp support.</p>",
+        "faq_heading": "Frequently asked questions",
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "usp",
+    "sports",
+    "trending",
+    "flash_sale",
+    "categories",
+    "swimming",
+    "promos",
+    "sportswear",
+    "brands",
+    "toys",
+    "marquee",
+    "seo",
+    "newsletter"
+  ]
+}

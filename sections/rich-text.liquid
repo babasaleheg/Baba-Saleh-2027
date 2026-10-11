@@ -1,0 +1,97 @@
+<section
+  class="section rich-text color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width rich-text__inner rich-text__inner--{{ section.settings.alignment }}">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'heading' -%}
+          <h2 class="{{ block.settings.size }}" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
+        {%- when 'text' -%}
+          <div class="rte text-muted" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+        {%- when 'button' -%}
+          {%- if block.settings.label != blank -%}
+            <a href="{{ block.settings.link | default: '#' }}" class="button" {{ block.shopify_attributes }}>{{ block.settings.label }}</a>
+          {%- endif -%}
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .rich-text__inner {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 52rem;
+  }
+
+  .rich-text__inner--center {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .rich-text__inner--start {
+    justify-items: start;
+    margin-inline-start: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.rich_text.name",
+  "settings": [
+    {
+      "type": "select",
+      "id": "alignment",
+      "default": "center",
+      "label": "t:settings.alignment",
+      "options": [
+        { "value": "start", "label": "t:settings.position_options.start" },
+        { "value": "center", "label": "t:settings.position_options.center" }
+      ]
+    },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_bottom" }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "t:settings.heading",
+      "settings": [
+        { "type": "text", "id": "heading", "default": "Talk about your brand", "label": "t:settings.heading" },
+        {
+          "type": "select",
+          "id": "size",
+          "default": "h1",
+          "label": "t:settings.size",
+          "options": [
+            { "value": "h2", "label": "t:settings.size_options.small" },
+            { "value": "h1", "label": "t:settings.size_options.medium" },
+            { "value": "h0", "label": "t:settings.size_options.large" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:settings.text",
+      "settings": [{ "type": "richtext", "id": "text", "default": "<p>Share information about your brand with your customers.</p>", "label": "t:settings.text" }]
+    },
+    {
+      "type": "button",
+      "name": "t:settings.button_label",
+      "settings": [
+        { "type": "text", "id": "label", "default": "Shop now", "label": "t:settings.button_label" },
+        { "type": "url", "id": "link", "label": "t:settings.link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.rich_text.name",
+      "blocks": [{ "type": "heading" }, { "type": "text" }]
+    }
+  ]
+}
+{% endschema %}

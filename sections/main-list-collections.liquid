@@ -1,0 +1,40 @@
+<section class="section list-collections color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <h1 class="h1 list-collections__title">{{ 'templates.list_collections.title' | t }}</h1>
+    {%- paginate collections by 48 -%}
+      <ul class="collection-list__grid collection-list__grid--cards" role="list">
+        {%- for collection in collections -%}
+          {%- if collection.handle == 'frontpage' -%}{%- continue -%}{%- endif -%}
+          <li class="collection-tile collection-tile--cards" data-reveal style="--reveal-index: {{ forloop.index0 | modulo: 4 }}">
+            <a href="{{ collection.url }}" class="collection-tile__link">
+              <div class="media collection-tile__media">
+                {%- if collection.featured_image -%}
+                  {{ collection.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 25vw, 50vw', widths: '300, 450, 600, 800', alt: collection.title }}
+                {%- else -%}
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+              <span class="collection-tile__title">{{ collection.title }}{% render 'icon', icon: 'arrow' %}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+      {%- if paginate.pages > 1 -%}{% render 'pagination', paginate: paginate %}{%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .list-collections__title {
+    margin-block-end: 2rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main_list_collections.name",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" }
+  ]
+}
+{% endschema %}

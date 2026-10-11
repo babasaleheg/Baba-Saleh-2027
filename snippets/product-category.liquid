@@ -1,0 +1,89 @@
+{%- comment -%}
+  Faded link(s) to the product's category collection, resolved from the
+  `dept:` / `group:` / `cat:` tags set by the category restructure.
+  Collection titles come from Shopify, so they are already translated (EN/AR).
+
+  Accepts:
+  - product: {Object}
+  - style: {String} 'trail' (Department › Category, product page) or 'leaf' (card). Default: 'leaf'
+  - class: {String} extra class
+{%- endcomment -%}
+{%- liquid
+  # tag value -> collection handle
+  assign leaf_map = 'football:football-equipment,basketball:basketball-equipment,volleyball:volleyball-equipment,handball:handball-equipment,hockey:hockey-equipment,coaching:coaching-equipment,tennis:tennis-equipment,padel:padel-equipment,squash:squash-equipment,badminton:badminton-equipment,table-tennis:ping-pong-equipment,speedball:speed-ball-equipment,boxing:boxing-mma,karate:karate-equipment,taekwondo:taekwondo-equipment,skating:roller-skating-equipment,skateboards:skateboard,scooters:scooters,cycling:cycling,billiards:billiard-equipment,ballet:ballet-equipment,camping:camping-equipment,weights:weights-and-bars,gym-machines:gym-equipment,resistance-bands:resistance-band,yoga:yoga-equipment,jump-ropes:jump-ropes,fitness-accessories:gym-accessories,supports:medical-equipment,goggles:goggles,swim-caps:swim-caps,swim-training:swim-training,diving:diving-snorkeling,swim-accessories:swim-accessories,swim-safety:life-jackets-swim-rings,pool-floats:floats,beach-toys:beach-toys,beach-bags-hats:beach-bag-sea-hat,men-swimwear:men-swimwear,women-swimwear:women-swimwear,kids-swimwear:kids-swimwear,tracksuits:tracksuits,t-shirts:shirts,shorts:shorts,pants:pants,jackets:jackets,sports-bras:sports-bras,running-shoes:running-shoes,football-shoes:football-shoes,slippers:slippers,beach-shoes:beach-shoes,backpacks:bags-backpacks,handbags:handbags,water-bottles:water-bottles,hats:hats,flags:flags,toys:kids-toys,games:games,trophies:trophies-cups,medals:medals'
+  assign group_map = 'team-sports:team-sports,racket-sports:racket-equipment,martial-arts:martial-arts,wheels:skates-scooters-bikes,swimwear:swimwear'
+  assign dept_map = 'sports:sports,fitness:fitness,swimming:swimming-equipment,beach:beach-equipment,clothing:sportswear,footwear:shoes,accessories:accessories,kids-toys:toys-2026,trophies:trophy-cups-medals'
+
+  assign leaf_key = ''
+  assign group_key = ''
+  assign dept_key = ''
+  for tag in product.tags
+    if tag contains ':'
+      assign tag_parts = tag | split: ':'
+      case tag_parts.first
+        when 'cat'
+          assign leaf_key = tag_parts.last | prepend: ',' | append: ':'
+        when 'group'
+          assign group_key = tag_parts.last | prepend: ',' | append: ':'
+        when 'dept'
+          assign dept_key = tag_parts.last | prepend: ',' | append: ':'
+      endcase
+    endif
+  endfor
+
+  assign leaf = nil
+  assign group = nil
+  assign parent = nil
+  if leaf_key != blank
+    assign lookup = leaf_map | prepend: ','
+    if lookup contains leaf_key
+      assign handle = lookup | split: leaf_key | last | split: ',' | first
+      assign leaf = collections[handle]
+    endif
+  endif
+  if group_key != blank
+    assign lookup = group_map | prepend: ','
+    if lookup contains group_key
+      assign handle = lookup | split: group_key | last | split: ',' | first
+      assign group = collections[handle]
+    endif
+  endif
+  if dept_key != blank
+    assign lookup = dept_map | prepend: ','
+    if lookup contains dept_key
+      assign handle = lookup | split: dept_key | last | split: ',' | first
+      assign parent = collections[handle]
+    endif
+  endif
+
+  # No leaf collection (e.g. general martial-arts gear): use the group, then the department
+  if leaf.url == blank
+    assign leaf = group
+  endif
+  if leaf.url == blank
+    assign leaf = parent
+  endif
+
+  # Products without category tags: fall back to their first real collection
+  if leaf.url == blank
+    for c in product.collections
+      unless c.handle == 'frontpage' or c.handle == 'sale' or c.handle == 'all'
+        assign leaf = c
+        break
+      endunless
+    endfor
+  endif
+-%}
+{%- if leaf.url != blank -%}
+  {%- if style == 'trail' -%}
+    <nav class="product-category product-category--trail {{ class }}" aria-label="{{ 'products.product.category' | t }}">
+      {%- if parent.url != blank and parent.handle != leaf.handle -%}
+        <a href="{{ parent.url }}" class="product-category__link">{{ parent.title }}</a>
+        <span class="product-category__sep" aria-hidden="true">›</span>
+      {%- endif -%}
+      <a href="{{ leaf.url }}" class="product-category__link">{{ leaf.title }}</a>
+    </nav>
+  {%- else -%}
+    <a href="{{ leaf.url }}" class="product-category product-category__link {{ class }}">{{ leaf.title }}</a>
+  {%- endif -%}
+{%- endif -%}

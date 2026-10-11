@@ -1,0 +1,71 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "a1": {
+          "type": "message",
+          "settings": {
+            "text": "Delivery across all of Egypt",
+            "icon": "truck",
+            "link": ""
+          }
+        },
+        "a2": {
+          "type": "message",
+          "settings": {
+            "text": "Cash on delivery available",
+            "icon": "cash",
+            "link": ""
+          }
+        },
+        "a3": {
+          "type": "message",
+          "settings": {
+            "text": "Flash sale — up to 50% off",
+            "icon": "bolt",
+            "link": "shopify://collections/sale"
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3"
+      ],
+      "settings": {
+        "interval": 5,
+        "color_scheme": "scheme-3",
+        "contact_text": "Need help? Chat on WhatsApp",
+        "contact_link": "",
+        "secondary_text": "Track your order",
+        "secondary_link": "/account",
+        "show_language": true
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_width": 200,
+        "menu": "baba-saleh-main",
+        "search_placeholder": "",
+        "sticky": "on-scroll-up",
+        "show_language_selector": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1",
+        "wordmark": "Baba Saleh",
+        "wordmark_tag": "Sports",
+        "auto_menu_images": true,
+        "logo": "shopify://shop_images/baba-saleh-logo-desktop.png",
+        "logo_mobile": "shopify://shop_images/baba-saleh-logo-mobile.png",
+        "logo_width_mobile": 130
+      }
+    }
+  },
+  "order": [
+    "announcement",
+    "header"
+  ]
+}
