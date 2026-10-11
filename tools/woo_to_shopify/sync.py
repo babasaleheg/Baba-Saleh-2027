@@ -6,6 +6,7 @@ Usage (stdlib only):
     python3 sync.py orders     # import Woo orders as backdated Shopify orders (no emails, no stock change);
                                # cancelled Woo orders become draft orders so they never count as sales
     python3 sync.py cancelled-to-drafts   # one-off: move already-imported cancelled orders to draft orders
+    python3 sync.py sort-stock # every collection: in-stock products first, sold-out last (re-run as stock changes)
 
 Env: WC_CONSUMER_KEY, WC_CONSUMER_SECRET, and SHOPIFY_ADMIN_TOKEN or SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET,
      WC_URL (default https://babasaleh.com), SHOPIFY_STORE (default babasaleh.myshopify.com),
@@ -409,6 +410,86 @@ def cancelled_to_drafts():
             break
     log("cancelled-to-drafts done", stats)
 
+# ---------------------------------------------------------------- in stock first
+COLLECTIONS_Q = """query($after: String) { collections(first: 50, after: $after) {
+  pageInfo { hasNextPage endCursor }
+  nodes { id handle sortOrder productsCount { count } metafield(namespace: "babasaleh", key: "base_sort") { value } } } }"""
+COLLECTION_PRODUCTS_Q = """query($id: ID!, $after: String, $key: ProductCollectionSortKeys!, $rev: Boolean!) {
+  collection(id: $id) { products(first: 250, after: $after, sortKey: $key, reverse: $rev) {
+    pageInfo { hasNextPage endCursor } nodes { id totalInventory tracksInventory } } } }"""
+COLLECTION_UPDATE = """mutation($input: CollectionInput!) { collectionUpdate(input: $input) { userErrors { field message } } }"""
+METAFIELDS_SET = """mutation($m: [MetafieldsSetInput!]!) { metafieldsSet(metafields: $m) { userErrors { field message } } }"""
+REORDER = """mutation($id: ID!, $moves: [MoveInput!]!) { collectionReorderProducts(id: $id, moves: $moves) {
+  job { id done } userErrors { field message } } }"""
+JOB_Q = """query($id: ID!) { job(id: $id) { done } }"""
+# collection sort order -> (products sortKey, reverse)
+BASE_SORT = {"ALPHA_ASC": ("TITLE", False), "ALPHA_DESC": ("TITLE", True), "BEST_SELLING": ("BEST_SELLING", False),
+             "CREATED": ("CREATED", False), "CREATED_DESC": ("CREATED", True), "MANUAL": ("MANUAL", False),
+             "PRICE_ASC": ("PRICE", False), "PRICE_DESC": ("PRICE", True)}
+
+
+def sort_stock():
+    """Put sold-out products last in every collection.
+
+    Collections are switched to manual order; the order they had before is saved in the
+    babasaleh.base_sort metafield and used to order products within the in-stock and
+    sold-out groups, so re-running keeps e.g. best-selling order while stock changes."""
+    after, stats = None, {"collections": 0, "reordered": 0, "products_moved": 0}
+    while True:
+        page = gql(COLLECTIONS_Q, {"after": after})["collections"]
+        for c in page["nodes"]:
+            if os.environ.get("COLLECTION") and c["handle"] != os.environ["COLLECTION"]:
+                continue
+            stats["collections"] += 1
+            base = (c["metafield"] or {}).get("value") or c["sortOrder"]
+            if not c["metafield"]:
+                gql(METAFIELDS_SET, {"m": [{"ownerId": c["id"], "namespace": "babasaleh", "key": "base_sort",
+                                            "type": "single_line_text_field", "value": base}]})
+            key, rev = BASE_SORT.get(base, ("COLLECTION_DEFAULT", False))
+            products, p_after = [], None
+            while True:
+                pp = gql(COLLECTION_PRODUCTS_Q, {"id": c["id"], "after": p_after, "key": key, "rev": rev})["collection"]["products"]
+                products += pp["nodes"]
+                if not pp["pageInfo"]["hasNextPage"]:
+                    break
+                p_after = pp["pageInfo"]["endCursor"]
+            in_stock = lambda p: p["totalInventory"] > 0 or not p["tracksInventory"]
+            wanted = [p["id"] for p in products if in_stock(p)] + [p["id"] for p in products if not in_stock(p)]
+            if c["sortOrder"] != "MANUAL":
+                gql(COLLECTION_UPDATE, {"input": {"id": c["id"], "sortOrder": "MANUAL"}})
+                current = None  # unknown manual order: send every position
+            else:
+                current = [p["id"] for p in products] if base == "MANUAL" else None
+            if current == wanted:
+                continue
+            if current is None and base != "MANUAL":
+                # read the manual order we are about to replace, to send only the moves that matter
+                cur, p_after = [], None
+                while True:
+                    pp = gql(COLLECTION_PRODUCTS_Q, {"id": c["id"], "after": p_after, "key": "MANUAL", "rev": False})["collection"]["products"]
+                    cur += [p["id"] for p in pp["nodes"]]
+                    if not pp["pageInfo"]["hasNextPage"]:
+                        break
+                    p_after = pp["pageInfo"]["endCursor"]
+                current = cur
+            moves = [{"id": pid, "newPosition": str(i)} for i, pid in enumerate(wanted) if i >= len(current) or current[i] != pid]
+            if not moves:
+                continue
+            for i in range(0, len(moves), 250):
+                r = gql(REORDER, {"id": c["id"], "moves": moves[i:i + 250]})["collectionReorderProducts"]
+                if r["userErrors"]:
+                    log("reorder failed", c["handle"], r["userErrors"])
+                    break
+                while r["job"] and not gql(JOB_Q, {"id": r["job"]["id"]})["job"]["done"]:
+                    time.sleep(1)
+            stats["reordered"] += 1
+            stats["products_moved"] += len(moves)
+        if not page["pageInfo"]["hasNextPage"]:
+            break
+        after = page["pageInfo"]["endCursor"]
+    log("sort-stock done", stats)
+
+
 if __name__ == "__main__":
     {"fetch": fetch, "products": products, "orders": orders, "export": export_shopify,
-     "cancelled-to-drafts": cancelled_to_drafts}[sys.argv[1]]()
+     "cancelled-to-drafts": cancelled_to_drafts, "sort-stock": sort_stock}[sys.argv[1]]()

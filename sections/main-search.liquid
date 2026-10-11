@@ -24,11 +24,25 @@
         <div class="collection__results" data-results>
           {%- if search.results_count > 0 -%}
             <ul class="product-grid" role="list" data-product-grid>
+              {%- comment -%} Pass 1: in-stock products, 2: sold-out products, 3: articles and pages {%- endcomment -%}
+              {%- assign card_index = 0 -%}
+              {%- for pass in (1..3) -%}
               {%- for item in search.results -%}
+                {%- liquid
+                  assign item_pass = 3
+                  if item.object_type == 'product'
+                    assign item_pass = 2
+                    if item.available
+                      assign item_pass = 1
+                    endif
+                  endif
+                -%}
+                {%- if item_pass != pass -%}{%- continue -%}{%- endif -%}
                 <li>
                   {%- case item.object_type -%}
                     {%- when 'product' -%}
-                      {% render 'product-card', product: item, index: forloop.index0 %}
+                      {% render 'product-card', product: item, index: card_index %}
+                      {%- assign card_index = card_index | plus: 1 -%}
                     {%- else -%}
                       <a href="{{ item.url }}" class="search__article">
                         {%- assign type_key = 'templates.search.types.' | append: item.object_type -%}
@@ -38,6 +52,7 @@
                       </a>
                   {%- endcase -%}
                 </li>
+              {%- endfor -%}
               {%- endfor -%}
             </ul>
             {%- if paginate.pages > 1 -%}
