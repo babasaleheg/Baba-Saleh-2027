@@ -1,0 +1,41 @@
+{%- comment -%}
+  Five inline SVG stars with a partial fill for averages (4.3 fills 86%).
+  Only render this when there is at least one approved review: callers check
+  product.metafields.reviews.rating_count.value > 0 first, so no empty stars ever show.
+
+  - rating: number 1–5 (required)
+  - count: number of reviews; adds "(12)" after the stars and to the spoken label
+  - label: false to hide the stars from screen readers (when the text next to them says it already)
+  - class: extra classes
+
+  Usage: {% render 'rating-stars', rating: rating, count: count %}
+{%- endcomment -%}
+{%- liquid
+  assign rating_value = rating | times: 1.0
+  assign rating_rounded = rating_value | round: 1
+  assign fill = rating_value | times: 20 | at_most: 100 | at_least: 0
+  assign star_path = 'm12 2.5 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.3l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9L12 2.5Z'
+-%}
+<span
+  class="stars{% if class != blank %} {{ class }}{% endif %}"
+  style="--stars-fill: {{ fill }}%;"
+  {% if label == false %}
+    aria-hidden="true"
+  {% else %}
+    role="img"
+    aria-label="{% if count != blank %}{{ 'reviews.summary_label' | t: rating: rating_rounded, count: count | escape }}{% else %}{{ 'reviews.rated' | t: rating: rating_rounded | escape }}{% endif %}"
+  {% endif %}
+>
+  <span class="stars__row" aria-hidden="true">
+    {%- for i in (1..2) -%}
+      <svg class="stars__layer{% if forloop.last %} stars__layer--fill{% endif %}" viewBox="0 0 120 24" focusable="false">
+        {%- for s in (0..4) -%}
+          <path transform="translate({{ s | times: 24 }} 0)" d="{{ star_path }}"/>
+        {%- endfor -%}
+      </svg>
+    {%- endfor -%}
+  </span>
+  {%- if count != blank -%}
+    <span class="stars__count" aria-hidden="true">({{ count }})</span>
+  {%- endif -%}
+</span>

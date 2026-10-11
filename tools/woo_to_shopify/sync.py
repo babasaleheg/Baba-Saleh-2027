@@ -8,10 +8,16 @@ Usage (stdlib only):
     python3 sync.py cancelled-to-drafts   # one-off: move already-imported cancelled orders to draft orders
     python3 sync.py sort-stock # every collection: in-stock products first, sold-out last (re-run as stock changes)
     python3 sync.py seo        # fill empty SEO titles/descriptions and image alt text (products + collections)
+    python3 sync.py reviews-setup   # create the product_review metaobject + product rating metafield definitions
+    python3 sync.py reviews-sync    # approved reviews -> reviews.rating, reviews.rating_count, babasaleh.reviews
+    python3 sync.py reviews-add HANDLE RATING "NAME" "COMMENT" [--title T] [--verified] [--date YYYY-MM-DD]
+                                    # add an approved review (e.g. from the review email), then sync that product
 
 Env: WC_CONSUMER_KEY, WC_CONSUMER_SECRET, and SHOPIFY_ADMIN_TOKEN or SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET,
      WC_URL (default https://babasaleh.com), SHOPIFY_STORE (default babasaleh.myshopify.com),
      DATA_DIR (default ./woo_data)
+     The reviews-* commands also need the app scopes write_metaobject_definitions and
+     write_metaobjects (plus write_products, already used above). See docs/reviews.md.
 
 Every step is safe to re-run: products are upserted by handle and orders are
 skipped when a Shopify order or draft order tagged woo-<id> already exists.
@@ -599,6 +605,243 @@ def seo():
     log("seo done", stats)
 
 
+# ---------------------------------------------------------------- product reviews
+# Reviews live in Shopify itself, no app: one `product_review` metaobject per review (editable in
+# admin → Content → Metaobjects → Product reviews) and three product metafields the theme renders:
+#   reviews.rating        rating 1–5   average of approved reviews (Shopify's standard reviews namespace,
+#   reviews.rating_count  integer      which Google Shopping and Shopify Search also read)
+#   babasaleh.reviews     list of product_review references: approved only, newest first
+# Products without an approved review have none of the three, so the theme shows no stars at all.
+# App scopes: write_metaobject_definitions, write_metaobjects (+ write_products for the metafields).
+REVIEW_TYPE = "product_review"
+REVIEW_STATUSES = ["pending", "approved", "rejected"]
+REVIEWS_LIST_MAX = 100  # newest approved reviews rendered on the page (the average still uses all of them)
+RATING_SCALE = [{"name": "scale_min", "value": "1"}, {"name": "scale_max", "value": "5"}]
+
+REVIEW_FIELDS = [
+    {"key": "product", "name": "Product", "type": "product_reference", "required": True},
+    {"key": "rating", "name": "Rating", "type": "rating", "required": True, "validations": RATING_SCALE},
+    {"key": "title", "name": "Title", "type": "single_line_text_field", "validations": [{"name": "max", "value": "120"}]},
+    {"key": "body", "name": "Comment", "type": "multi_line_text_field", "validations": [{"name": "max", "value": "500"}]},
+    {"key": "author_name", "name": "Name", "type": "single_line_text_field", "validations": [{"name": "max", "value": "60"}]},
+    {"key": "verified_buyer", "name": "Verified buyer", "type": "boolean"},
+    {"key": "submitted_at", "name": "Submitted at", "type": "date_time"},
+    {"key": "status", "name": "Status", "type": "single_line_text_field", "required": True,
+     "description": "Only approved reviews are shown on the store (after reviews-sync).",
+     "validations": [{"name": "choices", "value": json.dumps(REVIEW_STATUSES)}]},
+]
+PRODUCT_REVIEW_METAFIELDS = [
+    # (namespace, key, name, type, validations, standard: try Shopify's standard template first)
+    ("reviews", "rating", "Product rating", "rating", RATING_SCALE, True),
+    ("reviews", "rating_count", "Product rating count", "number_integer", [], True),
+    ("babasaleh", "reviews", "Approved reviews", "list.metaobject_reference", None, False),
+]
+
+REVIEW_DEF_Q = """query($type: String!) { metaobjectDefinitionByType(type: $type) { id type } }"""
+REVIEW_DEF_CREATE = """mutation($d: MetaobjectDefinitionCreateInput!) { metaobjectDefinitionCreate(definition: $d) {
+  metaobjectDefinition { id } userErrors { field message code } } }"""
+MF_DEF_Q = """query($ns: String!, $key: String!) { metafieldDefinitions(first: 1, ownerType: PRODUCT, namespace: $ns, key: $key) {
+  nodes { id type { name } } } }"""
+MF_DEF_CREATE = """mutation($d: MetafieldDefinitionInput!) { metafieldDefinitionCreate(definition: $d) {
+  createdDefinition { id } userErrors { field message code } } }"""
+MF_DEF_STANDARD = """mutation($ns: String!, $key: String!) { standardMetafieldDefinitionEnable(ownerType: PRODUCT, namespace: $ns,
+  key: $key, pin: true, access: { storefront: PUBLIC_READ }) { createdDefinition { id } userErrors { field message code } } }"""
+REVIEWS_Q = """query($after: String) { metaobjects(type: "product_review", first: 100, after: $after) {
+  pageInfo { hasNextPage endCursor }
+  nodes { id updatedAt capabilities { publishable { status } } fields { key value } } } }"""
+PRODUCT_REVIEW_MF_Q = """query($after: String, $q: String) { products(first: 100, after: $after, query: $q) {
+  pageInfo { hasNextPage endCursor }
+  nodes { id rating: metafield(namespace: "reviews", key: "rating") { value }
+    count: metafield(namespace: "reviews", key: "rating_count") { value }
+    list: metafield(namespace: "babasaleh", key: "reviews") { value } } } }"""
+REVIEW_UPDATE = """mutation($id: ID!, $m: MetaobjectUpdateInput!) { metaobjectUpdate(id: $id, metaobject: $m) {
+  metaobject { id } userErrors { field message code } } }"""
+REVIEW_CREATE = """mutation($m: MetaobjectCreateInput!) { metaobjectCreate(metaobject: $m) {
+  metaobject { id handle } userErrors { field message code } } }"""
+METAFIELDS_DELETE = """mutation($m: [MetafieldIdentifierInput!]!) { metafieldsDelete(metafields: $m) { userErrors { field message } } }"""
+PRODUCT_BY_HANDLE = """query($h: String!) { productByIdentifier(identifier: { handle: $h }) { id title } }"""
+
+
+def reviews_setup():
+    """Create the review metaobject + product metafield definitions. Re-running skips what exists."""
+    stats = {"created": 0, "existing": 0, "failed": 0}
+    d = gql(REVIEW_DEF_Q, {"type": REVIEW_TYPE})["metaobjectDefinitionByType"]
+    if d:
+        stats["existing"] += 1
+        def_id = d["id"]
+    else:
+        r = gql(REVIEW_DEF_CREATE, {"d": {
+            "type": REVIEW_TYPE, "name": "Product reviews", "displayNameKey": "author_name",
+            "description": "Customer reviews. Set status to approved, then run reviews-sync (or wait for the nightly run).",
+            "access": {"admin": "MERCHANT_READ_WRITE", "storefront": "PUBLIC_READ"},
+            "capabilities": {"publishable": {"enabled": True}},
+            "fieldDefinitions": REVIEW_FIELDS}})["metaobjectDefinitionCreate"]
+        if r["userErrors"] or not r["metaobjectDefinition"]:
+            log("FAILED metaobject definition", r["userErrors"])
+            raise SystemExit(1)
+        def_id = r["metaobjectDefinition"]["id"]
+        stats["created"] += 1
+        log("created metaobject definition", REVIEW_TYPE, def_id)
+
+    for ns, key, name, typ, validations, standard in PRODUCT_REVIEW_METAFIELDS:
+        found = gql(MF_DEF_Q, {"ns": ns, "key": key})["metafieldDefinitions"]["nodes"]
+        if found:
+            stats["existing"] += 1
+            if found[0]["type"]["name"] != typ:
+                log(f"WARNING {ns}.{key} exists with type {found[0]['type']['name']}, expected {typ}")
+            continue
+        if standard:  # Shopify's own template for reviews.rating / reviews.rating_count
+            r = gql(MF_DEF_STANDARD, {"ns": ns, "key": key})["standardMetafieldDefinitionEnable"]
+            if not r["userErrors"] and r["createdDefinition"]:
+                stats["created"] += 1
+                log("enabled standard definition", f"{ns}.{key}")
+                continue
+            log(f"standard {ns}.{key} unavailable, creating it:", r["userErrors"])
+        if validations is None:
+            validations = [{"name": "metaobject_definition_id", "value": def_id}]
+        r = gql(MF_DEF_CREATE, {"d": {
+            "ownerType": "PRODUCT", "namespace": ns, "key": key, "name": name, "type": typ,
+            "validations": validations, "pin": True, "access": {"storefront": "PUBLIC_READ"}}})["metafieldDefinitionCreate"]
+        if r["userErrors"] or not r["createdDefinition"]:
+            stats["failed"] += 1
+            log("FAILED definition", f"{ns}.{key}", r["userErrors"])
+        else:
+            stats["created"] += 1
+            log("created definition", f"{ns}.{key}")
+    log("reviews-setup done", stats)
+
+
+def review_fields(node):
+    f = {x["key"]: x["value"] for x in node["fields"]}
+    try:
+        rating = float(json.loads(f.get("rating") or "{}").get("value"))
+    except (TypeError, ValueError):
+        rating = None
+    return f, rating
+
+
+def approved_reviews():
+    """{product_id: [(submitted_at, metaobject_id, rating), ...newest first]} plus publish-status fixes to make."""
+    by_product, fixes, after = {}, [], None
+    while True:
+        page = gql(REVIEWS_Q, {"after": after})["metaobjects"]
+        for n in page["nodes"]:
+            f, rating = review_fields(n)
+            ok = (f.get("status") or "").strip().lower() == "approved" and f.get("product") and rating
+            # Approved = Active (visible in Liquid), everything else = Draft.
+            want = "ACTIVE" if ok else "DRAFT"
+            status = ((n.get("capabilities") or {}).get("publishable") or {}).get("status")
+            if status and status != want:
+                fixes.append((n["id"], want))
+            if ok:
+                by_product.setdefault(f["product"], []).append((f.get("submitted_at") or n["updatedAt"], n["id"], rating))
+        if not page["pageInfo"]["hasNextPage"]:
+            break
+        after = page["pageInfo"]["endCursor"]
+    for rows in by_product.values():
+        rows.sort(reverse=True)
+    return by_product, fixes
+
+
+def review_metafields(rows):
+    """The three product metafield values for a list of approved reviews (newest first)."""
+    avg = round(sum(r for _, _, r in rows) / len(rows), 1)
+    return {
+        ("reviews", "rating"): ("rating", json.dumps({"value": f"{avg:.1f}", "scale_min": "1.0", "scale_max": "5.0"})),
+        ("reviews", "rating_count"): ("number_integer", str(len(rows))),
+        ("babasaleh", "reviews"): ("list.metaobject_reference", json.dumps([mid for _, mid, _ in rows[:REVIEWS_LIST_MAX]])),
+    }
+
+
+def same_value(typ, a, b):
+    if a is None or b is None:
+        return a == b
+    if typ in ("rating", "list.metaobject_reference"):
+        try:
+            a, b = json.loads(a), json.loads(b)
+            if typ == "rating":
+                return float(a["value"]) == float(b["value"])
+        except (ValueError, KeyError, TypeError):
+            return False
+    return a == b
+
+
+def reviews_sync(only_product=None):
+    """Write rating, count and the approved list on every product that has approved reviews; clear the rest."""
+    stats = {"reviews": 0, "products_rated": 0, "updated": 0, "cleared": 0, "published": 0, "unpublished": 0}
+    by_product, fixes = approved_reviews()
+    stats["reviews"] = sum(len(v) for v in by_product.values())
+    for mid, want in fixes:
+        r = gql(REVIEW_UPDATE, {"id": mid, "m": {"capabilities": {"publishable": {"status": want}}}})["metaobjectUpdate"]
+        if r["userErrors"]:
+            log("status fix failed", mid, r["userErrors"])
+        else:
+            stats["published" if want == "ACTIVE" else "unpublished"] += 1
+
+    to_set, to_clear, after = [], [], None
+    while True:
+        q = f"id:{only_product.rsplit('/', 1)[-1]}" if only_product else None
+        page = gql(PRODUCT_REVIEW_MF_Q, {"after": after, "q": q})["products"]
+        for p in page["nodes"]:
+            current = {("reviews", "rating"): p["rating"], ("reviews", "rating_count"): p["count"], ("babasaleh", "reviews"): p["list"]}
+            rows = by_product.get(p["id"])
+            if not rows:
+                to_clear += [{"ownerId": p["id"], "namespace": ns, "key": key} for (ns, key), mf in current.items() if mf]
+                stats["cleared"] += any(current.values())
+                continue
+            stats["products_rated"] += 1
+            changed = [(ns, key, typ, value) for (ns, key), (typ, value) in review_metafields(rows).items()
+                       if not same_value(typ, (current[(ns, key)] or {}).get("value"), value)]
+            if changed:
+                stats["updated"] += 1
+                to_set += [{"ownerId": p["id"], "namespace": ns, "key": key, "type": typ, "value": value}
+                           for ns, key, typ, value in changed]
+        if not page["pageInfo"]["hasNextPage"]:
+            break
+        after = page["pageInfo"]["endCursor"]
+
+    for i in range(0, len(to_set), 25):  # metafieldsSet takes at most 25 per call
+        r = gql(METAFIELDS_SET, {"m": to_set[i:i + 25]})["metafieldsSet"]
+        if r["userErrors"]:
+            log("metafieldsSet failed", r["userErrors"])
+    for i in range(0, len(to_clear), 25):
+        r = gql(METAFIELDS_DELETE, {"m": to_clear[i:i + 25]})["metafieldsDelete"]
+        if r["userErrors"]:
+            log("metafieldsDelete failed", r["userErrors"])
+    log("reviews-sync done", stats)
+
+
+def reviews_add():
+    """Create an approved review (e.g. copied from the contact-form email) and sync that product."""
+    import argparse
+    ap = argparse.ArgumentParser(prog="sync.py reviews-add")
+    ap.add_argument("handle")
+    ap.add_argument("rating", type=int, choices=range(1, 6))
+    ap.add_argument("name")
+    ap.add_argument("comment")
+    ap.add_argument("--title", default="")
+    ap.add_argument("--verified", action="store_true", help="customer bought this product")
+    ap.add_argument("--date", help="YYYY-MM-DD the review was submitted (default: now)")
+    a = ap.parse_args(sys.argv[2:])
+    product = gql(PRODUCT_BY_HANDLE, {"h": a.handle})["productByIdentifier"]
+    if not product:
+        raise SystemExit(f"no product with handle {a.handle!r}")
+    when = f"{a.date}T12:00:00Z" if a.date else time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    fields = {"product": product["id"], "status": "approved", "submitted_at": when,
+              "rating": json.dumps({"value": f"{a.rating}.0", "scale_min": "1.0", "scale_max": "5.0"}),
+              "author_name": clip(a.name, 60), "body": a.comment.strip()[:500],
+              "verified_buyer": "true" if a.verified else "false"}
+    if a.title:
+        fields["title"] = clip(a.title, 120)
+    r = gql(REVIEW_CREATE, {"m": {"type": REVIEW_TYPE, "capabilities": {"publishable": {"status": "ACTIVE"}},
+                                  "fields": [{"key": k, "value": v} for k, v in fields.items()]}})["metaobjectCreate"]
+    if r["userErrors"] or not r["metaobject"]:
+        raise SystemExit(f"FAILED: {r['userErrors']}")
+    log("review added", product["title"], r["metaobject"]["handle"])
+    reviews_sync(only_product=product["id"])
+
+
 if __name__ == "__main__":
     {"fetch": fetch, "products": products, "orders": orders, "export": export_shopify,
-     "cancelled-to-drafts": cancelled_to_drafts, "sort-stock": sort_stock, "seo": seo}[sys.argv[1]]()
+     "cancelled-to-drafts": cancelled_to_drafts, "sort-stock": sort_stock, "seo": seo,
+     "reviews-setup": reviews_setup, "reviews-sync": reviews_sync, "reviews-add": reviews_add}[sys.argv[1]]()

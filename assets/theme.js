@@ -556,6 +556,64 @@
   }
   customElements.define('product-info', ProductInfo);
 
+  /* ---------- Product reviews ---------- */
+  // "Show more" reveals the next page of server-rendered reviews (no extra requests).
+  class ProductReviews extends HTMLElement {
+    connectedCallback() {
+      this.more = this.querySelector('[data-reviews-more]');
+      if (!this.more) return;
+      this.more.hidden = false;
+      this.more.addEventListener('click', () => {
+        const hidden = [...this.querySelectorAll('[data-review][hidden]')];
+        const next = hidden.slice(0, Number(this.dataset.pageSize) || 5);
+        for (const review of next) review.hidden = false;
+        next[0]?.focus({ preventScroll: true });
+        if (hidden.length <= next.length) this.more.remove();
+      });
+    }
+  }
+  customElements.define('product-reviews', ProductReviews);
+
+  // Review form = Shopify contact form (hCaptcha is added by Shopify). Extra bot checks:
+  // a honeypot field people never see, and a minimum of 3 s between render and submit.
+  class ReviewForm extends HTMLElement {
+    connectedCallback() {
+      this.renderedAt = Date.now();
+      this.form = this.querySelector('form');
+      this.error = this.querySelector('[data-review-error]');
+      this.form?.addEventListener('submit', (event) => this.#onSubmit(event));
+
+      // After the post Shopify reloads the page at #ReviewForm-…: show the outcome.
+      const message = this.querySelector('[data-review-message]');
+      if (message) {
+        const details = this.querySelector('details');
+        if (details) details.open = true;
+        requestAnimationFrame(() => {
+          message.scrollIntoView({ block: 'center' });
+          message.focus({ preventScroll: true });
+        });
+      }
+    }
+
+    #onSubmit(event) {
+      const honeypot = this.form.querySelector('[data-honeypot]');
+      let reason = '';
+      if (honeypot && honeypot.value.trim()) reason = this.dataset.errorBlocked;
+      else if (Date.now() - this.renderedAt < 3000) reason = this.dataset.errorFast;
+      if (reason) {
+        event.preventDefault();
+        if (this.error) {
+          this.error.textContent = reason;
+          this.error.hidden = false;
+        }
+        return;
+      }
+      if (this.error) this.error.hidden = true;
+      this.form.querySelector('[type="submit"]')?.classList.add('is-loading');
+    }
+  }
+  customElements.define('review-form', ReviewForm);
+
   /* ---------- Sliders (scroll-snap) ---------- */
   const bindSlider = (root) => {
     const slider = root.querySelector('[data-slider]:not([hidden] [data-slider])') ?? root.querySelector('[data-slider]');

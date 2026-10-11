@@ -139,6 +139,10 @@
         <a href="{{ product.url }}" class="card__link" title="{{ product.title | escape }}">{{ product.title }}</a>
       </h3>
       {%- render 'product-category', product: product, class: 'card__category' -%}
+      {%- assign rating_count = product.metafields.reviews.rating_count.value | default: 0 -%}
+      {%- if rating_count > 0 and product.metafields.reviews.rating.value != blank -%}
+        {%- render 'rating-stars', rating: product.metafields.reviews.rating.value.rating, count: rating_count, class: 'stars--small card__rating' -%}
+      {%- endif -%}
       {% render 'price', product: product %}
       {%- if color_option and color_option.values.size > 1 -%}
         <div class="card__swatches">

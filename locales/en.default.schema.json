@@ -557,6 +557,21 @@
         }
       }
     },
+    "product_reviews": {
+      "name": "Product reviews",
+      "settings": {
+        "heading": {
+          "info": "Leave empty to use “Customer reviews” (translated automatically)."
+        },
+        "reviews_per_page": {
+          "label": "Reviews shown before “Show more”"
+        },
+        "show_form": {
+          "label": "Show “Write a review” form",
+          "info": "Submissions arrive by email. Approve them in Content → Metaobjects → Product reviews; only approved reviews appear. See docs/reviews.md."
+        }
+      }
+    },
     "main_collection": {
       "name": "Collection products",
       "settings": {
