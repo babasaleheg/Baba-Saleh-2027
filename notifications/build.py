@@ -20,7 +20,7 @@ LOGO = "https://babasaleh.myshopify.com/cdn/shop/files/baba-saleh-logo-desktop.p
 SITE = "https://babasaleh.com"
 WA_LINK, WA_TEXT = "https://wa.me/201028305495", "+20 102 830 5495"
 EMAIL = "support@babasaleh.com"
-ADMIN = "https://admin.shopify.com/store/babasaleh"
+ADMIN = "https://admin.shopify.com/store/x1hnz9-tu"
 FONTS_LINK = ("https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700"
               "&family=Poppins:wght@400;600;700&display=swap")
 FONT = {
