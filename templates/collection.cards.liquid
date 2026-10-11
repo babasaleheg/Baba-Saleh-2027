@@ -1,0 +1,11 @@
+{%- layout none -%}
+{%- comment -%}
+  Product cards only, fetched by hidden "Trending now" tabs when they are opened
+  (featured-collection + ProductTabs in theme.js). Collection order already puts
+  in-stock products first.
+{%- endcomment -%}
+{%- paginate collection.products by 24 -%}
+  {%- for product in collection.products -%}
+    <li>{% render 'product-card', product: product, index: forloop.index0 %}</li>
+  {%- endfor -%}
+{%- endpaginate -%}

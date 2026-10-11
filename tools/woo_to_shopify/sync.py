@@ -7,6 +7,7 @@ Usage (stdlib only):
                                # cancelled Woo orders become draft orders so they never count as sales
     python3 sync.py cancelled-to-drafts   # one-off: move already-imported cancelled orders to draft orders
     python3 sync.py sort-stock # every collection: in-stock products first, sold-out last (re-run as stock changes)
+    python3 sync.py seo        # fill empty SEO titles/descriptions and image alt text (products + collections)
 
 Env: WC_CONSUMER_KEY, WC_CONSUMER_SECRET, and SHOPIFY_ADMIN_TOKEN or SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET,
      WC_URL (default https://babasaleh.com), SHOPIFY_STORE (default babasaleh.myshopify.com),
@@ -19,7 +20,7 @@ Cancelled orders are kept as draft orders, not cancelled orders: Shopify books a
 cancellation as a sales reversal on the day it happens (it can't be backdated),
 so importing cancelled orders would put one large negative day in the reports.
 """
-import base64, glob, html, json, os, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
+import base64, glob, html, json, os, re, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.environ.get("DATA_DIR", "woo_data")
@@ -490,6 +491,114 @@ def sort_stock():
     log("sort-stock done", stats)
 
 
+# ---------------------------------------------------------------- SEO + alt text
+SEO_PRODUCTS_Q = """query($after: String) { products(first: 50, after: $after) {
+  pageInfo { hasNextPage endCursor }
+  nodes { id title vendor productType description seo { title description }
+    media(first: 50) { nodes { id alt mediaContentType } } } } }"""
+SEO_COLLECTIONS_Q = """query($after: String) { collections(first: 50, after: $after) {
+  pageInfo { hasNextPage endCursor }
+  nodes { id title description productsCount { count } seo { title description } image { altText } } } }"""
+PRODUCT_SEO_UPDATE = """mutation($p: ProductUpdateInput!) { productUpdate(product: $p) { userErrors { field message } } }"""
+COLLECTION_SEO_UPDATE = """mutation($c: CollectionInput!) { collectionUpdate(input: $c) { userErrors { field message } } }"""
+FILE_ALT_UPDATE = """mutation($files: [FileUpdateInput!]!) { fileUpdate(files: $files) { userErrors { field message } } }"""
+STORE = "Baba Saleh"
+
+
+def clip(text, limit):
+    """Trim to `limit` characters on a word boundary."""
+    text = " ".join((text or "").split())
+    if len(text) <= limit:
+        return text
+    return text[:limit - 1].rsplit(" ", 1)[0].rstrip(" ,.;:-–") + "…"
+
+
+def own_brand(p):
+    """True when the title doesn't need the vendor added (store brand, or the brand is already a word in it)."""
+    words = re.findall(r"\w+", p["title"].lower())
+    return p["vendor"] in ("", STORE) or p["vendor"].lower() in words
+
+
+def product_seo_title(p):
+    """Longest of: title – brand | Baba Saleh Egypt, title – brand, title | Baba Saleh Egypt, title (max 70 chars)."""
+    brand = "" if own_brand(p) else f" – {p['vendor']}"
+    for t in (f"{p['title']}{brand} | {STORE} Egypt", f"{p['title']}{brand}", f"{p['title']} | {STORE} Egypt"):
+        if len(t) <= 70:
+            return t
+    return clip(p["title"], 70)
+
+
+def product_seo_description(p):
+    tail = f"Cash on delivery & fast shipping across Egypt from {STORE}."
+    lead = p["description"] or f"{p['title']}{'' if own_brand(p) else ' by ' + p['vendor']}. {p['productType'] or 'Sports gear'}."
+    budget = 160 - len(tail) - 1
+    lead = " ".join(lead.split())
+    if len(lead) > budget:
+        cut = lead[:budget].rfind(". ")  # prefer ending on a full sentence
+        lead = lead[:cut + 1] if cut > budget // 2 else clip(lead, budget)
+    return f"{lead}{'' if lead.endswith(('.', '…')) else '.'} {tail}"
+
+
+def seo():
+    """Fill empty SEO fields and alt text. Never overwrites text that is already there."""
+    stats = {"products": 0, "seo_set": 0, "alt_set": 0, "collections_seo": 0}
+    alt_ok = True
+    after = None
+    while True:
+        page = gql(SEO_PRODUCTS_Q, {"after": after})["products"]
+        for p in page["nodes"]:
+            stats["products"] += 1
+            fields = {}
+            if not p["seo"]["title"]:
+                fields["title"] = product_seo_title(p)
+            if not p["seo"]["description"]:
+                fields["description"] = product_seo_description(p)
+            if fields:
+                fields = {**{"title": p["seo"]["title"], "description": p["seo"]["description"]}, **fields}
+                r = gql(PRODUCT_SEO_UPDATE, {"p": {"id": p["id"], "seo": {k: v for k, v in fields.items() if v}}})["productUpdate"]
+                if r["userErrors"]:
+                    log("seo failed", p["title"], r["userErrors"])
+                else:
+                    stats["seo_set"] += 1
+            images = [m for m in p["media"]["nodes"] if m["mediaContentType"] == "IMAGE"]
+            missing = [(i, m) for i, m in enumerate(images) if not (m["alt"] or "").strip()]
+            if missing and alt_ok:
+                base = p["title"] if p["vendor"] in ("", STORE) else f"{p['title']} – {p['vendor']}"
+                files = [{"id": m["id"], "alt": clip(base if i == 0 else f"{base} ({i + 1})", 512)} for i, m in missing]
+                try:
+                    r = gql(FILE_ALT_UPDATE, {"files": files})["fileUpdate"]
+                except RuntimeError as e:  # app lacks write_files: keep going with SEO fields
+                    log("alt text skipped (needs write_files scope):", str(e)[:120])
+                    alt_ok = False
+                    continue
+                if r["userErrors"]:
+                    log("alt failed", p["title"], r["userErrors"])
+                else:
+                    stats["alt_set"] += len(files)
+            if stats["products"] % 200 == 0:
+                log("seo", stats)
+        if not page["pageInfo"]["hasNextPage"]:
+            break
+        after = page["pageInfo"]["endCursor"]
+
+    after = None
+    while True:
+        page = gql(SEO_COLLECTIONS_Q, {"after": after})["collections"]
+        for c in page["nodes"]:
+            title = c["seo"]["title"] or clip(f"{c['title']} | {STORE} Egypt", 70)
+            desc = c["seo"]["description"] or clip(
+                (clip(c["description"], 100) + " " if c["description"] else "")
+                + f"Shop {c['productsCount']['count']} {c['title'].lower()} products at {STORE}: cash on delivery and fast shipping across Egypt.", 160)
+            if (title, desc) != (c["seo"]["title"], c["seo"]["description"]):
+                r = gql(COLLECTION_SEO_UPDATE, {"c": {"id": c["id"], "seo": {"title": title, "description": desc}}})["collectionUpdate"]
+                if not r["userErrors"]:
+                    stats["collections_seo"] += 1
+        if not page["pageInfo"]["hasNextPage"]:
+            break
+        after = page["pageInfo"]["endCursor"]
+    log("seo done", stats)
+
+
 if __name__ == "__main__":
     {"fetch": fetch, "products": products, "orders": orders, "export": export_shopify,
-     "cancelled-to-drafts": cancelled_to_drafts, "sort-stock": sort_stock}[sys.argv[1]]()
+     "cancelled-to-drafts": cancelled_to_drafts, "sort-stock": sort_stock, "seo": seo}[sys.argv[1]]()

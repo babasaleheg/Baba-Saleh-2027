@@ -1,0 +1,17 @@
+{%- comment -%}
+  Brand name in the shopper's language. Brands with an Arabic name are listed below
+  (vendor:Arabic, comma separated); everything else shows as entered in Shopify.
+  - vendor: {String}
+{%- endcomment -%}
+{%- liquid
+  assign arabic_brands = 'Track:تراك'
+  assign shown = vendor
+  if request.locale.iso_code == 'ar'
+    assign key = ',' | append: vendor | append: ':'
+    assign lookup = arabic_brands | prepend: ','
+    if lookup contains key
+      assign shown = lookup | split: key | last | split: ',' | first
+    endif
+  endif
+-%}
+{{- shown -}}

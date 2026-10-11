@@ -41,7 +41,7 @@
                 <li>
                   {%- case item.object_type -%}
                     {%- when 'product' -%}
-                      {% render 'product-card', product: item, index: card_index %}
+                      {% render 'product-card', product: item, index: card_index, eager: true %}
                       {%- assign card_index = card_index | plus: 1 -%}
                     {%- else -%}
                       <a href="{{ item.url }}" class="search__article">

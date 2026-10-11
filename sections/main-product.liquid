@@ -72,7 +72,7 @@
               {% render block %}
 
             {%- when 'vendor' -%}
-              <a href="{{ product.vendor | url_for_vendor }}" class="product__vendor eyebrow" {{ block.shopify_attributes }}>{{ product.vendor }}</a>
+              <a href="{{ product.vendor | url_for_vendor }}" class="product__vendor eyebrow" {{ block.shopify_attributes }}>{% render 'vendor-name', vendor: product.vendor %}</a>
 
             {%- when 'title' -%}
               <h1 class="product__title h2" {{ block.shopify_attributes }}>{{ product.title }}</h1>

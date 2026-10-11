@@ -32,7 +32,10 @@
 -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{ font_query }}&display=swap">
+{%- comment -%} Non-blocking: text shows straight away in the system font and swaps when the web font arrives {%- endcomment -%}
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?{{ font_query }}&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{ font_query }}&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{ font_query }}&display=swap"></noscript>
 <style>
   :root {
     --font-heading-family: {{ latin_heading }}, {{ arabic_heading }}, system-ui, sans-serif;

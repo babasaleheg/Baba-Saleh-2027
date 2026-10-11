@@ -1,13 +1,14 @@
 {%- comment -%}
   Product card.
   - product: product object (blank renders a placeholder card)
-  - index: position, used for staggered reveal and eager loading
+  - index: position, used for staggered reveal
+  - eager: true for cards at the top of a page (first 4 load immediately; everything else is lazy)
   - sizes: image sizes attribute
 {%- endcomment -%}
 {%- liquid
   assign image_sizes = sizes | default: '(min-width: 1100px) 320px, (min-width: 750px) 33vw, 50vw'
   assign loading = 'lazy'
-  if index != blank and index < 4
+  if eager and index != blank and index < 4
     assign loading = 'eager'
   endif
 -%}
@@ -129,7 +130,7 @@
 
     <div class="card__info">
       {%- if settings.card_show_vendor -%}
-        <span class="card__vendor">{{ product.vendor }}</span>
+        <span class="card__vendor">{% render 'vendor-name', vendor: product.vendor %}</span>
       {%- endif -%}
       <h3 class="card__title">
         <a href="{{ product.url }}" class="card__link" title="{{ product.title | escape }}">{{ product.title }}</a>

@@ -60,9 +60,14 @@
           style="--slides-desktop: {{ section.settings.columns_desktop }}; --slides-tablet: 3; --slide-mobile: 46%;"
         >
           {%- if collection != blank and collection.products_count > 0 -%}
-            {%- for product in collection.products limit: limit -%}
-              <li>{% render 'product-card', product: product, index: forloop.index0 %}</li>
-            {%- endfor -%}
+            {%- if forloop.first -%}
+              {%- for product in collection.products limit: limit -%}
+                <li>{% render 'product-card', product: product, index: forloop.index0 %}</li>
+              {%- endfor -%}
+            {%- else -%}
+              {%- comment -%} Hidden tabs load when opened (collection.cards view), keeping the page light {%- endcomment -%}
+              <li data-lazy-cards="{{ collection.url }}?view=cards&limit={{ limit }}">{% render 'product-card', product: blank %}</li>
+            {%- endif -%}
           {%- else -%}
             {%- for i in (1..4) -%}
               <li>{% render 'product-card', product: blank %}</li>

@@ -556,9 +556,29 @@
         t.tabIndex = selected ? 0 : -1;
         const panel = document.getElementById(t.getAttribute('aria-controls'));
         if (panel) panel.hidden = !selected;
+        if (selected && panel) this.#loadCards(panel);
       }
       revealAll(this);
       this.dispatchEvent(new Event('slider:refresh'));
+    }
+
+    // Hidden tabs are rendered as a placeholder; fetch their cards the first time they open.
+    async #loadCards(panel) {
+      const lazy = panel.querySelector('[data-lazy-cards]');
+      if (!lazy || lazy.dataset.loading) return;
+      lazy.dataset.loading = 'true';
+      try {
+        const url = new URL(lazy.dataset.lazyCards, window.location.origin);
+        const limit = Number(url.searchParams.get('limit')) || 12;
+        const html = await (await fetch(url)).text();
+        const doc = parseHTML(`<ul>${html}</ul>`);
+        const items = [...doc.querySelectorAll('ul > li')].slice(0, limit);
+        if (items.length) lazy.replaceWith(...items);
+        revealAll(panel);
+        this.dispatchEvent(new Event('slider:refresh'));
+      } catch {
+        delete lazy.dataset.loading;
+      }
     }
 
     #onKey(event, tab) {
