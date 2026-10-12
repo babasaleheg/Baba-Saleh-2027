@@ -1,0 +1,163 @@
+{%- comment -%}
+  Story / timeline: milestones on a line that fills as you scroll (<scroll-progress> in theme.js).
+{%- endcomment -%}
+<section
+  class="section timeline color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width timeline__inner">
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank or section.settings.text != blank -%}
+      <div class="timeline__intro">
+        {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
+        {%- if section.settings.text != blank -%}<div class="rte text-muted">{{ section.settings.text }}</div>{%- endif -%}
+      </div>
+    {%- endif -%}
+    <scroll-progress class="timeline__track">
+      <span class="timeline__line" aria-hidden="true"><span class="timeline__fill"></span></span>
+      <ol class="timeline__list" role="list">
+        {%- for block in section.blocks -%}
+          <li class="timeline__item" data-reveal {{ block.shopify_attributes }}>
+            <span class="timeline__dot" aria-hidden="true"></span>
+            <p class="timeline__label">{{ block.settings.label }}</p>
+            <h3 class="h3 timeline__title">{{ block.settings.title }}</h3>
+            {%- if block.settings.text != blank -%}
+              <div class="rte text-muted timeline__text">{{ block.settings.text }}</div>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ol>
+    </scroll-progress>
+  </div>
+</section>
+
+{% stylesheet %}
+  scroll-progress {
+    display: block;
+  }
+
+  .timeline__inner {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .timeline__intro {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+    max-width: 36rem;
+  }
+
+  .timeline__track {
+    --progress: 1;
+    position: relative;
+    padding-inline-start: 2rem;
+  }
+
+  .js .timeline__track {
+    --progress: 0;
+  }
+
+  .timeline__line {
+    position: absolute;
+    inset-block: 0.5rem;
+    inset-inline-start: 0.4375rem;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--color-border);
+    overflow: hidden;
+  }
+
+  .timeline__fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-accent);
+    transform-origin: top;
+    transform: scaleY(var(--progress));
+  }
+
+  .timeline__list {
+    display: grid;
+    gap: 2.25rem;
+    margin: 0;
+  }
+
+  .timeline__item {
+    position: relative;
+    display: grid;
+    gap: 0.375rem;
+  }
+
+  .timeline__dot {
+    position: absolute;
+    inset-inline-start: -2rem;
+    inset-block-start: 0.25rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 2px solid var(--color-accent);
+    background: var(--color-bg);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .timeline__item.is-revealed .timeline__dot {
+    background: var(--color-accent);
+    transform: scale(1.1);
+  }
+
+  .timeline__label {
+    font-family: var(--font-heading-family);
+    font-weight: var(--heading-weight);
+    font-size: 0.9375rem;
+    color: var(--color-accent);
+    letter-spacing: 0.04em;
+  }
+
+  .timeline__title {
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
+  }
+
+  @media screen and (min-width: 990px) {
+    .timeline__inner {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 5rem;
+    }
+
+    .timeline__intro {
+      position: sticky;
+      top: calc(var(--header-offset, 0px) + 2rem);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:pages.timeline.name",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
+    { "type": "text", "id": "heading", "default": "Our story", "label": "t:settings.heading" },
+    { "type": "richtext", "id": "text", "label": "t:settings.text" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_bottom" }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "t:pages.timeline.block",
+      "settings": [
+        { "type": "text", "id": "label", "default": "1971", "label": "t:pages.timeline.label" },
+        { "type": "text", "id": "title", "default": "Milestone", "label": "t:settings.heading" },
+        { "type": "richtext", "id": "text", "label": "t:settings.text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:pages.timeline.name",
+      "blocks": [{ "type": "milestone" }, { "type": "milestone" }, { "type": "milestone" }]
+    }
+  ]
+}
+{% endschema %}

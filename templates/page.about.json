@@ -1,0 +1,234 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "show_breadcrumb": true,
+        "eyebrow": "Since 1971",
+        "title": "Egypt's sports store for over 50 years",
+        "subtitle": "<p>From our first shop in Giza to four branches and an online store delivering to every governorate, Baba Saleh has helped families, athletes and teams gear up for more than five decades.</p>",
+        "button_label": "Shop now",
+        "button_link": "shopify://collections/all",
+        "button_label_2": "Visit a branch",
+        "button_link_2": "#branches"
+      }
+    },
+    "stats": {
+      "type": "stats-counter",
+      "blocks": {
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "value": 1971,
+            "format": "plain",
+            "label": "Founded"
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "value": 50,
+            "format": "grouped",
+            "suffix": "+",
+            "label": "Years in sports retail"
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "value": 1300,
+            "format": "grouped",
+            "suffix": "+",
+            "label": "Products online"
+          }
+        },
+        "s4": {
+          "type": "stat",
+          "settings": {
+            "value": 4,
+            "format": "plain",
+            "label": "Branches"
+          }
+        },
+        "s5": {
+          "type": "stat",
+          "settings": {
+            "value": 27,
+            "format": "plain",
+            "label": "Governorates we deliver to"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3"
+      }
+    },
+    "story": {
+      "type": "story-timeline",
+      "blocks": {
+        "m1": {
+          "type": "milestone",
+          "settings": {
+            "label": "1971",
+            "title": "Where it started",
+            "text": "<p>Baba Saleh opens its first sports shop in Giza, serving local clubs, schools and families.</p>"
+          }
+        },
+        "m2": {
+          "type": "milestone",
+          "settings": {
+            "label": "Growing",
+            "title": "More branches",
+            "text": "<p>Branches open in Imbaba, Maadi and 6th of October, bringing sportswear, swimwear and fitness gear closer to home.</p>"
+          }
+        },
+        "m3": {
+          "type": "milestone",
+          "settings": {
+            "label": "Online",
+            "title": "Baba Saleh online",
+            "text": "<p>Our online store brings the full range to every governorate in Egypt, with cash on delivery and easy returns.</p>"
+          }
+        },
+        "m4": {
+          "type": "milestone",
+          "settings": {
+            "label": "Today",
+            "title": "Community & events",
+            "text": "<p>We support teams and events with custom printing and host community activities such as cycling days.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4"
+      ],
+      "settings": {
+        "eyebrow": "Our story",
+        "heading": "Five decades of sport"
+      }
+    },
+    "values": {
+      "type": "value-cards",
+      "blocks": {
+        "v1": {
+          "type": "card",
+          "settings": {
+            "icon": "trophy",
+            "title": "Quality you can trust",
+            "text": "<p>Carefully chosen products from Baba Saleh, Track and international brands.</p>"
+          }
+        },
+        "v2": {
+          "type": "card",
+          "settings": {
+            "icon": "users",
+            "title": "Expert advice",
+            "text": "<p>Our team helps you find the right size and gear, in store or on WhatsApp.</p>"
+          }
+        },
+        "v3": {
+          "type": "card",
+          "settings": {
+            "icon": "pin",
+            "title": "All of Egypt",
+            "text": "<p>Delivery to every governorate, with cash on delivery.</p>"
+          }
+        },
+        "v4": {
+          "type": "card",
+          "settings": {
+            "icon": "heart",
+            "title": "Easy returns",
+            "text": "<p>Changed your mind? Return or exchange within 7 days.</p>",
+            "link": "shopify://pages/returns-policy"
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4"
+      ],
+      "settings": {
+        "heading": "What we stand for",
+        "center_header": true,
+        "columns_desktop": 4
+      }
+    },
+    "branches": {
+      "type": "branch-locations",
+      "blocks": {
+        "giza": {
+          "type": "branch",
+          "settings": {
+            "name": "Giza",
+            "area": "Giza",
+            "address": "5 Cairo University Street, Giza",
+            "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Cairo+University+Street+Giza",
+            "whatsapp": "+20 102 830 5495"
+          }
+        },
+        "maadi": {
+          "type": "branch",
+          "settings": {
+            "name": "Maadi",
+            "area": "Cairo",
+            "address": "Darna Towers, 27, Maadi, Cairo",
+            "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Darna+Towers+Maadi",
+            "whatsapp": "+20 102 830 5495"
+          }
+        },
+        "october": {
+          "type": "branch",
+          "settings": {
+            "name": "6th of October",
+            "area": "Giza",
+            "address": "La Cite Mall, 6th of October City",
+            "map_url": "https://maps.google.com/?q=La+Cite+Mall+6th+of+October",
+            "whatsapp": "+20 102 830 5495"
+          }
+        },
+        "imbaba": {
+          "type": "branch",
+          "settings": {
+            "name": "Imbaba",
+            "area": "Giza",
+            "address": "Block 32, 2 Talaat Harb Street, Imbaba",
+            "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Imbaba",
+            "whatsapp": "+20 102 830 5495"
+          }
+        }
+      },
+      "block_order": [
+        "giza",
+        "maadi",
+        "october",
+        "imbaba"
+      ],
+      "settings": {
+        "eyebrow": "Since 1971",
+        "heading": "Visit our branches",
+        "text": "<p>Try sizes, get expert advice and pick up your order in person.</p>",
+        "structured_data": true
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "stats",
+    "story",
+    "values",
+    "branches"
+  ]
+}

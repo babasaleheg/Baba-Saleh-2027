@@ -1,0 +1,416 @@
+{%- comment -%}
+  Careers: open roles as cards with location filter chips and an application form built on
+  Shopify's contact form (no file uploads, so applicants share a CV link or send it on WhatsApp).
+  <job-board> in theme.js handles filtering and pre-fills the form when "Apply" is pressed.
+{%- endcomment -%}
+{%- liquid
+  assign locations = ''
+  for block in section.blocks
+    if block.settings.location != blank
+      assign locations = locations | append: block.settings.location | append: '|'
+    endif
+  endfor
+  assign locations = locations | split: '|' | uniq
+  assign branch_options = section.settings.branches | newline_to_br | split: '<br />'
+  assign wa = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-'
+  assign wa_text = 'pages.jobs.whatsapp_message' | t | url_encode
+  assign jobs_heading = section.settings.heading
+  if jobs_heading == blank
+    assign jobs_heading = 'pages.jobs.open_roles' | t
+  endif
+  assign apply_heading = section.settings.form_heading
+  if apply_heading == blank
+    assign apply_heading = 'pages.jobs.apply_heading' | t
+  endif
+-%}
+<job-board class="section jobs color-{{ section.settings.color_scheme }}" style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;">
+  <section class="page-width" aria-labelledby="JobsHeading-{{ section.id }}">
+    <div class="section-header">
+      <div class="section-header__text">
+        {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+        <h2 class="h2" id="JobsHeading-{{ section.id }}">{{ jobs_heading }}</h2>
+        {%- if section.settings.text != blank -%}<div class="rte text-muted">{{ section.settings.text }}</div>{%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      {%- if locations.size > 1 -%}
+        <div class="jobs__filters" role="group" aria-label="{{ 'pages.jobs.filter_label' | t }}" hidden data-job-filters>
+          <button type="button" class="jobs__chip" aria-pressed="true" data-location="">{{ 'pages.jobs.all_locations' | t }}</button>
+          {%- for location in locations -%}
+            <button type="button" class="jobs__chip" aria-pressed="false" data-location="{{ location | escape }}">
+              {%- render 'icon', icon: 'pin' -%}
+              {{ location }}
+            </button>
+          {%- endfor -%}
+        </div>
+        <p class="visually-hidden" role="status" data-job-status data-template="{{ 'pages.jobs.showing' | t: shown: '[count]' }}"></p>
+      {%- endif -%}
+
+      <ul class="jobs__grid" role="list">
+        {%- for block in section.blocks -%}
+          <li class="job-card" data-reveal style="--reveal-index: {{ forloop.index0 }}" data-location="{{ block.settings.location | escape }}" {{ block.shopify_attributes }}>
+            <div class="job-card__tags">
+              {%- if block.settings.location != blank -%}
+                <span class="badge badge--muted">{% render 'icon', icon: 'pin' %}{{ block.settings.location }}</span>
+              {%- endif -%}
+              {%- if block.settings.type != blank -%}
+                <span class="badge badge--muted">{% render 'icon', icon: 'clock' %}{{ block.settings.type }}</span>
+              {%- endif -%}
+            </div>
+            <h3 class="h3 job-card__title">{{ block.settings.title }}</h3>
+            {%- if block.settings.text != blank -%}
+              <div class="rte job-card__text">{{ block.settings.text }}</div>
+            {%- endif -%}
+            <a
+              href="#ApplyForm-{{ section.id }}"
+              class="button button--small job-card__apply"
+              data-apply-role="{{ block.settings.title | escape }}"
+              data-apply-branch="{{ block.settings.location | escape }}"
+            >
+              {{ 'pages.jobs.apply' | t }}
+              <span class="visually-hidden">– {{ block.settings.title }}{% if block.settings.location != blank %}, {{ block.settings.location }}{% endif %}</span>
+              {%- render 'icon', icon: 'arrow' -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <p class="jobs__none text-muted">{{ 'pages.jobs.no_roles' | t }}</p>
+    {%- endif -%}
+  </section>
+
+  <section class="page-width jobs__apply" id="ApplyForm-{{ section.id }}" aria-labelledby="ApplyHeading-{{ section.id }}" tabindex="-1">
+    <div class="jobs__apply-intro">
+      <h2 class="h2" id="ApplyHeading-{{ section.id }}">{{ apply_heading }}</h2>
+      {%- if section.settings.form_text != blank -%}<div class="rte text-muted">{{ section.settings.form_text }}</div>{%- endif -%}
+      <p class="jobs__cv-note">
+        {%- render 'icon', icon: 'receipt' -%}
+        <span>{{ 'pages.jobs.cv_note' | t }}</span>
+      </p>
+      {%- if wa != blank -%}
+        <a class="button button--secondary button--small" href="https://wa.me/{{ wa }}?text={{ wa_text }}" target="_blank" rel="noopener">
+          {%- render 'icon', icon: 'whatsapp' -%}
+          {{ 'pages.jobs.send_cv_whatsapp' | t }}
+          <span class="visually-hidden">({{ 'pages.opens_new_window' | t }})</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- assign apply_form_id = 'ApplyFormEl-' | append: section.id -%}
+    {%- form 'contact', id: apply_form_id, class: 'jobs__form form-card' -%}
+      <input type="hidden" name="contact[Form]" value="Job application">
+      {%- if form.posted_successfully? -%}
+        <div class="form-message form-message--success" role="status" tabindex="-1" autofocus>
+          {%- render 'icon', icon: 'check' -%}
+          {{ 'pages.jobs.success' | t }}
+        </div>
+      {%- elsif form.errors -%}
+        <div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="Apply-name-{{ section.id }}">{{ 'pages.form.full_name' | t }} <span aria-hidden="true">*</span></label>
+          <input class="field__input" type="text" id="Apply-name-{{ section.id }}" name="contact[name]" value="{{ form.name }}" autocomplete="name" required data-apply-focus>
+        </div>
+        <div class="field">
+          <label class="field__label" for="Apply-phone-{{ section.id }}">{{ 'pages.form.phone_whatsapp' | t }} <span aria-hidden="true">*</span></label>
+          <input class="field__input" type="tel" id="Apply-phone-{{ section.id }}" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel" inputmode="tel" dir="ltr" required>
+        </div>
+        <div class="field">
+          <label class="field__label" for="Apply-email-{{ section.id }}">{{ 'pages.form.email' | t }} <span aria-hidden="true">*</span></label>
+          <input class="field__input" type="email" id="Apply-email-{{ section.id }}" name="contact[email]" value="{{ form.email }}" autocomplete="email" spellcheck="false" autocapitalize="off" required>
+        </div>
+        <div class="field">
+          <label class="field__label" for="Apply-area-{{ section.id }}">{{ 'pages.form.residence' | t }}</label>
+          <input class="field__input" type="text" id="Apply-area-{{ section.id }}" name="contact[Area of residence]" autocomplete="address-level2">
+        </div>
+        <div class="field">
+          <label class="field__label" for="Apply-branch-{{ section.id }}">{{ 'pages.form.branch' | t }} <span aria-hidden="true">*</span></label>
+          <div class="select">
+            <select class="select__select" id="Apply-branch-{{ section.id }}" name="contact[Branch]" required data-apply-branch-select>
+              <option value="">{{ 'pages.form.choose' | t }}</option>
+              {%- for option in branch_options -%}
+                {%- assign option_text = option | strip -%}
+                {%- if option_text != blank -%}
+                  <option value="{{ option_text | escape }}">{{ option_text }}</option>
+                {%- endif -%}
+              {%- endfor -%}
+            </select>
+            {%- render 'icon', icon: 'chevron-down' -%}
+          </div>
+        </div>
+        <div class="field">
+          <label class="field__label" for="Apply-role-{{ section.id }}">{{ 'pages.form.role' | t }} <span aria-hidden="true">*</span></label>
+          <input class="field__input" type="text" id="Apply-role-{{ section.id }}" name="contact[Role]" list="Apply-roles-{{ section.id }}" required data-apply-role-input>
+          <datalist id="Apply-roles-{{ section.id }}">
+            {%- for block in section.blocks -%}
+              <option value="{{ block.settings.title | escape }}"></option>
+            {%- endfor -%}
+          </datalist>
+        </div>
+        <div class="field">
+          <label class="field__label" for="Apply-exp-{{ section.id }}">{{ 'pages.form.experience' | t }} <span aria-hidden="true">*</span></label>
+          <div class="select">
+            <select class="select__select" id="Apply-exp-{{ section.id }}" name="contact[Experience]" required>
+              <option value="">{{ 'pages.form.choose' | t }}</option>
+              <option value="No experience">{{ 'pages.form.experience_options.none' | t }}</option>
+              <option value="Less than 1 year">{{ 'pages.form.experience_options.less_1' | t }}</option>
+              <option value="1-3 years">{{ 'pages.form.experience_options.one_three' | t }}</option>
+              <option value="3+ years">{{ 'pages.form.experience_options.three_plus' | t }}</option>
+            </select>
+            {%- render 'icon', icon: 'chevron-down' -%}
+          </div>
+        </div>
+        {%- if section.settings.ask_military -%}
+          <div class="field">
+            <label class="field__label" for="Apply-military-{{ section.id }}">{{ 'pages.form.military' | t }}</label>
+            <div class="select">
+              <select class="select__select" id="Apply-military-{{ section.id }}" name="contact[Military status]">
+                <option value="">{{ 'pages.form.choose' | t }}</option>
+                <option value="Completed">{{ 'pages.form.military_options.completed' | t }}</option>
+                <option value="Postponed">{{ 'pages.form.military_options.postponed' | t }}</option>
+                <option value="Temporary exemption">{{ 'pages.form.military_options.temporary' | t }}</option>
+                <option value="Final exemption">{{ 'pages.form.military_options.final' | t }}</option>
+                <option value="Not applicable">{{ 'pages.form.military_options.na' | t }}</option>
+              </select>
+              {%- render 'icon', icon: 'chevron-down' -%}
+            </div>
+          </div>
+        {%- endif -%}
+        <div class="field{% unless section.settings.ask_military %} field--full{% endunless %}">
+          <label class="field__label" for="Apply-cv-{{ section.id }}">{{ 'pages.form.cv_link' | t }}</label>
+          <input class="field__input" type="url" id="Apply-cv-{{ section.id }}" name="contact[CV link]" placeholder="https://" dir="ltr" aria-describedby="Apply-cv-hint-{{ section.id }}">
+          <small class="field__hint text-muted" id="Apply-cv-hint-{{ section.id }}">{{ 'pages.form.cv_link_hint' | t }}</small>
+        </div>
+        <div class="field field--full">
+          <label class="field__label" for="Apply-body-{{ section.id }}">{{ 'pages.form.about_you' | t }}</label>
+          <textarea class="field__input" id="Apply-body-{{ section.id }}" name="contact[body]" rows="4">{{ form.body }}</textarea>
+        </div>
+      </div>
+      <p class="form-note text-muted">{{ 'pages.form.required_note' | t }}</p>
+      <button type="submit" class="button button--full">{{ 'pages.jobs.submit' | t }}</button>
+    {%- endform -%}
+  </section>
+</job-board>
+
+{% stylesheet %}
+  job-board {
+    display: block;
+  }
+
+  .jobs__filters {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-block-end: 1.25rem;
+    padding-block: 0.125rem;
+  }
+
+  .jobs__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-shrink: 0;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .jobs__chip .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .jobs__chip:hover {
+    border-color: var(--color-fg);
+  }
+
+  .jobs__chip[aria-pressed='true'] {
+    background: var(--color-fg);
+    color: var(--color-bg);
+    border-color: var(--color-fg);
+  }
+
+  .jobs__grid {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .jobs__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (min-width: 1100px) {
+    .jobs__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  .job-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    transition: border-color 0.2s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  }
+
+  .job-card:hover {
+    border-color: rgba(var(--color-fg-rgb), 0.35);
+    box-shadow: 0 18px 40px -26px rgba(var(--color-fg-rgb), 0.5);
+  }
+
+  .job-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .job-card__tags .badge {
+    gap: 0.25rem;
+    font-weight: 600;
+  }
+
+  .job-card__tags .icon {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .job-card__title {
+    font-size: 1.25rem;
+  }
+
+  .job-card__text {
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+  }
+
+  .job-card__apply {
+    margin-block-start: auto;
+  }
+
+  .job-card__apply .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .jobs__apply {
+    display: grid;
+    gap: 2rem;
+    margin-block-start: 4rem;
+    scroll-margin-top: calc(var(--header-offset, 0px) + 1rem);
+  }
+
+  .jobs__apply:focus {
+    outline: none;
+  }
+
+  .jobs__apply-intro {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    justify-items: start;
+  }
+
+  .jobs__cv-note {
+    display: flex;
+    gap: 0.625rem;
+    padding: 0.875rem 1rem;
+    border-inline-start: 3px solid var(--color-accent);
+    border-radius: var(--radius-small);
+    background: var(--color-surface);
+    font-size: 0.9375rem;
+  }
+
+  .jobs__cv-note .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .jobs__apply .icon--whatsapp {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .jobs__form.is-highlighted {
+    animation: jobs-pulse 1.2s ease;
+  }
+
+  @keyframes jobs-pulse {
+    30% {
+      box-shadow: 0 0 0 4px var(--color-accent);
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .jobs__apply {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 4rem;
+    }
+
+    .jobs__apply-intro {
+      position: sticky;
+      top: calc(var(--header-offset, 0px) + 2rem);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:pages.jobs.name",
+  "max_blocks": 20,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
+    { "type": "text", "id": "heading", "label": "t:settings.heading" },
+    { "type": "richtext", "id": "text", "label": "t:settings.text" },
+    { "type": "header", "content": "t:pages.jobs.header_form" },
+    { "type": "text", "id": "form_heading", "label": "t:settings.heading" },
+    { "type": "richtext", "id": "form_text", "label": "t:settings.text" },
+    {
+      "type": "textarea",
+      "id": "branches",
+      "default": "Giza\nImbaba\nMaadi\n6th of October\nAny branch",
+      "label": "t:pages.jobs.branches",
+      "info": "t:pages.jobs.branches_info"
+    },
+    { "type": "checkbox", "id": "ask_military", "default": true, "label": "t:pages.jobs.ask_military" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_bottom" }
+  ],
+  "blocks": [
+    {
+      "type": "role",
+      "name": "t:pages.jobs.block",
+      "settings": [
+        { "type": "text", "id": "title", "default": "Sales associate", "label": "t:pages.jobs.role_title" },
+        { "type": "text", "id": "location", "default": "Maadi", "label": "t:pages.jobs.location", "info": "t:pages.jobs.location_info" },
+        { "type": "text", "id": "type", "default": "Full-time", "label": "t:pages.jobs.type" },
+        { "type": "richtext", "id": "text", "label": "t:settings.text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:pages.jobs.name",
+      "blocks": [{ "type": "role" }]
+    }
+  ]
+}
+{% endschema %}

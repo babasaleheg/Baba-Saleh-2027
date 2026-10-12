@@ -230,5 +230,98 @@
   },
   "date_formats": {
     "review_date": "%-d %b %Y"
+  },
+  "pages": {
+    "branches": {
+      "address": "Address",
+      "call": "Call",
+      "directions": "Directions",
+      "hours": "Opening hours",
+      "phone": "Phone",
+      "whatsapp": "WhatsApp",
+      "whatsapp_message": "Hi Baba Saleh, I have a question about the {{ branch }} branch."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "label": "Breadcrumb"
+    },
+    "contact": {
+      "call": "Call us",
+      "email": "Email us",
+      "follow": "Follow us",
+      "success": "Thanks! We received your message and will reply within one working day.",
+      "whatsapp": "Chat on WhatsApp",
+      "whatsapp_message": "Hi Baba Saleh, I need help with…"
+    },
+    "content": {
+      "print": "Print",
+      "reading_time": {
+        "one": "{{ count }} min read",
+        "other": "{{ count }} min read"
+      },
+      "toc": "On this page"
+    },
+    "faq": {
+      "no_results": "No questions match your search.",
+      "search_label": "Search questions",
+      "search_placeholder": "Search questions…"
+    },
+    "form": {
+      "about_you": "About you",
+      "branch": "Branch",
+      "choose": "Choose…",
+      "cv_link": "Link to your CV (Google Drive, LinkedIn…)",
+      "cv_link_hint": "Optional. You can also send your CV on WhatsApp.",
+      "email": "Email",
+      "experience": "Retail / sports experience",
+      "experience_options": {
+        "none": "No experience",
+        "less_1": "Less than 1 year",
+        "one_three": "1–3 years",
+        "three_plus": "More than 3 years"
+      },
+      "full_name": "Full name",
+      "message": "Message",
+      "military": "Military service status",
+      "military_options": {
+        "completed": "Completed",
+        "final": "Final exemption",
+        "temporary": "Temporary exemption",
+        "postponed": "Postponed",
+        "na": "Not applicable"
+      },
+      "name": "Name",
+      "order_number": "Order number",
+      "order_number_hint": "Optional, e.g. #73590",
+      "phone": "Phone",
+      "phone_whatsapp": "Phone (WhatsApp)",
+      "required_note": "Fields marked * are required.",
+      "residence": "Area of residence",
+      "role": "Position",
+      "send": "Send message",
+      "topic": "Topic",
+      "topics": {
+        "order": "My order",
+        "product": "A product",
+        "returns": "Returns & exchanges",
+        "events": "Events & custom printing",
+        "other": "Something else"
+      }
+    },
+    "jobs": {
+      "all_locations": "All locations",
+      "apply": "Apply",
+      "apply_heading": "Apply now",
+      "cv_note": "Prefer WhatsApp? Send your CV and the position you want.",
+      "filter_label": "Filter by location",
+      "no_roles": "No open positions in this location right now. Send us your CV anyway!",
+      "open_roles": "Open positions",
+      "send_cv_whatsapp": "Send CV on WhatsApp",
+      "showing": "Showing [count] positions",
+      "submit": "Send application",
+      "success": "Thanks for applying! Our team will contact you if your profile matches.",
+      "whatsapp_message": "Hi Baba Saleh, I'd like to apply for a job. My CV is attached."
+    },
+    "opens_new_window": "Opens in a new window"
   }
 }

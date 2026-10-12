@@ -1,0 +1,408 @@
+{%- comment -%}
+  Renders the page body (edited in Shopify admin → Pages) with readable typography and, optionally,
+  a sticky "On this page" list built from the body's headings with scroll-spy (<page-toc> in theme.js),
+  a reading progress bar, the last-updated date and a print button.
+
+  Last updated date: page metafield custom.last_updated (date) → section setting → page publish date.
+{%- endcomment -%}
+{%- liquid
+  assign word_count = page.content | strip_html | split: ' ' | size
+  assign reading_minutes = word_count | divided_by: 200 | at_least: 1
+  assign updated_value = page.metafields.custom.last_updated.value
+  assign updated_label = 'pages.content.last_updated'
+  if updated_value == blank and section.settings.updated_date != blank
+    assign updated_text = section.settings.updated_date
+  elsif updated_value != blank
+    assign updated_text = updated_value | time_tag: format: 'date'
+  elsif page.published_at != blank
+    assign updated_text = page.published_at | time_tag: format: 'date'
+    assign updated_label = 'pages.content.published'
+  endif
+  assign has_toc = false
+  if section.settings.show_toc and page.content contains '<h2'
+    assign has_toc = true
+  endif
+-%}
+<section
+  class="section page-content color-{{ section.settings.color_scheme }}{% if has_toc %} page-content--toc{% endif %}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <scroll-progress class="page-width page-content__grid" data-mode="read">
+    {%- if section.settings.show_progress -%}
+      <span class="page-content__progress" aria-hidden="true"></span>
+    {%- endif -%}
+
+    {%- if has_toc -%}
+      <aside class="page-content__aside">
+        <page-toc data-target="PageBody-{{ section.id }}" data-levels="{{ section.settings.toc_levels }}" hidden>
+          <details class="page-toc" open>
+            <summary class="page-toc__summary">
+              {%- render 'icon', icon: 'menu' -%}
+              <span id="PageTocLabel-{{ section.id }}">{{ 'pages.content.toc' | t }}</span>
+              {%- render 'icon', icon: 'chevron-down' -%}
+            </summary>
+            <nav aria-labelledby="PageTocLabel-{{ section.id }}">
+              <ol class="page-toc__list" role="list"></ol>
+            </nav>
+          </details>
+        </page-toc>
+      </aside>
+    {%- endif -%}
+
+    <article class="page-content__article">
+      {%- if section.settings.show_title -%}
+        <h1 class="h1 page-content__title">{{ page.title }}</h1>
+      {%- endif -%}
+
+      {%- if section.settings.show_meta -%}
+        <div class="page-content__meta">
+          {%- if updated_text != blank -%}
+            <p class="page-content__meta-item">
+              {%- render 'icon', icon: 'calendar' -%}
+              <span>{{ updated_label | t }}</span>
+              <strong>{{ updated_text }}</strong>
+            </p>
+          {%- endif -%}
+          <p class="page-content__meta-item">
+            {%- render 'icon', icon: 'clock' -%}
+            <span>{{ 'pages.content.reading_time' | t: count: reading_minutes }}</span>
+          </p>
+          {%- if section.settings.show_print -%}
+            <button type="button" class="page-content__print link-arrow" data-print>
+              {%- render 'icon', icon: 'printer' -%}
+              {{ 'pages.content.print' | t }}
+            </button>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="rte page-content__body" id="PageBody-{{ section.id }}">
+        {{ page.content }}
+      </div>
+    </article>
+  </scroll-progress>
+</section>
+
+{% stylesheet %}
+  page-toc {
+    display: block;
+  }
+
+  .page-content__grid {
+    --progress: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .page-content__progress {
+    position: fixed;
+    z-index: 30;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: 3px;
+    background: var(--color-accent);
+    transform: scaleX(var(--progress));
+    transform-origin: left;
+    pointer-events: none;
+  }
+
+  [dir='rtl'] .page-content__progress {
+    transform-origin: right;
+  }
+
+  .no-js .page-content__progress {
+    display: none;
+  }
+
+  .page-content__article {
+    display: grid;
+    gap: 1.5rem;
+    min-width: 0;
+    max-width: 46rem;
+  }
+
+  .page-content:not(.page-content--toc) .page-content__article {
+    margin-inline: auto;
+  }
+
+  .page-content__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+    padding-block-end: 1.25rem;
+    border-block-end: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+
+  .page-content__meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .page-content__meta-item strong {
+    color: var(--color-fg);
+    font-weight: 600;
+  }
+
+  .page-content__meta .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .page-content__print {
+    margin-inline-start: auto;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    font-size: 0.8125rem;
+  }
+
+  .page-content__print:hover {
+    background: var(--color-surface);
+  }
+
+  .no-js .page-content__print {
+    display: none;
+  }
+
+  /* Readable long-form typography */
+  .page-content__body {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+  }
+
+  [dir='rtl'] .page-content__body {
+    line-height: 1.9;
+  }
+
+  .page-content__body :is(h2, h3) {
+    scroll-margin-top: calc(var(--header-offset, 0px) + 1.5rem);
+    line-height: 1.25;
+  }
+
+  .page-content__body h2 {
+    font-size: clamp(1.375rem, 2.6vw, 1.75rem);
+    margin-block-start: 2.5rem;
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .page-content__body h2:first-child {
+    margin-block-start: 0;
+    padding-block-start: 0;
+    border: 0;
+  }
+
+  .page-content__body h3 {
+    font-size: 1.1875rem;
+    margin-block-start: 1.75rem;
+  }
+
+  .page-content__body :is(ul, ol) {
+    padding-inline-start: 1.25rem;
+  }
+
+  .page-content__body li + li {
+    margin-block-start: 0.375rem;
+  }
+
+  .page-content__body li::marker {
+    color: var(--color-accent);
+  }
+
+  .page-content__body blockquote,
+  .page-content__body .callout {
+    padding: 1rem 1.25rem;
+    border-inline-start: 3px solid var(--color-accent);
+    border-radius: var(--radius-small);
+    background: var(--color-surface);
+  }
+
+  .page-content__body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+
+  .page-content__body :is(th, td) {
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--color-border);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  .page-content__body :target {
+    animation: page-content-flash 1.6s ease;
+  }
+
+  @keyframes page-content-flash {
+    20% {
+      color: var(--color-accent);
+    }
+  }
+
+  /* Table of contents */
+  .page-toc {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+  }
+
+  .page-toc__summary {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.875rem 1rem;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .page-toc__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .page-toc__summary .icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .page-toc__summary .icon--chevron-down {
+    margin-inline-start: auto;
+    transition: transform 0.25s ease;
+  }
+
+  .page-toc[open] .icon--chevron-down {
+    transform: rotate(180deg);
+  }
+
+  .page-toc__list {
+    display: grid;
+    gap: 0.125rem;
+    margin: 0;
+    padding: 0 0.5rem 0.75rem;
+    position: relative;
+    max-height: 60vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .page-toc__link {
+    display: block;
+    padding: 0.4375rem 0.75rem;
+    border-inline-start: 2px solid transparent;
+    border-radius: 0 var(--radius-small) var(--radius-small) 0;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--color-muted);
+    text-decoration: none;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  [dir='rtl'] .page-toc__link {
+    border-radius: var(--radius-small) 0 0 var(--radius-small);
+  }
+
+  .page-toc__link--sub {
+    padding-inline-start: 1.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .page-toc__link:hover {
+    color: var(--color-fg);
+    background: var(--color-surface);
+  }
+
+  .page-toc__link[aria-current='true'] {
+    color: var(--color-fg);
+    font-weight: 600;
+    border-inline-start-color: var(--color-accent);
+    background: var(--color-surface);
+  }
+
+  @media screen and (max-width: 989px) {
+    .page-content__aside {
+      position: sticky;
+      z-index: 4;
+      top: calc(var(--header-offset, 0px) + 0.5rem);
+    }
+
+    .page-toc {
+      box-shadow: 0 10px 30px -20px rgba(var(--color-fg-rgb), 0.5);
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .page-content--toc .page-content__grid {
+      grid-template-columns: 17rem minmax(0, 1fr);
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .page-content__aside {
+      position: sticky;
+      top: calc(var(--header-offset, 0px) + 1.5rem);
+    }
+
+    .page-toc__summary {
+      pointer-events: none;
+    }
+
+    .page-toc__summary .icon--chevron-down {
+      display: none;
+    }
+  }
+
+  @media print {
+    body:has(.page-content) :is(.shopify-section-group-header-group, .shopify-section-group-footer-group, .whatsapp-fab, .toast),
+    .page-content__aside,
+    .page-content__progress,
+    .page-content__print {
+      display: none !important;
+    }
+
+    .page-content__body {
+      font-size: 11pt;
+      line-height: 1.5;
+    }
+
+    .page-content__body a[href^='http']::after {
+      content: ' (' attr(href) ')';
+      font-size: 0.85em;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:pages.content.name",
+  "settings": [
+    { "type": "checkbox", "id": "show_title", "default": false, "label": "t:pages.content.show_title", "info": "t:pages.content.show_title_info" },
+    { "type": "checkbox", "id": "show_toc", "default": true, "label": "t:pages.content.show_toc", "info": "t:pages.content.show_toc_info" },
+    {
+      "type": "select",
+      "id": "toc_levels",
+      "default": "h2",
+      "label": "t:pages.content.toc_levels",
+      "options": [
+        { "value": "h2", "label": "t:pages.content.toc_levels_h2" },
+        { "value": "h2,h3", "label": "t:pages.content.toc_levels_h3" }
+      ]
+    },
+    { "type": "checkbox", "id": "show_meta", "default": true, "label": "t:pages.content.show_meta" },
+    { "type": "text", "id": "updated_date", "label": "t:pages.content.updated_date", "info": "t:pages.content.updated_date_info" },
+    { "type": "checkbox", "id": "show_print", "default": true, "label": "t:pages.content.show_print" },
+    { "type": "checkbox", "id": "show_progress", "default": true, "label": "t:pages.content.show_progress" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_bottom" }
+  ],
+  "presets": [{ "name": "t:pages.content.name" }]
+}
+{% endschema %}

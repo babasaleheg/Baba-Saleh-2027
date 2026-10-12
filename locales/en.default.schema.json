@@ -648,5 +648,115 @@
         }
       }
     }
+  },
+  "pages": {
+    "branches": {
+      "address_label": "Address label",
+      "area": "Area",
+      "block": "Branch",
+      "branch_name": "Branch name",
+      "hours_info": "e.g. Daily 10 am – 11 pm",
+      "hours_label": "Hours label",
+      "map_url": "Map url",
+      "map_url_info": "Google Maps link to the branch",
+      "name": "Branch locations",
+      "phone_label": "Phone label",
+      "structured_data": "Structured data",
+      "whatsapp_info": "Number with country code, e.g. +20 102 830 5495",
+      "whatsapp_label": "Whatsapp label"
+    },
+    "contact": {
+      "email_info": "Shown as a contact card",
+      "email_label": "Email label",
+      "header_channels": "Header channels",
+      "header_form": "Header form",
+      "linkedin": "Linkedin",
+      "name": "Contact page",
+      "show_social": "Show social",
+      "whatsapp_info": "Number with country code, e.g. +20 102 830 5495",
+      "whatsapp_label": "Whatsapp label"
+    },
+    "content": {
+      "name": "Page content",
+      "show_meta": "Show meta",
+      "show_print": "Show print",
+      "show_progress": "Show progress",
+      "show_title": "Show title",
+      "show_title_info": "Hide if the hero above already shows the title",
+      "show_toc": "Show toc",
+      "show_toc_info": "Builds a table of contents from the page's headings",
+      "toc_levels": "Toc levels",
+      "toc_levels_h2": "Toc levels h2",
+      "toc_levels_h3": "Toc levels h3",
+      "updated_date": "Updated date",
+      "updated_date_info": "Shown as 'Last updated', e.g. October 11, 2026"
+    },
+    "faq": {
+      "answer": "Answer",
+      "block": "Question",
+      "name": "FAQ",
+      "open_first": "Open first",
+      "question": "Question",
+      "show_search": "Show search",
+      "show_search_info": "Lets visitors filter questions",
+      "structured_data": "Structured data"
+    },
+    "hero": {
+      "name": "Page hero",
+      "show_breadcrumb": "Show breadcrumb",
+      "subtitle": "Subtitle",
+      "title": "Title",
+      "title_info": "Leave blank to use the page title"
+    },
+    "icons": {
+      "briefcase": "Briefcase",
+      "calendar": "Calendar",
+      "clock": "Clock",
+      "heart": "Heart",
+      "mail": "Mail",
+      "phone": "Phone",
+      "pin": "Pin",
+      "printer": "Printer",
+      "receipt": "Receipt",
+      "tag": "Tag",
+      "trophy": "Trophy",
+      "users": "Users"
+    },
+    "jobs": {
+      "ask_military": "Ask military",
+      "block": "Position",
+      "branches": "Branches",
+      "branches_info": "Comma separated, e.g. Maadi, 6th of October",
+      "header_form": "Header form",
+      "location": "Location",
+      "location_info": "Branch or 'All branches'",
+      "name": "Job openings",
+      "role_title": "Role title",
+      "type": "Type"
+    },
+    "stats": {
+      "block": "Stat",
+      "format": "Format",
+      "format_grouped": "Format grouped",
+      "format_plain": "Format plain",
+      "label": "Label",
+      "name": "Stats counter",
+      "prefix": "Prefix",
+      "suffix": "Suffix",
+      "value": "Value"
+    },
+    "timeline": {
+      "block": "Milestone",
+      "label": "Label",
+      "name": "Story timeline"
+    },
+    "value_cards": {
+      "block": "Item",
+      "center_header": "Center header",
+      "name": "Value cards",
+      "style_cards": "Style cards",
+      "style_outline": "Style outline",
+      "style_steps": "Style steps"
+    }
   }
 }

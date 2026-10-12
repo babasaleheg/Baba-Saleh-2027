@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "show_breadcrumb": true,
+        "eyebrow": "",
+        "title": "",
+        "subtitle": ""
+      }
+    },
+    "content": {
+      "type": "page-content",
+      "settings": {
+        "show_toc": true
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "content"
+  ]
+}

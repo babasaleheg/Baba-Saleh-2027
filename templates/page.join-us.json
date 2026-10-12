@@ -1,0 +1,112 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "show_breadcrumb": true,
+        "eyebrow": "Careers",
+        "title": "Join the Baba Saleh team",
+        "subtitle": "<p>Love sport and helping people? We're hiring friendly, motivated people for our branches.</p>",
+        "button_label": "See open positions",
+        "button_link": "#jobs"
+      }
+    },
+    "values": {
+      "type": "value-cards",
+      "blocks": {
+        "v1": {
+          "type": "card",
+          "settings": {
+            "icon": "trophy",
+            "title": "A brand with history",
+            "text": "<p>Work with a name trusted by Egyptian athletes since 1971.</p>"
+          }
+        },
+        "v2": {
+          "type": "card",
+          "settings": {
+            "icon": "users",
+            "title": "Great team",
+            "text": "<p>Learn from experienced colleagues who know sport inside out.</p>"
+          }
+        },
+        "v3": {
+          "type": "card",
+          "settings": {
+            "icon": "tag",
+            "title": "Staff discounts",
+            "text": "<p>Get the gear you love for less.</p>"
+          }
+        },
+        "v4": {
+          "type": "card",
+          "settings": {
+            "icon": "briefcase",
+            "title": "Room to grow",
+            "text": "<p>Grow from sales into senior and branch roles.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4"
+      ],
+      "settings": {
+        "heading": "Why work with us",
+        "center_header": true,
+        "columns_desktop": 4
+      }
+    },
+    "jobs": {
+      "type": "job-openings",
+      "blocks": {
+        "r1": {
+          "type": "role",
+          "settings": {
+            "title": "Sales associate",
+            "location": "Maadi",
+            "type": "Full time",
+            "text": "<p>Help customers find the right gear and size, keep the store tidy and handle the till.</p>"
+          }
+        },
+        "r2": {
+          "type": "role",
+          "settings": {
+            "title": "Sales associate",
+            "location": "6th of October",
+            "type": "Full time",
+            "text": "<p>Help customers find the right gear and size, keep the store tidy and handle the till.</p>"
+          }
+        },
+        "r3": {
+          "type": "role",
+          "settings": {
+            "title": "Open application",
+            "location": "Any branch",
+            "type": "Full time / part time",
+            "text": "<p>Don't see your role? Send us your details and we'll contact you when something fits.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3"
+      ],
+      "settings": {
+        "eyebrow": "Open positions",
+        "heading": "We're hiring",
+        "form_heading": "Apply now",
+        "branches": "Giza\nImbaba\nMaadi\n6th of October\nAny branch",
+        "ask_military": true
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "values",
+    "jobs"
+  ]
+}

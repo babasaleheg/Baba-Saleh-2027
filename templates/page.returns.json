@@ -1,0 +1,71 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "show_breadcrumb": true,
+        "eyebrow": "7-day returns",
+        "title": "Returns & refunds",
+        "subtitle": "<p>Changed your mind or need another size? Here's how returns, exchanges and refunds work.</p>",
+        "button_label": "Start a return on WhatsApp",
+        "button_link": "https://wa.me/201028305495"
+      }
+    },
+    "content": {
+      "type": "page-content",
+      "settings": {
+        "show_toc": true,
+        "updated_date": "October 11, 2026"
+      }
+    },
+    "faq": {
+      "type": "faq-accordion",
+      "blocks": {
+        "q0": {
+          "type": "question",
+          "settings": {
+            "question": "How long do I have to return an item?",
+            "answer": "<p>7 days from delivery (or from purchase in a branch).</p>"
+          }
+        },
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Can I return items on sale?",
+            "answer": "<p>Sale items can be exchanged but not refunded, unless they are faulty.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "My item arrived damaged. What now?",
+            "answer": "<p>Contact us within 48 hours with your order number and a photo. We'll replace, repair or refund it and cover the return delivery.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "How will I get my money back?",
+            "answer": "<p>To your original payment method. Cash on delivery orders are refunded in cash at a branch, or by bank transfer or mobile wallet.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q0",
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "heading": "Returns FAQ",
+        "show_search": false,
+        "structured_data": true
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "content",
+    "faq"
+  ]
+}

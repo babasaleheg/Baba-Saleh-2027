@@ -1,0 +1,139 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "show_breadcrumb": true,
+        "eyebrow": "We're here to help",
+        "title": "Contact us",
+        "subtitle": "<p>Questions about an order, a size or a product? Message us on WhatsApp for the fastest reply, or send us a message below.</p>"
+      }
+    },
+    "main": {
+      "type": "main-contact",
+      "settings": {
+        "heading": "Talk to us",
+        "whatsapp": "+20 102 830 5495",
+        "phone": "+20 102 830 5495",
+        "email": "support@babasaleh.com",
+        "hours": "Saturday – Thursday, 10 am – 10 pm",
+        "form_heading": "Send us a message"
+      }
+    },
+    "faq": {
+      "type": "faq-accordion",
+      "blocks": {
+        "q0": {
+          "type": "question",
+          "settings": {
+            "question": "Will I receive the same product I see in the picture?",
+            "answer": "<p>Yes. Our photos show the actual items, including colour, design and features.</p>"
+          }
+        },
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Where can I see my receipt?",
+            "answer": "<p>It's emailed to you after you order, and you can see it any time in your account.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "How do I return an item?",
+            "answer": "<p>Message us on WhatsApp or email within 7 days of delivery. Items must be unused, in their original packaging, with proof of purchase. See our <a href=\"/policies/refund-policy\">refund policy</a>.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Will you restock sold-out items?",
+            "answer": "<p>Yes, we restock popular items regularly. Message us on WhatsApp to ask about a specific product.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Where do you deliver?",
+            "answer": "<p>To Cairo, Giza and every other governorate in Egypt. Pay cash on delivery.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q0",
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ],
+      "settings": {
+        "heading": "Before you ask",
+        "show_search": false,
+        "structured_data": true
+      }
+    },
+    "branches": {
+      "type": "branch-locations",
+      "blocks": {
+        "giza": {
+          "type": "branch",
+          "settings": {
+            "name": "Giza",
+            "area": "Giza",
+            "address": "5 Cairo University Street, Giza",
+            "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Cairo+University+Street+Giza",
+            "whatsapp": "+20 102 830 5495"
+          }
+        },
+        "maadi": {
+          "type": "branch",
+          "settings": {
+            "name": "Maadi",
+            "area": "Cairo",
+            "address": "Darna Towers, 27, Maadi, Cairo",
+            "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Darna+Towers+Maadi",
+            "whatsapp": "+20 102 830 5495"
+          }
+        },
+        "october": {
+          "type": "branch",
+          "settings": {
+            "name": "6th of October",
+            "area": "Giza",
+            "address": "La Cite Mall, 6th of October City",
+            "map_url": "https://maps.google.com/?q=La+Cite+Mall+6th+of+October",
+            "whatsapp": "+20 102 830 5495"
+          }
+        },
+        "imbaba": {
+          "type": "branch",
+          "settings": {
+            "name": "Imbaba",
+            "area": "Giza",
+            "address": "Block 32, 2 Talaat Harb Street, Imbaba",
+            "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Imbaba",
+            "whatsapp": "+20 102 830 5495"
+          }
+        }
+      },
+      "block_order": [
+        "giza",
+        "maadi",
+        "october",
+        "imbaba"
+      ],
+      "settings": {
+        "eyebrow": "Since 1971",
+        "heading": "Or visit a branch",
+        "text": "<p>Try sizes, get expert advice and pick up your order in person.</p>",
+        "structured_data": true
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "faq",
+    "branches"
+  ]
+}

@@ -1,0 +1,157 @@
+{%- comment -%}
+  Big numbers that count up when scrolled into view (<count-up> in theme.js).
+  The final value is rendered server-side, so it is correct without JS and for reduced motion.
+{%- endcomment -%}
+<section
+  class="section stats color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
+      <div class="section-header section-header--center">
+        <div class="section-header__text">
+          {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+          {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+    <ul class="stats__list" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign value = block.settings.value | default: 0
+          assign display_value = value | append: ''
+          if block.settings.format == 'grouped' and value > 999
+            assign digits = display_value
+            assign digit_count = digits.size
+            assign display_value = ''
+            for i in (1..digit_count)
+              assign digit_index = i | minus: 1
+              assign digit = digits | slice: digit_index
+              assign display_value = display_value | append: digit
+              assign remaining = digit_count | minus: i | modulo: 3
+              if remaining == 0 and i < digit_count
+                assign display_value = display_value | append: ','
+              endif
+            endfor
+          endif
+        -%}
+        <li class="stats__item" data-reveal style="--reveal-index: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          <p class="stats__value">
+            <span class="visually-hidden">{{ block.settings.prefix }}{{ display_value }}{{ block.settings.suffix }}</span>
+            <span class="stats__number" aria-hidden="true">
+              {%- if block.settings.prefix != blank -%}<span class="stats__affix">{{ block.settings.prefix }}</span>{%- endif -%}
+              <count-up data-to="{{ value }}" data-format="{{ block.settings.format }}">{{ display_value }}</count-up>
+              {%- if block.settings.suffix != blank -%}<span class="stats__affix">{{ block.settings.suffix }}</span>{%- endif -%}
+            </span>
+          </p>
+          <p class="stats__label">{{ block.settings.label }}</p>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+  .stats__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-border);
+  }
+
+  .stats__item {
+    display: grid;
+    align-content: center;
+    gap: 0.375rem;
+    padding: 1.75rem 1rem;
+    text-align: center;
+    background: var(--color-bg);
+  }
+
+  .stats__number {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.125rem;
+    font-family: var(--font-heading-family);
+    font-weight: var(--heading-weight);
+    font-stretch: var(--heading-stretch);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    direction: ltr;
+  }
+
+  .stats__affix {
+    font-size: 0.6em;
+    color: var(--color-accent);
+  }
+
+  .stats__label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  [dir='rtl'] .stats__label {
+    letter-spacing: 0;
+    font-size: 0.875rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .stats__list {
+      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    }
+
+    .stats__item {
+      padding: 2.5rem 1.25rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:pages.stats.name",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
+    { "type": "text", "id": "heading", "label": "t:settings.heading" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_bottom" }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "t:pages.stats.block",
+      "settings": [
+        { "type": "number", "id": "value", "default": 50, "label": "t:pages.stats.value" },
+        {
+          "type": "select",
+          "id": "format",
+          "default": "grouped",
+          "label": "t:pages.stats.format",
+          "options": [
+            { "value": "grouped", "label": "t:pages.stats.format_grouped" },
+            { "value": "plain", "label": "t:pages.stats.format_plain" }
+          ]
+        },
+        { "type": "text", "id": "prefix", "label": "t:pages.stats.prefix" },
+        { "type": "text", "id": "suffix", "default": "+", "label": "t:pages.stats.suffix" },
+        { "type": "text", "id": "label", "default": "Years of experience", "label": "t:pages.stats.label" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:pages.stats.name",
+      "blocks": [{ "type": "stat" }, { "type": "stat" }, { "type": "stat" }, { "type": "stat" }]
+    }
+  ]
+}
+{% endschema %}
