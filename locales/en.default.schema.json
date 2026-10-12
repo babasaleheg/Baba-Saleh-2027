@@ -663,7 +663,8 @@
       "phone_label": "Phone label",
       "structured_data": "Structured data",
       "whatsapp_info": "Number with country code, e.g. +20 102 830 5495",
-      "whatsapp_label": "Whatsapp label"
+      "whatsapp_label": "Whatsapp label",
+      "show_map": "Show interactive map"
     },
     "contact": {
       "email_info": "Shown as a contact card",
@@ -706,7 +707,15 @@
       "show_breadcrumb": "Show breadcrumb",
       "subtitle": "Subtitle",
       "title": "Title",
-      "title_info": "Leave blank to use the page title"
+      "title_info": "Leave blank to use the page title. Wrap words in *asterisks* to highlight them.",
+      "style": "Style",
+      "style_bold": "Bold",
+      "style_minimal": "Minimal",
+      "badge_text": "Spinning badge text",
+      "chip_1": "Floating chip 1",
+      "chip_2": "Floating chip 2",
+      "ribbon": "Scrolling ribbon",
+      "ribbon_info": "Separate items with commas"
     },
     "icons": {
       "briefcase": "Briefcase",
@@ -743,7 +752,12 @@
       "name": "Stats counter",
       "prefix": "Prefix",
       "suffix": "Suffix",
-      "value": "Value"
+      "value": "Value",
+      "watermark": "Background text",
+      "source": "Number source",
+      "source_manual": "Enter a number",
+      "source_products": "Live: products online",
+      "source_collections": "Live: collections"
     },
     "timeline": {
       "block": "Milestone",
@@ -756,7 +770,24 @@
       "name": "Value cards",
       "style_cards": "Style cards",
       "style_outline": "Style outline",
-      "style_steps": "Style steps"
+      "style_steps": "Style steps",
+      "anchor": "Anchor ID",
+      "anchor_info": "Lets buttons link to this section, e.g. #services"
+    },
+    "testimonials": {
+      "name": "Testimonials",
+      "block": "Quote",
+      "quote": "Quote",
+      "author": "Name",
+      "role": "Role or company"
+    },
+    "cta": {
+      "name": "Call to action",
+      "button_2_whatsapp": "Second button opens WhatsApp"
+    },
+    "brands": {
+      "layout_grid": "Grid",
+      "layout_marquee": "Scrolling band"
     }
   }
 }

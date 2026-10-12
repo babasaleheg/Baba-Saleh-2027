@@ -239,7 +239,9 @@
       "hours": "Opening hours",
       "phone": "Phone",
       "whatsapp": "WhatsApp",
-      "whatsapp_message": "Hi Baba Saleh, I have a question about the {{ branch }} branch."
+      "whatsapp_message": "Hi Baba Saleh, I have a question about the {{ branch }} branch.",
+      "map_label": "Show a branch on the map",
+      "map_title": "Map of the [branch] branch"
     },
     "breadcrumb": {
       "home": "Home",
@@ -259,7 +261,9 @@
         "one": "{{ count }} min read",
         "other": "{{ count }} min read"
       },
-      "toc": "On this page"
+      "toc": "On this page",
+      "last_updated": "Last updated",
+      "published": "Published"
     },
     "faq": {
       "no_results": "No questions match your search.",

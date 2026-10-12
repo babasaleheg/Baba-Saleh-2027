@@ -1,24 +1,45 @@
 {%- comment -%}
   Big numbers that count up when scrolled into view (<count-up> in theme.js).
   The final value is rendered server-side, so it is correct without JS and for reduced motion.
+  A stat can read its number live from the store (products online, collections).
 {%- endcomment -%}
 <section
-  class="section stats color-{{ section.settings.color_scheme }}"
+  class="section stats stats--{{ section.settings.style }} color-{{ section.settings.color_scheme }}"
   style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
 >
-  <div class="page-width">
+  {%- if section.settings.watermark != blank -%}
+    <div class="stats__watermark" aria-hidden="true">
+      <div class="stats__watermark-track">
+        <span>{{ section.settings.watermark }}</span><span>{{ section.settings.watermark }}</span><span>{{ section.settings.watermark }}</span><span>{{ section.settings.watermark }}</span>
+      </div>
+    </div>
+  {%- endif -%}
+  <div class="page-width stats__inner">
     {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
-      <div class="section-header section-header--center">
+      <div class="section-header section-header--center" data-reveal>
         <div class="section-header__text">
-          {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+          {%- if section.settings.eyebrow != blank -%}<span class="eyebrow stats__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
           {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
         </div>
       </div>
     {%- endif -%}
-    <ul class="stats__list" role="list">
+    {%- liquid
+      assign cols = section.blocks.size
+      if cols > 4
+        assign cols = cols | plus: 1 | divided_by: 2
+      endif
+    -%}
+    <ul class="stats__list" role="list" style="--stat-cols: {{ cols }};">
       {%- for block in section.blocks -%}
         {%- liquid
-          assign value = block.settings.value | default: 0
+          case block.settings.source
+            when 'products'
+              assign value = collections.all.products_count | default: block.settings.value
+            when 'collections'
+              assign value = collections.size | default: block.settings.value
+            else
+              assign value = block.settings.value | default: 0
+          endcase
           assign display_value = value | append: ''
           if block.settings.format == 'grouped' and value > 999
             assign digits = display_value
@@ -36,6 +57,9 @@
           endif
         -%}
         <li class="stats__item" data-reveal style="--reveal-index: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.icon != 'none' -%}
+            <span class="stats__icon" aria-hidden="true">{% render 'icon', icon: block.settings.icon %}</span>
+          {%- endif -%}
           <p class="stats__value">
             <span class="visually-hidden">{{ block.settings.prefix }}{{ display_value }}{{ block.settings.suffix }}</span>
             <span class="stats__number" aria-hidden="true">
@@ -44,6 +68,7 @@
               {%- if block.settings.suffix != blank -%}<span class="stats__affix">{{ block.settings.suffix }}</span>{%- endif -%}
             </span>
           </p>
+          <span class="stats__bar" aria-hidden="true"></span>
           <p class="stats__label">{{ block.settings.label }}</p>
         </li>
       {%- endfor -%}
@@ -52,23 +77,110 @@
 </section>
 
 {% stylesheet %}
+  .stats {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .stats__watermark {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 50%;
+    z-index: -1;
+    transform: translateY(-50%);
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .stats__watermark-track {
+    display: flex;
+    gap: 3rem;
+    width: max-content;
+    animation: stats-drift 50s linear infinite;
+  }
+
+  [dir='rtl'] .stats__watermark-track {
+    animation-name: stats-drift-rtl;
+  }
+
+  .stats__watermark span {
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: clamp(6rem, 16vw, 14rem);
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(var(--color-fg-rgb), 0.08);
+  }
+
+  @keyframes stats-drift {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes stats-drift-rtl {
+    to {
+      transform: translateX(50%);
+    }
+  }
+
+  .stats__inner {
+    position: relative;
+  }
+
   .stats__list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1px;
+    gap: 1rem;
     margin: 0;
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: var(--color-border);
   }
 
   .stats__item {
+    container-type: inline-size;
+    position: relative;
     display: grid;
-    align-content: center;
-    gap: 0.375rem;
+    align-content: start;
+    justify-items: center;
+    gap: 0.625rem;
     padding: 1.75rem 1rem;
     text-align: center;
-    background: var(--color-bg);
+    border-radius: 1.5rem;
+    background: var(--color-surface);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+  }
+
+  .stats__item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.45);
+  }
+
+  .stats--bold .stats__item {
+    background: rgba(var(--color-fg-rgb), 0.06);
+    border: 1px solid rgba(var(--color-fg-rgb), 0.12);
+    backdrop-filter: blur(6px);
+  }
+
+  .stats__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1rem;
+    background: #febd19;
+    color: #0a0a0a;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .color-scheme-4 .stats__icon {
+    background: #0a0a0a;
+    color: #febd19;
+  }
+
+  .stats__item:hover .stats__icon {
+    transform: rotate(-12deg) scale(1.1);
   }
 
   .stats__number {
@@ -77,39 +189,80 @@
     align-items: baseline;
     gap: 0.125rem;
     font-family: var(--font-heading-family);
-    font-weight: var(--heading-weight);
+    font-weight: 800;
     font-stretch: var(--heading-stretch);
-    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-size: min(3.75rem, 17cqi);
     line-height: 1;
+    letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
     direction: ltr;
   }
 
   .stats__affix {
     font-size: 0.6em;
-    color: var(--color-accent);
+    color: #febd19;
+  }
+
+  .color-scheme-4 .stats__affix,
+  .color-scheme-1 .stats__affix,
+  .color-scheme-2 .stats__affix,
+  .color-scheme-5 .stats__affix {
+    color: inherit;
+  }
+
+  .stats__bar {
+    width: 2.5rem;
+    height: 4px;
+    border-radius: 4px;
+    background: #febd19;
+    transform-origin: center;
+  }
+
+  .color-scheme-4 .stats__bar {
+    background: #0a0a0a;
+  }
+
+  .has-animations .stats__bar {
+    transform: scaleX(0);
+    transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s;
+  }
+
+  .has-animations .is-revealed .stats__bar {
+    transform: none;
   }
 
   .stats__label {
     font-size: 0.8125rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    opacity: 0.8;
   }
 
   [dir='rtl'] .stats__label {
     letter-spacing: 0;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  .stats__eyebrow {
+    color: inherit;
+    opacity: 0.8;
   }
 
   @media screen and (min-width: 750px) {
     .stats__list {
-      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+      grid-template-columns: repeat(var(--stat-cols, 4), minmax(0, 1fr));
+      gap: 1.25rem;
     }
 
     .stats__item {
-      padding: 2.5rem 1.25rem;
+      padding: 2.25rem 1.25rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stats__watermark-track {
+      animation: none;
     }
   }
 {% endstylesheet %}
@@ -119,17 +272,39 @@
   "name": "t:pages.stats.name",
   "max_blocks": 8,
   "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "default": "bold",
+      "label": "t:settings.layout",
+      "options": [
+        { "value": "bold", "label": "t:pages.hero.style_bold" },
+        { "value": "minimal", "label": "t:pages.hero.style_minimal" }
+      ]
+    },
     { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
     { "type": "text", "id": "heading", "label": "t:settings.heading" },
-    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
-    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
-    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_bottom" }
+    { "type": "text", "id": "watermark", "label": "t:pages.stats.watermark" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-4", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_bottom" }
   ],
   "blocks": [
     {
       "type": "stat",
       "name": "t:pages.stats.block",
       "settings": [
+        {
+          "type": "select",
+          "id": "source",
+          "default": "manual",
+          "label": "t:pages.stats.source",
+          "options": [
+            { "value": "manual", "label": "t:pages.stats.source_manual" },
+            { "value": "products", "label": "t:pages.stats.source_products" },
+            { "value": "collections", "label": "t:pages.stats.source_collections" }
+          ]
+        },
         { "type": "number", "id": "value", "default": 50, "label": "t:pages.stats.value" },
         {
           "type": "select",
@@ -143,7 +318,26 @@
         },
         { "type": "text", "id": "prefix", "label": "t:pages.stats.prefix" },
         { "type": "text", "id": "suffix", "default": "+", "label": "t:pages.stats.suffix" },
-        { "type": "text", "id": "label", "default": "Years of experience", "label": "t:pages.stats.label" }
+        { "type": "text", "id": "label", "default": "Years of experience", "label": "t:pages.stats.label" },
+        {
+          "type": "select",
+          "id": "icon",
+          "default": "none",
+          "label": "t:settings.icon",
+          "options": [
+            { "value": "none", "label": "t:settings.icon_options.none" },
+            { "value": "calendar", "label": "t:pages.icons.calendar" },
+            { "value": "users", "label": "t:pages.icons.users" },
+            { "value": "store", "label": "t:settings.icon_options.store" },
+            { "value": "tag", "label": "t:pages.icons.tag" },
+            { "value": "truck", "label": "t:settings.icon_options.truck" },
+            { "value": "briefcase", "label": "t:pages.icons.briefcase" },
+            { "value": "trophy", "label": "t:pages.icons.trophy" },
+            { "value": "heart", "label": "t:pages.icons.heart" },
+            { "value": "star", "label": "t:settings.icon_options.star" },
+            { "value": "pin", "label": "t:pages.icons.pin" }
+          ]
+        }
       ]
     }
   ],

@@ -1,0 +1,221 @@
+{%- comment -%}
+  Testimonials: quote cards that scroll in an endless band (pauses on hover, static with reduced motion).
+{%- endcomment -%}
+<section
+  class="section testimonials color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
+      <div class="section-header section-header--center" data-reveal>
+        <div class="section-header__text">
+          {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+          {%- if section.settings.heading != blank -%}<h2 class="h1">{{ section.settings.heading }}</h2>{%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+  {%- if section.blocks.size > 0 -%}
+    <div class="testimonials__viewport">
+      <div class="testimonials__track">
+        {%- for copy in (1..2) -%}
+          <ul class="testimonials__list" role="list"{% if copy == 2 %} aria-hidden="true"{% endif %}>
+            {%- for block in section.blocks -%}
+              <li class="testimonial" data-spotlight {% if copy == 1 %}{{ block.shopify_attributes }}{% endif %}>
+                <span class="testimonial__quote-mark" aria-hidden="true">“</span>
+                <blockquote class="testimonial__text">{{ block.settings.quote }}</blockquote>
+                <p class="testimonial__author">
+                  <span class="testimonial__avatar" aria-hidden="true">{{ block.settings.author | slice: 0 }}</span>
+                  <span>
+                    <strong>{{ block.settings.author }}</strong>
+                    {%- if block.settings.role != blank -%}<br><span class="text-muted">{{ block.settings.role }}</span>{%- endif -%}
+                  </span>
+                </p>
+              </li>
+            {%- endfor -%}
+            {%- if section.blocks.size < 5 -%}
+              {%- for block in section.blocks -%}
+                <li class="testimonial" data-spotlight aria-hidden="true">
+                  <span class="testimonial__quote-mark">“</span>
+                  <blockquote class="testimonial__text">{{ block.settings.quote }}</blockquote>
+                  <p class="testimonial__author">
+                    <span class="testimonial__avatar">{{ block.settings.author | slice: 0 }}</span>
+                    <span>
+                      <strong>{{ block.settings.author }}</strong>
+                      {%- if block.settings.role != blank -%}<br><span class="text-muted">{{ block.settings.role }}</span>{%- endif -%}
+                    </span>
+                  </p>
+                </li>
+              {%- endfor -%}
+            {%- endif -%}
+          </ul>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .testimonials {
+    overflow: hidden;
+  }
+
+  .testimonials__viewport {
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .testimonials__track {
+    display: flex;
+    width: max-content;
+    animation: testimonials-scroll 55s linear infinite;
+  }
+
+  [dir='rtl'] .testimonials__track {
+    animation-name: testimonials-scroll-rtl;
+  }
+
+  .testimonials__viewport:hover .testimonials__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes testimonials-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes testimonials-scroll-rtl {
+    to {
+      transform: translateX(50%);
+    }
+  }
+
+  .testimonials__list {
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+    padding-block: 1.5rem;
+    padding-inline-end: 1.25rem;
+  }
+
+  .testimonial {
+    --mx: 50%;
+    --my: 0%;
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    width: min(24rem, 80vw);
+    padding: 2rem 1.75rem;
+    border-radius: 1.5rem;
+    background: var(--color-surface);
+    border: 1px solid rgba(var(--color-fg-rgb), 0.08);
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.4s ease;
+  }
+
+  .testimonial::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(20rem circle at var(--mx) var(--my), rgba(254, 189, 25, 0.25), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .testimonial:hover {
+    transform: translateY(-6px) rotate(-0.5deg);
+    border-color: rgba(254, 189, 25, 0.6);
+  }
+
+  .testimonial:hover::before {
+    opacity: 1;
+  }
+
+  .testimonial__quote-mark {
+    position: absolute;
+    inset-block-start: -1.5rem;
+    inset-inline-end: 1rem;
+    font-family: Georgia, serif;
+    font-size: 8rem;
+    line-height: 1;
+    color: #febd19;
+    opacity: 0.35;
+  }
+
+    color: #febd19;
+    letter-spacing: 0.15em;
+    font-size: 1.125rem;
+  }
+
+  .testimonial__text {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  .testimonial__author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block-start: auto;
+    font-size: 0.9375rem;
+  }
+
+  .testimonial__avatar {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: #febd19;
+    color: #0a0a0a;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .testimonials__track {
+      animation: none;
+      width: auto;
+      overflow-x: auto;
+    }
+
+    .testimonials__list[aria-hidden='true'] {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:pages.testimonials.name",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
+    { "type": "text", "id": "heading", "default": "What our customers say", "label": "t:settings.heading" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-2", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 72, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 72, "label": "t:settings.padding_bottom" }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "t:pages.testimonials.block",
+      "settings": [
+        { "type": "textarea", "id": "quote", "default": "Great products and friendly service.", "label": "t:pages.testimonials.quote" },
+        { "type": "text", "id": "author", "default": "Customer", "label": "t:pages.testimonials.author" },
+        { "type": "text", "id": "role", "label": "t:pages.testimonials.role" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:pages.testimonials.name",
+      "blocks": [{ "type": "quote" }, { "type": "quote" }, { "type": "quote" }]
+    }
+  ]
+}
+{% endschema %}

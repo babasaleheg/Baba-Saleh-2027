@@ -1,0 +1,204 @@
+{%- comment -%}
+  Call-to-action band: big heading, text and buttons on brand yellow, with floating shapes.
+  The second button can open WhatsApp with the store number from theme settings.
+{%- endcomment -%}
+{%- liquid
+  assign wa = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-'
+  assign link_2 = section.settings.button_link_2
+  if section.settings.button_2_whatsapp and wa != blank
+    assign link_2 = 'https://wa.me/' | append: wa
+  endif
+-%}
+<section
+  class="section cta-banner color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <div class="cta-banner__box" data-reveal>
+      <span class="cta-banner__shape cta-banner__shape--ball" aria-hidden="true"></span>
+      <span class="cta-banner__shape cta-banner__shape--ring" aria-hidden="true"></span>
+      <span class="cta-banner__shape cta-banner__shape--dot" aria-hidden="true"></span>
+      <div class="cta-banner__content">
+        {%- if section.settings.eyebrow != blank -%}<span class="eyebrow cta-banner__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="cta-banner__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+        {%- if section.settings.text != blank -%}<div class="rte cta-banner__text">{{ section.settings.text }}</div>{%- endif -%}
+        <div class="cta-banner__buttons">
+          {%- if section.settings.button_label != blank -%}
+            <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="button cta-banner__button">
+              {{- section.settings.button_label -}}
+              {%- render 'icon', icon: 'arrow' -%}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.button_label_2 != blank -%}
+            <a href="{{ link_2 | default: '#' }}" class="button button--secondary cta-banner__button-2"{% if section.settings.button_2_whatsapp %} target="_blank" rel="noopener"{% endif %}>
+              {%- if section.settings.button_2_whatsapp -%}{%- render 'icon', icon: 'whatsapp' -%}{%- endif -%}
+              {{- section.settings.button_label_2 -}}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .cta-banner__box {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4.5rem);
+    border-radius: 2rem;
+    background: #febd19;
+    color: #0a0a0a;
+  }
+
+  .cta-banner__content {
+    display: grid;
+    justify-items: start;
+    gap: 1.125rem;
+    max-width: 44rem;
+  }
+
+  .cta-banner__eyebrow {
+    color: inherit;
+    opacity: 0.75;
+  }
+
+  .cta-banner__heading {
+    font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  [dir='rtl'] .cta-banner__heading {
+    letter-spacing: 0;
+    line-height: 1.25;
+  }
+
+  .cta-banner__text {
+    font-size: 1.125rem;
+    max-width: 34rem;
+  }
+
+  .cta-banner__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block-start: 0.5rem;
+  }
+
+  .cta-banner .cta-banner__button {
+    --btn-bg: #0a0a0a;
+    --btn-fg: #fff;
+  }
+
+  .cta-banner .cta-banner__button-2 {
+    --btn-fg: #0a0a0a;
+  }
+
+  .cta-banner__button .icon {
+    transition: transform 0.25s ease;
+  }
+
+  .cta-banner__button:hover .icon {
+    transform: translateX(4px);
+  }
+
+  [dir='rtl'] .cta-banner__button:hover .icon {
+    transform: scaleX(-1) translateX(4px);
+  }
+
+  .cta-banner__shape {
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .cta-banner__shape--ball {
+    width: 16rem;
+    height: 16rem;
+    inset-block-end: -5rem;
+    inset-inline-end: 6%;
+    background: radial-gradient(circle at 30% 30%, #fff 0 8%, #0a0a0a 9% 100%);
+    animation: cta-bounce 3.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+
+  .cta-banner__shape--ring {
+    width: 24rem;
+    height: 24rem;
+    inset-block-start: -10rem;
+    inset-inline-end: -6rem;
+    border: 3rem solid rgba(255, 255, 255, 0.35);
+    animation: cta-spin 30s linear infinite;
+  }
+
+  .cta-banner__shape--dot {
+    width: 3rem;
+    height: 3rem;
+    inset-block-start: 22%;
+    inset-inline-end: 34%;
+    background: #fff;
+    animation: cta-float 6s ease-in-out infinite;
+  }
+
+  @keyframes cta-bounce {
+    0%,
+    100% {
+      transform: translateY(0) scale(1.04, 0.96);
+    }
+    50% {
+      transform: translateY(-3.5rem) scale(1);
+    }
+  }
+
+  @keyframes cta-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes cta-float {
+    50% {
+      transform: translate(1.5rem, -1rem);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .cta-banner__shape--ball {
+      width: 9rem;
+      height: 9rem;
+      inset-block-end: -3rem;
+    }
+
+    .cta-banner__shape--dot {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-banner__shape {
+      animation: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:pages.cta.name",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
+    { "type": "text", "id": "heading", "default": "Ready to play?", "label": "t:settings.heading" },
+    { "type": "richtext", "id": "text", "label": "t:settings.text" },
+    { "type": "text", "id": "button_label", "default": "Shop now", "label": "t:settings.button_label" },
+    { "type": "url", "id": "button_link", "label": "t:settings.button_link" },
+    { "type": "text", "id": "button_label_2", "label": "t:settings.button_label_2" },
+    { "type": "url", "id": "button_link_2", "label": "t:settings.button_link_2" },
+    { "type": "checkbox", "id": "button_2_whatsapp", "default": true, "label": "t:pages.cta.button_2_whatsapp" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 72, "label": "t:settings.padding_bottom" }
+  ],
+  "presets": [{ "name": "t:pages.cta.name" }]
+}
+{% endschema %}

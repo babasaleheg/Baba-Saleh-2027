@@ -5,10 +5,13 @@
       "settings": {
         "show_breadcrumb": true,
         "eyebrow": "7-day returns",
-        "title": "Returns & refunds",
+        "title": "Easy *returns* & refunds",
         "subtitle": "<p>Changed your mind or need another size? Here's how returns, exchanges and refunds work.</p>",
         "button_label": "Start a return on WhatsApp",
-        "button_link": "https://wa.me/201028305495"
+        "button_link": "https://wa.me/201028305495",
+        "style": "bold",
+        "color_scheme": "scheme-3",
+        "ribbon": "7-day returns, Free exchanges on faulty items, Refunds to your original payment, Return in any branch"
       }
     },
     "content": {
@@ -61,11 +64,78 @@
         "show_search": false,
         "structured_data": true
       }
+    },
+    "steps": {
+      "type": "value-cards",
+      "settings": {
+        "eyebrow": "How it works",
+        "heading": "Return in 4 easy steps",
+        "style": "steps",
+        "center_header": true,
+        "columns_desktop": 4,
+        "color_scheme": "scheme-1",
+        "padding_top": 72,
+        "padding_bottom": 40
+      },
+      "blocks": {
+        "st1": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Message us",
+            "text": "<p>Send your order number on WhatsApp or email within 7 days of delivery.</p>"
+          }
+        },
+        "st2": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Pack it",
+            "text": "<p>Keep the item unused, with its tags and original packaging.</p>"
+          }
+        },
+        "st3": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Hand it over",
+            "text": "<p>Drop it at any branch, or we arrange a pickup with the courier.</p>"
+          }
+        },
+        "st4": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Get your refund",
+            "text": "<p>Exchange it or get your money back once we check the item.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "st1",
+        "st2",
+        "st3",
+        "st4"
+      ]
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "eyebrow": "Need a different size?",
+        "heading": "Start your return now",
+        "text": "<p>Send us your order number and we'll guide you step by step.</p>",
+        "button_label": "Shop now",
+        "button_link": "shopify://collections/all",
+        "button_label_2": "Chat on WhatsApp",
+        "button_2_whatsapp": true
+      }
     }
   },
   "order": [
     "hero",
+    "steps",
     "content",
-    "faq"
+    "faq",
+    "cta"
   ]
 }

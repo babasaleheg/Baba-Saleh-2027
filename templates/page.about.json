@@ -5,60 +5,100 @@
       "settings": {
         "show_breadcrumb": true,
         "eyebrow": "Since 1971",
-        "title": "Egypt's sports store for over 50 years",
-        "subtitle": "<p>From our first shop in Giza to four branches and an online store delivering to every governorate, Baba Saleh has helped families, athletes and teams gear up for more than five decades.</p>",
+        "title": "Egypt's *sports store* for over 50 years",
+        "subtitle": "<p>From our first shop in Giza to branches across Cairo and an online store that delivers to every governorate, Baba Saleh has helped families, athletes and teams gear up for more than five decades.</p>",
         "button_label": "Shop now",
         "button_link": "shopify://collections/all",
         "button_label_2": "Visit a branch",
-        "button_link_2": "#branches"
+        "button_link_2": "#branches",
+        "style": "bold",
+        "color_scheme": "scheme-3",
+        "title_size": "h1",
+        "image": "shopify://shop_images/bs-store-giza.png",
+        "badge_text": "Baba Saleh • Since 1971",
+        "chip_1": "1,000,000+ happy customers",
+        "chip_2": "Delivery to all of Egypt",
+        "ribbon": "Sportswear, Swimwear, Fitness, Team kits, Custom printing, Cash on delivery, 7-day returns",
+        "padding_top": 72,
+        "padding_bottom": 72
       }
     },
     "stats": {
       "type": "stats-counter",
+      "settings": {
+        "style": "bold",
+        "color_scheme": "scheme-4",
+        "eyebrow": "Baba Saleh in numbers",
+        "heading": "Five decades of sport, by the numbers",
+        "watermark": "Baba Saleh",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
       "blocks": {
         "s1": {
           "type": "stat",
           "settings": {
+            "source": "manual",
             "value": 1971,
             "format": "plain",
+            "suffix": "",
             "label": "Founded",
-            "suffix": ""
+            "icon": "calendar"
           }
         },
         "s2": {
           "type": "stat",
           "settings": {
-            "value": 50,
+            "source": "manual",
+            "value": 1000000,
             "format": "grouped",
             "suffix": "+",
-            "label": "Years in sports retail"
+            "label": "Happy customers",
+            "icon": "users"
           }
         },
         "s3": {
           "type": "stat",
           "settings": {
+            "source": "products",
             "value": 1300,
             "format": "grouped",
             "suffix": "+",
-            "label": "Products online"
+            "label": "Products online",
+            "icon": "tag"
           }
         },
         "s4": {
           "type": "stat",
           "settings": {
+            "source": "manual",
             "value": 4,
             "format": "plain",
+            "suffix": "",
             "label": "Branches",
-            "suffix": ""
+            "icon": "store"
           }
         },
         "s5": {
           "type": "stat",
           "settings": {
-            "value": 27,
-            "format": "plain",
-            "label": "Governorates we deliver to",
-            "suffix": ""
+            "source": "manual",
+            "value": 190,
+            "format": "grouped",
+            "suffix": "+",
+            "label": "Partner companies",
+            "icon": "briefcase"
+          }
+        },
+        "s6": {
+          "type": "stat",
+          "settings": {
+            "source": "manual",
+            "value": 120,
+            "format": "grouped",
+            "suffix": "+",
+            "label": "Team members",
+            "icon": "heart"
           }
         }
       },
@@ -67,11 +107,9 @@
         "s2",
         "s3",
         "s4",
-        "s5"
-      ],
-      "settings": {
-        "color_scheme": "scheme-3"
-      }
+        "s5",
+        "s6"
+      ]
     },
     "story": {
       "type": "story-timeline",
@@ -81,7 +119,8 @@
           "settings": {
             "label": "1971",
             "title": "Where it started",
-            "text": "<p>Baba Saleh opens its first sports shop in Giza, serving local clubs, schools and families.</p>"
+            "text": "<p>Baba Saleh opens its first sports shop in Giza, serving local clubs, schools and families.</p>",
+            "image": "shopify://shop_images/bs-branch-giza.png"
           }
         },
         "m2": {
@@ -89,7 +128,8 @@
           "settings": {
             "label": "Growing",
             "title": "More branches",
-            "text": "<p>Branches open in Imbaba, Maadi and 6th of October, bringing sportswear, swimwear and fitness gear closer to home.</p>"
+            "text": "<p>Branches open in Imbaba, Maadi and 6th of October, bringing sportswear, swimwear and fitness gear closer to home.</p>",
+            "image": "shopify://shop_images/bs-branch-maadi.png"
           }
         },
         "m3": {
@@ -97,7 +137,8 @@
           "settings": {
             "label": "Online",
             "title": "Baba Saleh online",
-            "text": "<p>Our online store brings the full range to every governorate in Egypt, with cash on delivery and easy returns.</p>"
+            "text": "<p>Our online store brings the full range to every governorate in Egypt, with cash on delivery and easy returns.</p>",
+            "image": "shopify://shop_images/bs-about-main.png"
           }
         },
         "m4": {
@@ -105,7 +146,8 @@
           "settings": {
             "label": "Today",
             "title": "Community & events",
-            "text": "<p>We support teams and events with custom printing and host community activities such as cycling days.</p>"
+            "text": "<p>We support teams and events with custom printing and host community activities such as cycling days.</p>",
+            "image": "shopify://shop_images/bs-branch-october.png"
           }
         }
       },
@@ -117,7 +159,9 @@
       ],
       "settings": {
         "eyebrow": "Our story",
-        "heading": "Five decades of sport"
+        "heading": "Five decades of sport",
+        "padding_top": 96,
+        "padding_bottom": 80
       }
     },
     "values": {
@@ -166,7 +210,11 @@
       "settings": {
         "heading": "What we stand for",
         "center_header": true,
-        "columns_desktop": 4
+        "columns_desktop": 4,
+        "eyebrow": "Why Baba Saleh",
+        "color_scheme": "scheme-3",
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "branches": {
@@ -179,7 +227,8 @@
             "area": "Giza",
             "address": "5 Cairo University Street, Giza",
             "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Cairo+University+Street+Giza",
-            "whatsapp": "+20 102 830 5495"
+            "whatsapp": "+20 102 830 5495",
+            "image": "shopify://shop_images/bs-branch-giza.png"
           }
         },
         "maadi": {
@@ -189,7 +238,8 @@
             "area": "Cairo",
             "address": "Darna Towers, 27, Maadi, Cairo",
             "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Darna+Towers+Maadi",
-            "whatsapp": "+20 102 830 5495"
+            "whatsapp": "+20 102 830 5495",
+            "image": "shopify://shop_images/bs-branch-maadi.png"
           }
         },
         "october": {
@@ -199,7 +249,8 @@
             "area": "Giza",
             "address": "La Cite Mall, 6th of October City",
             "map_url": "https://maps.google.com/?q=La+Cite+Mall+6th+of+October",
-            "whatsapp": "+20 102 830 5495"
+            "whatsapp": "+20 102 830 5495",
+            "image": "shopify://shop_images/bs-branch-october.png"
           }
         },
         "imbaba": {
@@ -209,7 +260,8 @@
             "area": "Giza",
             "address": "Block 32, 2 Talaat Harb Street, Imbaba",
             "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Imbaba",
-            "whatsapp": "+20 102 830 5495"
+            "whatsapp": "+20 102 830 5495",
+            "image": "shopify://shop_images/bs-branch-imbaba.png"
           }
         }
       },
@@ -223,7 +275,201 @@
         "eyebrow": "Since 1971",
         "heading": "Visit our branches",
         "text": "<p>Try sizes, get expert advice and pick up your order in person.</p>",
-        "structured_data": true
+        "structured_data": true,
+        "show_map": true,
+        "padding_top": 80,
+        "padding_bottom": 56
+      }
+    },
+    "brands": {
+      "type": "brand-logos",
+      "blocks": {
+        "brand_1": {
+          "type": "brand",
+          "settings": {
+            "name": "Wilson",
+            "logo": "shopify://shop_images/Wilson-logo.png"
+          }
+        },
+        "brand_2": {
+          "type": "brand",
+          "settings": {
+            "name": "Everlast",
+            "logo": "shopify://shop_images/ev.png"
+          }
+        },
+        "brand_3": {
+          "type": "brand",
+          "settings": {
+            "name": "Venum",
+            "logo": "shopify://shop_images/Venum.png"
+          }
+        },
+        "brand_4": {
+          "type": "brand",
+          "settings": {
+            "name": "Cressi",
+            "logo": "shopify://shop_images/cr.png"
+          }
+        },
+        "brand_5": {
+          "type": "brand",
+          "settings": {
+            "name": "Dunlop",
+            "logo": "shopify://shop_images/dunlop.png"
+          }
+        },
+        "brand_6": {
+          "type": "brand",
+          "settings": {
+            "name": "Spurt",
+            "logo": "shopify://shop_images/Spurt.png"
+          }
+        },
+        "brand_7": {
+          "type": "brand",
+          "settings": {
+            "name": "Livepro",
+            "logo": "shopify://shop_images/livepro.png"
+          }
+        },
+        "brand_8": {
+          "type": "brand",
+          "settings": {
+            "name": "Liveup",
+            "logo": "shopify://shop_images/liveup-1.png"
+          }
+        },
+        "brand_9": {
+          "type": "brand",
+          "settings": {
+            "name": "Cougar",
+            "logo": "shopify://shop_images/cougar.png"
+          }
+        },
+        "brand_10": {
+          "type": "brand",
+          "settings": {
+            "name": "Kiko"
+          }
+        },
+        "brand_11": {
+          "type": "brand",
+          "settings": {
+            "name": "Kuna",
+            "logo": "shopify://shop_images/ku.png"
+          }
+        },
+        "brand_12": {
+          "type": "brand",
+          "settings": {
+            "name": "Lamer"
+          }
+        },
+        "brand_13": {
+          "type": "brand",
+          "settings": {
+            "name": "Manta",
+            "logo": "shopify://shop_images/manta.png"
+          }
+        },
+        "brand_14": {
+          "type": "brand",
+          "settings": {
+            "name": "Track",
+            "logo": "shopify://shop_images/Track.png"
+          }
+        },
+        "brand_15": {
+          "type": "brand",
+          "settings": {
+            "name": "Wish",
+            "logo": "shopify://shop_images/Wish.png"
+          }
+        },
+        "brand_16": {
+          "type": "brand",
+          "settings": {
+            "name": "Baba Saleh",
+            "logo": "shopify://shop_images/baba-saleh-logo-desktop.png"
+          }
+        }
+      },
+      "block_order": [
+        "brand_1",
+        "brand_2",
+        "brand_3",
+        "brand_4",
+        "brand_5",
+        "brand_6",
+        "brand_7",
+        "brand_8",
+        "brand_9",
+        "brand_10",
+        "brand_11",
+        "brand_12",
+        "brand_13",
+        "brand_14",
+        "brand_15",
+        "brand_16"
+      ],
+      "settings": {
+        "heading": "Brands we carry",
+        "layout": "marquee",
+        "color_scheme": "scheme-1",
+        "padding_top": 72,
+        "padding_bottom": 40
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "eyebrow": "Client stories",
+        "heading": "What our clients say",
+        "color_scheme": "scheme-2"
+      },
+      "blocks": {
+        "t1": {
+          "type": "quote",
+          "settings": {
+            "quote": "Baba Saleh Sports transformed our event! Their printed materials were top-quality, and their attention to detail was remarkable.",
+            "author": "Event client",
+            "role": "Event production"
+          }
+        },
+        "t2": {
+          "type": "quote",
+          "settings": {
+            "quote": "The custom apparel we ordered was a hit! The colors were vibrant and the fit was spot on. Highly recommend Baba Saleh Sports for any team needs!",
+            "author": "Team client",
+            "role": "Custom team apparel"
+          }
+        },
+        "t3": {
+          "type": "quote",
+          "settings": {
+            "quote": "Working with Baba Saleh Sports was seamless. They helped us visualize our event, and we couldn't be more pleased with the results!",
+            "author": "Corporate client",
+            "role": "Event production"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ]
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "eyebrow": "Gear up",
+        "heading": "Ready to play?",
+        "text": "<p>Shop 1,300+ products online with cash on delivery, or chat with our team on WhatsApp.</p>",
+        "button_label": "Shop now",
+        "button_link": "shopify://collections/all",
+        "button_label_2": "Chat on WhatsApp",
+        "button_2_whatsapp": true
       }
     }
   },
@@ -232,6 +478,9 @@
     "stats",
     "story",
     "values",
-    "branches"
+    "brands",
+    "testimonials",
+    "branches",
+    "cta"
   ]
 }

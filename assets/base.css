@@ -1468,3 +1468,125 @@ body.scroll-lock {
   padding-block: 4rem;
   text-align: center;
 }
+
+/* ---------- Info pages: brand polish (contact, FAQ, careers, policies) ---------- */
+.form-card {
+  position: relative;
+  border-radius: 1.5rem;
+  border-block-start: 6px solid #febd19;
+  box-shadow: 0 30px 60px -40px rgba(0, 0, 0, 0.45);
+}
+
+.field__input:focus,
+.select__select:focus {
+  border-color: #0a0a0a;
+  box-shadow: 0 0 0 4px rgba(254, 189, 25, 0.45);
+}
+
+.contact-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 1.25rem !important;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease, color 0.35s ease;
+}
+
+.contact-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #febd19;
+  transform: scaleX(0);
+  transform-origin: inline-start;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.contact-card:hover {
+  transform: translateY(-4px);
+  color: #0a0a0a;
+  box-shadow: 0 24px 40px -28px rgba(0, 0, 0, 0.5);
+}
+
+.contact-card:hover::before {
+  transform: scaleX(1);
+}
+
+.contact-card__icon {
+  background: #0a0a0a !important;
+  color: #febd19 !important;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.contact-card:hover .contact-card__icon {
+  transform: rotate(-12deg) scale(1.08);
+}
+
+.contact-card:hover .contact-card__label,
+.contact-card:hover .text-muted {
+  color: rgba(10, 10, 10, 0.7);
+}
+
+.faq__item {
+  border-radius: 1rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.faq__item[open] {
+  background: var(--color-surface);
+  box-shadow: inset 4px 0 0 #febd19;
+}
+
+[dir='rtl'] .faq__item[open] {
+  box-shadow: inset -4px 0 0 #febd19;
+}
+
+.faq__item summary:hover .faq__question {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: #febd19;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+
+.job-card {
+  border-radius: 1.5rem !important;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-6px);
+  border-color: #febd19 !important;
+  box-shadow: 0 28px 50px -32px rgba(0, 0, 0, 0.5);
+}
+
+.jobs__chip[aria-pressed='true'] {
+  background: #febd19 !important;
+  border-color: #febd19 !important;
+  color: #0a0a0a !important;
+}
+
+.page-content__progress {
+  height: 4px !important;
+  background: linear-gradient(90deg, #febd19, #f59e0b) !important;
+}
+
+.page-content__body h2 {
+  position: relative;
+  padding-inline-start: 1rem;
+}
+
+.page-content__body h2::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: 0.2em;
+  width: 5px;
+  border-radius: 5px;
+  background: #febd19;
+}
+
+.page-toc__link[aria-current='true'] {
+  border-inline-start-color: #febd19 !important;
+  background: rgba(254, 189, 25, 0.12);
+}

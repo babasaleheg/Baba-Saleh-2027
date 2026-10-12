@@ -36,7 +36,7 @@
             "type": "color",
             "id": "accent",
             "label": "t:settings_schema.colors.settings.accent.label",
-            "default": "#1E3AFF"
+            "default": "#FEBD19"
           },
           {
             "type": "color",
@@ -80,7 +80,7 @@
         "type": "color",
         "id": "color_highlight",
         "label": "t:settings_schema.colors.settings.color_highlight.label",
-        "default": "#FFD60A"
+        "default": "#FEBD19"
       },
       {
         "type": "color",

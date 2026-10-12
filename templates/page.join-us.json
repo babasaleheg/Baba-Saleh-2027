@@ -5,10 +5,17 @@
       "settings": {
         "show_breadcrumb": true,
         "eyebrow": "Careers",
-        "title": "Join the Baba Saleh team",
+        "title": "Join the *Baba Saleh* team",
         "subtitle": "<p>Love sport and helping people? We're hiring friendly, motivated people for our branches.</p>",
         "button_label": "See open positions",
-        "button_link": "#jobs"
+        "button_link": "#jobs",
+        "style": "bold",
+        "color_scheme": "scheme-3",
+        "image": "shopify://shop_images/bs-branch-imbaba.png",
+        "badge_text": "We're hiring • Join us",
+        "chip_1": "120+ team members",
+        "chip_2": "4 branches",
+        "ribbon": "Sales, Customer service, Store teams, Events, Growth, Staff discounts"
       }
     },
     "values": {
@@ -56,7 +63,11 @@
       "settings": {
         "heading": "Why work with us",
         "center_header": true,
-        "columns_desktop": 4
+        "columns_desktop": 4,
+        "eyebrow": "Perks",
+        "color_scheme": "scheme-3",
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "jobs": {
@@ -102,11 +113,127 @@
         "branches": "Giza\nImbaba\nMaadi\n6th of October\nAny branch",
         "ask_military": true
       }
+    },
+    "stats": {
+      "type": "stats-counter",
+      "settings": {
+        "style": "bold",
+        "color_scheme": "scheme-4",
+        "watermark": "Join us",
+        "padding_top": 64,
+        "padding_bottom": 64
+      },
+      "blocks": {
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "source": "manual",
+            "value": 1971,
+            "format": "plain",
+            "suffix": "",
+            "label": "Founded",
+            "icon": "calendar"
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "source": "manual",
+            "value": 120,
+            "format": "grouped",
+            "suffix": "+",
+            "label": "Team members",
+            "icon": "users"
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "source": "manual",
+            "value": 4,
+            "format": "plain",
+            "suffix": "",
+            "label": "Branches",
+            "icon": "store"
+          }
+        },
+        "s4": {
+          "type": "stat",
+          "settings": {
+            "source": "manual",
+            "value": 1000000,
+            "format": "grouped",
+            "suffix": "+",
+            "label": "Happy customers",
+            "icon": "heart"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ]
+    },
+    "steps": {
+      "type": "value-cards",
+      "settings": {
+        "eyebrow": "How to apply",
+        "heading": "From application to first day",
+        "style": "steps",
+        "center_header": true,
+        "columns_desktop": 4,
+        "padding_top": 72,
+        "padding_bottom": 32
+      },
+      "blocks": {
+        "st1": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Apply",
+            "text": "<p>Pick a role below and send the short form.</p>"
+          }
+        },
+        "st2": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Quick call",
+            "text": "<p>We call you within a few days to get to know you.</p>"
+          }
+        },
+        "st3": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Meet the team",
+            "text": "<p>Visit the branch for a friendly interview.</p>"
+          }
+        },
+        "st4": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Welcome aboard",
+            "text": "<p>Start with training from experienced colleagues.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "st1",
+        "st2",
+        "st3",
+        "st4"
+      ]
     }
   },
   "order": [
     "hero",
+    "stats",
     "values",
+    "steps",
     "jobs"
   ]
 }

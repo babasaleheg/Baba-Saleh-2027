@@ -1,6 +1,7 @@
 {%- comment -%}
-  Page hero: breadcrumb, eyebrow, title (defaults to the page title), subtitle, buttons and an optional image.
-  Emits BreadcrumbList JSON-LD for pages.
+  Page hero: breadcrumb, eyebrow, animated title (defaults to the page title), subtitle, buttons,
+  optional image with a spinning badge and floating chips, and a scrolling ribbon.
+  Wrap words in *asterisks* to highlight them in brand yellow. Emits BreadcrumbList JSON-LD.
 {%- endcomment -%}
 {%- liquid
   assign hero_title = section.settings.title | default: page.title | default: page_title
@@ -8,33 +9,61 @@
   if section.settings.image != blank
     assign has_image = true
   endif
+  assign words = hero_title | split: ' '
+  assign marked = false
+  assign ribbon_items = section.settings.ribbon | split: ','
 -%}
 <section
-  class="section page-hero page-hero--{{ section.settings.alignment }}{% if has_image %} page-hero--image{% endif %} color-{{ section.settings.color_scheme }}"
+  class="section page-hero page-hero--{{ section.settings.alignment }} page-hero--{{ section.settings.style }}{% if has_image %} page-hero--image{% endif %}{% if section.settings.ribbon != blank %} page-hero--ribbon{% endif %} color-{{ section.settings.color_scheme }}"
   style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
 >
-  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="page-hero__bg" aria-hidden="true">
+    <span class="page-hero__grid-lines"></span>
+    <span class="page-hero__orb page-hero__orb--1"></span>
+    <span class="page-hero__orb page-hero__orb--2"></span>
+    <span class="page-hero__ring"></span>
+  </div>
   <div class="page-width page-hero__grid">
     <div class="page-hero__content">
       {%- if section.settings.show_breadcrumb -%}
-        <nav class="page-hero__breadcrumb" aria-label="{{ 'pages.breadcrumb.label' | t }}">
+        <nav class="page-hero__breadcrumb page-hero__fade" aria-label="{{ 'pages.breadcrumb.label' | t }}">
           <ol role="list">
             <li><a href="{{ routes.root_url }}">{{ 'pages.breadcrumb.home' | t }}</a></li>
-            <li aria-current="page">{{ page.title | default: hero_title }}</li>
+            <li aria-current="page">{{ page.title | default: hero_title | remove: '*' }}</li>
           </ol>
         </nav>
       {%- endif -%}
       {%- if section.settings.eyebrow != blank -%}
-        <span class="eyebrow page-hero__eyebrow">{{ section.settings.eyebrow }}</span>
+        <span class="page-hero__eyebrow page-hero__fade"><span class="page-hero__pulse" aria-hidden="true"></span>{{ section.settings.eyebrow }}</span>
       {%- endif -%}
-      <h1 class="{{ section.settings.title_size }} page-hero__title">{{ hero_title }}</h1>
+      <h1 class="{{ section.settings.title_size }} page-hero__title">
+        {%- for word in words -%}
+          {%- liquid
+            assign first = word | slice: 0
+            assign last = word | slice: -1
+            assign mark_this = marked
+            if first == '*'
+              assign mark_this = true
+              assign marked = true
+            endif
+            if last == '*'
+              assign marked = false
+            endif
+            assign clean = word | remove: '*'
+          -%}
+          <span class="page-hero__word{% if mark_this %} page-hero__word--mark{% endif %}"><span style="--i: {{ forloop.index0 }}">{{ clean }}</span></span>{% unless forloop.last %} {% endunless %}
+        {%- endfor -%}
+      </h1>
       {%- if section.settings.subtitle != blank -%}
-        <div class="rte page-hero__subtitle">{{ section.settings.subtitle }}</div>
+        <div class="rte page-hero__subtitle page-hero__fade" style="--d: 1">{{ section.settings.subtitle }}</div>
       {%- endif -%}
       {%- if section.settings.button_label != blank or section.settings.button_label_2 != blank -%}
-        <div class="page-hero__buttons">
+        <div class="page-hero__buttons page-hero__fade" style="--d: 2">
           {%- if section.settings.button_label != blank -%}
-            <a href="{{ section.settings.button_link | default: '#' }}" class="button">{{ section.settings.button_label }}</a>
+            <a href="{{ section.settings.button_link | default: '#' }}" class="button page-hero__cta">
+              {{- section.settings.button_label -}}
+              <span class="page-hero__cta-arrow" aria-hidden="true">{% render 'icon', icon: 'arrow' %}</span>
+            </a>
           {%- endif -%}
           {%- if section.settings.button_label_2 != blank -%}
             <a href="{{ section.settings.button_link_2 | default: '#' }}" class="button button--secondary">{{ section.settings.button_label_2 }}</a>
@@ -43,15 +72,51 @@
       {%- endif -%}
     </div>
     {%- if has_image -%}
-      <div class="media page-hero__media">
-        {{
-          section.settings.image
-          | image_url: width: 1400
-          | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 45vw, 100vw', widths: '400, 700, 1000, 1400', alt: section.settings.image.alt
-        }}
+      <div class="page-hero__visual page-hero__fade" style="--d: 1">
+        <span class="page-hero__block" aria-hidden="true"></span>
+        <div class="media page-hero__media">
+          {{
+            section.settings.image
+            | image_url: width: 1200
+            | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 42vw, 100vw', widths: '400, 600, 900, 1200', alt: section.settings.image.alt
+          }}
+        </div>
+        {%- if section.settings.badge_text != blank -%}
+          <div class="page-hero__badge" aria-hidden="true">
+            <svg viewBox="0 0 120 120" class="page-hero__badge-ring">
+              <defs><path id="HeroBadge-{{ section.id }}" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"></path></defs>
+              <text><textPath href="#HeroBadge-{{ section.id }}">{{ section.settings.badge_text }} • {{ section.settings.badge_text }} •</textPath></text>
+            </svg>
+            <span class="page-hero__badge-core">{% render 'icon', icon: 'star' %}</span>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.chip_1 != blank -%}
+          <span class="page-hero__chip page-hero__chip--1">{% render 'icon', icon: 'users' %}{{ section.settings.chip_1 }}</span>
+        {%- endif -%}
+        {%- if section.settings.chip_2 != blank -%}
+          <span class="page-hero__chip page-hero__chip--2">{% render 'icon', icon: 'truck' %}{{ section.settings.chip_2 }}</span>
+        {%- endif -%}
       </div>
     {%- endif -%}
   </div>
+  {%- if section.settings.ribbon != blank -%}
+    <div class="page-hero__ribbon" aria-hidden="true">
+      <div class="page-hero__ribbon-track">
+        {%- for copy in (1..2) -%}
+          <ul class="page-hero__ribbon-list" role="list">
+            {%- for item in ribbon_items -%}
+              <li>{{ item | strip }}</li>
+              <li class="page-hero__ribbon-sep">{% render 'icon', icon: 'bolt' %}</li>
+            {%- endfor -%}
+            {%- for item in ribbon_items -%}
+              <li>{{ item | strip }}</li>
+              <li class="page-hero__ribbon-sep">{% render 'icon', icon: 'bolt' %}</li>
+            {%- endfor -%}
+          </ul>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
 </section>
 
 {%- if section.settings.show_breadcrumb and page.title != blank -%}
@@ -74,53 +139,97 @@
     isolation: isolate;
   }
 
-  .page-hero__glow {
+  .page-hero--ribbon {
+    padding-block-end: 0;
+  }
+
+  .page-hero__bg {
     position: absolute;
+    inset: 0;
     z-index: -1;
-    inset-block-start: -40%;
-    inset-inline-end: -10%;
-    width: min(60rem, 120vw);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(closest-side, rgba(var(--color-fg-rgb), 0.07), transparent);
     pointer-events: none;
   }
 
-  .page-hero__glow::after {
-    content: '';
+  .page-hero__grid-lines {
     position: absolute;
-    inset: 25%;
-    border-radius: 50%;
-    background: radial-gradient(closest-side, var(--color-accent), transparent);
-    opacity: 0.14;
-    animation: page-hero-float 14s ease-in-out infinite alternate;
+    inset: 0;
+    background-image: linear-gradient(rgba(var(--color-fg-rgb), 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--color-fg-rgb), 0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at 70% 40%, #000 10%, transparent 70%);
   }
 
-  @keyframes page-hero-float {
+  .page-hero__orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    background: #febd19;
+    opacity: 0.35;
+    animation: page-hero-orb 16s ease-in-out infinite alternate;
+  }
+
+  .page-hero__orb--1 {
+    width: 28rem;
+    height: 28rem;
+    inset-block-start: -10rem;
+    inset-inline-end: -6rem;
+  }
+
+  .page-hero__orb--2 {
+    width: 18rem;
+    height: 18rem;
+    inset-block-end: -8rem;
+    inset-inline-start: 20%;
+    opacity: 0.18;
+    animation-duration: 20s;
+    animation-direction: alternate-reverse;
+  }
+
+  .page-hero__ring {
+    position: absolute;
+    width: 34rem;
+    height: 34rem;
+    inset-block-start: 50%;
+    inset-inline-end: -12rem;
+    margin-block-start: -17rem;
+    border-radius: 50%;
+    border: 2px dashed rgba(254, 189, 25, 0.45);
+    animation: page-hero-spin 60s linear infinite;
+  }
+
+  @keyframes page-hero-orb {
     to {
-      transform: translate(-12%, 18%) scale(1.15);
+      transform: translate(-3rem, 4rem) scale(1.15);
     }
   }
 
+  @keyframes page-hero-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .page-hero--minimal .page-hero__ring,
+  .page-hero--minimal .page-hero__orb--2 {
+    display: none;
+  }
+
+  .page-hero--minimal .page-hero__orb--1 {
+    opacity: 0.22;
+  }
+
   .page-hero__grid {
+    position: relative;
     display: grid;
-    gap: 2rem;
+    gap: 3rem;
     align-items: center;
   }
 
   .page-hero__content {
     display: grid;
     justify-items: start;
-    gap: 1rem;
-    max-width: 48rem;
-    animation: page-hero-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  }
-
-  @keyframes page-hero-in {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
+    gap: 1.25rem;
+    max-width: 50rem;
   }
 
   .page-hero--center .page-hero__content {
@@ -149,13 +258,112 @@
   }
 
   .page-hero__breadcrumb a:hover {
-    text-decoration: underline;
+    color: #febd19;
+  }
+
+  .page-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(254, 189, 25, 0.5);
+    background: rgba(254, 189, 25, 0.12);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  [dir='rtl'] .page-hero__eyebrow {
+    letter-spacing: 0;
+    font-size: 0.875rem;
+  }
+
+  .page-hero__pulse {
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #febd19;
+  }
+
+  .page-hero__pulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: page-hero-pulse 1.8s ease-out infinite;
+  }
+
+  @keyframes page-hero-pulse {
+    to {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
+
+  .page-hero__title {
+    font-size: clamp(2.5rem, 6.4vw, 5.25rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .page-hero__title.h2 {
+    font-size: clamp(2rem, 4.4vw, 3.5rem);
+  }
+
+  [dir='rtl'] .page-hero__title {
+    letter-spacing: 0;
+    line-height: 1.25;
+  }
+
+  .page-hero__word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-block: 0.06em 0.12em;
+    margin-block: -0.06em -0.12em;
+  }
+
+  .page-hero__word > span {
+    display: inline-block;
+  }
+
+  .has-animations .page-hero__word > span {
+    transform: translateY(110%);
+    animation: page-hero-word 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation-delay: calc(var(--i) * 70ms + 120ms);
+  }
+
+  @keyframes page-hero-word {
+    to {
+      transform: none;
+    }
+  }
+
+  .page-hero__word--mark > span {
+    position: relative;
+    color: #febd19;
+  }
+
+  .color-scheme-4 .page-hero__word--mark > span,
+  .color-scheme-5 .page-hero__word--mark > span,
+  .color-scheme-1 .page-hero__word--mark > span,
+  .color-scheme-2 .page-hero__word--mark > span {
+    color: inherit;
+    background: linear-gradient(transparent 58%, #febd19 58%, #febd19 90%, transparent 90%);
+  }
+
+  .color-scheme-4 .page-hero__word--mark > span {
+    background: linear-gradient(transparent 58%, #fff 58%, #fff 90%, transparent 90%);
   }
 
   .page-hero__subtitle {
-    font-size: clamp(1rem, 1.6vw, 1.1875rem);
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
     color: var(--color-muted);
-    max-width: 40rem;
+    max-width: 38rem;
   }
 
   .page-hero__buttons {
@@ -165,14 +373,226 @@
     margin-block-start: 0.5rem;
   }
 
+  .page-hero .page-hero__cta {
+    --btn-bg: #febd19;
+    --btn-fg: #0a0a0a;
+  }
+
+  .color-scheme-4 .page-hero__cta {
+    --btn-bg: #0a0a0a;
+    --btn-fg: #fff;
+  }
+
+  .page-hero__cta-arrow {
+    display: inline-flex;
+    transition: transform 0.25s ease;
+  }
+
+  .page-hero__cta:hover .page-hero__cta-arrow {
+    transform: translateX(4px);
+  }
+
+  [dir='rtl'] .page-hero__cta:hover .page-hero__cta-arrow {
+    transform: translateX(-4px);
+  }
+
+  .has-animations .page-hero__fade {
+    opacity: 0;
+    transform: translateY(18px);
+    animation: page-hero-fade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation-delay: calc(var(--d, 0) * 160ms + 300ms);
+  }
+
+  @keyframes page-hero-fade {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .page-hero__visual {
+    position: relative;
+    max-width: 34rem;
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .page-hero__block {
+    position: absolute;
+    inset: 1.5rem -1.25rem -1.25rem 1.5rem;
+    border-radius: 2rem;
+    background: #febd19;
+    transform: rotate(-3deg);
+  }
+
+  [dir='rtl'] .page-hero__block {
+    transform: rotate(3deg);
+  }
+
   .page-hero__media {
-    aspect-ratio: 4 / 3;
+    position: relative;
+    aspect-ratio: 4 / 4.4;
+    border-radius: 2rem;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -25px rgba(0, 0, 0, 0.55);
+  }
+
+  .page-hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .page-hero__visual:hover .page-hero__media img {
+    transform: scale(1.05);
+  }
+
+  .page-hero__badge {
+    position: absolute;
+    inset-block-start: -2.25rem;
+    inset-inline-start: -2.25rem;
+    width: 8.5rem;
+    height: 8.5rem;
+    border-radius: 50%;
+    background: #0a0a0a;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 0 0 6px rgba(254, 189, 25, 0.9);
+  }
+
+  .page-hero__badge-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    animation: page-hero-spin 14s linear infinite;
+  }
+
+  .page-hero__badge-ring text {
+    fill: currentColor;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .page-hero__badge-core {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: #febd19;
+    color: #0a0a0a;
+  }
+
+  .page-hero__chip {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.125rem;
+    border-radius: 999px;
+    background: #fff;
+    color: #0a0a0a;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.45);
+    animation: page-hero-bob 5s ease-in-out infinite;
+    white-space: nowrap;
+  }
+
+  .page-hero__chip .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0.25rem;
+    box-sizing: content-box;
+    border-radius: 50%;
+    background: #febd19;
+  }
+
+  .page-hero__chip--1 {
+    inset-block-end: 12%;
+    inset-inline-start: -1.5rem;
+  }
+
+  .page-hero__chip--2 {
+    inset-block-start: 14%;
+    inset-inline-end: -1.5rem;
+    animation-delay: -2.5s;
+  }
+
+  @keyframes page-hero-bob {
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .page-hero__ribbon {
+    position: relative;
+    margin-block-start: clamp(3rem, 6vw, 5rem);
+    padding-block: 1rem;
+    background: #febd19;
+    color: #0a0a0a;
+    transform: rotate(-1.5deg) scale(1.05);
+    overflow: hidden;
+  }
+
+  .color-scheme-4 .page-hero__ribbon {
+    background: #0a0a0a;
+    color: #febd19;
+  }
+
+  .page-hero__ribbon-track {
+    display: flex;
+    width: max-content;
+    animation: page-hero-marquee 40s linear infinite;
+  }
+
+  [dir='rtl'] .page-hero__ribbon-track {
+    animation-name: page-hero-marquee-rtl;
+  }
+
+  .page-hero__ribbon:hover .page-hero__ribbon-track {
+    animation-play-state: paused;
+  }
+
+  .page-hero__ribbon-list {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 0;
+    padding-inline-end: 1.5rem;
+    font-family: var(--font-heading-family);
+    font-weight: var(--heading-weight);
+    font-size: clamp(1.125rem, 2.2vw, 1.625rem);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .page-hero__ribbon-sep .icon {
+    width: 1.25em;
+    height: 1.25em;
+  }
+
+  @keyframes page-hero-marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes page-hero-marquee-rtl {
+    to {
+      transform: translateX(50%);
+    }
   }
 
   @media screen and (min-width: 990px) {
     .page-hero--image .page-hero__grid {
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 4rem;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 5rem;
     }
 
     .page-hero--image.page-hero--center .page-hero__grid {
@@ -180,10 +600,52 @@
     }
   }
 
+  @media screen and (max-width: 749px) {
+    .page-hero__badge {
+      width: 6.5rem;
+      height: 6.5rem;
+      inset-block-start: -1.5rem;
+      inset-inline-start: -0.5rem;
+    }
+
+    .page-hero__chip {
+      font-size: 0.8125rem;
+      padding: 0.5rem 0.875rem;
+    }
+
+    .page-hero__chip--1 {
+      inset-inline-start: -0.25rem;
+    }
+
+    .page-hero__chip--2 {
+      inset-inline-end: -0.25rem;
+    }
+
+    .page-hero__block {
+      inset-inline-end: -0.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-hero *,
+    .page-hero *::after {
+      animation: none !important;
+    }
+
+    .has-animations .page-hero__word > span,
+    .has-animations .page-hero__fade {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
   @media print {
-    .page-hero__glow,
+    .page-hero__bg,
     .page-hero__buttons,
-    .page-hero__breadcrumb {
+    .page-hero__breadcrumb,
+    .page-hero__ribbon,
+    .page-hero__badge,
+    .page-hero__chip {
       display: none;
     }
   }
@@ -194,6 +656,16 @@
   "name": "t:pages.hero.name",
   "class": "section-page-hero",
   "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "default": "bold",
+      "label": "t:pages.hero.style",
+      "options": [
+        { "value": "bold", "label": "t:pages.hero.style_bold" },
+        { "value": "minimal", "label": "t:pages.hero.style_minimal" }
+      ]
+    },
     { "type": "checkbox", "id": "show_breadcrumb", "default": true, "label": "t:pages.hero.show_breadcrumb" },
     { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
     { "type": "text", "id": "title", "label": "t:pages.hero.title", "info": "t:pages.hero.title_info" },
@@ -214,6 +686,10 @@
     { "type": "text", "id": "button_label_2", "label": "t:settings.button_label_2" },
     { "type": "url", "id": "button_link_2", "label": "t:settings.button_link_2" },
     { "type": "image_picker", "id": "image", "label": "t:settings.image" },
+    { "type": "text", "id": "badge_text", "label": "t:pages.hero.badge_text" },
+    { "type": "text", "id": "chip_1", "label": "t:pages.hero.chip_1" },
+    { "type": "text", "id": "chip_2", "label": "t:pages.hero.chip_2" },
+    { "type": "text", "id": "ribbon", "label": "t:pages.hero.ribbon", "info": "t:pages.hero.ribbon_info" },
     {
       "type": "select",
       "id": "alignment",
@@ -224,9 +700,9 @@
         { "value": "center", "label": "t:settings.position_options.center" }
       ]
     },
-    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
-    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56, "label": "t:settings.padding_top" },
-    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 40, "label": "t:settings.padding_bottom" }
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-3", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 72, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 72, "label": "t:settings.padding_bottom" }
   ],
   "presets": [{ "name": "t:pages.hero.name" }]
 }

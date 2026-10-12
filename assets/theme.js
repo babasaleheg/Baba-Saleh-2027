@@ -1321,6 +1321,51 @@
   }
   customElements.define('job-board', JobBoard);
 
+  // Cards with data-spotlight get a glow that follows the pointer (--mx / --my).
+  document.addEventListener(
+    'pointermove',
+    (event) => {
+      const card = event.target.closest?.('[data-spotlight]');
+      if (!card || event.pointerType !== 'mouse') return;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+      card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+    },
+    { passive: true }
+  );
+
+  // Branches: picking a branch shows it on the embedded map. The map loads only when scrolled near.
+  class BranchMap extends HTMLElement {
+    connectedCallback() {
+      this.frame = this.querySelector('iframe');
+      this.tabs = [...this.querySelectorAll('[data-map-src]')];
+      for (const tab of this.tabs) tab.addEventListener('click', () => this.select(tab));
+      if (!this.frame) return;
+      const load = () => {
+        if (!this.frame.src) this.frame.src = this.frame.dataset.src;
+      };
+      if (!('IntersectionObserver' in window)) return load();
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return;
+          observer.disconnect();
+          load();
+        },
+        { rootMargin: '400px' }
+      );
+      observer.observe(this.frame);
+    }
+
+    select(tab) {
+      for (const t of this.tabs) t.setAttribute('aria-pressed', String(t === tab));
+      this.frame.classList.add('is-loading');
+      this.frame.addEventListener('load', () => this.frame.classList.remove('is-loading'), { once: true });
+      this.frame.src = tab.dataset.mapSrc;
+      this.frame.title = tab.dataset.mapTitle;
+    }
+  }
+  customElements.define('branch-map', BranchMap);
+
   document.addEventListener('click', (event) => {
     if (event.target.closest('[data-print]')) window.print();
   });

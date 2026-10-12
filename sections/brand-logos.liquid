@@ -1,18 +1,21 @@
 <section
-  class="section brand-logos color-{{ section.settings.color_scheme }}"
+  class="section brand-logos brand-logos--{{ section.settings.layout }} color-{{ section.settings.color_scheme }}"
   style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
 >
   <div class="page-width">
     {%- if section.settings.heading != blank -%}
-      <div class="section-header">
-        <div class="section-header__text"><h2 class="h3">{{ section.settings.heading }}</h2></div>
+      <div class="section-header{% if section.settings.layout == 'marquee' %} section-header--center{% endif %}">
+        <div class="section-header__text"><h2 class="{% if section.settings.layout == 'marquee' %}h2{% else %}h3{% endif %}">{{ section.settings.heading }}</h2></div>
       </div>
     {%- endif -%}
-    <ul class="brand-logos__list" role="list">
+    {%- if section.settings.layout == 'marquee' -%}<div class="brand-logos__viewport"><div class="brand-logos__track">{%- endif -%}
+    {%- for copy in (1..2) -%}
+    {%- if copy == 2 and section.settings.layout != 'marquee' -%}{%- break -%}{%- endif -%}
+    <ul class="brand-logos__list" role="list"{% if copy == 2 %} aria-hidden="true"{% endif %}>
       {%- for block in section.blocks -%}
         {%- assign brand_url = block.settings.name | url_for_vendor -%}
-        <li {{ block.shopify_attributes }}>
-          <a href="{{ block.settings.link | default: brand_url }}" class="brand-logos__item{% if block.settings.logo == blank %} brand-logos__item--text{% endif %}" aria-label="{{ block.settings.name | escape }}">
+        <li {% if copy == 1 %}{{ block.shopify_attributes }}{% endif %}>
+          <a href="{{ block.settings.link | default: brand_url }}"{% if copy == 2 %} tabindex="-1"{% endif %} class="brand-logos__item{% if block.settings.logo == blank %} brand-logos__item--text{% endif %}" aria-label="{{ block.settings.name | escape }}">
             {%- if block.settings.logo != blank -%}
               {{ block.settings.logo | image_url: width: 320 | image_tag: loading: 'lazy', alt: block.settings.name }}
             {%- else -%}
@@ -22,6 +25,8 @@
         </li>
       {%- endfor -%}
     </ul>
+    {%- endfor -%}
+    {%- if section.settings.layout == 'marquee' -%}</div></div>{%- endif -%}
   </div>
 </section>
 
@@ -93,6 +98,68 @@
     background: var(--color-fg);
     color: var(--color-bg);
   }
+
+  .brand-logos--marquee {
+    overflow: hidden;
+  }
+
+  .brand-logos__viewport {
+    margin-inline: calc(var(--page-gutter, 1rem) * -1);
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  .brand-logos__track {
+    display: flex;
+    width: max-content;
+    animation: brand-logos-scroll 45s linear infinite;
+  }
+
+  [dir='rtl'] .brand-logos__track {
+    animation-name: brand-logos-scroll-rtl;
+  }
+
+  .brand-logos__viewport:hover .brand-logos__track {
+    animation-play-state: paused;
+  }
+
+  .brand-logos--marquee .brand-logos__list {
+    display: flex;
+    gap: 1rem;
+    padding-inline-end: 1rem;
+    padding-block: 0.5rem;
+    overflow: visible;
+  }
+
+  .brand-logos--marquee .brand-logos__item {
+    width: 11rem;
+    filter: grayscale(1);
+    opacity: 0.75;
+    transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .brand-logos--marquee .brand-logos__item:hover {
+    filter: none;
+    opacity: 1;
+    transform: translateY(-4px) scale(1.04);
+  }
+
+  @keyframes brand-logos-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes brand-logos-scroll-rtl {
+    to {
+      transform: translateX(50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brand-logos__track {
+      animation: none;
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -101,6 +168,16 @@
   "max_blocks": 18,
   "settings": [
     { "type": "text", "id": "heading", "default": "Shop by brand", "label": "t:settings.heading" },
+    {
+      "type": "select",
+      "id": "layout",
+      "default": "grid",
+      "label": "t:settings.layout",
+      "options": [
+        { "value": "grid", "label": "t:pages.brands.layout_grid" },
+        { "value": "marquee", "label": "t:pages.brands.layout_marquee" }
+      ]
+    },
     { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
     { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40, "label": "t:settings.padding_top" },
     { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40, "label": "t:settings.padding_bottom" }

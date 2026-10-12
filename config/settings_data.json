@@ -6,8 +6,8 @@
           "background": "#FFFFFF",
           "text": "#0A0A0A",
           "surface": "#F4F4F5",
-          "accent": "#1E3AFF",
-          "accent_text": "#FFFFFF",
+          "accent": "#FEBD19",
+          "accent_text": "#0A0A0A",
           "button": "#0A0A0A",
           "button_text": "#FFFFFF"
         }
@@ -17,8 +17,8 @@
           "background": "#F4F4F5",
           "text": "#0A0A0A",
           "surface": "#FFFFFF",
-          "accent": "#1E3AFF",
-          "accent_text": "#FFFFFF",
+          "accent": "#FEBD19",
+          "accent_text": "#0A0A0A",
           "button": "#0A0A0A",
           "button_text": "#FFFFFF"
         }
@@ -28,30 +28,30 @@
           "background": "#0A0A0A",
           "text": "#FFFFFF",
           "surface": "#1A1A1D",
-          "accent": "#FFD60A",
+          "accent": "#FEBD19",
           "accent_text": "#0A0A0A",
-          "button": "#FFFFFF",
+          "button": "#FEBD19",
           "button_text": "#0A0A0A"
         }
       },
       "scheme-4": {
         "settings": {
-          "background": "#1E3AFF",
-          "text": "#FFFFFF",
-          "surface": "#3350FF",
-          "accent": "#FFD60A",
-          "accent_text": "#0A0A0A",
-          "button": "#FFFFFF",
-          "button_text": "#1E3AFF"
+          "background": "#FEBD19",
+          "text": "#0A0A0A",
+          "surface": "#FFD25E",
+          "accent": "#0A0A0A",
+          "accent_text": "#FEBD19",
+          "button": "#0A0A0A",
+          "button_text": "#FFFFFF"
         }
       },
       "scheme-5": {
         "settings": {
-          "background": "#FFD60A",
+          "background": "#FFF6DC",
           "text": "#0A0A0A",
-          "surface": "#F5C800",
-          "accent": "#0A0A0A",
-          "accent_text": "#FFFFFF",
+          "surface": "#FFFFFF",
+          "accent": "#FEBD19",
+          "accent_text": "#0A0A0A",
           "button": "#0A0A0A",
           "button_text": "#FFFFFF"
         }
@@ -61,7 +61,7 @@
           "background": "#E5202E",
           "text": "#FFFFFF",
           "surface": "#C81825",
-          "accent": "#FFD60A",
+          "accent": "#FEBD19",
           "accent_text": "#0A0A0A",
           "button": "#FFFFFF",
           "button_text": "#0A0A0A"
@@ -85,7 +85,7 @@
     "cart_color_scheme": "scheme-1",
     "whatsapp_number": "+20 102 830 5495",
     "sections": {},
-    "color_highlight": "#FFD60A",
+    "color_highlight": "#FEBD19",
     "color_highlight_text": "#0A0A0A",
     "card_image_style": "cutout",
     "favicon": "shopify://shop_images/baba-saleh-favicon.png",
@@ -100,8 +100,8 @@
             "background": "#FFFFFF",
             "text": "#0A0A0A",
             "surface": "#F4F4F5",
-            "accent": "#1E3AFF",
-            "accent_text": "#FFFFFF",
+            "accent": "#FEBD19",
+            "accent_text": "#0A0A0A",
             "button": "#0A0A0A",
             "button_text": "#FFFFFF"
           }
@@ -111,8 +111,8 @@
             "background": "#F4F4F5",
             "text": "#0A0A0A",
             "surface": "#FFFFFF",
-            "accent": "#1E3AFF",
-            "accent_text": "#FFFFFF",
+            "accent": "#FEBD19",
+            "accent_text": "#0A0A0A",
             "button": "#0A0A0A",
             "button_text": "#FFFFFF"
           }
@@ -122,30 +122,30 @@
             "background": "#0A0A0A",
             "text": "#FFFFFF",
             "surface": "#1A1A1D",
-            "accent": "#FFD60A",
+            "accent": "#FEBD19",
             "accent_text": "#0A0A0A",
-            "button": "#FFFFFF",
+            "button": "#FEBD19",
             "button_text": "#0A0A0A"
           }
         },
         "scheme-4": {
           "settings": {
-            "background": "#1E3AFF",
-            "text": "#FFFFFF",
-            "surface": "#3350FF",
-            "accent": "#FFD60A",
-            "accent_text": "#0A0A0A",
-            "button": "#FFFFFF",
-            "button_text": "#1E3AFF"
+            "background": "#FEBD19",
+            "text": "#0A0A0A",
+            "surface": "#FFD25E",
+            "accent": "#0A0A0A",
+            "accent_text": "#FEBD19",
+            "button": "#0A0A0A",
+            "button_text": "#FFFFFF"
           }
         },
         "scheme-5": {
           "settings": {
-            "background": "#FFD60A",
+            "background": "#FFF6DC",
             "text": "#0A0A0A",
-            "surface": "#F5C800",
-            "accent": "#0A0A0A",
-            "accent_text": "#FFFFFF",
+            "surface": "#FFFFFF",
+            "accent": "#FEBD19",
+            "accent_text": "#0A0A0A",
             "button": "#0A0A0A",
             "button_text": "#FFFFFF"
           }
@@ -155,7 +155,7 @@
             "background": "#E5202E",
             "text": "#FFFFFF",
             "surface": "#C81825",
-            "accent": "#FFD60A",
+            "accent": "#FEBD19",
             "accent_text": "#0A0A0A",
             "button": "#FFFFFF",
             "button_text": "#0A0A0A"
@@ -178,7 +178,7 @@
       "cart_show_note": true,
       "cart_color_scheme": "scheme-1",
       "whatsapp_number": "+20 102 830 5495",
-      "color_highlight": "#FFD60A",
+      "color_highlight": "#FEBD19",
       "color_highlight_text": "#0A0A0A",
       "card_image_style": "cutout",
       "gtm_id": "GTM-NXMWPWSV"

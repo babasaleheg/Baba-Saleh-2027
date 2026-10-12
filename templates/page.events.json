@@ -1,0 +1,185 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "style": "bold",
+        "color_scheme": "scheme-3",
+        "show_breadcrumb": true,
+        "eyebrow": "Events & custom printing",
+        "title": "Make your event *unforgettable*",
+        "title_size": "h1",
+        "subtitle": "<p>From inflatable gates and medals to printed banners and team apparel, our experienced team handles event production and custom printing so every detail matches your vision.</p>",
+        "button_label": "Plan your event on WhatsApp",
+        "button_link": "https://wa.me/201028305495",
+        "button_label_2": "See our services",
+        "button_link_2": "#services",
+        "ribbon": "Inflatable gates, Medals & trophies, Printed banners, Custom team apparel, Custom graphics, Sports days"
+      }
+    },
+    "services": {
+      "type": "value-cards",
+      "settings": {
+        "eyebrow": "What we do",
+        "heading": "Event services",
+        "center_header": true,
+        "columns_desktop": 4,
+        "padding_top": 80,
+        "padding_bottom": 56,
+        "anchor": "services"
+      },
+      "blocks": {
+        "a": {
+          "type": "card",
+          "settings": {
+            "icon": "star",
+            "title": "Inflatable gates",
+            "text": "<p>Eye-catching start and finish gates. We handle the details so you can enjoy the event.</p>"
+          }
+        },
+        "b": {
+          "type": "card",
+          "settings": {
+            "icon": "trophy",
+            "title": "Medals",
+            "text": "<p>Creative designs that turn your medals into a memorable piece of art.</p>",
+            "link": "shopify://collections/all"
+          }
+        },
+        "c": {
+          "type": "card",
+          "settings": {
+            "icon": "printer",
+            "title": "Print services",
+            "text": "<p>Quality printed materials that make your event's message shine.</p>"
+          }
+        },
+        "d": {
+          "type": "card",
+          "settings": {
+            "icon": "bolt",
+            "title": "Custom graphics",
+            "text": "<p>Tailored graphics that bring your vision to life and lift your brand.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    "steps": {
+      "type": "value-cards",
+      "settings": {
+        "eyebrow": "Our process",
+        "heading": "From idea to event day",
+        "style": "steps",
+        "center_header": true,
+        "columns_desktop": 4,
+        "color_scheme": "scheme-3",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "s1": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Tell us your idea",
+            "text": "<p>Share the date, the number of people and what you need.</p>"
+          }
+        },
+        "s2": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Design",
+            "text": "<p>Our team prepares designs and a quote for your approval.</p>"
+          }
+        },
+        "s3": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Production",
+            "text": "<p>We print and produce everything with top-notch quality.</p>"
+          }
+        },
+        "s4": {
+          "type": "card",
+          "settings": {
+            "icon": "none",
+            "title": "Event day",
+            "text": "<p>We deliver and set up on time, so you can focus on the fun.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ]
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "eyebrow": "Client stories",
+        "heading": "What our clients say",
+        "color_scheme": "scheme-2"
+      },
+      "blocks": {
+        "t1": {
+          "type": "quote",
+          "settings": {
+            "quote": "Baba Saleh Sports transformed our event! Their printed materials were top-quality, and their attention to detail was remarkable.",
+            "author": "Event client",
+            "role": "Event production"
+          }
+        },
+        "t2": {
+          "type": "quote",
+          "settings": {
+            "quote": "The custom apparel we ordered was a hit! The colors were vibrant and the fit was spot on. Highly recommend Baba Saleh Sports for any team needs!",
+            "author": "Team client",
+            "role": "Custom team apparel"
+          }
+        },
+        "t3": {
+          "type": "quote",
+          "settings": {
+            "quote": "Working with Baba Saleh Sports was seamless. They helped us visualize our event, and we couldn't be more pleased with the results!",
+            "author": "Corporate client",
+            "role": "Event production"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ]
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "eyebrow": "Planning an event?",
+        "heading": "Let's make it happen",
+        "text": "<p>Tell us about your event and get a quote from our team.</p>",
+        "button_label": "Get a quote on WhatsApp",
+        "button_link": "https://wa.me/201028305495",
+        "button_label_2": "",
+        "button_2_whatsapp": false
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "services",
+    "steps",
+    "testimonials",
+    "cta"
+  ]
+}

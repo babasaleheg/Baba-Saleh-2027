@@ -15,7 +15,7 @@
   table, td { mso-table-lspace:0pt; mso-table-rspace:0pt; border-collapse:collapse; }
   img { border:0; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
   body { margin:0 !important; padding:0 !important; width:100% !important; background:#F4F4F5; font-family:'Cairo', Tahoma, Arial, sans-serif; }
-  a { color:#1E3AFF; }
+  a { color:#0A0A0A; }
   .t-link:hover { text-decoration:underline !important; }
   @media only screen and (max-width:620px) {
     .container { width:100% !important; }
@@ -31,12 +31,12 @@
     .surface { background:#27272A !important; }
     .t-ink { color:#F4F4F5 !important; }
     .t-muted { color:#A1A1AA !important; }
-    .t-link { color:#9DABFF !important; }
+    .t-link { color:#FEBD19 !important; }
     .line { border-color:#3F3F46 !important; }
   }
   [data-ogsc] .t-ink { color:#F4F4F5 !important; }
   [data-ogsc] .t-muted { color:#A1A1AA !important; }
-  [data-ogsc] .t-link { color:#9DABFF !important; }
+  [data-ogsc] .t-link { color:#FEBD19 !important; }
   [data-ogsb] .card { background:#18181B !important; }
   [data-ogsb] .surface { background:#27272A !important; }
 </style>
@@ -66,7 +66,7 @@
 <p class="t-ink" style="margin:0 0 14px;font-family:'Cairo', Tahoma, Arial, sans-serif;font-size:15px;line-height:1.65;color:#0A0A0A;">{% if customer.first_name != blank %}أهلاً {{ customer.first_name }}،{% else %}أهلاً بك،{% endif %}</p>
 <p class="t-ink" style="margin:0 0 14px;font-family:'Cairo', Tahoma, Arial, sans-serif;font-size:15px;line-height:1.65;color:#0A0A0A;">طلبك رقم <strong dir="ltr">{{ name }}</strong> جاهز. أحضر هذه الرسالة أو رقم الطلب عند الاستلام.</p>
 {% assign bs_loc = location | default: pickup_location %}{% if bs_loc %}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0;">
-  <tr><td class="surface" bgcolor="#F4F4F5" style="background:#F4F4F5;border-right:4px solid #1E3AFF;border-radius:10px;padding:16px 18px;font-family:'Cairo', Tahoma, Arial, sans-serif;font-size:14px;line-height:1.6;color:#0A0A0A;" align="right">
+  <tr><td class="surface" bgcolor="#F4F4F5" style="background:#F4F4F5;border-right:4px solid #FEBD19;border-radius:10px;padding:16px 18px;font-family:'Cairo', Tahoma, Arial, sans-serif;font-size:14px;line-height:1.6;color:#0A0A0A;" align="right">
 <strong>{{ bs_loc.name }}</strong><br>{{ bs_loc.address1 }}{% if bs_loc.address2 != blank %}, {{ bs_loc.address2 }}{% endif %}<br>{{ bs_loc.city }}
   </td></tr>
 </table>
@@ -78,8 +78,8 @@
 </table>
 {% endunless %}
 {% if order_status_url != blank %}<table role="presentation" cellpadding="0" cellspacing="0" border="0" class="btn" style="margin:22px 0 8px;">
-  <tr><td align="center" bgcolor="#1E3AFF" style="border-radius:10px;background:#1E3AFF;">
-    <a href="{{ order_status_url }}" target="_blank" style="display:inline-block;padding:14px 30px;font-family:'Cairo', Tahoma, Arial, sans-serif;font-size:16px;font-weight:700;line-height:1.2;color:#FFFFFF;text-decoration:none;border-radius:10px;">تابع حالة طلبك</a>
+  <tr><td align="center" bgcolor="#FEBD19" style="border-radius:10px;background:#FEBD19;">
+    <a href="{{ order_status_url }}" target="_blank" style="display:inline-block;padding:14px 30px;font-family:'Cairo', Tahoma, Arial, sans-serif;font-size:16px;font-weight:700;line-height:1.2;color:#0A0A0A;text-decoration:none;border-radius:10px;">تابع حالة طلبك</a>
   </td></tr>
 </table>
 {% endif %}
@@ -105,8 +105,8 @@
     <tr><td class="surface" bgcolor="#F4F4F5" style="background:#F4F4F5;border-radius:12px;padding:18px;font-family:'Cairo', Tahoma, Arial, sans-serif;font-size:14px;line-height:1.6;color:#0A0A0A;" align="right">
       <strong class="t-ink" style="color:#0A0A0A;">تحتاج مساعدة؟</strong><br>
       <span class="t-muted" style="color:#6B7280;">فريقنا يرد بشكل أسرع على واتساب.</span><br>
-      <a class="t-link" href="https://wa.me/201028305495" style="color:#1E3AFF;font-weight:700;text-decoration:none;">واتساب <span dir="ltr">+20 102 830 5495</span></a>
-      &nbsp;·&nbsp; <a class="t-link" href="mailto:support@babasaleh.com" style="color:#1E3AFF;text-decoration:none;">support@babasaleh.com</a>
+      <a class="t-link" href="https://wa.me/201028305495" style="color:#0A0A0A;font-weight:700;text-decoration:none;">واتساب <span dir="ltr">+20 102 830 5495</span></a>
+      &nbsp;·&nbsp; <a class="t-link" href="mailto:support@babasaleh.com" style="color:#0A0A0A;text-decoration:none;">support@babasaleh.com</a>
     </td></tr>
   </table>
 </td></tr>

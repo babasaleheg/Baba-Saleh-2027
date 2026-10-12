@@ -14,7 +14,8 @@ OUT = Path(__file__).resolve().parent
 # --------------------------------------------------------------------------
 # Brand
 # --------------------------------------------------------------------------
-INK, BLUE, YELLOW, RED = "#0A0A0A", "#1E3AFF", "#FEBD19", "#E5242B"
+INK, YELLOW, RED = "#0A0A0A", "#FEBD19", "#E5242B"
+BLUE = INK  # links: brand black (no blue in emails)
 SURFACE, MUTED, LINE, WHITE = "#F4F4F5", "#6B7280", "#E4E4E7", "#FFFFFF"
 LOGO = "https://babasaleh.myshopify.com/cdn/shop/files/baba-saleh-logo-desktop.png"
 SITE = "https://babasaleh.com"
@@ -78,7 +79,7 @@ def greeting(var="customer.first_name"):
                f"{{% if {var} != blank %}}أهلاً {{{{ {var} }}}}،{{% else %}}أهلاً بك،{{% endif %}}"))
 
 
-def button(href, label, bg=BLUE, fg=WHITE):
+def button(href, label, bg=YELLOW, fg=INK):
     return f"""<table role="presentation" cellpadding="0" cellspacing="0" border="0" class="btn" style="margin:22px 0 8px;">
   <tr><td align="center" bgcolor="{bg}" style="border-radius:10px;background:{bg};">
     <a href="{href}" target="_blank" style="display:inline-block;padding:14px 30px;font-family:{ff()};font-size:16px;font-weight:700;line-height:1.2;color:{fg};text-decoration:none;border-radius:10px;">{label}</a>
@@ -323,12 +324,12 @@ def shell(title, preheader, bodies, trust, store, wa_label, staff):
     .surface {{ background:#27272A !important; }}
     .t-ink {{ color:#F4F4F5 !important; }}
     .t-muted {{ color:#A1A1AA !important; }}
-    .t-link {{ color:#9DABFF !important; }}
+    .t-link {{ color:#FEBD19 !important; }}
     .line {{ border-color:#3F3F46 !important; }}
   }}
   [data-ogsc] .t-ink {{ color:#F4F4F5 !important; }}
   [data-ogsc] .t-muted {{ color:#A1A1AA !important; }}
-  [data-ogsc] .t-link {{ color:#9DABFF !important; }}
+  [data-ogsc] .t-link {{ color:#FEBD19 !important; }}
   [data-ogsb] .card {{ background:#18181B !important; }}
   [data-ogsb] .surface {{ background:#27272A !important; }}
 </style>
@@ -510,7 +511,7 @@ def delivered():
 def ready_for_local_pickup():
     loc = ("{% assign bs_loc = location | default: pickup_location %}{% if bs_loc %}"
            + box(f'<strong>{{{{ bs_loc.name }}}}</strong><br>{{{{ bs_loc.address1 }}}}{{% if bs_loc.address2 != blank %}}, {{{{ bs_loc.address2 }}}}{{% endif %}}<br>{{{{ bs_loc.city }}}}',
-                 border=BLUE) + "{% endif %}")
+                 border=YELLOW) + "{% endif %}")
     return (t("Order {{ name }} is ready for pickup", "طلبك {{ name }} جاهز للاستلام"),
             t("Your order is ready to collect.", "طلبك جاهز للاستلام من الفرع."),
             h1(t("Your order is ready for pickup", "طلبك جاهز للاستلام")) + greeting()
@@ -549,7 +550,7 @@ def return_request_approved():
                     "3. Once we receive and check the items, we'll issue your refund or exchange.",
                     "<strong>الخطوات التالية</strong><br>1. غلّف المنتجات دون استخدام وبالبطاقات والتغليف الأصلي.<br>"
                     "2. سيتواصل معك مندوبنا لاستلامها، أو اتبع تعليمات الاسترجاع المرفقة بهذه الرسالة.<br>"
-                    "3. بعد استلام المنتجات وفحصها سنقوم برد المبلغ أو الاستبدال."), border=BLUE)
+                    "3. بعد استلام المنتجات وفحصها سنقوم برد المبلغ أو الاستبدال."), border=YELLOW)
             + status_button())
 
 
@@ -583,7 +584,7 @@ def abandoned_checkout():
             + p(t("Stock is limited and items aren't reserved until you order.", "الكميات محدودة ولا يتم حجز المنتجات إلا بعد إتمام الطلب."), muted=True, size=13)
             + h2(t("Your cart", "سلتك")) + line_items("line_items", "checkout")
             + kv_rows([(t("Subtotal", "المجموع الفرعي"), money("subtotal_price"), None)])
-            + button("{{ url }}", t("Return to checkout", "العودة لإتمام الطلب"), bg=YELLOW, fg=INK))
+            + button("{{ url }}", t("Return to checkout", "العودة لإتمام الطلب"), bg=INK, fg=WHITE))
 
 
 def customer_account_invite():
@@ -653,7 +654,7 @@ def gift_card_created():
                   "أدخل هذا الكود عند إتمام الطلب، ويُحفظ الرصيد المتبقي إذا لم تستخدمه بالكامل."))
             + "{% if gift_card.expires_on %}" + p(t("Expires on ", "تنتهي صلاحيتها في ") + '<span dir="ltr">{{ gift_card.expires_on | date: "%d/%m/%Y" }}</span>.', muted=True, size=13) + "{% endif %}"
             + "{% if gift_card.url != blank %}" + button("{{ gift_card.url }}", t("View gift card", "عرض بطاقة الهدايا")) + "{% endif %}"
-            + button(SITE, t("Start shopping", "ابدأ التسوق"), bg=YELLOW, fg=INK))
+            + button(SITE, t("Start shopping", "ابدأ التسوق"), bg=INK, fg=WHITE))
 
 
 # ---- Staff ----

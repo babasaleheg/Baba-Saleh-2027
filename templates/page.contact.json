@@ -4,9 +4,16 @@
       "type": "page-hero",
       "settings": {
         "show_breadcrumb": true,
-        "eyebrow": "We're here to help",
-        "title": "Contact us",
-        "subtitle": "<p>Questions about an order, a size or a product? Message us on WhatsApp for the fastest reply, or send us a message below.</p>"
+        "eyebrow": "Replies in minutes on WhatsApp",
+        "title": "We're here to *help*",
+        "subtitle": "<p>Questions about an order, a size or a product? Message us on WhatsApp for the fastest reply, call us, or send a message below.</p>",
+        "style": "bold",
+        "color_scheme": "scheme-3",
+        "button_label": "Chat on WhatsApp",
+        "button_link": "https://wa.me/201028305495",
+        "button_label_2": "Find a branch",
+        "button_link_2": "#branches",
+        "ribbon": "WhatsApp support, 4 branches, Delivery to all of Egypt, Cash on delivery, 7-day returns"
       }
     },
     "main": {
@@ -68,7 +75,7 @@
       ],
       "settings": {
         "heading": "Before you ask",
-        "show_search": false,
+        "show_search": true,
         "structured_data": true
       }
     },
@@ -82,7 +89,8 @@
             "area": "Giza",
             "address": "5 Cairo University Street, Giza",
             "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Cairo+University+Street+Giza",
-            "whatsapp": "+20 102 830 5495"
+            "whatsapp": "+20 102 830 5495",
+            "image": "shopify://shop_images/bs-branch-giza.png"
           }
         },
         "maadi": {
@@ -92,7 +100,8 @@
             "area": "Cairo",
             "address": "Darna Towers, 27, Maadi, Cairo",
             "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Darna+Towers+Maadi",
-            "whatsapp": "+20 102 830 5495"
+            "whatsapp": "+20 102 830 5495",
+            "image": "shopify://shop_images/bs-branch-maadi.png"
           }
         },
         "october": {
@@ -102,7 +111,8 @@
             "area": "Giza",
             "address": "La Cite Mall, 6th of October City",
             "map_url": "https://maps.google.com/?q=La+Cite+Mall+6th+of+October",
-            "whatsapp": "+20 102 830 5495"
+            "whatsapp": "+20 102 830 5495",
+            "image": "shopify://shop_images/bs-branch-october.png"
           }
         },
         "imbaba": {
@@ -112,7 +122,8 @@
             "area": "Giza",
             "address": "Block 32, 2 Talaat Harb Street, Imbaba",
             "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Imbaba",
-            "whatsapp": "+20 102 830 5495"
+            "whatsapp": "+20 102 830 5495",
+            "image": "shopify://shop_images/bs-branch-imbaba.png"
           }
         }
       },
@@ -126,7 +137,20 @@
         "eyebrow": "Since 1971",
         "heading": "Or visit a branch",
         "text": "<p>Try sizes, get expert advice and pick up your order in person.</p>",
-        "structured_data": true
+        "structured_data": true,
+        "show_map": true
+      }
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "eyebrow": "Still need help?",
+        "heading": "Talk to a real person",
+        "text": "<p>Our team replies fastest on WhatsApp, Saturday to Thursday, 10 am – 10 pm.</p>",
+        "button_label": "Shop now",
+        "button_link": "shopify://collections/all",
+        "button_label_2": "Chat on WhatsApp",
+        "button_2_whatsapp": true
       }
     }
   },
@@ -134,6 +158,7 @@
     "hero",
     "main",
     "faq",
-    "branches"
+    "branches",
+    "cta"
   ]
 }

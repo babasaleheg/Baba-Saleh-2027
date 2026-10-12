@@ -6,7 +6,11 @@
         "show_breadcrumb": true,
         "eyebrow": "",
         "title": "",
-        "subtitle": ""
+        "subtitle": "",
+        "style": "minimal",
+        "color_scheme": "scheme-5",
+        "padding_top": 56,
+        "padding_bottom": 48
       }
     },
     "content": {

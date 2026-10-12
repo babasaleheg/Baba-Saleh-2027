@@ -2,6 +2,7 @@
   Icon cards for values, perks, key policy facts or numbered steps.
 {%- endcomment -%}
 <section
+  {% if section.settings.anchor != blank %}id="{{ section.settings.anchor | handleize }}"{% endif %}
   class="section value-cards value-cards--{{ section.settings.style }} color-{{ section.settings.color_scheme }}"
   style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px; --vc-columns: {{ section.settings.columns_desktop }};"
 >
@@ -17,7 +18,7 @@
     {%- endif -%}
     <ol class="value-cards__grid" role="list">
       {%- for block in section.blocks -%}
-        <li class="value-card" data-reveal style="--reveal-index: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+        <li class="value-card" data-spotlight data-reveal style="--reveal-index: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
           {%- if section.settings.style == 'steps' -%}
             <span class="value-card__icon value-card__number" aria-hidden="true">{{ forloop.index }}</span>
           {%- elsif block.settings.icon != 'none' -%}
@@ -42,14 +43,13 @@
 {% stylesheet %}
   .value-cards__grid {
     display: grid;
-    gap: 0.75rem;
+    gap: 1rem;
     margin: 0;
   }
 
   @media screen and (min-width: 600px) {
     .value-cards__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
     }
   }
 
@@ -61,57 +61,117 @@
   }
 
   .value-card {
+    --mx: 50%;
+    --my: 0%;
     position: relative;
     display: grid;
     align-content: start;
-    gap: 0.75rem;
-    padding: 1.5rem;
-    border-radius: var(--radius);
+    gap: 0.875rem;
+    padding: 2rem 1.75rem;
+    border-radius: 1.5rem;
     background: var(--color-surface);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: 1px solid rgba(var(--color-fg-rgb), 0.08);
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+  }
+
+  .value-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(22rem circle at var(--mx) var(--my), rgba(254, 189, 25, 0.28), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .value-card::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    height: 4px;
+    background: #febd19;
+    transform: scaleX(0);
+    transform-origin: inline-start;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   @media (hover: hover) {
     .value-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 18px 40px -24px rgba(var(--color-fg-rgb), 0.45);
+      transform: translateY(-8px);
+      border-color: rgba(254, 189, 25, 0.6);
+      box-shadow: 0 30px 50px -30px rgba(0, 0, 0, 0.45);
+    }
+
+    .value-card:hover::before {
+      opacity: 1;
+    }
+
+    .value-card:hover::after {
+      transform: scaleX(1);
     }
   }
 
   .value-cards--outline .value-card {
     background: transparent;
-    border: 1px solid var(--color-border);
   }
 
   .value-card__icon {
     display: grid;
     place-items: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    background: var(--color-accent);
-    color: var(--color-accent-text);
-    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1.125rem;
+    background: #0a0a0a;
+    color: #febd19;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .color-scheme-3 .value-card__icon {
+    background: #febd19;
+    color: #0a0a0a;
   }
 
   .value-card:hover .value-card__icon {
-    transform: rotate(-8deg) scale(1.06);
+    transform: rotate(-10deg) scale(1.1);
+    background: #febd19;
+    color: #0a0a0a;
   }
 
   .value-card__icon .icon {
-    width: 1.375rem;
-    height: 1.375rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .value-cards--steps .value-card__icon {
+    width: auto;
+    height: auto;
+    background: none;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--color-fg);
+    font-size: 3.5rem;
+    line-height: 1;
+    justify-items: start;
+  }
+
+  .value-cards--steps .value-card:hover .value-card__icon {
+    background: none;
+    color: #febd19;
+    -webkit-text-stroke-color: #febd19;
+    transform: none;
   }
 
   .value-card__number {
     font-family: var(--font-heading-family);
-    font-weight: var(--heading-weight);
+    font-weight: 800;
     font-size: 1.25rem;
   }
 
   .value-card__title {
     font-family: var(--font-heading-family);
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     line-height: 1.25;
   }
 
@@ -150,6 +210,7 @@
     { "type": "text", "id": "heading", "default": "What we stand for", "label": "t:settings.heading" },
     { "type": "richtext", "id": "text", "label": "t:settings.text" },
     { "type": "checkbox", "id": "center_header", "default": false, "label": "t:pages.value_cards.center_header" },
+    { "type": "text", "id": "anchor", "label": "t:pages.value_cards.anchor", "info": "t:pages.value_cards.anchor_info" },
     {
       "type": "select",
       "id": "style",

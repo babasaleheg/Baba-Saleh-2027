@@ -32,15 +32,16 @@
           assign wa = block.settings.whatsapp | default: store_whatsapp | remove: '+' | remove: ' ' | remove: '-'
           assign heading_id = 'Branch-' | append: block.id
         -%}
-        <li class="branch-card" data-reveal style="--reveal-index: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+        <li class="branch-card" data-spotlight data-reveal style="--reveal-index: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
           <article aria-labelledby="{{ heading_id }}">
             {%- if block.settings.image != blank -%}
               <div class="media branch-card__media">
                 {{
                   block.settings.image
                   | image_url: width: 800
-                  | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 33vw, (min-width: 600px) 50vw, 100vw', widths: '400, 600, 800', alt: block.settings.image.alt
+                  | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, (min-width: 600px) 50vw, 100vw', widths: '400, 600, 800', alt: block.settings.image.alt
                 }}
+                <span class="branch-card__index" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
               </div>
             {%- endif -%}
             <div class="branch-card__body">
@@ -100,6 +101,36 @@
         </li>
       {%- endfor -%}
     </ul>
+    {%- if section.settings.show_map and section.blocks.size > 0 -%}
+      <branch-map class="branches__map" data-reveal>
+        <div class="branches__map-tabs" role="group" aria-label="{{ 'pages.branches.map_label' | t }}">
+          {%- for block in section.blocks -%}
+            {%- assign q = 'Baba Saleh Sports ' | append: block.settings.address | default: block.settings.name | url_encode -%}
+            <button
+              type="button"
+              class="branches__map-tab"
+              aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+              data-map-src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed&hl={{ request.locale.iso_code }}"
+              data-map-title="{{ 'pages.branches.map_title' | t: branch: block.settings.name | escape }}"
+            >
+              {%- render 'icon', icon: 'pin' -%}
+              {{ block.settings.name }}
+            </button>
+          {%- endfor -%}
+        </div>
+        {%- assign first_branch = section.blocks.first -%}
+        {%- assign q = 'Baba Saleh Sports ' | append: first_branch.settings.address | url_encode -%}
+        <div class="branches__map-frame">
+          <iframe
+            data-src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed&hl={{ request.locale.iso_code }}"
+            title="{{ 'pages.branches.map_title' | t: branch: first_branch.settings.name | escape }}"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </branch-map>
+    {%- endif -%}
   </div>
 </section>
 
@@ -259,6 +290,139 @@
     --btn-fg: #fff;
     border-color: #25d366;
   }
+
+  /* Photo cards, interactive map */
+  .branch-card > article {
+    border-radius: 1.5rem;
+    border-color: rgba(var(--color-fg-rgb), 0.08);
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.45s ease, border-color 0.45s ease;
+  }
+
+  @media (hover: hover) {
+    .branch-card > article:hover {
+      transform: translateY(-8px);
+      border-color: rgba(254, 189, 25, 0.7);
+      box-shadow: 0 30px 50px -30px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .branch-card__media {
+    position: relative;
+    aspect-ratio: 4 / 3.4;
+    overflow: hidden;
+  }
+
+  .branch-card__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent 55%);
+  }
+
+  .branch-card__media img {
+    transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .branch-card > article:hover .branch-card__media img {
+    transform: scale(1.08);
+  }
+
+  .branch-card__index {
+    position: absolute;
+    z-index: 1;
+    inset-block-end: 0.75rem;
+    inset-inline-start: 1rem;
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: 2.75rem;
+    line-height: 1;
+    color: #febd19;
+  }
+
+  .branch-card__tag {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 0.875rem;
+    inset-inline-end: 0.875rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: #fff;
+    color: #0a0a0a;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .branch-card__pin {
+    background: #0a0a0a;
+    color: #febd19;
+  }
+
+  .branches__map {
+    display: grid;
+    gap: 1rem;
+    margin-block-start: 2.5rem;
+  }
+
+  .branches__map-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .branches__map-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.625rem 1.125rem;
+    border-radius: 999px;
+    border: 1.5px solid rgba(var(--color-fg-rgb), 0.15);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .branches__map-tab .icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .branches__map-tab:hover {
+    transform: translateY(-2px);
+    border-color: #febd19;
+  }
+
+  .branches__map-tab[aria-pressed='true'] {
+    background: #febd19;
+    border-color: #febd19;
+    color: #0a0a0a;
+  }
+
+  .branches__map-frame {
+    position: relative;
+    width: 100%;
+    height: clamp(20rem, 40vw, 30rem);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    background: var(--color-surface);
+    box-shadow: 0 0 0 4px #febd19;
+  }
+
+  .branches__map-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .branches__map-frame iframe.is-loading {
+    opacity: 0.4;
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -270,6 +434,7 @@
     { "type": "text", "id": "heading", "default": "Our branches", "label": "t:settings.heading" },
     { "type": "richtext", "id": "text", "label": "t:settings.text" },
     { "type": "checkbox", "id": "structured_data", "default": true, "label": "t:pages.branches.structured_data" },
+    { "type": "checkbox", "id": "show_map", "default": true, "label": "t:pages.branches.show_map" },
     { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
     { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
     { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_bottom" }

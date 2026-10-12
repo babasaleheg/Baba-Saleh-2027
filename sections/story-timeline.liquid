@@ -1,29 +1,45 @@
 {%- comment -%}
-  Story / timeline: milestones on a line that fills as you scroll (<scroll-progress> in theme.js).
+  Story / timeline: milestone cards alternating along a line that fills as you scroll
+  (<scroll-progress> in theme.js). Each milestone can have an image.
 {%- endcomment -%}
 <section
   class="section timeline color-{{ section.settings.color_scheme }}"
   style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
 >
-  <div class="page-width timeline__inner">
+  <div class="page-width">
     {%- if section.settings.heading != blank or section.settings.eyebrow != blank or section.settings.text != blank -%}
-      <div class="timeline__intro">
-        {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
-        {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
-        {%- if section.settings.text != blank -%}<div class="rte text-muted">{{ section.settings.text }}</div>{%- endif -%}
+      <div class="section-header section-header--center timeline__intro" data-reveal>
+        <div class="section-header__text">
+          {%- if section.settings.eyebrow != blank -%}<span class="eyebrow timeline__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+          {%- if section.settings.heading != blank -%}<h2 class="h1">{{ section.settings.heading }}</h2>{%- endif -%}
+          {%- if section.settings.text != blank -%}<div class="rte text-muted">{{ section.settings.text }}</div>{%- endif -%}
+        </div>
       </div>
     {%- endif -%}
     <scroll-progress class="timeline__track">
       <span class="timeline__line" aria-hidden="true"><span class="timeline__fill"></span></span>
       <ol class="timeline__list" role="list">
         {%- for block in section.blocks -%}
-          <li class="timeline__item" data-reveal {{ block.shopify_attributes }}>
+          <li class="timeline__item{% cycle '', ' timeline__item--alt' %}" data-reveal {{ block.shopify_attributes }}>
             <span class="timeline__dot" aria-hidden="true"></span>
-            <p class="timeline__label">{{ block.settings.label }}</p>
-            <h3 class="h3 timeline__title">{{ block.settings.title }}</h3>
-            {%- if block.settings.text != blank -%}
-              <div class="rte text-muted timeline__text">{{ block.settings.text }}</div>
-            {%- endif -%}
+            <div class="timeline__card">
+              {%- if block.settings.image != blank -%}
+                <div class="timeline__media">
+                  {{
+                    block.settings.image
+                    | image_url: width: 900
+                    | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 40vw, 90vw', widths: '400, 600, 900', alt: block.settings.image.alt
+                  }}
+                </div>
+              {%- endif -%}
+              <div class="timeline__body">
+                <p class="timeline__label">{{ block.settings.label }}</p>
+                <h3 class="h3 timeline__title">{{ block.settings.title }}</h3>
+                {%- if block.settings.text != blank -%}
+                  <div class="rte text-muted timeline__text">{{ block.settings.text }}</div>
+                {%- endif -%}
+              </div>
+            </div>
           </li>
         {%- endfor -%}
       </ol>
@@ -36,22 +52,27 @@
     display: block;
   }
 
-  .timeline__inner {
-    display: grid;
-    gap: 2.5rem;
+  .timeline {
+    overflow: hidden;
   }
 
   .timeline__intro {
-    display: grid;
-    gap: 0.75rem;
-    align-content: start;
-    max-width: 36rem;
+    margin-block-end: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .timeline__eyebrow {
+    display: inline-flex;
+    padding: 0.375rem 0.875rem;
+    border-radius: 999px;
+    background: #febd19;
+    color: #0a0a0a;
   }
 
   .timeline__track {
     --progress: 1;
+    --line-x: 1rem;
     position: relative;
-    padding-inline-start: 2rem;
+    padding-inline-start: 3rem;
   }
 
   .js .timeline__track {
@@ -60,72 +81,163 @@
 
   .timeline__line {
     position: absolute;
-    inset-block: 0.5rem;
-    inset-inline-start: 0.4375rem;
-    width: 2px;
-    border-radius: 2px;
-    background: var(--color-border);
-    overflow: hidden;
+    inset-block: 0;
+    inset-inline-start: var(--line-x);
+    width: 4px;
+    margin-inline-start: -2px;
+    border-radius: 4px;
+    background: rgba(var(--color-fg-rgb), 0.1);
   }
 
   .timeline__fill {
     position: absolute;
     inset: 0;
-    background: var(--color-accent);
+    border-radius: inherit;
+    background: linear-gradient(#febd19, #f59e0b);
     transform-origin: top;
     transform: scaleY(var(--progress));
+    box-shadow: 0 0 18px rgba(254, 189, 25, 0.6);
   }
 
   .timeline__list {
     display: grid;
-    gap: 2.25rem;
+    gap: 2rem;
     margin: 0;
   }
 
   .timeline__item {
     position: relative;
-    display: grid;
-    gap: 0.375rem;
   }
 
   .timeline__dot {
     position: absolute;
-    inset-inline-start: -2rem;
-    inset-block-start: 0.25rem;
-    width: 1rem;
-    height: 1rem;
+    inset-inline-start: calc(var(--line-x) - 3rem);
+    inset-block-start: 1.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-inline-start: -0.75rem;
     border-radius: 50%;
-    border: 2px solid var(--color-accent);
-    background: var(--color-bg);
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: 4px solid var(--color-bg);
+    background: rgba(var(--color-fg-rgb), 0.2);
+    box-shadow: 0 0 0 2px rgba(var(--color-fg-rgb), 0.1);
+    transition: background-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
   }
 
   .timeline__item.is-revealed .timeline__dot {
-    background: var(--color-accent);
-    transform: scale(1.1);
+    background: #febd19;
+    transform: scale(1.15);
+    box-shadow: 0 0 0 6px rgba(254, 189, 25, 0.25);
+  }
+
+  .timeline__card {
+    border-radius: 1.5rem;
+    background: var(--color-surface);
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+  }
+
+  .timeline__card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 50px -30px rgba(0, 0, 0, 0.5);
+  }
+
+  .timeline__media {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  .timeline__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .timeline__card:hover .timeline__media img {
+    transform: scale(1.06);
+  }
+
+  .timeline__body {
+    position: relative;
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.5rem 1.5rem 1.75rem;
   }
 
   .timeline__label {
     font-family: var(--font-heading-family);
-    font-weight: var(--heading-weight);
-    font-size: 0.9375rem;
-    color: var(--color-accent);
-    letter-spacing: 0.04em;
+    font-weight: 800;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--color-fg);
+    transition: color 0.4s ease;
+  }
+
+  .timeline__card:hover .timeline__label {
+    color: #febd19;
+    -webkit-text-stroke-color: #febd19;
   }
 
   .timeline__title {
-    font-size: clamp(1.125rem, 2vw, 1.375rem);
+    font-size: clamp(1.25rem, 2.2vw, 1.625rem);
   }
 
   @media screen and (min-width: 990px) {
-    .timeline__inner {
-      grid-template-columns: 0.8fr 1.2fr;
-      gap: 5rem;
+    .timeline__track {
+      --line-x: 50%;
+      padding-inline-start: 0;
     }
 
-    .timeline__intro {
-      position: sticky;
-      top: calc(var(--header-offset, 0px) + 2rem);
+    .timeline__list {
+      gap: 0;
+    }
+
+    .timeline__item {
+      width: 50%;
+      padding-inline-end: 3.5rem;
+    }
+
+    .timeline__item + .timeline__item {
+      margin-block-start: -4rem;
+    }
+
+    .timeline__item--alt {
+      margin-inline-start: 50%;
+      padding-inline: 3.5rem 0;
+    }
+
+    .timeline__dot {
+      inset-inline-start: auto;
+      inset-inline-end: 0;
+      margin-inline: 0 -0.75rem;
+    }
+
+    .timeline__item--alt .timeline__dot {
+      inset-inline: 0 auto;
+      margin-inline: -0.75rem 0;
+    }
+
+    .has-animations .timeline__item[data-reveal] {
+      transform: translateX(-40px);
+    }
+
+    .has-animations .timeline__item--alt[data-reveal] {
+      transform: translateX(40px);
+    }
+
+    [dir='rtl'] .has-animations .timeline__item[data-reveal] {
+      transform: translateX(40px);
+    }
+
+    [dir='rtl'] .has-animations .timeline__item--alt[data-reveal] {
+      transform: translateX(-40px);
+    }
+
+    .has-animations .timeline__item[data-reveal].is-revealed {
+      transform: none;
+      transition-duration: 0.8s;
     }
   }
 {% endstylesheet %}
@@ -139,8 +251,8 @@
     { "type": "text", "id": "heading", "default": "Our story", "label": "t:settings.heading" },
     { "type": "richtext", "id": "text", "label": "t:settings.text" },
     { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
-    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_top" },
-    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64, "label": "t:settings.padding_bottom" }
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 80, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 80, "label": "t:settings.padding_bottom" }
   ],
   "blocks": [
     {
@@ -149,7 +261,8 @@
       "settings": [
         { "type": "text", "id": "label", "default": "1971", "label": "t:pages.timeline.label" },
         { "type": "text", "id": "title", "default": "Milestone", "label": "t:settings.heading" },
-        { "type": "richtext", "id": "text", "label": "t:settings.text" }
+        { "type": "richtext", "id": "text", "label": "t:settings.text" },
+        { "type": "image_picker", "id": "image", "label": "t:settings.image" }
       ]
     }
   ],
