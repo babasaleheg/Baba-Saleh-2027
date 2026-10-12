@@ -14,7 +14,7 @@
         "image": "shopify://shop_images/bs-branch-imbaba.png",
         "badge_text": "We're hiring • Join us",
         "chip_1": "120+ team members",
-        "chip_2": "4 branches",
+        "chip_2": "5 branches",
         "ribbon": "Sales, Customer service, Store teams, Events, Growth, Staff discounts"
       }
     },
@@ -110,7 +110,7 @@
         "eyebrow": "Open positions",
         "heading": "We're hiring",
         "form_heading": "Apply now",
-        "branches": "Giza\nImbaba\nMaadi\n6th of October\nAny branch",
+        "branches": "Al Ahram\nGiza\nImbaba\nMaadi\n6th of October\nAny branch",
         "ask_military": true
       }
     },
@@ -150,7 +150,7 @@
           "type": "stat",
           "settings": {
             "source": "manual",
-            "value": 4,
+            "value": 5,
             "format": "plain",
             "suffix": "",
             "label": "Branches",

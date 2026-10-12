@@ -72,7 +72,7 @@
           "type": "stat",
           "settings": {
             "source": "manual",
-            "value": 4,
+            "value": 5,
             "format": "plain",
             "suffix": "",
             "label": "Branches",
@@ -128,7 +128,7 @@
           "settings": {
             "label": "Growing",
             "title": "More branches",
-            "text": "<p>Branches open in Imbaba, Maadi and 6th of October, bringing sportswear, swimwear and fitness gear closer to home.</p>",
+            "text": "<p>Branches open in Al Ahram, Imbaba, Maadi and 6th of October, bringing sportswear, swimwear and fitness gear closer to home.</p>",
             "image": "shopify://shop_images/bs-branch-maadi.png"
           }
         },
@@ -263,13 +263,24 @@
             "whatsapp": "+20 102 830 5495",
             "image": "shopify://shop_images/bs-branch-imbaba.png"
           }
+        },
+        "ahram": {
+          "type": "branch",
+          "settings": {
+            "name": "Al Ahram",
+            "area": "Giza",
+            "address": "Al Ahram (Haram) Street, Giza",
+            "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Al+Haram+Giza",
+            "whatsapp": "+20 102 830 5495"
+          }
         }
       },
       "block_order": [
+        "ahram",
         "giza",
+        "imbaba",
         "maadi",
-        "october",
-        "imbaba"
+        "october"
       ],
       "settings": {
         "eyebrow": "Since 1971",

@@ -43,6 +43,11 @@
                 }}
                 <span class="branch-card__index" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
               </div>
+            {%- else -%}
+              <div class="branch-card__media branch-card__media--placeholder" aria-hidden="true">
+                <span class="branch-card__placeholder-name">{{ block.settings.name }}</span>
+                <span class="branch-card__index">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+              </div>
             {%- endif -%}
             <div class="branch-card__body">
               <div class="branch-card__head">
@@ -172,7 +177,7 @@
 
   @media screen and (min-width: 1100px) {
     .branches__grid {
-      grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
       gap: 1.25rem;
     }
   }
@@ -350,6 +355,34 @@
     color: #0a0a0a;
     font-size: 0.75rem;
     font-weight: 700;
+  }
+
+  .branch-card__media--placeholder {
+    display: grid;
+    place-items: center;
+    background: #febd19 repeating-linear-gradient(-45deg, transparent 0 22px, rgba(255, 255, 255, 0.18) 22px 44px);
+  }
+
+  .branch-card__media--placeholder::after {
+    background: none;
+  }
+
+  .branch-card__placeholder-name {
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    color: #0a0a0a;
+    text-align: center;
+    padding-inline: 1rem;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .branch-card > article:hover .branch-card__placeholder-name {
+    transform: scale(1.08) rotate(-2deg);
+  }
+
+  .branch-card__media--placeholder .branch-card__index {
+    color: #0a0a0a;
   }
 
   .branch-card__pin {
