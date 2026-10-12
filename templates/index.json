@@ -6,16 +6,16 @@
         "slide_1": {
           "type": "slide",
           "settings": {
-            "collection": "swimming-equipment",
+            "collection": "tracksuits",
             "color_scheme": "scheme-4",
-            "eyebrow": "Summer 2026",
-            "heading": "Dive into summer",
-            "text": "Goggles, swimwear, floats and beach gear for the whole family.",
+            "eyebrow": "Autumn 2026",
+            "heading": "Back to training",
+            "text": "Tracksuits, jackets and backpacks for school, club and the cooler days ahead.",
             "text_position": "start",
-            "button_label": "Shop swimming",
-            "button_link": "shopify://collections/swimming-equipment",
-            "button_label_2": "Beach gear",
-            "button_link_2": "shopify://collections/beach-equipment",
+            "button_label": "Shop tracksuits",
+            "button_link": "shopify://collections/tracksuits",
+            "button_label_2": "Backpacks",
+            "button_link_2": "shopify://collections/bags-backpacks",
             "overlay": 20
           }
         },
@@ -23,9 +23,9 @@
           "type": "slide",
           "settings": {
             "collection": "gym-equipment",
-            "color_scheme": "scheme-3",
+            "color_scheme": "scheme-5",
             "eyebrow": "Gym & fitness",
-            "heading": "Train like a pro",
+            "heading": "Train indoors, stay strong",
             "text": "Weights, bands, mats and machines for home and gym.",
             "text_position": "start",
             "button_label": "Shop gym",
@@ -39,22 +39,23 @@
           "type": "slide",
           "settings": {
             "collection": "football-equipment",
-            "color_scheme": "scheme-5",
-            "eyebrow": "Football",
-            "heading": "Own the pitch",
-            "text": "Balls, gloves, goals and training kit for every level.",
+            "color_scheme": "scheme-3",
+            "eyebrow": "New season",
+            "heading": "Kick off the season",
+            "text": "Balls, boots, shin guards and training kit for club and school teams.",
             "text_position": "start",
             "button_label": "Shop football",
             "button_link": "shopify://collections/football-equipment",
-            "button_label_2": "",
-            "overlay": 20
+            "button_label_2": "Football shoes",
+            "overlay": 20,
+            "button_link_2": "shopify://collections/football-shoes"
           }
         }
       },
       "block_order": [
         "slide_1",
-        "slide_2",
-        "slide_3"
+        "slide_3",
+        "slide_2"
       ],
       "settings": {
         "height": "medium",
@@ -199,13 +200,6 @@
             "title": "Scooters"
           }
         },
-        "sport_13": {
-          "type": "collection",
-          "settings": {
-            "collection": "beach-equipment",
-            "title": "Beach"
-          }
-        },
         "sport_14": {
           "type": "collection",
           "settings": {
@@ -216,19 +210,18 @@
       },
       "block_order": [
         "sport_1",
-        "sport_2",
         "sport_3",
         "sport_4",
-        "sport_5",
-        "sport_6",
         "sport_7",
+        "sport_5",
         "sport_8",
-        "sport_9",
+        "sport_6",
         "sport_10",
+        "sport_9",
+        "sport_14",
         "sport_11",
         "sport_12",
-        "sport_13",
-        "sport_14"
+        "sport_2"
       ],
       "settings": {
         "eyebrow": "",
@@ -253,8 +246,8 @@
         "tab_2": {
           "type": "tab",
           "settings": {
-            "collection": "swimming-equipment",
-            "label": "Swimming"
+            "collection": "tracksuits",
+            "label": "Tracksuits"
           }
         },
         "tab_3": {
@@ -273,9 +266,9 @@
         }
       },
       "block_order": [
-        "tab_1",
         "tab_2",
         "tab_3",
+        "tab_1",
         "tab_4"
       ],
       "settings": {
@@ -294,7 +287,7 @@
       "settings": {
         "eyebrow": "Limited time",
         "heading": "Flash sale",
-        "text": "Big savings on gym, swim and sports gear — while stock lasts.",
+        "text": "Big savings on gym, football and training gear — while stock lasts.",
         "end_date": "",
         "collection": "sale",
         "products_to_show": 10,
@@ -317,8 +310,8 @@
         "cat_2": {
           "type": "collection",
           "settings": {
-            "collection": "swimwear",
-            "title": "Swimwear"
+            "collection": "tracksuits",
+            "title": "Tracksuits"
           }
         },
         "cat_3": {
@@ -366,7 +359,7 @@
         "tab_1": {
           "type": "tab",
           "settings": {
-            "collection": "swimming-equipment",
+            "collection": "bags-backpacks",
             "label": ""
           }
         }
@@ -376,7 +369,7 @@
       ],
       "settings": {
         "eyebrow": "",
-        "heading": "Swimming essentials",
+        "heading": "Back to school",
         "products_to_show": 12,
         "columns_desktop": 5,
         "show_view_all": true,
@@ -402,10 +395,10 @@
         "tile_2": {
           "type": "tile",
           "settings": {
-            "collection": "kids-swimwear",
+            "collection": "kids-suit",
             "eyebrow": "Kids",
-            "heading": "Kids' swimwear",
-            "text": "",
+            "heading": "Kids' tracksuits",
+            "text": "Warm, comfy sets for school and sport.",
             "button_label": "Shop now",
             "color_scheme": "scheme-3"
           }
@@ -665,7 +658,7 @@
       "type": "newsletter",
       "settings": {
         "heading": "Join the team",
-        "text": "<p>Be first to hear about new arrivals, restocks and exclusive offers.</p>",
+        "text": "<p>Be first to hear about new-season arrivals, restocks and exclusive offers.</p>",
         "color_scheme": "scheme-4",
         "padding_top": 56,
         "padding_bottom": 56

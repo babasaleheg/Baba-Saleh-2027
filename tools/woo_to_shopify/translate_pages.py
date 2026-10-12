@@ -1,4 +1,4 @@
-"""Register Arabic for the info-page texts in a theme (hero, stats, ribbons, CTAs...).
+"""Register Arabic for the homepage and info-page texts in a theme (hero, stats, ribbons, CTAs...).
 
     python3 translate_pages.py            # live theme
     python3 translate_pages.py <theme_id> # e.g. an unpublished preview
@@ -23,7 +23,7 @@ def main():
     res = resources_by_id([tid])[tid]
     todo = []
     for key, (value, digest) in res["content"].items():
-        if not key.startswith("section.page.") or value not in AR:
+        if not key.startswith(("section.page.", "section.index.")) or value not in AR:
             continue
         current = res["ar"].get(key)
         if current and not current[1] and current[0] == AR[value]:
