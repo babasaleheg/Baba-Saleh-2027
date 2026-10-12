@@ -6,7 +6,14 @@
   class="section seo-content color-{{ section.settings.color_scheme }}"
   style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
 >
-  <div class="page-width seo-content__grid">
+  {%- liquid
+    assign has_about = false
+    if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.text != blank
+      assign has_about = true
+    endif
+  -%}
+  <div class="page-width seo-content__grid{% unless has_about %} seo-content__grid--faq-only{% endunless %}">
+    {%- if has_about -%}
     <div class="seo-content__about">
       {%- if section.settings.eyebrow != blank -%}
         <span class="eyebrow">{{ section.settings.eyebrow }}</span>
@@ -18,6 +25,7 @@
         <div class="rte seo-content__text">{{ section.settings.text }}</div>
       {%- endif -%}
     </div>
+    {%- endif -%}
 
     {%- if section.blocks.size > 0 -%}
       <div class="seo-content__faq">
@@ -58,6 +66,11 @@
 {%- endif -%}
 
 {% stylesheet %}
+  .seo-content__grid--faq-only {
+    display: block;
+    max-width: 48rem;
+  }
+
   .seo-content__grid {
     display: grid;
     gap: 2.5rem;
