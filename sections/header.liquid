@@ -66,6 +66,11 @@
 
     <nav class="header__nav" aria-label="{{ 'header.main_navigation' | t }}">
       <ul class="nav" role="list">
+        <li class="nav__item">
+          <a href="{{ routes.root_url }}" class="nav__link{% if template.name == 'index' %} is-active{% endif %}"{% if template.name == 'index' %} aria-current="page"{% endif %}>
+            {{- 'pages.breadcrumb.home' | t -}}
+          </a>
+        </li>
         {%- for link in menu.links -%}
           {%- liquid
             assign has_children = false
@@ -84,7 +89,7 @@
           <li class="nav__item{% if has_children %} nav__item--has-children{% endif %}">
             <a
               href="{{ link.url }}"
-              class="nav__link{% if link.active or link.child_active %} is-active{% endif %}"
+              class="nav__link{% if link.active or link.child_active %} is-active{% endif %}{% if link.url contains '/collections/sale' %} nav__link--sale{% endif %}"
               {% if link.current %}
                 aria-current="page"
               {% endif %}
@@ -210,6 +215,9 @@
     </div>
     <div class="drawer__body">
       <ul class="menu-drawer__list" role="list">
+        <li>
+          <a href="{{ routes.root_url }}" class="menu-drawer__link"{% if template.name == 'index' %} aria-current="page"{% endif %}>{{ 'pages.breadcrumb.home' | t }}</a>
+        </li>
         {%- for link in menu.links -%}
           <li>
             {%- if link.links.size > 0 -%}
@@ -253,7 +261,10 @@
                 </ul>
               </details>
             {%- else -%}
-              <a href="{{ link.url }}" class="menu-drawer__link">{{ link.title }}</a>
+              <a href="{{ link.url }}" class="menu-drawer__link{% if link.url contains '/collections/sale' %} menu-drawer__link--sale{% endif %}">
+                {{- link.title -}}
+                {%- if link.url contains '/collections/sale' -%}{% render 'icon', icon: 'bolt' %}{%- endif -%}
+              </a>
             {%- endif -%}
           </li>
         {%- endfor -%}
@@ -658,18 +669,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-block: 0.75rem;
+    padding-block: 0.625rem;
     text-decoration: none;
     cursor: pointer;
     list-style: none;
   }
 
   .menu-drawer__link {
-    font-family: var(--font-heading-family);
-    font-weight: var(--heading-weight);
-    font-stretch: var(--heading-stretch);
-    text-transform: var(--heading-transform);
-    font-size: 1.0625rem;
+    font-family: var(--font-body-family);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-transform: none;
     border-block-end: 1px solid var(--color-border);
   }
 
@@ -697,7 +707,47 @@
 
   .menu-drawer__sublink {
     padding-block: 0.5rem;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
+  }
+
+  .menu-drawer__link--sale {
+    justify-content: center;
+    gap: 0.5rem;
+    margin-block-start: 1rem;
+    padding: 0.75rem 1rem;
+    border: 0;
+    border-radius: 0.75rem;
+    background: #e5202e;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 20px -12px rgba(229, 32, 46, 0.8);
+  }
+
+  .menu-drawer__link--sale .icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    color: #febd19;
+  }
+
+  .nav__link--sale {
+    align-self: center;
+    height: 2rem !important;
+    margin-inline-start: 0.25rem;
+    padding: 0 0.875rem;
+    border-radius: 999px;
+    background: #e5202e;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .nav__link--sale::after {
+    display: none;
+  }
+
+  .nav__link--sale:hover {
+    background: #c81825;
   }
 
   .menu-drawer__sublink--all {
