@@ -131,10 +131,11 @@
           "settings": {
             "name": "Al Ahram",
             "area": "Giza",
-            "address": "Al Ahram (Haram) Street, Giza",
+            "address": "50 Al Ahram Street, Giza",
             "map_url": "https://maps.app.goo.gl/EN6BNcv8vnVpJhpGA",
             "whatsapp": "+20 102 830 5495",
-            "image": "shopify://shop_images/bs-branch-ahram.jpg"
+            "image": "shopify://shop_images/bs-branch-ahram.jpg",
+            "phone": "+20 3 5726955"
           }
         }
       },
