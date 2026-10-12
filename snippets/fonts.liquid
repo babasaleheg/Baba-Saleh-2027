@@ -6,11 +6,11 @@
   case settings.font_pairing
     when 'brand'
       comment
-        Jost is loaded up to 600 only, so heavy weights (700/800) render at 600 instead of looking blocky.
+        One font everywhere: Quicksand (rounded, close to the logo); Cairo for Arabic, which Quicksand doesn't cover.
       endcomment
-      assign font_query = 'family=Jost:wght@300;400;500;600&family=Cairo:wght@400..800'
-      assign latin_heading = "'Jost'"
-      assign latin_body = "'Jost'"
+      assign font_query = 'family=Quicksand:wght@400..700&family=Cairo:wght@400..700'
+      assign latin_heading = "'Quicksand'"
+      assign latin_body = "'Quicksand'"
       assign arabic_heading = "'Cairo'"
       assign arabic_body = "'Cairo'"
     when 'retail'
