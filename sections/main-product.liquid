@@ -87,9 +87,6 @@
             {%- when 'price' -%}
               <div class="product__price" data-price-container {{ block.shopify_attributes }}>
                 {% render 'price', product: product, variant: current_variant, show_badge: true %}
-                {%- if cart.taxes_included -%}
-                  <p class="product__tax text-muted">{{ 'products.product.taxes_included' | t }}</p>
-                {%- endif -%}
               </div>
 
             {%- when 'variant_picker' -%}
