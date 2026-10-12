@@ -6,11 +6,12 @@
   case settings.font_pairing
     when 'brand'
       comment
-        One font everywhere: Quicksand (rounded, close to the logo); Cairo for Arabic, which Quicksand doesn't cover.
+        One font everywhere, matching the logo: Century Gothic where installed, otherwise Didact Gothic
+        (a free Century Gothic-style face). Cairo for Arabic.
       endcomment
-      assign font_query = 'family=Quicksand:wght@400..700&family=Cairo:wght@400..700'
-      assign latin_heading = "'Quicksand'"
-      assign latin_body = "'Quicksand'"
+      assign font_query = 'family=Didact+Gothic&family=Cairo:wght@400..700'
+      assign latin_heading = "'Century Gothic', 'CenturyGothic', 'Didact Gothic'"
+      assign latin_body = "'Century Gothic', 'CenturyGothic', 'Didact Gothic'"
       assign arabic_heading = "'Cairo'"
       assign arabic_body = "'Cairo'"
     when 'retail'
