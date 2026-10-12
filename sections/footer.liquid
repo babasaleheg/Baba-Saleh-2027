@@ -82,7 +82,7 @@
 
       {%- if section.settings.show_localization -%}
         <div class="footer__localization">
-          {% render 'language-switcher', id_prefix: 'Footer', compact: false, show_country: true %}
+          {% render 'language-switcher', id_prefix: 'Footer', compact: true, label: 'name' %}
         </div>
       {%- endif -%}
 

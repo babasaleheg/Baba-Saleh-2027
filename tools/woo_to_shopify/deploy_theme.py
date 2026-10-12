@@ -13,7 +13,7 @@ from sync import gql, log
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 DIRS = ("assets", "config", "layout", "locales", "sections", "snippets", "templates")
-REPO_SETTINGS = ("gtm_id", "whatsapp_number", "color_schemes", "color_highlight")
+REPO_SETTINGS = ("gtm_id", "whatsapp_number", "color_schemes", "color_highlight", "font_pairing")
 
 THEMES_Q = "{ themes(first: 20) { nodes { id name role } } }"
 FILES_Q = """query($id: ID!, $after: String) { theme(id: $id) { files(first: 250, after: $after) {

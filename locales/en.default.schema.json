@@ -98,7 +98,8 @@
           "options__1": "Sport — Archivo + Alexandria",
           "options__2": "Clean — Inter + IBM Plex Sans Arabic",
           "options__3": "Geometric — Readex Pro",
-          "options__4": "Retail — Poppins + Cairo"
+          "options__4": "Retail — Poppins + Cairo",
+          "options__brand": "Logo style (Jost + Cairo)"
         },
         "heading_uppercase": {
           "label": "Uppercase headings (Latin only)"

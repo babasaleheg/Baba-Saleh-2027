@@ -101,6 +101,10 @@
         "default": "retail",
         "options": [
           {
+            "value": "brand",
+            "label": "t:settings_schema.typography.settings.font_pairing.options__brand"
+          },
+          {
             "value": "retail",
             "label": "t:settings_schema.typography.settings.font_pairing.options__4"
           },
