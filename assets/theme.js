@@ -1366,6 +1366,53 @@
   }
   customElements.define('branch-map', BranchMap);
 
+  // "Shop by sport" swiper: prev/next buttons and a "3/14" counter under the row.
+  class CircleSlider extends HTMLElement {
+    connectedCallback() {
+      this.track = this.querySelector('[data-circle-track]');
+      this.items = this.track ? [...this.track.children] : [];
+      this.count = this.querySelector('[data-circle-count]');
+      this.prev = this.querySelector('[data-circle-prev]');
+      this.next = this.querySelector('[data-circle-next]');
+      if (!this.track || this.items.length < 2) return;
+      this.querySelector('.circle-slider__nav').hidden = false;
+      this.prev.addEventListener('click', () => this.go(-1));
+      this.next.addEventListener('click', () => this.go(1));
+      this.track.addEventListener('scroll', () => (this.frame ??= requestAnimationFrame(() => this.update())), { passive: true });
+      if ('ResizeObserver' in window) new ResizeObserver(() => this.update()).observe(this.track);
+      this.update();
+    }
+
+    step() {
+      const [a, b] = this.items;
+      return b ? Math.abs(b.offsetLeft - a.offsetLeft) : a.offsetWidth;
+    }
+
+    perView() {
+      return Math.max(1, Math.round(this.track.clientWidth / this.step()));
+    }
+
+    index() {
+      return Math.round(Math.abs(this.track.scrollLeft) / this.step());
+    }
+
+    go(direction) {
+      const left = this.step() * this.perView() * direction * (isRTL ? -1 : 1);
+      this.track.scrollBy({ left, behavior: 'smooth' });
+    }
+
+    update() {
+      this.frame = null;
+      const total = this.items.length;
+      const last = Math.max(total - this.perView(), 0);
+      const first = Math.min(this.index(), last);
+      this.count.textContent = `${first + 1}/${total}`;
+      this.prev.disabled = first <= 0;
+      this.next.disabled = first >= last;
+    }
+  }
+  customElements.define('circle-slider', CircleSlider);
+
   document.addEventListener('click', (event) => {
     if (event.target.closest('[data-print]')) window.print();
   });

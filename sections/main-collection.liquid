@@ -109,39 +109,40 @@
     margin-block-end: 2rem;
   }
 
+  /* Slim banner: title on one side, the square category image on the other (never cropped). */
   .collection__header--image {
-    position: relative;
-    color: #fff;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    overflow: hidden;
   }
 
   .collection__banner {
-    aspect-ratio: 16 / 9;
-    max-height: 26rem;
-    width: 100%;
+    order: 2;
+    width: 7.5rem;
+    aspect-ratio: 1;
+    border-radius: calc(var(--radius) * 0.75);
+    background: #fff;
   }
 
-  .collection__header--image .collection__banner::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 60%);
+  .collection__banner img {
+    object-fit: contain;
   }
 
-  .collection__header--image .collection__header-text {
-    position: absolute;
-    inset-inline: 1.5rem;
-    inset-block-end: 1.5rem;
-    z-index: 1;
+  .collection__header--image .h1 {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
   }
 
   @media screen and (min-width: 750px) {
-    .collection__banner {
-      aspect-ratio: 21 / 7;
+    .collection__header--image {
+      padding: 1.5rem 2.5rem;
     }
 
-    .collection__header--image .collection__header-text {
-      inset-inline: 2.5rem;
-      inset-block-end: 2.5rem;
+    .collection__banner {
+      width: 10rem;
     }
   }
 

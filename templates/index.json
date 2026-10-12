@@ -334,11 +334,19 @@
             "collection": "toys-games",
             "title": "Toys"
           }
+        },
+        "cat_6": {
+          "type": "collection",
+          "settings": {
+            "collection": "pants",
+            "title": "Pants & leggings"
+          }
         }
       },
       "block_order": [
         "cat_1",
         "cat_2",
+        "cat_6",
         "cat_3",
         "cat_4",
         "cat_5"
@@ -346,7 +354,7 @@
       "settings": {
         "eyebrow": "",
         "heading": "Shop by category",
-        "layout": "bento",
+        "layout": "cards",
         "show_view_all": true,
         "color_scheme": "scheme-1",
         "padding_top": 40,

@@ -747,9 +747,11 @@ h4,
   }
 }
 
+/* Store rule: 2 columns on phones, 6 on desktop, for every product grid. */
 @media screen and (min-width: 1100px) {
   .product-grid {
-    --columns: var(--columns-desktop, 4);
+    --columns: 6;
+    gap: 2.5rem 1rem;
   }
 }
 
@@ -805,6 +807,11 @@ h4,
 @media (hover: hover) {
   .card:hover .card__image--secondary {
     opacity: 1;
+  }
+
+  /* Swap, don't stack: hide the first photo while the second one shows (cutout images blend). */
+  .card:hover .card__media:has(.card__image--secondary) .card__image:not(.card__image--secondary) {
+    opacity: 0;
   }
 
   .card:hover .card__media img:only-of-type,
@@ -970,7 +977,7 @@ h4,
 .slider {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: var(--slide-mobile, 72%);
+  grid-auto-columns: calc((100% - var(--slide-gap, 0.75rem)) / 2);
   gap: var(--slide-gap, 0.75rem);
   overflow-x: auto;
   overflow-y: hidden;
@@ -1004,7 +1011,8 @@ h4,
 
 @media screen and (min-width: 1100px) {
   .slider {
-    grid-auto-columns: calc((100% - (var(--slides-desktop, 4) - 1) * var(--slide-gap)) / var(--slides-desktop, 4));
+    --slide-gap: 1rem;
+    grid-auto-columns: calc((100% - (var(--slides-desktop, 6) - 1) * var(--slide-gap)) / var(--slides-desktop, 6));
   }
 }
 
@@ -1410,6 +1418,13 @@ body.scroll-lock {
   .collection-list__grid--cards {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.25rem;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .collection-list__grid--cards {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 1rem;
   }
 }
 

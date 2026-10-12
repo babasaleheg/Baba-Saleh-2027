@@ -10,7 +10,7 @@
       <div class="section-header">
         <div class="section-header__text"><h2 class="h2">{{ section.settings.heading }}</h2></div>
       </div>
-      <ul class="slider" role="list" data-slider style="--slides-desktop: 4; --slides-tablet: 3; --slide-mobile: 46%;">
+      <ul class="slider" role="list" data-slider style="--slides-desktop: 6; --slides-tablet: 3; --slide-mobile: 46%;">
         {%- comment -%} In stock first, sold out last {%- endcomment -%}
         {%- for pass in (1..2) -%}
           {%- for recommendation in recommendations.products -%}

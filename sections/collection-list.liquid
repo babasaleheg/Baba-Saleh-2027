@@ -25,7 +25,8 @@
       </div>
     {%- endif -%}
 
-    <ul class="collection-list__grid collection-list__grid--{{ layout }}" role="list" style="--circle-cols: {{ circle_cols }}">
+    {%- if layout == 'circles' -%}<circle-slider class="circle-slider">{%- endif -%}
+    <ul class="collection-list__grid collection-list__grid--{{ layout }}" role="list" style="--circle-cols: {{ circle_cols }}"{% if layout == 'circles' %} data-circle-track{% endif %}>
       {%- for block in section.blocks -%}
         {%- liquid
           assign collection = block.settings.collection
@@ -61,6 +62,14 @@
         </li>
       {%- endfor -%}
     </ul>
+    {%- if layout == 'circles' -%}
+      <div class="circle-slider__nav" hidden>
+        <button type="button" class="circle-slider__btn" data-circle-prev aria-label="{{ 'general.slider.previous' | t }}">{% render 'icon', icon: 'chevron' %}</button>
+        <span class="circle-slider__count" data-circle-count aria-live="polite">1/{{ section.blocks.size }}</span>
+        <button type="button" class="circle-slider__btn" data-circle-next aria-label="{{ 'general.slider.next' | t }}">{% render 'icon', icon: 'chevron' %}</button>
+      </div>
+      </circle-slider>
+    {%- endif -%}
   </div>
 </section>
 
@@ -69,20 +78,95 @@
     margin: 0;
   }
 
-  /* Circles — "shop by sport" scroller */
+  /* Circles — "shop by sport" swiper: one row, 2 per view on phones, 6 on desktop */
   .collection-list__grid--circles {
+    --per-view: 2;
+    --circle-gap: 1rem;
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 6.5rem;
-    gap: 1rem;
+    grid-auto-columns: calc((100% - (var(--per-view) - 1) * var(--circle-gap)) / var(--per-view));
+    gap: var(--circle-gap);
     overflow-x: auto;
     overflow-y: hidden;
-    scroll-snap-type: x proximity;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
     scrollbar-width: none;
     /* Room for the hover ring (2px + 3px offset) so the scroller doesn't clip it */
     padding: 0.375rem;
     margin-inline: -0.375rem;
     scroll-padding-inline: 0.375rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .collection-list__grid--circles {
+      --per-view: 4;
+      --circle-gap: 1.25rem;
+    }
+  }
+
+  @media screen and (min-width: 1100px) {
+    .collection-list__grid--circles {
+      --per-view: 6;
+    }
+  }
+
+  circle-slider {
+    display: block;
+  }
+
+  .circle-slider__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-block-start: 1rem;
+    color: var(--color-muted);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .circle-slider__nav[hidden] {
+    display: none;
+  }
+
+  .circle-slider__btn {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .circle-slider__btn:hover {
+    background: rgba(var(--color-fg-rgb), 0.07);
+    color: var(--color-fg);
+  }
+
+  .circle-slider__btn[disabled] {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .circle-slider__btn .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  [data-circle-prev] .icon {
+    transform: scaleX(-1);
+  }
+
+  [dir='rtl'] [data-circle-prev] .icon {
+    transform: none;
+  }
+
+  [dir='rtl'] [data-circle-next] .icon {
+    transform: scaleX(-1);
   }
 
   .collection-list__grid--circles::-webkit-scrollbar {
@@ -113,13 +197,6 @@
     font-size: 0.875rem;
     font-weight: 600;
     line-height: 1.25;
-  }
-
-  @media screen and (min-width: 990px) {
-    .collection-list__grid--circles {
-      grid-auto-columns: 8.5rem;
-      gap: 1.5rem;
-    }
   }
 
   /* Bento — first tile large */
@@ -156,22 +233,10 @@
     }
   }
 
-  @media screen and (min-width: 990px) {
-    /* Desktop: sport circles wrap into even rows instead of running off the edge. */
-    .collection-list__grid--circles {
-      grid-auto-flow: row;
-      grid-template-columns: repeat(var(--circle-cols, 8), minmax(0, 1fr));
-      row-gap: 2rem;
-      overflow: visible;
-      padding: 0;
-      margin-inline: 0;
-    }
-
-    .collection-tile--circles .collection-tile__media {
-      width: 100%;
-      max-width: 8.5rem;
-      margin-inline: auto;
-    }
+  .collection-tile--circles .collection-tile__media {
+    width: 100%;
+    max-width: 9rem;
+    margin-inline: auto;
   }
 {% endstylesheet %}
 
