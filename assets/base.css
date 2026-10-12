@@ -1603,3 +1603,21 @@ body.scroll-lock {
   border-inline-start-color: #febd19 !important;
   background: rgba(254, 189, 25, 0.12);
 }
+
+/* Safari: a zoomed image inside a rounded frame can spill over the edges while the
+   hover animation runs. Giving the frame its own mask layer keeps the image clipped.
+   (Not on frames that draw a ring or shadow outside themselves — a mask would hide it.) */
+.media:not(.page-hero__media):not(.collection-tile__media),
+.collection-tile--cards .collection-tile__media,
+.collection-tile--bento .collection-tile__media,
+.promo-tile,
+.timeline__media {
+  isolation: isolate;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
+}
+
+/* Sport circles: the yellow ring is the hover effect; no zoom, so nothing can spill over the ring. */
+.collection-tile--circles .collection-tile__link:hover .collection-tile__media img {
+  transform: none;
+}
