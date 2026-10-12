@@ -59,8 +59,9 @@
   </a>
 </td></tr>
 
-<!-- Body -->
-<tr><td class="card px" bgcolor="#FFFFFF" style="background:#FFFFFF;padding:32px 32px 12px;font-family:'Poppins', Arial, Helvetica, sans-serif;" align="left">
+
+<!-- Body (en) -->
+<tr><td class="card px" bgcolor="#FFFFFF" dir="ltr" lang="en" style="background:#FFFFFF;padding:32px 32px 12px;font-family:'Poppins', Arial, Helvetica, sans-serif;" align="left">
 {% if customer.first_name != blank %}<p class="t-ink" style="margin:0 0 14px;font-family:'Poppins', Arial, Helvetica, sans-serif;font-size:15px;line-height:1.65;color:#0A0A0A;">{% if customer.first_name != blank %}Hi {{ customer.first_name }},{% else %}Hi there,{% endif %}</p>
 {% endif %}<p class="t-ink" style="margin:0 0 14px;font-family:'Poppins', Arial, Helvetica, sans-serif;font-size:15px;line-height:1.65;color:#0A0A0A;"><span dir="auto">{{ email_body | newline_to_br }}</span></p>
 <p class="t-muted" style="margin:0 0 14px;font-family:'Poppins', Arial, Helvetica, sans-serif;font-size:15px;line-height:1.65;color:#6B7280;">The Baba Saleh team</p>
