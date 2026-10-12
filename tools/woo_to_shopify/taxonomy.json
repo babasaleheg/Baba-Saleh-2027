@@ -1,0 +1,397 @@
+{
+ "cat:backpacks": {
+  "tags": [
+   "dept:accessories"
+  ],
+  "type": "Backpacks & Sports Bags"
+ },
+ "cat:badminton": {
+  "tags": [
+   "dept:sports",
+   "group:racket-sports"
+  ],
+  "type": "Badminton"
+ },
+ "cat:ballet": {
+  "tags": [
+   "dept:sports"
+  ],
+  "type": "Ballet & Gymnastics"
+ },
+ "cat:basketball": {
+  "tags": [
+   "dept:sports",
+   "group:team-sports"
+  ],
+  "type": "Basketball"
+ },
+ "cat:beach-bags-hats": {
+  "tags": [
+   "dept:beach"
+  ],
+  "type": "Beach Bags & Sun Hats"
+ },
+ "cat:beach-shoes": {
+  "tags": [
+   "dept:footwear"
+  ],
+  "type": "Beach Shoes"
+ },
+ "cat:beach-toys": {
+  "tags": [
+   "dept:beach"
+  ],
+  "type": "Beach Toys & Water Guns"
+ },
+ "cat:billiards": {
+  "tags": [
+   "dept:sports"
+  ],
+  "type": "Billiards"
+ },
+ "cat:boxing": {
+  "tags": [
+   "dept:sports",
+   "group:martial-arts"
+  ],
+  "type": "Boxing & MMA"
+ },
+ "cat:camping": {
+  "tags": [
+   "dept:sports"
+  ],
+  "type": "Camping & Scouting"
+ },
+ "cat:coaching": {
+  "tags": [
+   "dept:sports",
+   "group:team-sports"
+  ],
+  "type": "Training & Coaching Equipment"
+ },
+ "cat:cycling": {
+  "tags": [
+   "dept:sports",
+   "group:wheels"
+  ],
+  "type": "Cycling"
+ },
+ "cat:diving": {
+  "tags": [
+   "dept:swimming"
+  ],
+  "type": "Diving & Snorkeling"
+ },
+ "cat:fitness-accessories": {
+  "tags": [
+   "dept:fitness"
+  ],
+  "type": "Gym Accessories"
+ },
+ "cat:flags": {
+  "tags": [
+   "dept:accessories"
+  ],
+  "type": "Flags"
+ },
+ "cat:football": {
+  "tags": [
+   "dept:sports",
+   "group:team-sports"
+  ],
+  "type": "Football"
+ },
+ "cat:football-shoes": {
+  "tags": [
+   "dept:footwear"
+  ],
+  "type": "Football Shoes"
+ },
+ "cat:games": {
+  "tags": [
+   "dept:kids-toys"
+  ],
+  "type": "Games"
+ },
+ "cat:goggles": {
+  "tags": [
+   "dept:swimming"
+  ],
+  "type": "Swimming Goggles"
+ },
+ "cat:gym-machines": {
+  "tags": [
+   "dept:fitness"
+  ],
+  "type": "Gym Equipment & Benches"
+ },
+ "cat:handbags": {
+  "tags": [
+   "dept:accessories"
+  ],
+  "type": "Handbags"
+ },
+ "cat:handball": {
+  "tags": [
+   "dept:sports",
+   "group:team-sports"
+  ],
+  "type": "Handball"
+ },
+ "cat:hats": {
+  "tags": [
+   "dept:accessories"
+  ],
+  "type": "Hats & Caps"
+ },
+ "cat:hockey": {
+  "tags": [
+   "dept:sports",
+   "group:team-sports"
+  ],
+  "type": "Hockey"
+ },
+ "cat:jackets": {
+  "tags": [
+   "dept:clothing"
+  ],
+  "type": "Jackets & Hoodies"
+ },
+ "cat:jump-ropes": {
+  "tags": [
+   "dept:fitness"
+  ],
+  "type": "Jump Ropes"
+ },
+ "cat:karate": {
+  "tags": [
+   "dept:sports",
+   "group:martial-arts"
+  ],
+  "type": "Karate & Judo"
+ },
+ "cat:kids-swimwear": {
+  "tags": [
+   "dept:clothing",
+   "group:swimwear"
+  ],
+  "type": "Kids' Swimwear"
+ },
+ "cat:martial-arts-gear": {
+  "tags": [
+   "dept:sports",
+   "group:martial-arts"
+  ],
+  "type": "Martial Arts"
+ },
+ "cat:medals": {
+  "tags": [
+   "dept:trophies"
+  ],
+  "type": "Medals"
+ },
+ "cat:men-swimwear": {
+  "tags": [
+   "dept:clothing",
+   "group:swimwear"
+  ],
+  "type": "Men's Swimwear"
+ },
+ "cat:padel": {
+  "tags": [
+   "dept:sports",
+   "group:racket-sports"
+  ],
+  "type": "Padel"
+ },
+ "cat:pants": {
+  "tags": [
+   "dept:clothing"
+  ],
+  "type": "Pants & Leggings"
+ },
+ "cat:pool-floats": {
+  "tags": [
+   "dept:beach"
+  ],
+  "type": "Pool Floats & Inflatables"
+ },
+ "cat:resistance-bands": {
+  "tags": [
+   "dept:fitness"
+  ],
+  "type": "Resistance Bands"
+ },
+ "cat:running-shoes": {
+  "tags": [
+   "dept:footwear"
+  ],
+  "type": "Sneakers & Running Shoes"
+ },
+ "cat:scooters": {
+  "tags": [
+   "dept:sports",
+   "group:wheels"
+  ],
+  "type": "Scooters"
+ },
+ "cat:shorts": {
+  "tags": [
+   "dept:clothing"
+  ],
+  "type": "Shorts"
+ },
+ "cat:skateboards": {
+  "tags": [
+   "dept:sports",
+   "group:wheels"
+  ],
+  "type": "Skateboards"
+ },
+ "cat:skating": {
+  "tags": [
+   "dept:sports",
+   "group:wheels"
+  ],
+  "type": "Roller Skating"
+ },
+ "cat:slippers": {
+  "tags": [
+   "dept:footwear"
+  ],
+  "type": "Slippers, Sandals & Crocs"
+ },
+ "cat:speedball": {
+  "tags": [
+   "dept:sports",
+   "group:racket-sports"
+  ],
+  "type": "Speedball"
+ },
+ "cat:sports-accessories": {
+  "tags": [
+   "dept:accessories"
+  ],
+  "type": "Sports Accessories"
+ },
+ "cat:sports-bras": {
+  "tags": [
+   "dept:clothing"
+  ],
+  "type": "Sports Bras"
+ },
+ "cat:squash": {
+  "tags": [
+   "dept:sports",
+   "group:racket-sports"
+  ],
+  "type": "Squash"
+ },
+ "cat:supports": {
+  "tags": [
+   "dept:fitness"
+  ],
+  "type": "Supports & Recovery"
+ },
+ "cat:swim-accessories": {
+  "tags": [
+   "dept:swimming"
+  ],
+  "type": "Swim Accessories"
+ },
+ "cat:swim-caps": {
+  "tags": [
+   "dept:swimming"
+  ],
+  "type": "Swim Caps"
+ },
+ "cat:swim-safety": {
+  "tags": [
+   "dept:swimming"
+  ],
+  "type": "Life Jackets & Swim Rings"
+ },
+ "cat:swim-training": {
+  "tags": [
+   "dept:swimming"
+  ],
+  "type": "Swim Training"
+ },
+ "cat:t-shirts": {
+  "tags": [
+   "dept:clothing"
+  ],
+  "type": "T-Shirts & Tops"
+ },
+ "cat:table-tennis": {
+  "tags": [
+   "dept:sports",
+   "group:racket-sports"
+  ],
+  "type": "Table Tennis"
+ },
+ "cat:taekwondo": {
+  "tags": [
+   "dept:sports",
+   "group:martial-arts"
+  ],
+  "type": "Taekwondo"
+ },
+ "cat:tennis": {
+  "tags": [
+   "dept:sports",
+   "group:racket-sports"
+  ],
+  "type": "Tennis"
+ },
+ "cat:toys": {
+  "tags": [
+   "dept:kids-toys"
+  ],
+  "type": "Kids' Toys"
+ },
+ "cat:tracksuits": {
+  "tags": [
+   "dept:clothing"
+  ],
+  "type": "Tracksuits"
+ },
+ "cat:trophies": {
+  "tags": [
+   "dept:trophies"
+  ],
+  "type": "Trophies & Cups"
+ },
+ "cat:volleyball": {
+  "tags": [
+   "dept:sports",
+   "group:team-sports"
+  ],
+  "type": "Volleyball"
+ },
+ "cat:water-bottles": {
+  "tags": [
+   "dept:accessories"
+  ],
+  "type": "Water Bottles & Shakers"
+ },
+ "cat:weights": {
+  "tags": [
+   "dept:fitness"
+  ],
+  "type": "Dumbbells & Weights"
+ },
+ "cat:women-swimwear": {
+  "tags": [
+   "dept:clothing",
+   "group:swimwear"
+  ],
+  "type": "Women's Swimwear & Burkini"
+ },
+ "cat:yoga": {
+  "tags": [
+   "dept:fitness"
+  ],
+  "type": "Yoga & Pilates"
+ }
+}

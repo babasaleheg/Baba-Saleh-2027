@@ -49,7 +49,7 @@ LEAF = dict(x.split(":") for x in (
 GROUP = dict(x.split(":") for x in "team-sports:team-sports,racket-sports:racket-equipment,martial-arts:martial-arts,"
              "wheels:skates-scooters-bikes,swimwear:swimwear".split(","))
 DEPT = dict(x.split(":") for x in "sports:sports,fitness:fitness,swimming:swimming-equipment,beach:beach-equipment,"
-            "clothing:sportswear,footwear:shoes,accessories:accessories,kids-toys:toys-2026,trophies:trophy-cups-medals".split(","))
+            "clothing:sportswear,footwear:shoes,accessories:accessories,kids-toys:toys-games,trophies:trophy-cups-medals".split(","))
 SKIP_COLLECTIONS = {"frontpage", "sale", "all"}
 
 PRODUCTS_Q = """query($after: String) { products(first: 50, after: $after) {

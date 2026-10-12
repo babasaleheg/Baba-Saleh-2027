@@ -260,7 +260,7 @@
         "tab_4": {
           "type": "tab",
           "settings": {
-            "collection": "toys-2026",
+            "collection": "toys-games",
             "label": "Toys"
           }
         }
@@ -331,7 +331,7 @@
         "cat_5": {
           "type": "collection",
           "settings": {
-            "collection": "toys-2026",
+            "collection": "toys-games",
             "title": "Toys"
           }
         }
@@ -596,7 +596,7 @@
         "tab_1": {
           "type": "tab",
           "settings": {
-            "collection": "toys-2026",
+            "collection": "toys-games",
             "label": ""
           }
         }
