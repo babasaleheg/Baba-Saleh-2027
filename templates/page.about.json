@@ -21,7 +21,8 @@
           "settings": {
             "value": 1971,
             "format": "plain",
-            "label": "Founded"
+            "label": "Founded",
+            "suffix": ""
           }
         },
         "s2": {
@@ -47,7 +48,8 @@
           "settings": {
             "value": 4,
             "format": "plain",
-            "label": "Branches"
+            "label": "Branches",
+            "suffix": ""
           }
         },
         "s5": {
@@ -55,7 +57,8 @@
           "settings": {
             "value": 27,
             "format": "plain",
-            "label": "Governorates we deliver to"
+            "label": "Governorates we deliver to",
+            "suffix": ""
           }
         }
       },
