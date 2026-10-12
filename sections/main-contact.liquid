@@ -1,0 +1,306 @@
+{%- comment -%}
+  Contact page: quick-contact cards (WhatsApp, phone, email), social links and Shopify's contact form.
+  Messages arrive at the store's sender email (Settings → Notifications).
+{%- endcomment -%}
+{%- liquid
+  assign wa_raw = section.settings.whatsapp | default: settings.whatsapp_number
+  assign wa = wa_raw | remove: '+' | remove: ' ' | remove: '-'
+  assign phone_digits = section.settings.phone | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+  assign email = section.settings.email | default: shop.email
+  assign wa_text = 'pages.contact.whatsapp_message' | t | url_encode
+-%}
+<section
+  class="section contact color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width contact__grid">
+    <div class="contact__side">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="h2">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="rte text-muted">{{ section.settings.text }}</div>
+      {%- endif -%}
+
+      <ul class="contact__cards" role="list">
+        {%- if wa != blank -%}
+          <li data-reveal>
+            <a class="contact-card contact-card--whatsapp" href="https://wa.me/{{ wa }}?text={{ wa_text }}" target="_blank" rel="noopener">
+              <span class="contact-card__icon">{% render 'icon', icon: 'whatsapp' %}</span>
+              <span class="contact-card__text">
+                <span class="contact-card__label">{{ 'pages.contact.whatsapp' | t }}</span>
+                <span class="contact-card__value" dir="ltr">{{ wa_raw }}</span>
+                <span class="visually-hidden">({{ 'pages.opens_new_window' | t }})</span>
+              </span>
+              {%- render 'icon', icon: 'arrow' -%}
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if phone_digits != blank -%}
+          <li data-reveal style="--reveal-index: 1">
+            <a class="contact-card" href="tel:{{ phone_digits }}">
+              <span class="contact-card__icon">{% render 'icon', icon: 'phone' %}</span>
+              <span class="contact-card__text">
+                <span class="contact-card__label">{{ 'pages.contact.call' | t }}</span>
+                <span class="contact-card__value" dir="ltr">{{ section.settings.phone }}</span>
+              </span>
+              {%- render 'icon', icon: 'arrow' -%}
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if email != blank -%}
+          <li data-reveal style="--reveal-index: 2">
+            <a class="contact-card" href="mailto:{{ email }}">
+              <span class="contact-card__icon">{% render 'icon', icon: 'mail' %}</span>
+              <span class="contact-card__text">
+                <span class="contact-card__label">{{ 'pages.contact.email' | t }}</span>
+                <span class="contact-card__value">{{ email }}</span>
+              </span>
+              {%- render 'icon', icon: 'arrow' -%}
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+
+      {%- if section.settings.hours != blank -%}
+        <p class="contact__hours text-muted">
+          {%- render 'icon', icon: 'clock' -%}
+          <span>{{ section.settings.hours }}</span>
+        </p>
+      {%- endif -%}
+
+      {%- liquid
+        assign has_social = false
+        if settings.social_facebook_link != blank or settings.social_instagram_link != blank or settings.social_tiktok_link != blank or settings.social_youtube_link != blank or settings.social_x_link != blank or section.settings.linkedin != blank
+          assign has_social = true
+        endif
+      -%}
+      {%- if section.settings.show_social and has_social -%}
+        <div class="contact__social">
+          <h3 class="h4">{{ 'pages.contact.follow' | t }}</h3>
+          <ul class="contact__social-list" role="list">
+            {%- if settings.social_facebook_link != blank -%}
+              <li><a class="icon-button icon-button--bordered" href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener" aria-label="Facebook">{% render 'icon', icon: 'facebook' %}</a></li>
+            {%- endif -%}
+            {%- if settings.social_instagram_link != blank -%}
+              <li><a class="icon-button icon-button--bordered" href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener" aria-label="Instagram">{% render 'icon', icon: 'instagram' %}</a></li>
+            {%- endif -%}
+            {%- if settings.social_tiktok_link != blank -%}
+              <li><a class="icon-button icon-button--bordered" href="{{ settings.social_tiktok_link }}" target="_blank" rel="noopener" aria-label="TikTok">{% render 'icon', icon: 'tiktok' %}</a></li>
+            {%- endif -%}
+            {%- if settings.social_youtube_link != blank -%}
+              <li><a class="icon-button icon-button--bordered" href="{{ settings.social_youtube_link }}" target="_blank" rel="noopener" aria-label="YouTube">{% render 'icon', icon: 'youtube' %}</a></li>
+            {%- endif -%}
+            {%- if section.settings.linkedin != blank -%}
+              <li><a class="icon-button icon-button--bordered" href="{{ section.settings.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn">{% render 'icon', icon: 'linkedin' %}</a></li>
+            {%- endif -%}
+            {%- if settings.social_x_link != blank -%}
+              <li><a class="icon-button icon-button--bordered" href="{{ settings.social_x_link }}" target="_blank" rel="noopener" aria-label="X">{% render 'icon', icon: 'x' %}</a></li>
+            {%- endif -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="form-card" data-reveal style="--reveal-index: 1">
+      {%- if section.settings.form_heading != blank -%}
+        <h2 class="h3" id="ContactFormHeading">{{ section.settings.form_heading }}</h2>
+      {%- endif -%}
+      {%- form 'contact', id: 'ContactForm', class: 'contact__form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="form-message form-message--success" role="status" tabindex="-1" autofocus>
+            {%- render 'icon', icon: 'check' -%}
+            {{ 'pages.contact.success' | t }}
+          </div>
+        {%- elsif form.errors -%}
+          <div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="ContactForm-name">{{ 'pages.form.name' | t }} <span aria-hidden="true">*</span></label>
+            <input class="field__input" type="text" id="ContactForm-name" name="contact[name]" value="{{ form.name }}" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label class="field__label" for="ContactForm-email">{{ 'pages.form.email' | t }} <span aria-hidden="true">*</span></label>
+            <input class="field__input" type="email" id="ContactForm-email" name="contact[email]" value="{{ form.email }}" autocomplete="email" spellcheck="false" autocapitalize="off" required>
+          </div>
+          <div class="field">
+            <label class="field__label" for="ContactForm-phone">{{ 'pages.form.phone' | t }}</label>
+            <input class="field__input" type="tel" id="ContactForm-phone" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel" dir="ltr" inputmode="tel">
+          </div>
+          <div class="field">
+            <label class="field__label" for="ContactForm-order">{{ 'pages.form.order_number' | t }}</label>
+            <input class="field__input" type="text" id="ContactForm-order" name="contact[Order number]" placeholder="#1001" dir="ltr" aria-describedby="ContactForm-order-hint">
+            <small class="field__hint text-muted" id="ContactForm-order-hint">{{ 'pages.form.order_number_hint' | t }}</small>
+          </div>
+          <div class="field field--full">
+            <label class="field__label" for="ContactForm-topic">{{ 'pages.form.topic' | t }}</label>
+            <div class="select">
+              <select class="select__select" id="ContactForm-topic" name="contact[Topic]">
+                <option value="Order">{{ 'pages.form.topics.order' | t }}</option>
+                <option value="Returns &amp; refunds">{{ 'pages.form.topics.returns' | t }}</option>
+                <option value="Product question">{{ 'pages.form.topics.product' | t }}</option>
+                <option value="Events &amp; custom printing">{{ 'pages.form.topics.events' | t }}</option>
+                <option value="Other">{{ 'pages.form.topics.other' | t }}</option>
+              </select>
+              {%- render 'icon', icon: 'chevron-down' -%}
+            </div>
+          </div>
+          <div class="field field--full">
+            <label class="field__label" for="ContactForm-body">{{ 'pages.form.message' | t }} <span aria-hidden="true">*</span></label>
+            <textarea class="field__input" id="ContactForm-body" name="contact[body]" rows="5" required>{{ form.body }}</textarea>
+          </div>
+        </div>
+        <p class="form-note text-muted">{{ 'pages.form.required_note' | t }}</p>
+        <button type="submit" class="button button--full">{{ 'pages.form.send' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .contact__grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .contact__side {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+  }
+
+  .contact__cards {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .contact-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    text-decoration: none;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .contact-card:hover {
+    border-color: rgba(var(--color-fg-rgb), 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -22px rgba(var(--color-fg-rgb), 0.6);
+  }
+
+  .contact-card > .icon--arrow {
+    margin-inline-start: auto;
+    width: 1.125rem;
+    height: 1.125rem;
+    color: var(--color-muted);
+    transition: translate 0.2s ease;
+  }
+
+  .contact-card:hover > .icon--arrow {
+    translate: 3px 0;
+  }
+
+  [dir='rtl'] .contact-card:hover > .icon--arrow {
+    translate: -3px 0;
+  }
+
+  .contact-card__icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--color-surface);
+  }
+
+  .contact-card--whatsapp .contact-card__icon {
+    background: #25d366;
+    color: #fff;
+  }
+
+  .contact-card__text {
+    display: grid;
+    min-width: 0;
+  }
+
+  .contact-card__label {
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+
+  .contact-card__value {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  [dir='rtl'] .contact-card__value[dir='ltr'] {
+    text-align: end;
+  }
+
+  .contact__hours {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.9375rem;
+  }
+
+  .contact__hours .icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .contact__social {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .contact__social-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .contact__social-list .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  @media screen and (min-width: 990px) {
+    .contact__grid {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 4rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:pages.contact.name",
+  "settings": [
+    { "type": "text", "id": "heading", "default": "Talk to us", "label": "t:settings.heading" },
+    { "type": "richtext", "id": "text", "label": "t:settings.text" },
+    { "type": "header", "content": "t:pages.contact.header_channels" },
+    { "type": "text", "id": "whatsapp", "label": "t:pages.contact.whatsapp_label", "info": "t:pages.contact.whatsapp_info" },
+    { "type": "text", "id": "phone", "label": "t:pages.branches.phone_label" },
+    { "type": "text", "id": "email", "label": "t:pages.contact.email_label", "info": "t:pages.contact.email_info" },
+    { "type": "text", "id": "hours", "label": "t:pages.branches.hours_label" },
+    { "type": "checkbox", "id": "show_social", "default": true, "label": "t:pages.contact.show_social" },
+    { "type": "url", "id": "linkedin", "label": "t:pages.contact.linkedin" },
+    { "type": "header", "content": "t:pages.contact.header_form" },
+    { "type": "text", "id": "form_heading", "default": "Send us a message", "label": "t:settings.heading" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56, "label": "t:settings.padding_bottom" }
+  ],
+  "presets": [{ "name": "t:pages.contact.name" }]
+}
+{% endschema %}

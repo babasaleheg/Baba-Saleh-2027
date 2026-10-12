@@ -1,0 +1,233 @@
+{%- comment -%}
+  Page hero: breadcrumb, eyebrow, title (defaults to the page title), subtitle, buttons and an optional image.
+  Emits BreadcrumbList JSON-LD for pages.
+{%- endcomment -%}
+{%- liquid
+  assign hero_title = section.settings.title | default: page.title | default: page_title
+  assign has_image = false
+  if section.settings.image != blank
+    assign has_image = true
+  endif
+-%}
+<section
+  class="section page-hero page-hero--{{ section.settings.alignment }}{% if has_image %} page-hero--image{% endif %} color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="page-width page-hero__grid">
+    <div class="page-hero__content">
+      {%- if section.settings.show_breadcrumb -%}
+        <nav class="page-hero__breadcrumb" aria-label="{{ 'pages.breadcrumb.label' | t }}">
+          <ol role="list">
+            <li><a href="{{ routes.root_url }}">{{ 'pages.breadcrumb.home' | t }}</a></li>
+            <li aria-current="page">{{ page.title | default: hero_title }}</li>
+          </ol>
+        </nav>
+      {%- endif -%}
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="eyebrow page-hero__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      <h1 class="{{ section.settings.title_size }} page-hero__title">{{ hero_title }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <div class="rte page-hero__subtitle">{{ section.settings.subtitle }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank or section.settings.button_label_2 != blank -%}
+        <div class="page-hero__buttons">
+          {%- if section.settings.button_label != blank -%}
+            <a href="{{ section.settings.button_link | default: '#' }}" class="button">{{ section.settings.button_label }}</a>
+          {%- endif -%}
+          {%- if section.settings.button_label_2 != blank -%}
+            <a href="{{ section.settings.button_link_2 | default: '#' }}" class="button button--secondary">{{ section.settings.button_label_2 }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+    {%- if has_image -%}
+      <div class="media page-hero__media">
+        {{
+          section.settings.image
+          | image_url: width: 1400
+          | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 990px) 45vw, 100vw', widths: '400, 700, 1000, 1400', alt: section.settings.image.alt
+        }}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- if section.settings.show_breadcrumb and page.title != blank -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": {{ shop.name | json }}, "item": {{ request.origin | append: routes.root_url | json }} },
+        { "@type": "ListItem", "position": 2, "name": {{ page.title | json }}, "item": {{ request.origin | append: page.url | json }} }
+      ]
+    }
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .page-hero__glow {
+    position: absolute;
+    z-index: -1;
+    inset-block-start: -40%;
+    inset-inline-end: -10%;
+    width: min(60rem, 120vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(var(--color-fg-rgb), 0.07), transparent);
+    pointer-events: none;
+  }
+
+  .page-hero__glow::after {
+    content: '';
+    position: absolute;
+    inset: 25%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, var(--color-accent), transparent);
+    opacity: 0.14;
+    animation: page-hero-float 14s ease-in-out infinite alternate;
+  }
+
+  @keyframes page-hero-float {
+    to {
+      transform: translate(-12%, 18%) scale(1.15);
+    }
+  }
+
+  .page-hero__grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .page-hero__content {
+    display: grid;
+    justify-items: start;
+    gap: 1rem;
+    max-width: 48rem;
+    animation: page-hero-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  @keyframes page-hero-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  .page-hero--center .page-hero__content {
+    justify-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .page-hero__breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+
+  .page-hero__breadcrumb li + li::before {
+    content: '/';
+    margin-inline-end: 0.5rem;
+    opacity: 0.6;
+  }
+
+  .page-hero__breadcrumb a {
+    text-decoration: none;
+  }
+
+  .page-hero__breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .page-hero__subtitle {
+    font-size: clamp(1rem, 1.6vw, 1.1875rem);
+    color: var(--color-muted);
+    max-width: 40rem;
+  }
+
+  .page-hero__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block-start: 0.5rem;
+  }
+
+  .page-hero__media {
+    aspect-ratio: 4 / 3;
+  }
+
+  @media screen and (min-width: 990px) {
+    .page-hero--image .page-hero__grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 4rem;
+    }
+
+    .page-hero--image.page-hero--center .page-hero__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media print {
+    .page-hero__glow,
+    .page-hero__buttons,
+    .page-hero__breadcrumb {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:pages.hero.name",
+  "class": "section-page-hero",
+  "settings": [
+    { "type": "checkbox", "id": "show_breadcrumb", "default": true, "label": "t:pages.hero.show_breadcrumb" },
+    { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
+    { "type": "text", "id": "title", "label": "t:pages.hero.title", "info": "t:pages.hero.title_info" },
+    {
+      "type": "select",
+      "id": "title_size",
+      "default": "h1",
+      "label": "t:settings.size",
+      "options": [
+        { "value": "h2", "label": "t:settings.size_options.small" },
+        { "value": "h1", "label": "t:settings.size_options.medium" },
+        { "value": "h0", "label": "t:settings.size_options.large" }
+      ]
+    },
+    { "type": "richtext", "id": "subtitle", "label": "t:pages.hero.subtitle" },
+    { "type": "text", "id": "button_label", "label": "t:settings.button_label" },
+    { "type": "url", "id": "button_link", "label": "t:settings.button_link" },
+    { "type": "text", "id": "button_label_2", "label": "t:settings.button_label_2" },
+    { "type": "url", "id": "button_link_2", "label": "t:settings.button_link_2" },
+    { "type": "image_picker", "id": "image", "label": "t:settings.image" },
+    {
+      "type": "select",
+      "id": "alignment",
+      "default": "start",
+      "label": "t:settings.alignment",
+      "options": [
+        { "value": "start", "label": "t:settings.position_options.start" },
+        { "value": "center", "label": "t:settings.position_options.center" }
+      ]
+    },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 40, "label": "t:settings.padding_bottom" }
+  ],
+  "presets": [{ "name": "t:pages.hero.name" }]
+}
+{% endschema %}

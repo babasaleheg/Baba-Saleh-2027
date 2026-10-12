@@ -1,0 +1,216 @@
+{%- comment -%}
+  Icon cards for values, perks, key policy facts or numbered steps.
+{%- endcomment -%}
+<section
+  class="section value-cards value-cards--{{ section.settings.style }} color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px; --vc-columns: {{ section.settings.columns_desktop }};"
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank or section.settings.text != blank -%}
+      <div class="section-header{% if section.settings.center_header %} section-header--center{% endif %}">
+        <div class="section-header__text">
+          {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+          {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
+          {%- if section.settings.text != blank -%}<div class="rte text-muted">{{ section.settings.text }}</div>{%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+    <ol class="value-cards__grid" role="list">
+      {%- for block in section.blocks -%}
+        <li class="value-card" data-reveal style="--reveal-index: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          {%- if section.settings.style == 'steps' -%}
+            <span class="value-card__icon value-card__number" aria-hidden="true">{{ forloop.index }}</span>
+          {%- elsif block.settings.icon != 'none' -%}
+            <span class="value-card__icon">{% render 'icon', icon: block.settings.icon %}</span>
+          {%- endif -%}
+          <h3 class="value-card__title">
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}" class="value-card__link">{{ block.settings.title }}</a>
+            {%- else -%}
+              {{ block.settings.title }}
+            {%- endif -%}
+          </h3>
+          {%- if block.settings.text != blank -%}
+            <div class="rte value-card__text">{{ block.settings.text }}</div>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+
+{% stylesheet %}
+  .value-cards__grid {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  @media screen and (min-width: 600px) {
+    .value-cards__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .value-cards__grid {
+      grid-template-columns: repeat(var(--vc-columns, 3), minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  .value-card {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  @media (hover: hover) {
+    .value-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 40px -24px rgba(var(--color-fg-rgb), 0.45);
+    }
+  }
+
+  .value-cards--outline .value-card {
+    background: transparent;
+    border: 1px solid var(--color-border);
+  }
+
+  .value-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: var(--color-accent-text);
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .value-card:hover .value-card__icon {
+    transform: rotate(-8deg) scale(1.06);
+  }
+
+  .value-card__icon .icon {
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+
+  .value-card__number {
+    font-family: var(--font-heading-family);
+    font-weight: var(--heading-weight);
+    font-size: 1.25rem;
+  }
+
+  .value-card__title {
+    font-family: var(--font-heading-family);
+    font-size: 1.125rem;
+    line-height: 1.25;
+  }
+
+  .value-card__link {
+    text-decoration: none;
+  }
+
+  .value-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .value-card__link:focus-visible {
+    outline: none;
+  }
+
+  .value-card:has(.value-card__link:focus-visible) {
+    outline: 2px solid var(--color-fg);
+    outline-offset: 3px;
+  }
+
+  .value-card__text {
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:pages.value_cards.name",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
+    { "type": "text", "id": "heading", "default": "What we stand for", "label": "t:settings.heading" },
+    { "type": "richtext", "id": "text", "label": "t:settings.text" },
+    { "type": "checkbox", "id": "center_header", "default": false, "label": "t:pages.value_cards.center_header" },
+    {
+      "type": "select",
+      "id": "style",
+      "default": "cards",
+      "label": "t:settings.layout",
+      "options": [
+        { "value": "cards", "label": "t:pages.value_cards.style_cards" },
+        { "value": "outline", "label": "t:pages.value_cards.style_outline" },
+        { "value": "steps", "label": "t:pages.value_cards.style_steps" }
+      ]
+    },
+    { "type": "range", "id": "columns_desktop", "min": 2, "max": 4, "step": 1, "default": 3, "label": "t:settings.columns_desktop" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_bottom" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "t:pages.value_cards.block",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "default": "star",
+          "label": "t:settings.icon",
+          "options": [
+            { "value": "none", "label": "t:settings.icon_options.none" },
+            { "value": "truck", "label": "t:settings.icon_options.truck" },
+            { "value": "cash", "label": "t:settings.icon_options.cash" },
+            { "value": "return", "label": "t:settings.icon_options.return" },
+            { "value": "shield", "label": "t:settings.icon_options.shield" },
+            { "value": "chat", "label": "t:settings.icon_options.chat" },
+            { "value": "store", "label": "t:settings.icon_options.store" },
+            { "value": "bolt", "label": "t:settings.icon_options.bolt" },
+            { "value": "star", "label": "t:settings.icon_options.star" },
+            { "value": "heart", "label": "t:pages.icons.heart" },
+            { "value": "users", "label": "t:pages.icons.users" },
+            { "value": "trophy", "label": "t:pages.icons.trophy" },
+            { "value": "briefcase", "label": "t:pages.icons.briefcase" },
+            { "value": "calendar", "label": "t:pages.icons.calendar" },
+            { "value": "clock", "label": "t:pages.icons.clock" },
+            { "value": "receipt", "label": "t:pages.icons.receipt" },
+            { "value": "tag", "label": "t:pages.icons.tag" },
+            { "value": "printer", "label": "t:pages.icons.printer" },
+            { "value": "pin", "label": "t:pages.icons.pin" },
+            { "value": "phone", "label": "t:pages.icons.phone" },
+            { "value": "mail", "label": "t:pages.icons.mail" }
+          ]
+        },
+        { "type": "text", "id": "title", "default": "Quality first", "label": "t:settings.heading" },
+        { "type": "richtext", "id": "text", "default": "<p>Describe what this means for your customers.</p>", "label": "t:settings.text" },
+        { "type": "url", "id": "link", "label": "t:settings.link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:pages.value_cards.name",
+      "blocks": [{ "type": "card" }, { "type": "card" }, { "type": "card" }]
+    }
+  ]
+}
+{% endschema %}

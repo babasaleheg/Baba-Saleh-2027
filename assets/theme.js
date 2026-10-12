@@ -1028,6 +1028,189 @@
     }
   }
 
+  /* ---------- Info pages (about, contact, policies, careers) ---------- */
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Counts up to data-to when scrolled into view. The final value is already in the HTML.
+  class CountUp extends HTMLElement {
+    connectedCallback() {
+      const to = Number(this.dataset.to);
+      if (!Number.isFinite(to) || reducedMotion.matches || !('IntersectionObserver' in window)) return;
+      const grouped = this.dataset.format === 'grouped';
+      const format = (n) => (grouped ? new Intl.NumberFormat('en-US').format(n) : String(n));
+      const from = grouped ? 0 : Math.round(to * 0.95); // years count up from close by
+      this.textContent = format(from);
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return;
+          observer.disconnect();
+          const start = performance.now();
+          const tick = (now) => {
+            const p = Math.min((now - start) / 1600, 1);
+            this.textContent = format(Math.round(from + (to - from) * (1 - (1 - p) ** 3)));
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        },
+        { threshold: 0.6 }
+      );
+      observer.observe(this);
+    }
+  }
+  customElements.define('count-up', CountUp);
+
+  // Sets --progress (0–1) as the element scrolls by: reading progress (data-mode="read") or timeline fill.
+  class ScrollProgress extends HTMLElement {
+    connectedCallback() {
+      this.onScroll = () => {
+        this.frame ??= requestAnimationFrame(() => this.update());
+      };
+      window.addEventListener('scroll', this.onScroll, { passive: true });
+      window.addEventListener('resize', this.onScroll, { passive: true });
+      this.update();
+    }
+
+    disconnectedCallback() {
+      window.removeEventListener('scroll', this.onScroll);
+      window.removeEventListener('resize', this.onScroll);
+    }
+
+    update() {
+      this.frame = null;
+      const rect = this.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const progress =
+        this.dataset.mode === 'read' ? -rect.top / Math.max(rect.height - vh, 1) : (vh * 0.6 - rect.top) / rect.height;
+      this.style.setProperty('--progress', Math.min(Math.max(progress, 0), 1).toFixed(4));
+    }
+  }
+  customElements.define('scroll-progress', ScrollProgress);
+
+  // "On this page" list built from the page body's headings, with scroll-spy.
+  class PageToc extends HTMLElement {
+    connectedCallback() {
+      const body = document.getElementById(this.dataset.target);
+      const headings = body ? [...body.querySelectorAll(this.dataset.levels || 'h2')] : [];
+      if (headings.length < 2) return;
+      const list = this.querySelector('ol');
+      const links = new Map();
+      headings.forEach((heading, index) => {
+        if (!heading.id) heading.id = `section-${index + 1}`;
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.className = `page-toc__link${heading.tagName === 'H3' ? ' page-toc__link--sub' : ''}`;
+        link.textContent = heading.textContent.trim();
+        const item = document.createElement('li');
+        item.append(link);
+        list.append(item);
+        links.set(heading, link);
+      });
+      this.hidden = false;
+
+      const details = this.querySelector('details');
+      const desktop = window.matchMedia('(min-width: 990px)');
+      const sync = () => (details.open = desktop.matches);
+      sync();
+      desktop.addEventListener('change', sync);
+      list.addEventListener('click', (event) => {
+        if (event.target.closest('a') && !desktop.matches) details.open = false;
+      });
+
+      let current;
+      const spy = () => {
+        const line = window.innerHeight * 0.3;
+        const active = headings.filter((h) => h.getBoundingClientRect().top < line).pop() ?? headings[0];
+        if (active === current) return;
+        links.get(current)?.removeAttribute('aria-current');
+        current = active;
+        const link = links.get(active);
+        link.setAttribute('aria-current', 'true');
+        if (list.scrollHeight > list.clientHeight) list.scrollTop = link.offsetTop - list.clientHeight / 2;
+      };
+      const observer = new IntersectionObserver(spy, { rootMargin: '0px 0px -70% 0px' });
+      headings.forEach((h) => observer.observe(h));
+      spy();
+    }
+  }
+  customElements.define('page-toc', PageToc);
+
+  // Instant search over FAQ questions and answers.
+  class FaqFilter extends HTMLElement {
+    connectedCallback() {
+      const input = this.querySelector('[data-faq-search]');
+      if (!input) return;
+      input.closest('.faq__search').hidden = false;
+      const items = [...this.querySelectorAll('[data-faq-item]')];
+      const status = this.querySelector('[data-faq-status]');
+      input.addEventListener(
+        'input',
+        debounce(() => {
+          const query = input.value.trim().toLowerCase();
+          let shown = 0;
+          for (const item of items) {
+            item.hidden = Boolean(query) && !item.textContent.toLowerCase().includes(query);
+            if (!item.hidden) shown++;
+          }
+          status.textContent = shown ? '' : status.dataset.empty;
+        }, 150)
+      );
+    }
+  }
+  customElements.define('faq-filter', FaqFilter);
+
+  // Careers: location filter chips + "Apply" pre-fills role and branch in the form.
+  class JobBoard extends HTMLElement {
+    connectedCallback() {
+      this.cards = [...this.querySelectorAll('.job-card')];
+      this.status = this.querySelector('[data-job-status]');
+      const filters = this.querySelector('[data-job-filters]');
+      if (filters) {
+        filters.hidden = false;
+        filters.addEventListener('click', (event) => {
+          const chip = event.target.closest('[data-location]');
+          if (chip) this.filter(chip);
+        });
+      }
+      this.addEventListener('click', (event) => {
+        const apply = event.target.closest('[data-apply-role]');
+        if (apply) this.prefill(apply);
+      });
+    }
+
+    filter(chip) {
+      for (const el of chip.parentElement.children) el.setAttribute('aria-pressed', String(el === chip));
+      const location = chip.dataset.location;
+      let shown = 0;
+      for (const card of this.cards) {
+        card.hidden = Boolean(location) && card.dataset.location !== location;
+        if (!card.hidden) {
+          shown++;
+          card.classList.add('is-revealed');
+        }
+      }
+      if (this.status) this.status.textContent = this.status.dataset.template.replace('[count]', shown);
+    }
+
+    prefill(button) {
+      const role = this.querySelector('[data-apply-role-input]');
+      const branch = this.querySelector('[data-apply-branch-select]');
+      if (role) role.value = button.dataset.applyRole;
+      const wanted = button.dataset.applyBranch.toLowerCase();
+      const option = branch && [...branch.options].find((o) => wanted && o.value.toLowerCase() === wanted);
+      if (option) branch.value = option.value;
+      const form = this.querySelector('.jobs__form');
+      form?.classList.remove('is-highlighted');
+      void form?.offsetWidth;
+      form?.classList.add('is-highlighted');
+      requestAnimationFrame(() => this.querySelector('[data-apply-focus]')?.focus({ preventScroll: true }));
+    }
+  }
+  customElements.define('job-board', JobBoard);
+
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('[data-print]')) window.print();
+  });
+
   /* ---------- Misc ---------- */
   const syncFooterDetails = () => {
     const desktop = window.matchMedia('(min-width: 750px)').matches;
@@ -1051,6 +1234,7 @@
   // Theme editor support
   document.addEventListener('shopify:section:load', (event) => revealAll(event.target));
   document.addEventListener('shopify:block:select', (event) => {
+    if (event.target.matches('details[data-faq-item]')) event.target.open = true;
     const slideshow = event.target.closest('hero-slideshow');
     if (slideshow) {
       slideshow.pause();
