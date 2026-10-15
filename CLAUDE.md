@@ -37,4 +37,4 @@ Three areas, each with Standard / Heavy / Very Heavy. Heavy covers some categori
 - Fixed double-escaped page titles ("&amp;amp;") in snippets/meta-tags (draft theme).
 - Store emails landing in Gmail spam: authenticate the sender domain (Settings > Notifications > Sender email: verify babasaleh.com DNS SPF/DKIM/DMARC); email logo image blocked/broken.
 - Customers get no email for newsletter signup / contact form / job form: Shopify sends none by default. Newsletter: Shopify Email "Welcome new subscribers" automation. Contact/job: needs a form app with auto-reply.
-- Later (owner request): "Cancel order" button in customer emails, website and account page.
+- Cancel order (done Oct 15): order confirmation email has "Request cancellation" (opens /pages/contact-us?topic=cancel&order=..&email=.., form prefilled, topic "Cancel order") and a WhatsApp button; staff cancel in admin. Contact page change is in the draft theme. Order status page and new customer accounts can't be edited from the theme (would need an app/checkout extension).
