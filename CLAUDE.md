@@ -25,6 +25,7 @@ Three areas, each with Standard / Heavy / Very Heavy. Heavy covers some categori
 ## Store setup done
 - Size guides: metaobjects `size_guide` (mens-clothing, womens-clothing, kids-clothing, adult-shoes, kids-shoes, standard-size-chart); theme auto-picks by `for:men|women|kids` tag and size values.
 - Size option lists: metaobjects Clothing size / Kids size / Shoe size (product metafields `babasaleh.clothing_size|kids_size|shoe_size`).
+- Accessory sizes: custom metaobject `accessory_size` + product metafield `babasaleh.accessory_size` (name "Size (accessories)", no category limit). Shopify's own "Accessory size" (shopify.accessory-size) only works for category Clothing Accessories (aa-1-18) and errors with "Owner subtype does not match" elsewhere.
 - Color swatches: theme snippet `color-hex` maps color names (EN/AR, keyword fallback) to hex.
 - Reviews: Judge.me (stars gold, form: stars, name, email, comment). Old reviews were metaobjects `customer_review` (imported to Judge.me).
 - Product gallery: slider with arrows on desktop.
