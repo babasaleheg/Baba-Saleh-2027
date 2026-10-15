@@ -31,6 +31,7 @@ Three areas, each with Standard / Heavy / Very Heavy. Heavy covers some categori
 - Email templates: built in scratchpad (9 templates). Shopify notification emails cannot load live products.
 
 ## Open to-dos (Oct 15 2026)
+- Oct 15: "Speed" theme published (live). New draft "Baba Saleh 2027 – Speed 2" (166776471600): smaller card images (widths 200–900, mobile sizes 36vw; WebP from Shopify at 640w was ~93KB), collection banner image sized to its 160px box, hero collage only the main image high priority, GTM loads after page load. Test: collection LCP after server 2.5s -> 1.5s (slow-phone emulation). Owner publishes.
 - Oct 15: "Header links" theme was published (now live). New draft "Baba Saleh 2027 – Speed" (166775652400): hero text shows without waiting for JS (LCP), only first hero slide images eager, first 4 product cards skip reveal animation + first 2 fetchpriority high, card hover photos skipped on phones and loaded after page load on desktop. Owner publishes.
 - Draft theme "Baba Saleh 2027 – Header links" (166769459248): header links next to search, events photos (card images + gallery), FAQ padding, join-us role dedupe + email-CV button. Also 13-photo events gallery, smart 404, title fix. Owner publishes.
 - Theme uploads: use stagedUploadsCreate (PUT via curl) + themeFilesUpsert body type URL (no need to inline big files).
