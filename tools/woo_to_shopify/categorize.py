@@ -58,6 +58,8 @@ FIXES = {
     "Muscle Training Bar": "cat:weights",
     "Hook Bar Lifting Straps": "cat:fitness-accessories",
     "Women’s Dinosaur Slides": "cat:slippers",
+    "Venum Challenger Boxing Headgear – Black &amp; Gold": "cat:boxing",
+    "Venum Challenger Boxing Headgear – Black & Gold": "cat:boxing",
 }
 
 AUDIENCE = [(r"\b(kids?|boys?|girls?|baby|junior|children)\b", "for:kids"), (r"\b(women|women’s|women's|ladies|hijab)\b", "for:women"), (r"\b(men|men’s|men's)\b", "for:men")]
