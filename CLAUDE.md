@@ -31,7 +31,7 @@ Three areas, each with Standard / Heavy / Very Heavy. Heavy covers some categori
 - Email templates: built in scratchpad (9 templates). Shopify notification emails cannot load live products.
 
 ## Open to-dos (Oct 15 2026)
-- Draft theme "Baba Saleh 2027 – Header links" (166769459248): header links next to search, events photos (card images + gallery), FAQ padding, join-us role dedupe + email-CV button. Gallery CSS tweak + 13-photo events template still to upload (scratchpad t2_event-gallery.liquid, t2_page.events.json). Owner publishes.
+- Draft theme "Baba Saleh 2027 – Header links" (166769459248): header links next to search, events photos (card images + gallery), FAQ padding, join-us role dedupe + email-CV button. Also 13-photo events gallery, smart 404, title fix. Owner publishes.
 - Theme uploads: use stagedUploadsCreate (PUT via curl) + themeFilesUpsert body type URL (no need to inline big files).
 - 404s: old /product/ and /product-category/ redirects work (1001 redirects). Draft theme 404 page now sends shop-like dead links to search and pushes GTM event `page_404` (page_404_path). Still: get exact 404 paths from GA and add redirects.
 - Fixed double-escaped page titles ("&amp;amp;") in snippets/meta-tags (draft theme).
