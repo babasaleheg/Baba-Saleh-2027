@@ -29,3 +29,11 @@ Three areas, each with Standard / Heavy / Very Heavy. Heavy covers some categori
 - Reviews: Judge.me (stars gold, form: stars, name, email, comment). Old reviews were metaobjects `customer_review` (imported to Judge.me).
 - Product gallery: slider with arrows on desktop.
 - Email templates: built in scratchpad (9 templates). Shopify notification emails cannot load live products.
+
+## Open to-dos (Oct 15 2026)
+- Draft theme "Baba Saleh 2027 – Header links" (166769459248): header links next to search, events photos (card images + gallery), FAQ padding, join-us role dedupe + email-CV button. Gallery CSS tweak + 13-photo events template still to upload (scratchpad t2_event-gallery.liquid, t2_page.events.json). Owner publishes.
+- Theme uploads: use stagedUploadsCreate (PUT via curl) + themeFilesUpsert body type URL (no need to inline big files).
+- 404s in GA realtime (~15/30 min): find the URLs (Shopify > Analytics or GA page path) and add URL redirects.
+- Store emails landing in Gmail spam: authenticate the sender domain (Settings > Notifications > Sender email: verify babasaleh.com DNS SPF/DKIM/DMARC); email logo image blocked/broken.
+- Customers get no email for newsletter signup / contact form / job form: Shopify sends none by default. Newsletter: Shopify Email "Welcome new subscribers" automation. Contact/job: needs a form app with auto-reply.
+- Later (owner request): "Cancel order" button in customer emails, website and account page.
