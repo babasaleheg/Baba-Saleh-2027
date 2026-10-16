@@ -88,13 +88,22 @@
         {%- render 'icon', icon: 'receipt' -%}
         <span>{{ 'pages.jobs.cv_note' | t }}</span>
       </p>
-      {%- if wa != blank -%}
-        <a class="button button--secondary button--small" href="https://wa.me/{{ wa }}?text={{ wa_text }}" target="_blank" rel="noopener">
-          {%- render 'icon', icon: 'whatsapp' -%}
-          {{ 'pages.jobs.send_cv_whatsapp' | t }}
-          <span class="visually-hidden">({{ 'pages.opens_new_window' | t }})</span>
-        </a>
-      {%- endif -%}
+      <div class="jobs__cv-buttons">
+        {%- if wa != blank -%}
+          <a class="button button--secondary button--small" href="https://wa.me/{{ wa }}?text={{ wa_text }}" target="_blank" rel="noopener">
+            {%- render 'icon', icon: 'whatsapp' -%}
+            {{ 'pages.jobs.send_cv_whatsapp' | t }}
+            <span class="visually-hidden">({{ 'pages.opens_new_window' | t }})</span>
+          </a>
+        {%- endif -%}
+        {%- assign cv_email = section.settings.cv_email | default: shop.email -%}
+        {%- if cv_email != blank -%}
+          <a class="button button--secondary button--small" href="mailto:{{ cv_email }}?subject={{ 'Job application - CV' | url_encode }}">
+            {%- render 'icon', icon: 'mail' -%}
+            {%- if request.locale.iso_code == 'ar' -%}أرسل سيرتك الذاتية بالبريد{%- else -%}Email your CV (PDF or Word){%- endif -%}
+          </a>
+        {%- endif -%}
+      </div>
     </div>
 
     {%- assign apply_form_id = 'ApplyFormEl-' | append: section.id -%}
@@ -145,8 +154,13 @@
           <label class="field__label" for="Apply-role-{{ section.id }}">{{ 'pages.form.role' | t }} <span aria-hidden="true">*</span></label>
           <input class="field__input" type="text" id="Apply-role-{{ section.id }}" name="contact[Role]" list="Apply-roles-{{ section.id }}" required data-apply-role-input>
           <datalist id="Apply-roles-{{ section.id }}">
+            {%- assign role_titles = '' -%}
             {%- for block in section.blocks -%}
-              <option value="{{ block.settings.title | escape }}"></option>
+              {%- assign role_titles = role_titles | append: block.settings.title | append: '||' -%}
+            {%- endfor -%}
+            {%- assign role_titles = role_titles | split: '||' | uniq -%}
+            {%- for role_title in role_titles -%}
+              <option value="{{ role_title | escape }}"></option>
             {%- endfor -%}
           </datalist>
         </div>
@@ -343,6 +357,17 @@
     flex-shrink: 0;
   }
 
+  .jobs__cv-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .jobs__cv-buttons .icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
   .jobs__apply .icon--whatsapp {
     width: 1.125rem;
     height: 1.125rem;
@@ -389,6 +414,7 @@
       "label": "t:pages.jobs.branches",
       "info": "t:pages.jobs.branches_info"
     },
+    { "type": "text", "id": "cv_email", "label": "Email for CVs", "info": "Defaults to the store email." },
     { "type": "checkbox", "id": "ask_military", "default": true, "label": "t:pages.jobs.ask_military" },
     { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
     { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },

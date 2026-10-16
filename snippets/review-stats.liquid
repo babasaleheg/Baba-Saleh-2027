@@ -1,0 +1,26 @@
+{%- comment -%}
+  Counts a product's approved reviews and their average, straight from the
+  "Approved reviews" field (babasaleh.reviews), so a review added in admin shows
+  at once with no syncing. Reviews with Status "pending" or "rejected" are skipped.
+  Outputs "count|average", e.g. "3|4.67". Usage:
+    capture review_stats
+      render 'review-stats', product: product
+    endcapture
+    assign review_stats = review_stats | strip | split: '|'
+{%- endcomment -%}
+{%- liquid
+  assign rs_count = 0
+  assign rs_sum = 0.0
+  for review in product.metafields.babasaleh.reviews.value
+    assign rs_status = review.status.value | default: 'approved'
+    if rs_status == 'approved' and review.rating.value != blank
+      assign rs_count = rs_count | plus: 1
+      assign rs_sum = rs_sum | plus: review.rating.value.rating
+    endif
+  endfor
+  assign rs_avg = 0
+  if rs_count > 0
+    assign rs_avg = rs_sum | divided_by: rs_count
+  endif
+  echo rs_count | append: '|' | append: rs_avg
+-%}

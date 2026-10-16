@@ -2,7 +2,7 @@
   JSON-LD for Google rich results and AI answer engines.
   - Every page: the store (Organization + SportingGoodsStore) and WebSite with site search
   - Product: Product with per-variant Offers, brand, GTIN, shipping and return policy, and
-    AggregateRating + Review only when the product has approved reviews (Google rejects empty ratings)
+    (ratings and reviews come from the Judge.me app)
   - Product / collection: BreadcrumbList
   - Collection: CollectionPage with an ItemList of its products
 {%- endcomment -%}
@@ -120,38 +120,6 @@
         {%- endfor -%}
       ],
       "itemCondition": "https://schema.org/NewCondition",
-      {%- assign review_count = product.metafields.reviews.rating_count.value | default: 0 -%}
-      {%- if review_count > 0 and product.metafields.reviews.rating.value != blank %}
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": {{ product.metafields.reviews.rating.value.rating | round: 1 }},
-        "bestRating": 5,
-        "worstRating": 1,
-        "ratingCount": {{ review_count }},
-        "reviewCount": {{ review_count }}
-      },
-        {%- assign ld_reviews = product.metafields.babasaleh.reviews.value -%}
-        {%- assign ld_anonymous = 'reviews.anonymous' | t -%}
-        {%- if ld_reviews.size > 0 %}
-      "review": [
-        {%- for review in ld_reviews limit: 10 -%}
-          {%- assign review_author = review.author_name.value | strip | default: ld_anonymous -%}
-        {
-          "@type": "Review",
-          "reviewRating": { "@type": "Rating", "ratingValue": {{ review.rating.value.rating | round }}, "bestRating": 5, "worstRating": 1 },
-          "author": { "@type": "Person", "name": {{ review_author | json }} },
-          {%- if review.submitted_at.value != blank %}
-          "datePublished": {{ review.submitted_at.value | date: '%Y-%m-%d' | json }},
-          {%- endif %}
-          {%- if review.title.value != blank %}
-          "name": {{ review.title.value | json }},
-          {%- endif %}
-          "reviewBody": {{ review.body.value | default: '' | json }}
-        }{% unless forloop.last %},{% endunless %}
-        {%- endfor -%}
-      ],
-        {%- endif -%}
-      {%- endif %}
       "offers": [
         {%- for variant in product.variants limit: 100 -%}
         {

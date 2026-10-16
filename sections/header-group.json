@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "header",
   "name": "Header group",
@@ -50,6 +59,7 @@
       "settings": {
         "logo_width": 200,
         "menu": "baba-saleh-main",
+        "info_menu": "baba-saleh-info",
         "search_placeholder": "",
         "sticky": "on-scroll-up",
         "show_language_selector": true,

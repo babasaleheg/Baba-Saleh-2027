@@ -39,7 +39,7 @@
                     | image_tag:
                       loading: loading,
                       fetchpriority: priority,
-                      sizes: '(min-width: 990px) 33vw, 100vw',
+                      sizes: '(min-width: 990px) 60vw, 100vw',
                       widths: '400, 600, 800, 1000, 1400, 1800',
                       alt: media_alt
                   }}
@@ -60,6 +60,12 @@
         <div class="product__media-counter" aria-hidden="true">
           <span data-media-current>1</span> / {{ media_count }}
         </div>
+        <button type="button" class="product__media-nav product__media-nav--prev" data-media-prev aria-label="{{ 'general.slider.previous' | t }}" disabled>
+          {% render 'icon', icon: 'chevron' %}
+        </button>
+        <button type="button" class="product__media-nav product__media-nav--next" data-media-next aria-label="{{ 'general.slider.next' | t }}">
+          {% render 'icon', icon: 'chevron' %}
+        </button>
       {%- endif -%}
     </div>
 
@@ -77,12 +83,9 @@
             {%- when 'title' -%}
               <h1 class="product__title h2" {{ block.shopify_attributes }}>{{ product.title }}</h1>
               {%- render 'product-category', product: product, style: 'trail' -%}
-              {%- assign rating_count = product.metafields.reviews.rating_count.value | default: 0 -%}
-              {%- if rating_count > 0 and product.metafields.reviews.rating.value != blank -%}
-                <a href="#reviews" class="product__rating">
-                  {%- render 'rating-stars', rating: product.metafields.reviews.rating.value.rating, count: rating_count -%}
-                </a>
-              {%- endif -%}
+              <a href="#judgeme_product_reviews" class="product__rating">
+                {%- render 'judgeme-badge', product: product, badge_template: 'product' -%}
+              </a>
 
             {%- when 'price' -%}
               <div class="product__price" data-price-container {{ block.shopify_attributes }}>
@@ -118,6 +121,13 @@
                               elsif value.swatch.color
                                 assign value_swatch = true
                                 assign swatch_style = '--swatch: ' | append: value.swatch.color
+                              else
+                                capture color_hex
+                                  render 'color-hex', name: value
+                                endcapture
+                                assign color_hex = color_hex | strip
+                                assign value_swatch = true
+                                assign swatch_style = '--swatch: ' | append: color_hex
                               endif
                             endif
                           -%}
@@ -145,8 +155,8 @@
                               <span class="visually-hidden">{{ value }}</span>
                             {%- else -%}
                               {%- if is_color -%}
-                                {%- assign dot_color = value | downcase | remove: ' ' | escape -%}
-                                <span class="option__dot" style="background-color: {{ dot_color }}" aria-hidden="true"></span>
+                                {%- capture dot_color -%}{%- render 'color-hex', name: value -%}{%- endcapture -%}
+                                <span class="option__dot" style="background-color: {{ dot_color | strip | escape }}" aria-hidden="true"></span>
                               {%- endif -%}
                               {{ value }}
                             {%- endif -%}
@@ -303,6 +313,107 @@
   </div>
 </product-info>
 
+<script>
+  (() => {
+    // Quantity can't go above the stock of the selected variant (tracked, no overselling).
+    const section = document.querySelector('[data-section-id="{{ section.id }}"]');
+    const qty = section?.querySelector('quantity-input');
+    const input = qty?.querySelector('input');
+    const plus = qty?.querySelector('button[name="plus"]');
+    const variantInput = section?.querySelector('[data-variant-id]');
+    if (!qty || !input || !plus || !variantInput) return;
+    const stock = {
+      {%- for v in product.variants -%}
+        {%- if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' -%}
+          "{{ v.id }}": {{ v.inventory_quantity | at_least: 0 }},
+        {%- endif -%}
+      {%- endfor -%}
+    };
+    let inCart = {};
+    const loadCart = () =>
+      fetch('{{ routes.cart_url }}.js', { headers: { Accept: 'application/json' } })
+        .then((r) => r.json())
+        .then((cart) => {
+          inCart = {};
+          cart.items.forEach((item) => {
+            inCart[item.variant_id] = (inCart[item.variant_id] || 0) + item.quantity;
+          });
+          clamp();
+        })
+        .catch(() => {});
+    const maxFor = () => {
+      const total = stock[variantInput.value];
+      if (total === undefined) return undefined;
+      return Math.max(total - (inCart[variantInput.value] || 0), 0);
+    };
+    const clamp = () => {
+      const max = maxFor();
+      if (max === undefined) {
+        input.removeAttribute('max');
+        plus.disabled = false;
+        return;
+      }
+      const limit = Math.max(max, 1);
+      input.max = limit;
+      if (Number(input.value) > limit) input.value = limit;
+      plus.disabled = Number(input.value) >= max;
+    };
+    qty.addEventListener('click', (event) => {
+      if (!event.target.closest('button[name="plus"]')) return;
+      const max = maxFor();
+      if (max !== undefined && Number(input.value) >= max) event.stopImmediatePropagation();
+    }, true);
+    qty.addEventListener('click', () => setTimeout(clamp, 0));
+    input.addEventListener('input', clamp);
+    input.addEventListener('change', clamp);
+    section.addEventListener('change', () => setTimeout(clamp, 50));
+    section.addEventListener('submit', () => setTimeout(loadCart, 1200));
+    document.addEventListener('cart:updated', loadCart);
+    clamp();
+    loadCart();
+  })();
+</script>
+
+{%- if product.media.size > 1 -%}
+  <script>
+    (() => {
+      // Gallery slider: one image at a time, arrows on tablet/desktop, swipe on mobile.
+      const section = document.querySelector('[data-section-id="{{ section.id }}"]');
+      const list = section?.querySelector('[data-media-list]');
+      const prev = section?.querySelector('[data-media-prev]');
+      const next = section?.querySelector('[data-media-next]');
+      if (!list || !prev || !next) return;
+      const isRTL = () => getComputedStyle(list).direction === 'rtl';
+      const step = (dir) => {
+        list.scrollBy({ left: list.clientWidth * dir * (isRTL() ? -1 : 1), behavior: 'smooth' });
+      };
+      const update = () => {
+        const pos = Math.abs(list.scrollLeft);
+        const max = list.scrollWidth - list.clientWidth;
+        prev.disabled = pos < 5;
+        next.disabled = pos > max - 5;
+      };
+      prev.addEventListener('click', () => step(-1));
+      next.addEventListener('click', () => step(1));
+      list.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+
+      // On variant change, slide to the variant's image instead of reordering the images.
+      customElements.whenDefined('product-info').then(() => {
+        const ProductInfo = customElements.get('product-info');
+        if (ProductInfo.prototype.slidesToMedia) return;
+        ProductInfo.prototype.slidesToMedia = true;
+        ProductInfo.prototype.showMedia = function (mediaId) {
+          const item = this.querySelector(`[data-media-id="${mediaId}"]`);
+          if (!item || !this.mediaList) return;
+          this.mediaList.scrollTo({ left: item.offsetLeft - this.mediaList.offsetLeft, behavior: 'smooth' });
+        };
+      });
+    })();
+  </script>
+{%- endif -%}
+
 {%- assign model_media = product.media | where: 'media_type', 'model' -%}
 {%- if model_media.size > 0 -%}
   <script>
@@ -382,26 +493,78 @@
     font-weight: 600;
   }
 
+  /* Slider arrows (tablet and desktop; mobile swipes) */
+  .product__media-nav {
+    display: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .product__media-nav {
+      position: absolute;
+      top: 50%;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 3rem;
+      height: 3rem;
+      padding: 0;
+      border: 1px solid var(--color-border);
+      border-radius: 50%;
+      background: rgba(var(--color-bg-rgb), 0.92);
+      color: var(--color-fg);
+      box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.35);
+      cursor: pointer;
+      translate: 0 -50%;
+      transition: opacity 0.2s ease, background-color 0.15s ease;
+    }
+
+    .product__media-nav:hover {
+      background: var(--color-bg);
+    }
+
+    .product__media-nav:focus-visible {
+      outline: 2px solid var(--color-fg);
+      outline-offset: 2px;
+    }
+
+    .product__media-nav[disabled] {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .product__media-nav--prev {
+      inset-inline-start: 1rem;
+    }
+
+    .product__media-nav--next {
+      inset-inline-end: 1rem;
+    }
+
+    .product__media-nav .icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .product__media-nav--prev .icon {
+      rotate: 180deg;
+    }
+  }
+
   @media screen and (min-width: 990px) {
     .product__media-list {
-      grid-auto-flow: row;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.75rem;
-      overflow: visible;
       margin: 0;
       padding: 0;
+      scroll-padding-inline: 0;
     }
 
-    .product__media-list--stacked {
-      grid-template-columns: 1fr;
+    /* One image at a time, sized to fit the screen */
+    .product__media-list .product__media {
+      aspect-ratio: auto !important;
+      height: min(calc(100vh - 12rem), 44rem);
     }
 
-    .product__media-list--grid .product__media-item:first-child {
-      grid-column: 1 / -1;
-    }
-
-    .product__media-counter {
-      display: none;
+    .product__media-list .product__media img {
+      object-fit: contain;
     }
   }
 
@@ -459,6 +622,11 @@
   .option__selected {
     font-weight: 400;
     color: var(--color-muted);
+    text-transform: capitalize;
+  }
+
+  .option__values--swatch {
+    gap: 0.625rem;
   }
 
   .option__values {
@@ -544,6 +712,11 @@
   .product__buy-row {
     display: flex;
     gap: 0.75rem;
+  }
+
+  .quantity__button[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 
   .product__add {

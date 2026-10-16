@@ -8,6 +8,54 @@
   </div>
 </section>
 
+{%- comment -%}
+  Old links (from the previous website, ads or social posts) that no longer exist:
+  log the broken path to Google Analytics, then send shoppers to search results
+  for the words in the link instead of leaving them on a dead end.
+{%- endcomment -%}
+<script>
+  (() => {
+    const path = location.pathname;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'page_404', page_404_path: path + location.search });
+
+    // The old site used /en/... for English; Shopify serves English without a prefix.
+    if (/^\/en(\/|$)/i.test(path)) {
+      location.replace(path.replace(/^\/en/i, '') || '/');
+      return;
+    }
+
+    // Old paginated listings (/product-category/x/page/2/, /shop/page/3/): drop the page part
+    // and retry, so the normal redirect for the category takes over.
+    const unpaged = path.replace(/\/page\/\d+\/?$/i, '').replace(/\/$/, '');
+    if (unpaged !== path.replace(/\/$/, '') && unpaged) {
+      location.replace(/^\/(ar\/)?shop$/i.test(unpaged) ? {{ routes.all_products_collection_url | json }} : unpaged + '/');
+      return;
+    }
+    if (/^\/(ar\/)?shop\/?$/i.test(path)) {
+      location.replace({{ routes.all_products_collection_url | json }});
+      return;
+    }
+
+    const segments = path.split('/').filter(Boolean).map((s) => {
+      try { return decodeURIComponent(s); } catch (e) { return s; }
+    });
+    const skip = /^(ar|en|page|product|products|product-category|product-tag|product-brand|brand|brands|collections|shop|category|tag|wp-content|uploads|amp|feed|\d+)$/i;
+    const words = segments.filter((s) => !skip.test(s)).pop();
+    const query = (words || '').replace(/\.[a-z0-9]{2,5}$/i, '').replace(/[-_+]+/g, ' ').replace(/\s\d+$/, '').trim();
+
+    const input = document.querySelector('.main-404 input[type="search"]');
+    if (query && input) input.value = query;
+
+    const looksLikeShopLink = /\/(product|products|product-category|product-tag|product-brand|brand|brands|tag|collections|shop|category)(\/|$)/i.test(path);
+    if (query && looksLikeShopLink) {
+      setTimeout(() => {
+        location.replace({{ routes.search_url | json }} + '?q=' + encodeURIComponent(query) + '&options%5Bprefix%5D=last');
+      }, 700);
+    }
+  })();
+</script>
+
 {% stylesheet %}
   .main-404__search {
     width: min(32rem, 100%);

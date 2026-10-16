@@ -27,9 +27,12 @@
     {% render 'css-variables' %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'buy-now-button.css' | asset_url | stylesheet_tag }}
 
     <script>
       document.documentElement.classList.replace('no-js', 'js');
+      // Extras that aren't needed for the first view (e.g. hover photos on cards) wait for this.
+      window.addEventListener('load', () => document.documentElement.classList.add('is-loaded'), { once: true });
       window.theme = {
         routes: {
           root: {{ routes.root_url | json }},

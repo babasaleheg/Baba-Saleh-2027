@@ -1,5 +1,7 @@
 {%- comment -%}
   Free-shipping progress bar. Shared by the cart drawer and cart page.
+  Threshold: Theme settings > Cart > free_shipping_threshold (EGP).
+  Free delivery is only offered in Cairo and Giza, so a note says so under the bar.
 {%- endcomment -%}
 {%- liquid
   assign threshold = settings.free_shipping_threshold | times: 100
@@ -7,6 +9,10 @@
   assign progress = 100
   if threshold > 0 and remaining > 0
     assign progress = cart.total_price | times: 100 | divided_by: threshold
+  endif
+  assign is_ar = false
+  if request.locale.iso_code == 'ar'
+    assign is_ar = true
   endif
 -%}
 {%- if settings.free_shipping_threshold > 0 -%}
@@ -20,6 +26,13 @@
       {%- endif -%}
     </p>
     <div class="shipping-progress__bar"><span></span></div>
+    <p class="shipping-progress__note">
+      {%- if is_ar -%}
+        * يسري على القاهرة والجيزة
+      {%- else -%}
+        * Applies to Cairo &amp; Giza
+      {%- endif -%}
+    </p>
   </div>
 {%- endif -%}
 
@@ -59,5 +72,11 @@
     border-radius: inherit;
     background: linear-gradient(90deg, var(--color-fg), var(--color-accent));
     transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .shipping-progress__note {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--color-muted);
   }
 {% endstylesheet %}

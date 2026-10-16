@@ -6,10 +6,14 @@
   - sizes: image sizes attribute
 {%- endcomment -%}
 {%- liquid
-  assign image_sizes = sizes | default: '(min-width: 1100px) 320px, (min-width: 750px) 33vw, 50vw'
+  assign image_sizes = sizes | default: '(min-width: 1100px) 240px, (min-width: 750px) 30vw, 36vw'
   assign loading = 'lazy'
+  assign priority = 'auto'
   if eager and index != blank and index < 4
     assign loading = 'eager'
+    if index < 2
+      assign priority = 'high'
+    endif
   endif
 -%}
 
@@ -56,7 +60,7 @@
   {%- capture analytics_item -%}
     {"item_id":{{ variant.sku | default: product.id | json }},"item_name":{{ product.title | json }},"item_brand":{{ product.vendor | json }},"item_category":{{ product.type | json }},"price":{{ card_variant.price | divided_by: 100.0 | json }}}
   {%- endcapture -%}
-  <article class="card card--{{ settings.card_image_style | default: 'cover' }}{% unless product.available %} card--sold-out{% endunless %}" data-item="{{ analytics_item | strip | escape }}" {% if index != blank %}data-reveal style="--reveal-index: {{ index | modulo: 4 }}"{% endif %}>
+  <article class="card card--{{ settings.card_image_style | default: 'cover' }}{% unless product.available %} card--sold-out{% endunless %}" data-item="{{ analytics_item | strip | escape }}" {% if index != blank and loading == 'lazy' %}data-reveal style="--reveal-index: {{ index | modulo: 4 }}"{% endif %}>
     <div class="media card__media">
       {%- if first_image -%}
         {{
@@ -64,8 +68,9 @@
           | image_url: width: 900
           | image_tag:
             loading: loading,
+            fetchpriority: priority,
             sizes: image_sizes,
-            widths: '240, 360, 480, 640, 900',
+            widths: '200, 300, 400, 500, 640, 900',
             alt: card_alt,
             class: 'card__image'
         }}
@@ -76,7 +81,7 @@
             | image_tag:
               loading: 'lazy',
               sizes: image_sizes,
-              widths: '240, 360, 480, 640, 900',
+              widths: '200, 300, 400, 500, 640, 900',
               alt: '',
               class: 'card__image card__image--secondary'
           }}
@@ -139,10 +144,7 @@
         <a href="{{ product.url }}" class="card__link" title="{{ product.title | escape }}">{{ product.title }}</a>
       </h3>
       {%- render 'product-category', product: product, class: 'card__category' -%}
-      {%- assign rating_count = product.metafields.reviews.rating_count.value | default: 0 -%}
-      {%- if rating_count > 0 and product.metafields.reviews.rating.value != blank -%}
-        {%- render 'rating-stars', rating: product.metafields.reviews.rating.value.rating, count: rating_count, class: 'stars--small card__rating' -%}
-      {%- endif -%}
+      {%- render 'judgeme-badge', product: product -%}
       {% render 'price', product: product %}
       {%- if color_option and color_option.values.size > 1 -%}
         <div class="card__swatches">
@@ -155,7 +157,11 @@
               elsif value.swatch.color
                 assign swatch_style = 'background-color:' | append: value.swatch.color
               else
-                assign swatch_style = 'background-color:' | append: value | downcase | remove: ' '
+                capture swatch_hex
+                  render 'color-hex', name: value
+                endcapture
+                assign swatch_hex = swatch_hex | strip
+                assign swatch_style = 'background-color:' | append: swatch_hex
               endif
               assign swatch_style = swatch_style | escape
             -%}
@@ -169,6 +175,22 @@
 {%- endif -%}
 
 {% stylesheet %}
+  /* Hover photos only matter with a mouse: skip them on phones, and on desktop load them
+     after the page has finished loading so they never compete with the first images. */
+  .card__image--secondary {
+    display: none;
+  }
+
+  @media (hover: hover) {
+    .is-loaded .card__image--secondary {
+      display: block;
+    }
+  }
+
+  html:not(.is-loaded) .card:hover .card__media .card__image:not(.card__image--secondary) {
+    opacity: 1;
+  }
+
   /* The open panel fills the image area so it is never clipped by the card media. */
   .card__quick-add:has(.quick-add__panel:not([hidden])) {
     inset: 0.5rem;

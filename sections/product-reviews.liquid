@@ -1,18 +1,23 @@
 {%- comment -%}
-  Product reviews, no app. Data comes from product metafields written by
-  `tools/woo_to_shopify/sync.py reviews-sync` (see docs/reviews.md):
-    reviews.rating / reviews.rating_count  average + count of approved reviews
-    babasaleh.reviews                      approved customer_review metaobjects, newest first
+  Product reviews, no app. Data comes from the product's "Approved reviews" field
+  (babasaleh.reviews, a list of customer_review entries). To publish a review, open the
+  product in admin > Metafields > Approved reviews and add an entry with Status "approved".
+  Average and count are worked out here (snippets/review-stats), so nothing needs syncing;
+  entries with Status "pending" or "rejected" are hidden.
   The summary, bars and list render only when there is at least one approved review.
   "Write a review" posts Shopify's contact form (hCaptcha / bot protection is automatic);
   the owner receives it by email and approves it in admin.
 {%- endcomment -%}
 {%- liquid
-  assign rating_count = product.metafields.reviews.rating_count.value | default: 0
-  assign rating = product.metafields.reviews.rating.value.rating
+  capture review_stats
+    render 'review-stats', product: product
+  endcapture
+  assign review_stats = review_stats | strip | split: '|'
+  assign rating_count = review_stats[0] | plus: 0
+  assign rating = review_stats[1] | plus: 0
   assign reviews = product.metafields.babasaleh.reviews.value
   assign has_reviews = false
-  if rating_count > 0 and rating != blank
+  if rating_count > 0
     assign has_reviews = true
   endif
   assign page_size = section.settings.reviews_per_page
@@ -51,12 +56,16 @@
                 {%- liquid
                   assign star_count = 0
                   for review in reviews
+                    assign review_status = review.status.value | default: 'approved'
+                    if review_status != 'approved'
+                      continue
+                    endif
                     assign review_stars = review.rating.value.rating | round
                     if review_stars == stars
                       assign star_count = star_count | plus: 1
                     endif
                   endfor
-                  assign star_pct = star_count | times: 100.0 | divided_by: reviews.size | round
+                  assign star_pct = star_count | times: 100.0 | divided_by: rating_count | round
                 -%}
                 <li class="product-reviews__bar-row">
                   <span class="visually-hidden">{{ 'reviews.distribution' | t: stars: stars, count: star_count }}</span>
@@ -186,15 +195,21 @@
       {%- if has_reviews and reviews.size > 0 -%}
         <div class="product-reviews__main">
           <ol class="product-reviews__list" role="list">
+            {%- assign shown = 0 -%}
             {%- for review in reviews -%}
               {%- liquid
+                assign review_status = review.status.value | default: 'approved'
+                if review_status != 'approved'
+                  continue
+                endif
+                assign shown = shown | plus: 1
                 assign review_rating = review.rating.value.rating
                 assign author = review.author_name.value | strip
                 if author == blank
                   assign author = 'reviews.anonymous' | t
                 endif
               -%}
-              <li class="review" data-review tabindex="-1" {% if forloop.index > page_size %}hidden{% endif %}>
+              <li class="review" data-review tabindex="-1" {% if shown > page_size %}hidden{% endif %}>
                 <div class="review__head">
                   {% render 'rating-stars', rating: review_rating %}
                   {%- if review.verified_buyer.value -%}
@@ -217,7 +232,7 @@
               </li>
             {%- endfor -%}
           </ol>
-          {%- if reviews.size > page_size -%}
+          {%- if rating_count > page_size -%}
             <button type="button" class="button button--secondary product-reviews__more" data-reviews-more hidden>
               {{ 'reviews.show_more' | t }}
             </button>

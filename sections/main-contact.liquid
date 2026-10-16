@@ -139,6 +139,7 @@
             <div class="select">
               <select class="select__select" id="ContactForm-topic" name="contact[Topic]">
                 <option value="Order">{{ 'pages.form.topics.order' | t }}</option>
+                <option value="Cancel order">{%- if request.locale.iso_code == 'ar' -%}إلغاء طلب{%- else -%}Cancel an order{%- endif -%}</option>
                 <option value="Returns &amp; refunds">{{ 'pages.form.topics.returns' | t }}</option>
                 <option value="Product question">{{ 'pages.form.topics.product' | t }}</option>
                 <option value="Events &amp; custom printing">{{ 'pages.form.topics.events' | t }}</option>
@@ -158,6 +159,35 @@
     </div>
   </div>
 </section>
+
+{%- comment -%}
+  "Request cancellation" links (order confirmation email) open this page with
+  ?topic=cancel&order=%231001&email=... and the form is filled in for the customer.
+{%- endcomment -%}
+<script>
+  (() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('topic') !== 'cancel') return;
+    const form = document.getElementById('ContactForm');
+    if (!form) return;
+    const order = (params.get('order') || '').trim();
+    const ar = document.documentElement.lang.startsWith('ar');
+    const set = (id, value) => {
+      const field = document.getElementById(id);
+      if (field && value && !field.value) field.value = value;
+    };
+    const topic = document.getElementById('ContactForm-topic');
+    if (topic) topic.value = 'Cancel order';
+    set('ContactForm-order', order);
+    set('ContactForm-email', params.get('email'));
+    set(
+      'ContactForm-body',
+      ar ? `أرجو إلغاء طلبي ${order}.` : `Please cancel my order ${order}.`
+    );
+    form.scrollIntoView({ block: 'start' });
+    document.getElementById('ContactForm-name')?.focus({ preventScroll: true });
+  })();
+</script>
 
 {% stylesheet %}
   .contact__grid {

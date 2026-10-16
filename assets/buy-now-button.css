@@ -1,0 +1,65 @@
+/* Store fixes (Oct 2026): Buy it now branding, mobile performance, Shop by sport layout, side menu text */
+
+/* Brand styling for Shopify's unbranded 'Buy it now' button */
+.shopify-payment-button__button--unbranded {
+  background-color: #febd19 !important;
+  color: #0a0a0a !important;
+  border-radius: 999px !important;
+  font-family: inherit !important;
+  font-weight: 600;
+  min-height: 56px;
+}
+.shopify-payment-button__button--unbranded:hover:not([disabled]) {
+  background-color: #f0ad00 !important;
+}
+.shopify-payment-button__more-options {
+  color: #0a0a0a;
+}
+
+/* Mobile performance: heavy effects that cause scroll lag on phones */
+@media screen and (max-width: 989px) {
+  /* Sticky header: solid background instead of a live blur of the page behind it */
+  .header-wrapper {
+    background: rgb(var(--color-bg-rgb));
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  /* Product cards: no per-image blend layer; white tile matches the white photo backgrounds */
+  .card--cutout .card__media {
+    background: #fff;
+  }
+  .card--cutout .card__media img {
+    mix-blend-mode: normal;
+  }
+}
+
+/* Shop by sport: 4 circles per screen on phones (was 2) */
+@media screen and (max-width: 749px) {
+  .collection-list .collection-list__grid--circles {
+    --per-view: 4;
+    --circle-gap: 0.625rem;
+  }
+  .collection-list .collection-tile--circles .collection-tile__title {
+    font-size: 0.75rem;
+  }
+}
+
+/* Side menu (mobile drawer): smaller text and tighter rows */
+.menu-drawer .drawer__header .h4 {
+  font-size: 1.0625rem;
+}
+.menu-drawer .menu-drawer__link {
+  font-size: 0.875rem;
+  padding-block: 0.5rem;
+}
+.menu-drawer .menu-drawer__sublink {
+  font-size: 0.8125rem;
+  padding-block: 0.375rem;
+}
+.menu-drawer .menu-drawer__link--sale {
+  padding: 0.625rem 1rem;
+}
+.menu-drawer .menu-drawer__utility {
+  font-size: 0.875rem;
+}

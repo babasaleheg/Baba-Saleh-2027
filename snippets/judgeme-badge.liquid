@@ -1,0 +1,27 @@
+{%- comment -%}
+  Judge.me star rating for a product. Judge.me hides it when the product has no reviews.
+  - product: product object
+  - badge_template: 'product' on the product page, 'manual-installation' on cards (default)
+{%- endcomment -%}
+<div
+  class="jdgm-widget jdgm-preview-badge"
+  data-id="{{ product.id }}"
+  data-template="{{ badge_template | default: 'manual-installation' }}"
+  data-auto-install="false"
+>
+  {{- product.metafields.judgeme.badge -}}
+</div>
+
+{% stylesheet %}
+  /* Gold stars everywhere Judge.me draws them (badges, reviews, form). */
+  .jdgm-star,
+  .jdgm-star.jdgm--on,
+  .jdgm-star.jdgm--half,
+  .jdgm-star.jdgm--off {
+    color: #f5b301 !important;
+  }
+
+  .jdgm-preview-badge {
+    font-size: 0.875rem;
+  }
+{% endstylesheet %}

@@ -1,5 +1,6 @@
 {%- liquid
   assign menu = linklists[section.settings.menu]
+  assign info_menu = linklists[section.settings.info_menu]
   assign language_count = localization.available_languages | size
   assign country_count = localization.available_countries | size
 -%}
@@ -165,6 +166,16 @@
       {% render 'search-form', id_prefix: 'Header', placeholder: section.settings.search_placeholder %}
     </div>
 
+    {%- if info_menu.links.size > 0 -%}
+      <nav class="header__info" aria-label="{{ info_menu.title | escape }}">
+        <ul class="header__info-list" role="list">
+          {%- for link in info_menu.links -%}
+            <li><a href="{{ link.url }}" class="header__info-link{% if link.active %} is-active{% endif %}" data-text="{{ link.title | escape }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
     <div class="header__end">
       {%- if section.settings.show_language_selector and language_count > 1 -%}
         {% render 'language-switcher', id_prefix: 'Header', compact: true %}
@@ -269,6 +280,13 @@
           </li>
         {%- endfor -%}
       </ul>
+      {%- if info_menu.links.size > 0 -%}
+        <ul class="menu-drawer__info" role="list">
+          {%- for link in info_menu.links -%}
+            <li><a href="{{ link.url }}" class="menu-drawer__info-link">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
     </div>
     <div class="drawer__footer menu-drawer__footer">
       {%- if shop.customer_accounts_enabled -%}
@@ -491,10 +509,15 @@
   /* Hover-capable desktops get the full navigation row; touch tablets keep the drawer. */
   @media screen and (min-width: 990px) and (hover: hover) {
     .header {
-      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
       grid-template-areas:
-        'logo search end'
-        'nav nav nav';
+        'logo search info end'
+        'nav nav nav nav';
+    }
+
+    .header .header__info {
+      grid-area: info;
+      display: block;
     }
 
     .header__menu-toggle {
@@ -750,6 +773,64 @@
     background: #c81825;
   }
 
+  .header__info {
+    display: none;
+  }
+
+  .header__info-list {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin: 0;
+  }
+
+  .header__info-link {
+    display: inline-flex;
+    flex-direction: column;
+    font-size: 0.875rem;
+    font-weight: 400;
+    white-space: nowrap;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+    transition: text-decoration-color 0.2s ease;
+  }
+
+  /* Reserves the bold width so hovering doesn't shift the row. */
+  .header__info-link::after {
+    content: attr(data-text);
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    font-weight: 700;
+  }
+
+  .header__info-link:hover,
+  .header__info-link.is-active {
+    font-weight: 700;
+    text-decoration-color: #febd19;
+  }
+
+  .menu-drawer__info {
+    display: grid;
+    margin: 1.25rem 0 0;
+    padding-block-start: 0.75rem;
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .menu-drawer__info-link {
+    display: block;
+    padding-block: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+
+  .menu-drawer__info-link:hover {
+    color: var(--color-fg);
+  }
+
   .menu-drawer__sublink--all {
     font-weight: 700;
   }
@@ -837,6 +918,11 @@
       "default": "main-menu",
       "label": "t:sections.header.settings.menu.label",
       "info": "t:sections.header.settings.menu.info"
+    },
+    {
+      "type": "link_list",
+      "id": "info_menu",
+      "label": "Info links (events, about, contact)"
     },
     {
       "type": "checkbox",

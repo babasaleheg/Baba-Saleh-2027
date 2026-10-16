@@ -19,7 +19,7 @@
         endif
       -%}
       <div
-        class="hero__slide hero__slide--{{ block.settings.text_position }}{% if is_collage %} hero__slide--collage color-{{ block.settings.color_scheme }}{% endif %}"
+        class="hero__slide{% if forloop.first %} is-active hero__slide--first{% endif %} hero__slide--{{ block.settings.text_position }}{% if is_collage %} hero__slide--collage color-{{ block.settings.color_scheme }}{% endif %}"
         role="group"
         aria-roledescription="slide"
         aria-label="{{ forloop.index }} / {{ slide_count }}"
@@ -106,11 +106,17 @@
               {%- for product in slide_collection.products -%}
                 {%- if product.featured_media -%}
                   {%- assign shown = shown | plus: 1 -%}
+                  {%- liquid
+                    assign item_priority = 'auto'
+                    if shown == 2
+                      assign item_priority = priority
+                    endif
+                  -%}
                   <div class="hero__collage-item hero__collage-item--{{ shown }}">
                     {{
                       product.featured_media
                       | image_url: width: 800
-                      | image_tag: loading: 'eager', sizes: '(min-width: 990px) 22vw, 40vw', widths: '300, 500, 800', alt: product.title
+                      | image_tag: loading: loading, fetchpriority: item_priority, sizes: '(min-width: 990px) 22vw, 36vw', widths: '300, 400, 500, 800', alt: product.title
                     }}
                   </div>
                   {%- if shown == 3 -%}{%- break -%}{%- endif -%}
@@ -290,6 +296,9 @@
   .hero__slide.is-active .hero__text > :nth-child(3) { transition-delay: 0.16s; }
   .hero__slide.is-active .hero__text > :nth-child(4) { transition-delay: 0.24s; }
 
+  /* The first slide's text is the largest thing on screen: show it immediately (no fade-in
+     waiting for JavaScript), so the page paints as fast as possible. */
+  .hero__slide--first .hero__text > *,
   .no-js .hero__slide .hero__text > * {
     opacity: 1;
     transform: none;

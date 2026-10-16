@@ -49,6 +49,11 @@
   endif
   assign seo_description = seo_description | truncate: 300
 
+  # Shopify already HTML-escapes page titles and descriptions; decode first so
+  # the escape filters below don't turn "&" into "&amp;amp;" in tabs and Google.
+  assign seo_title = seo_title | replace: '&amp;', '&' | replace: '&#39;', "'" | replace: '&quot;', '"' | replace: '&lt;', '<' | replace: '&gt;', '>'
+  assign seo_description = seo_description | replace: '&amp;', '&' | replace: '&#39;', "'" | replace: '&quot;', '"' | replace: '&lt;', '<' | replace: '&gt;', '>'
+
   # ----- Social -----
   assign og_type = 'website'
   if request.page_type == 'product'
@@ -126,3 +131,12 @@
 {%- if settings.facebook_domain_verification != blank %}
   <meta name="facebook-domain-verification" content="{{ settings.facebook_domain_verification | escape }}">
 {%- endif %}
+
+{%- comment -%}
+  Old WordPress links like /shop/?filter_color=red are served Shopify's home page (status 200),
+  which Google reports as soft 404s. Keep them out of the index and send visitors to all products.
+{%- endcomment -%}
+{%- if request.page_type == 'index' and request.path != '/' and request.path != '/ar' and request.path != '/ar/' -%}
+  <meta name="robots" content="noindex, follow">
+  <script>location.replace({{ routes.all_products_collection_url | json }});</script>
+{%- endif -%}

@@ -1,74 +1,17 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
-    "color_schemes": {
-      "scheme-1": {
-        "settings": {
-          "background": "#FFFFFF",
-          "text": "#0A0A0A",
-          "surface": "#F4F4F5",
-          "accent": "#FEBD19",
-          "accent_text": "#0A0A0A",
-          "button": "#0A0A0A",
-          "button_text": "#FFFFFF"
-        }
-      },
-      "scheme-2": {
-        "settings": {
-          "background": "#F4F4F5",
-          "text": "#0A0A0A",
-          "surface": "#FFFFFF",
-          "accent": "#FEBD19",
-          "accent_text": "#0A0A0A",
-          "button": "#0A0A0A",
-          "button_text": "#FFFFFF"
-        }
-      },
-      "scheme-3": {
-        "settings": {
-          "background": "#0A0A0A",
-          "text": "#FFFFFF",
-          "surface": "#1A1A1D",
-          "accent": "#FEBD19",
-          "accent_text": "#0A0A0A",
-          "button": "#FEBD19",
-          "button_text": "#0A0A0A"
-        }
-      },
-      "scheme-4": {
-        "settings": {
-          "background": "#FEBD19",
-          "text": "#0A0A0A",
-          "surface": "#FFD25E",
-          "accent": "#0A0A0A",
-          "accent_text": "#FEBD19",
-          "button": "#0A0A0A",
-          "button_text": "#FFFFFF"
-        }
-      },
-      "scheme-5": {
-        "settings": {
-          "background": "#FFF6DC",
-          "text": "#0A0A0A",
-          "surface": "#FFFFFF",
-          "accent": "#FEBD19",
-          "accent_text": "#0A0A0A",
-          "button": "#0A0A0A",
-          "button_text": "#FFFFFF"
-        }
-      },
-      "scheme-6": {
-        "settings": {
-          "background": "#E5202E",
-          "text": "#FFFFFF",
-          "surface": "#C81825",
-          "accent": "#FEBD19",
-          "accent_text": "#0A0A0A",
-          "button": "#FFFFFF",
-          "button_text": "#0A0A0A"
-        }
-      }
-    },
     "color_sale": "#E5202E",
+    "color_highlight": "#FEBD19",
+    "color_highlight_text": "#0A0A0A",
     "font_pairing": "brand",
     "heading_uppercase": false,
     "heading_weight": 700,
@@ -76,22 +19,122 @@
     "corner_radius": 12,
     "button_style": "pill",
     "animations_enabled": true,
+    "card_image_style": "cutout",
     "card_show_secondary_image": true,
     "card_show_vendor": true,
     "card_quick_add": true,
     "cart_type": "drawer",
-    "free_shipping_threshold": 1500,
+    "free_shipping_threshold": 2999,
     "cart_show_note": true,
     "cart_color_scheme": "scheme-1",
     "whatsapp_number": "+20 102 830 5495",
-    "sections": {},
-    "color_highlight": "#FEBD19",
-    "color_highlight_text": "#0A0A0A",
-    "card_image_style": "cutout",
     "favicon": "shopify://shop_images/baba-saleh-favicon.png",
     "share_image": "shopify://shop_images/baba-saleh-share.jpg",
     "gtm_id": "GTM-NXMWPWSV",
-    "ga4_id": ""
+    "ga4_id": "",
+    "sections": {
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {}
+      }
+    },
+    "content_for_index": [],
+    "blocks": {
+      "2200952712151285029": {
+        "type": "shopify://apps/microsoft-clarity/blocks/brandAgents_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
+        "disabled": false,
+        "settings": {}
+      },
+      "2567389343055140935": {
+        "type": "shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
+        "disabled": false,
+        "settings": {}
+      },
+      "6159598353363395418": {
+        "type": "shopify://apps/google-youtube/blocks/store_widget/14ec7bd0-ac77-49a9-9417-90752398bdff",
+        "disabled": true,
+        "settings": {
+          "widget_position": "LEFT_BOTTOM",
+          "side_margin": 36,
+          "bottom_margin": 36,
+          "mobile_side_margin": 16,
+          "mobile_bottom_margin": 46
+        }
+      },
+      "14060646107696862457": {
+        "type": "shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+        "disabled": false,
+        "settings": {}
+      }
+    },
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#ffffff",
+          "text": "#0a0a0a",
+          "surface": "#f4f4f5",
+          "accent": "#febd19",
+          "accent_text": "#0a0a0a",
+          "button": "#0a0a0a",
+          "button_text": "#ffffff"
+        }
+      },
+      "scheme-2": {
+        "settings": {
+          "background": "#f4f4f5",
+          "text": "#0a0a0a",
+          "surface": "#ffffff",
+          "accent": "#febd19",
+          "accent_text": "#0a0a0a",
+          "button": "#0a0a0a",
+          "button_text": "#ffffff"
+        }
+      },
+      "scheme-3": {
+        "settings": {
+          "background": "#0a0a0a",
+          "text": "#ffffff",
+          "surface": "#1a1a1d",
+          "accent": "#febd19",
+          "accent_text": "#0a0a0a",
+          "button": "#febd19",
+          "button_text": "#0a0a0a"
+        }
+      },
+      "scheme-4": {
+        "settings": {
+          "background": "#febd19",
+          "text": "#0a0a0a",
+          "surface": "#ffd25e",
+          "accent": "#0a0a0a",
+          "accent_text": "#febd19",
+          "button": "#0a0a0a",
+          "button_text": "#ffffff"
+        }
+      },
+      "scheme-5": {
+        "settings": {
+          "background": "#fff6dc",
+          "text": "#0a0a0a",
+          "surface": "#ffffff",
+          "accent": "#febd19",
+          "accent_text": "#0a0a0a",
+          "button": "#0a0a0a",
+          "button_text": "#ffffff"
+        }
+      },
+      "scheme-6": {
+        "settings": {
+          "background": "#e5202e",
+          "text": "#ffffff",
+          "surface": "#c81825",
+          "accent": "#febd19",
+          "accent_text": "#0a0a0a",
+          "button": "#ffffff",
+          "button_text": "#0a0a0a"
+        }
+      }
+    }
   },
   "presets": {
     "Default": {
@@ -175,7 +218,7 @@
       "card_show_vendor": true,
       "card_quick_add": true,
       "cart_type": "drawer",
-      "free_shipping_threshold": 1500,
+      "free_shipping_threshold": 2999,
       "cart_show_note": true,
       "cart_color_scheme": "scheme-1",
       "whatsapp_number": "+20 102 830 5495",

@@ -1,19 +1,32 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "main-product",
       "blocks": {
         "vendor": {
-          "type": "vendor"
+          "type": "vendor",
+          "settings": {}
         },
         "title": {
-          "type": "title"
+          "type": "title",
+          "settings": {}
         },
         "price": {
-          "type": "price"
+          "type": "price",
+          "settings": {}
         },
         "variants": {
-          "type": "variant_picker"
+          "type": "variant_picker",
+          "settings": {}
         },
         "buy": {
           "type": "buy_buttons",
@@ -41,11 +54,17 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Delivery & returns",
-            "content": "<p>We deliver to every governorate in Egypt. Orders are usually delivered within 2–5 working days. Unused items can be returned within 7 days of delivery.</p>"
+            "content": "<p>We deliver to every governorate in Egypt. Orders are usually delivered within 2–5 working days. Unused items can be returned within 7 days of delivery.</p>",
+            "page": ""
           }
         },
         "share": {
-          "type": "share"
+          "type": "share",
+          "settings": {}
+        },
+        "judge_me_reviews_preview_badge_hRy6eT": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
         }
       },
       "block_order": [
@@ -57,23 +76,21 @@
         "perks",
         "description",
         "shipping",
-        "share"
+        "share",
+        "judge_me_reviews_preview_badge_hRy6eT"
       ],
       "settings": {
         "gallery_layout": "grid",
         "color_scheme": "scheme-1"
       }
     },
+    "size_guide": {
+      "type": "size-guide",
+      "settings": {}
+    },
     "reviews": {
-      "type": "product-reviews",
-      "settings": {
-        "heading": "",
-        "reviews_per_page": 5,
-        "show_form": true,
-        "color_scheme": "scheme-1",
-        "padding_top": 48,
-        "padding_bottom": 48
-      }
+      "type": "judgeme-reviews",
+      "settings": {}
     },
     "related": {
       "type": "related-products",
@@ -85,11 +102,31 @@
         "padding_top": 48,
         "padding_bottom": 64
       }
+    },
+    "17920444113730fa6c": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_review_widget_MUPNrE": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "review_data": "sample_data",
+            "max_width": 1200,
+            "show_shop_reviews": false,
+            "empty_state": "empty_widget"
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_review_widget_MUPNrE"
+      ],
+      "settings": {}
     }
   },
   "order": [
     "main",
+    "size_guide",
     "reviews",
-    "related"
+    "related",
+    "17920444113730fa6c"
   ]
 }

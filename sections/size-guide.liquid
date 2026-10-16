@@ -1,0 +1,367 @@
+{%- comment -%}
+  Size guide: a "Size guide" button next to the Size option opens the chart in a dialog.
+  Which guide is shown:
+    1. The product's own size guide (Products > Size guide field), if set.
+    2. Otherwise picked automatically for clothing and footwear from the product's
+       tags (for:men / for:women / for:kids) and its size values:
+         - footwear: EU 36+ -> adult-shoes, smaller numbers -> kids-shoes
+         - clothing: number sizes up to 18 -> kids-clothing,
+                     letter sizes -> womens-clothing (for:women) or mens-clothing
+    3. Otherwise the store default (shop metafield babasaleh.default_size_guide) for clothing.
+{%- endcomment -%}
+{%- liquid
+  assign guide = product.metafields.babasaleh.size_guide.value
+  assign has_size = false
+  assign first_size = ''
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name contains 'size' or option_name contains 'مقاس'
+      assign has_size = true
+      assign first_size = option.values.first.name | append: '' | upcase | strip
+      break
+    endif
+  endfor
+
+  if guide == blank and has_size
+    assign ptype = product.type | downcase
+    assign is_footwear = false
+    assign is_clothing = false
+    if product.tags contains 'dept:footwear' or ptype contains 'shoe' or ptype contains 'slipper' or ptype contains 'sandal'
+      assign is_footwear = true
+    elsif product.tags contains 'dept:clothing' or ptype contains 'swimwear' or ptype contains 'tracksuit' or ptype contains 'shirt' or ptype contains 'pants' or ptype contains 'shorts' or ptype contains 'jacket' or ptype contains 'bra'
+      assign is_clothing = true
+    endif
+
+    assign is_letter = false
+    if first_size contains 'X' or first_size contains 'S' or first_size contains 'M' or first_size contains 'L'
+      assign is_letter = true
+    endif
+    assign first_num = 0
+    unless is_letter
+      assign first_num = first_size | slice: 0, 2 | plus: 0
+    endunless
+
+    assign is_for_men = false
+    if product.tags contains 'for:men'
+      assign is_for_men = true
+    endif
+
+    assign guide_handle = ''
+    if is_footwear
+      if first_num > 0 and first_num < 36
+        assign guide_handle = 'kids-shoes'
+      else
+        assign guide_handle = 'adult-shoes'
+      endif
+    elsif is_clothing
+      if first_num > 0 and first_num <= 18
+        assign guide_handle = 'kids-clothing'
+      elsif product.tags contains 'for:women' and is_for_men == false
+        assign guide_handle = 'womens-clothing'
+      else
+        assign guide_handle = 'mens-clothing'
+      endif
+    endif
+
+    if guide_handle != ''
+      assign guide = metaobjects.size_guide[guide_handle]
+    endif
+    if guide == blank and is_clothing
+      assign guide = shop.metafields.babasaleh.default_size_guide.value
+    endif
+  endif
+
+  assign is_ar = false
+  if request.locale.iso_code == 'ar'
+    assign is_ar = true
+  endif
+-%}
+{%- if guide != blank -%}
+  <dialog class="size-guide" id="SizeGuide-{{ section.id }}" aria-labelledby="SizeGuideTitle-{{ section.id }}">
+    <div class="size-guide__inner">
+      <div class="size-guide__head">
+        <h2 class="size-guide__title h4" id="SizeGuideTitle-{{ section.id }}">
+          {%- if is_ar -%}دليل المقاسات{%- else -%}{{ guide.title.value | escape }}{%- endif -%}
+        </h2>
+        <button type="button" class="size-guide__close" data-size-guide-close aria-label="{{ 'general.close' | t }}">
+          {% render 'icon', icon: 'close' %}
+        </button>
+      </div>
+
+      {%- if guide.size_table != blank -%}
+        {%- assign rows = guide.size_table.value | newline_to_br | split: '<br />' -%}
+        <div class="size-guide__table-wrap">
+          <table class="size-guide__table">
+            {%- for row in rows -%}
+              {%- assign clean_row = row | strip -%}
+              {%- if clean_row == blank -%}{%- continue -%}{%- endif -%}
+              {%- assign cells = clean_row | split: '|' -%}
+              {%- if forloop.first -%}
+                <thead>
+                  <tr>
+                    {%- for cell in cells -%}<th scope="col">{{ cell | strip | escape }}</th>{%- endfor -%}
+                  </tr>
+                </thead>
+                <tbody>
+              {%- else -%}
+                <tr data-size-row="{{ cells.first | strip | upcase | escape }}">
+                  {%- for cell in cells -%}
+                    {%- if forloop.first -%}
+                      <th scope="row">{{ cell | strip | escape }}</th>
+                    {%- else -%}
+                      <td>{{ cell | strip | escape }}</td>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </tr>
+              {%- endif -%}
+            {%- endfor -%}
+            </tbody>
+          </table>
+        </div>
+      {%- endif -%}
+
+      {%- if guide.chart.value != blank -%}
+        <div class="size-guide__chart">
+          {{
+            guide.chart.value
+            | image_url: width: 1800
+            | image_tag:
+              loading: 'lazy',
+              sizes: '(min-width: 990px) 860px, 100vw',
+              widths: '600, 900, 1200, 1800',
+              alt: guide.title.value
+          }}
+        </div>
+      {%- endif -%}
+
+      {%- if guide.how_to_measure != blank -%}
+        <div class="size-guide__measure">
+          <h3 class="size-guide__subtitle">{%- if is_ar -%}طريقة القياس{%- else -%}How to measure{%- endif -%}</h3>
+          <ul role="list">
+            {%- assign lines = guide.how_to_measure.value | newline_to_br | split: '<br />' -%}
+            {%- for line in lines -%}
+              {%- assign clean_line = line | strip -%}
+              {%- if clean_line != blank -%}<li>{{ clean_line | escape }}</li>{%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      {%- if guide.note != blank -%}
+        <p class="size-guide__note">{{ guide.note.value | escape }}</p>
+      {%- endif -%}
+    </div>
+  </dialog>
+
+  <template id="SizeGuideButton-{{ section.id }}">
+    <button type="button" class="size-guide__open" data-size-guide-open>
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18v8H3z"/><path d="M7 8v3M11 8v4M15 8v3M19 8v4"/></svg>
+      <span>{%- if is_ar -%}دليل المقاسات{%- else -%}Size guide{%- endif -%}</span>
+    </button>
+  </template>
+
+  <script>
+    (() => {
+      const dialog = document.getElementById('SizeGuide-{{ section.id }}');
+      const tpl = document.getElementById('SizeGuideButton-{{ section.id }}');
+      if (!dialog || !tpl) return;
+      const sizeWords = ['size', 'مقاس'];
+      let sizeOption = null;
+      const highlight = () => {
+        const checked = sizeOption && sizeOption.querySelector('input:checked');
+        const value = checked ? checked.value.trim().toUpperCase() : '';
+        dialog.querySelectorAll('[data-size-row]').forEach((row) => {
+          row.classList.toggle('is-selected', value !== '' && row.dataset.sizeRow === value);
+        });
+      };
+      const open = () => {
+        highlight();
+        dialog.showModal();
+      };
+      const place = () => {
+        document.querySelectorAll('variant-picker .option__legend').forEach((legend) => {
+          const text = legend.textContent.toLowerCase();
+          if (!sizeOption && sizeWords.some((w) => text.includes(w))) sizeOption = legend.closest('.option');
+        });
+        const host = sizeOption || document.querySelector('variant-picker');
+        if (!host || host.querySelector('[data-size-guide-open]')) return;
+        const button = tpl.content.firstElementChild.cloneNode(true);
+        button.addEventListener('click', open);
+        if (sizeOption) {
+          sizeOption.classList.add('option--has-guide');
+          sizeOption.querySelector('.option__legend').after(button);
+        } else {
+          host.append(button);
+        }
+      };
+      dialog.querySelector('[data-size-guide-close]').addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', place);
+      } else {
+        place();
+      }
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .size-guide__open {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-block-start: -0.25rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-fg);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .size-guide__open:focus-visible {
+    outline: 2px solid var(--color-fg);
+    outline-offset: 3px;
+  }
+
+  .size-guide {
+    width: min(56rem, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    color: var(--color-fg);
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.45);
+  }
+
+  .size-guide::backdrop {
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .size-guide__inner {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+
+  .size-guide__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .size-guide__title {
+    margin: 0;
+  }
+
+  .size-guide__close {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .size-guide__close .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .size-guide__table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-small);
+  }
+
+  .size-guide__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .size-guide__table th,
+  .size-guide__table td {
+    padding: 0.625rem 0.875rem;
+    text-align: start;
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .size-guide__table thead th {
+    background: var(--color-surface);
+    font-weight: 600;
+  }
+
+  .size-guide__table tbody tr:last-child th,
+  .size-guide__table tbody tr:last-child td {
+    border-block-end: 0;
+  }
+
+  .size-guide__table tbody th {
+    position: sticky;
+    inset-inline-start: 0;
+    background: var(--color-bg);
+    font-weight: 700;
+  }
+
+  .size-guide__table tr.is-selected th,
+  .size-guide__table tr.is-selected td {
+    background: var(--color-fg);
+    color: var(--color-bg);
+  }
+
+  .size-guide__chart {
+    overflow-x: auto;
+  }
+
+  .size-guide__chart img {
+    display: block;
+    width: 100%;
+    min-width: 36rem;
+    height: auto;
+    border-radius: var(--radius-small);
+  }
+
+  .size-guide__subtitle {
+    margin: 0 0 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .size-guide__measure ul {
+    display: grid;
+    gap: 0.375rem;
+    margin: 0;
+    padding-inline-start: 1.125rem;
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+  }
+
+  .size-guide__note {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Size guide",
+  "tag": "div",
+  "class": "section-size-guide",
+  "settings": []
+}
+{% endschema %}

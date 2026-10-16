@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -12,8 +21,12 @@
         "subtitle": "<p>From inflatable gates and medals to printed banners and team apparel, our experienced team handles event production and custom printing so every detail matches your vision.</p>",
         "button_label": "Plan your event on WhatsApp",
         "button_link": "https://wa.me/201028305495",
-        "button_label_2": "See our services",
-        "button_link_2": "#services",
+        "button_label_2": "See our work",
+        "button_link_2": "#gallery",
+        "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.17-PM.jpg",
+        "badge_text": "Events • Medals • Printing",
+        "chip_1": "Sports days & runs",
+        "chip_2": "Delivered & set up",
         "ribbon": "Inflatable gates, Medals & trophies, Printed banners, Custom team apparel, Custom graphics, Sports days"
       }
     },
@@ -33,6 +46,7 @@
           "type": "card",
           "settings": {
             "icon": "star",
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.16-PM-1.jpg",
             "title": "Inflatable gates",
             "text": "<p>Eye-catching start and finish gates. We handle the details so you can enjoy the event.</p>"
           }
@@ -41,15 +55,17 @@
           "type": "card",
           "settings": {
             "icon": "trophy",
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.15-PM-1.jpg",
             "title": "Medals",
             "text": "<p>Creative designs that turn your medals into a memorable piece of art.</p>",
-            "link": "shopify://collections/all"
+            "link": "shopify://collections/trophy-cups-medals"
           }
         },
         "c": {
           "type": "card",
           "settings": {
             "icon": "printer",
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.16-PM-2.jpg",
             "title": "Print services",
             "text": "<p>Quality printed materials that make your event's message shine.</p>"
           }
@@ -58,6 +74,7 @@
           "type": "card",
           "settings": {
             "icon": "bolt",
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.18-PM-1.jpg",
             "title": "Custom graphics",
             "text": "<p>Tailored graphics that bring your vision to life and lift your brand.</p>"
           }
@@ -68,6 +85,113 @@
         "b",
         "c",
         "d"
+      ]
+    },
+    "gallery": {
+      "type": "event-gallery",
+      "settings": {
+        "eyebrow": "Event highlights",
+        "heading": "See our work",
+        "text": "<p>Banners, gates, medals and apparel from events we have produced.</p>",
+        "anchor": "gallery",
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 80
+      },
+      "blocks": {
+        "p1": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.18-PM-2.jpg"
+          }
+        },
+        "p3": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-26-at-10.18.19-PM.jpg"
+          }
+        },
+        "p4": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.19-PM.jpg"
+          }
+        },
+        "p5": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.20-PM.jpg"
+          }
+        },
+        "p6": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.14-PM.jpg"
+          }
+        },
+        "p7": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-26-at-10.18.18-PM-4.jpg"
+          }
+        },
+        "p8": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.19-PM-2.jpg"
+          }
+        },
+        "p9": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.20-PM-1.jpg"
+          }
+        },
+        "p10": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.18-PM-3.jpg"
+          }
+        },
+        "p11": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.16-PM-1.jpg"
+          }
+        },
+        "p12": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.16-PM-2.jpg"
+          }
+        },
+        "p2": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.17-PM.jpg"
+          }
+        },
+        "p13": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.17-PM-1.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5",
+        "p6",
+        "p7",
+        "p8",
+        "p9",
+        "p10",
+        "p11",
+        "p12",
+        "p13"
       ]
     },
     "steps": {
@@ -178,6 +302,7 @@
   "order": [
     "hero",
     "services",
+    "gallery",
     "steps",
     "testimonials",
     "cta"

@@ -1,0 +1,39 @@
+{%- comment -%}
+  Judge.me review list and "Write a review" form for the product.
+  The form is kept simple: stars, name, email and comment. The title and the
+  photo/video upload are hidden here.
+{%- endcomment -%}
+<div class="section judgeme-reviews">
+  <div class="page-width">
+    <div
+      id="judgeme_product_reviews"
+      class="jdgm-widget jdgm-review-widget jdgm-outside-widget"
+      data-id="{{ product.id }}"
+      data-product-title="{{ product.title | escape }}"
+      data-auto-install="false"
+    >
+      {{- product.metafields.judgeme.widget -}}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .judgeme-reviews {
+    padding-block: 3rem;
+  }
+
+  .judgeme-reviews .jdgm-form__fieldset:has([name='review_title']),
+  .judgeme-reviews .jdgm-form__fieldset:has(.jdgm-picture-fieldset),
+  .judgeme-reviews .jdgm-picture-fieldset {
+    display: none !important;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Reviews (Judge.me)",
+  "tag": "section",
+  "enabled_on": { "templates": ["product"] },
+  "settings": []
+}
+{% endschema %}

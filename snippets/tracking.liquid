@@ -56,9 +56,12 @@
 
   {%- if gtm_id != blank -%}
     <script>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-      var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
-      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      // Google Tag Manager starts once the page has loaded, so its tags never slow down the first view.
+      (function(w,d,s,l,i){
+        var start=function(){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+        var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
+        j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);};
+        if(d.readyState==='complete'){start();}else{w.addEventListener('load',function(){setTimeout(start,0);},{once:true});}
       })(window,document,'script','dataLayer',{{ gtm_id | json }});
     </script>
   {%- endif -%}

@@ -246,13 +246,10 @@
         ]
       },
       {
-        "type": "range",
+        "type": "number",
         "id": "free_shipping_threshold",
         "label": "t:settings_schema.cart.settings.free_shipping_threshold.label",
         "info": "t:settings_schema.cart.settings.free_shipping_threshold.info",
-        "min": 0,
-        "max": 5000,
-        "step": 100,
         "default": 1500
       },
       {
