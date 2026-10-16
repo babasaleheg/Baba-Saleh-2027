@@ -30,6 +30,7 @@ Three areas, each with Standard / Heavy / Very Heavy. Heavy covers some categori
 - Reviews: Judge.me (stars gold, form: stars, name, email, comment). Old reviews were metaobjects `customer_review` (imported to Judge.me).
 - Product gallery: slider with arrows on desktop.
 - Email templates: built in scratchpad (9 templates). Shopify notification emails cannot load live products.
+- Oct 16: Arabic-locale customers got Shopify's default Arabic email (the 'ar' translation of each EmailTemplate overrides the custom one). Registered full Arabic RTL versions via translationsRegister (resource type EMAIL_TEMPLATE) for the 7 pasted templates: order confirmation, shipping, out for delivery, canceled, refund, delivered, welcome (welcome = same bilingual body). Not pasted yet: abandoned checkout, staff new order. If the owner edits an English template later, the Arabic one must be re-registered (new digest).
 
 ## Open to-dos (Oct 15 2026)
 - Oct 15: "Speed" theme published (live). New draft "Baba Saleh 2027 – Speed 2" (166776471600): smaller card images (widths 200–900, mobile sizes 36vw; WebP from Shopify at 640w was ~93KB), collection banner image sized to its 160px box, hero collage only the main image high priority, GTM loads after page load. Test: collection LCP after server 2.5s -> 1.5s (slow-phone emulation). Owner publishes.
