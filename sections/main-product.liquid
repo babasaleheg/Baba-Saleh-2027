@@ -83,9 +83,15 @@
             {%- when 'title' -%}
               <h1 class="product__title h2" {{ block.shopify_attributes }}>{{ product.title }}</h1>
               {%- render 'product-category', product: product, style: 'trail' -%}
-              <a href="#judgeme_product_reviews" class="product__rating">
-                {%- render 'judgeme-badge', product: product, badge_template: 'product' -%}
-              </a>
+              {%- comment -%} Stars only when there are reviews, so an empty badge leaves no gap {%- endcomment -%}
+              {%- assign jm_badge = product.metafields.judgeme.badge | append: '' -%}
+              {%- if jm_badge != blank and jm_badge contains 'data-number-of-reviews' -%}
+                {%- unless jm_badge contains "data-number-of-reviews='0'" -%}
+                  <a href="#judgeme_product_reviews" class="product__rating">
+                    {%- render 'judgeme-badge', product: product, badge_template: 'product' -%}
+                  </a>
+                {%- endunless -%}
+              {%- endif -%}
 
             {%- when 'price' -%}
               <div class="product__price" data-price-container {{ block.shopify_attributes }}>
@@ -228,6 +234,7 @@
                   </p>
                 {%- endif -%}
               </div>
+              {%- render 'bought-together', product: product, variant: current_variant -%}
 
             {%- when 'perks' -%}
               <ul class="product__perks" role="list" {{ block.shopify_attributes }}>

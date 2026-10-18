@@ -432,6 +432,97 @@
   }
   customElements.define('quick-add', QuickAdd);
 
+  /* ---------- Frequently bought together (product page) ---------- */
+  class BoughtTogether extends HTMLElement {
+    connectedCallback() {
+      this.mainPrice = Number(this.querySelector('[data-fbt-main-price]')?.dataset.price || 0);
+      this.mainPrice = this.mainPrice || this.parsePrice();
+      this.addEventListener('change', () => this.update());
+      document.addEventListener('variant:change', (event) => {
+        const v = event.detail?.variant;
+        if (!v) return;
+        this.mainPrice = v.price;
+        const el = this.querySelector('[data-fbt-main-price]');
+        if (el) el.textContent = this.money(v.price);
+        this.update();
+      });
+      this.querySelector('[data-fbt-add]')?.addEventListener('click', () => this.add());
+    }
+
+    parsePrice() {
+      const input = document.querySelector('[data-variant-id]');
+      const v = JSON.parse(document.querySelector('[data-variants]')?.textContent || '[]').find((x) => String(x.id) === input?.value);
+      return v?.price || 0;
+    }
+
+    money(cents) {
+      const amount = cents / 100;
+      const fmt = this.dataset.moneyFormat || '{{amount}}';
+      return fmt.replace(/\{\{\s*(\w+)\s*\}\}/, (_, key) => {
+        const decimals = /no_decimals/.test(key) ? 0 : 2;
+        let text = amount.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, /comma_separator/.test(key) ? '.' : ',');
+        if (/comma_separator/.test(key)) text = text.replace(/\.(\d{2})$/, ',$1');
+        return text;
+      });
+    }
+
+    picked() {
+      return [...this.querySelectorAll('[data-fbt-item]')].filter((item) => item.querySelector('[data-fbt-toggle]').checked);
+    }
+
+    update() {
+      let total = this.mainPrice;
+      for (const item of this.querySelectorAll('[data-fbt-item]')) {
+        const on = item.querySelector('[data-fbt-toggle]').checked;
+        item.classList.toggle('is-off', !on);
+        const variant = item.querySelector('[data-fbt-variant]');
+        const option = variant.tagName === 'SELECT' ? variant.selectedOptions[0] : variant;
+        const price = Number(option.dataset.price || 0);
+        const priceEl = item.querySelector('.fbt__price');
+        if (priceEl) priceEl.textContent = this.money(price);
+        if (on) total += price;
+      }
+      const totalEl = this.querySelector('[data-fbt-total]');
+      if (totalEl) totalEl.textContent = this.money(total);
+      const button = this.querySelector('[data-fbt-add]');
+      if (button) button.textContent = this.picked().length ? button.dataset.labelMany : button.dataset.labelOne;
+    }
+
+    async add() {
+      const button = this.querySelector('[data-fbt-add]');
+      const error = this.querySelector('[data-fbt-error]');
+      const main = document.querySelector('[data-variant-id]');
+      const items = [{ id: Number(main?.value), quantity: 1 }];
+      for (const item of this.picked()) items.push({ id: Number(item.querySelector('[data-fbt-variant]').value), quantity: 1 });
+      button.classList.add('is-loading');
+      if (error) error.hidden = true;
+      try {
+        const sections = sectionIdsForCart();
+        const response = await fetch(`${routes.cartAdd}.js`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ items, sections: sections.join(','), sections_url: window.location.pathname }),
+        });
+        const data = await readCartResponse(response);
+        for (const line of data.items || []) trackAddToCart(line);
+        const cart = await (await fetch(`${routes.cart}.js`)).json();
+        updateCartCount(cart.item_count);
+        renderCartSections(data.sections);
+        const drawer = document.getElementById('CartDrawer');
+        if (drawer && window.theme.cartType === 'drawer') drawer.open(button);
+        else toast(strings.added);
+      } catch (err) {
+        if (error) {
+          error.textContent = err.message || strings.cartError;
+          error.hidden = false;
+        }
+      } finally {
+        button.classList.remove('is-loading');
+      }
+    }
+  }
+  customElements.define('bought-together', BoughtTogether);
+
   /* ---------- Variant picker ---------- */
   class VariantPicker extends HTMLElement {
     connectedCallback() {
@@ -474,6 +565,7 @@
         idInput.value = variant.id;
       }
       paymentButton?.toggleAttribute('hidden', !variant.available);
+      document.dispatchEvent(new CustomEvent('variant:change', { detail: { variant } }));
       for (const button of addButtons) {
         button.disabled = !variant.available;
         const label = button.querySelector('[data-add-label]');

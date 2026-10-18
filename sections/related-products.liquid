@@ -1,7 +1,29 @@
+{%- comment -%}
+  Products picked nightly for this product (same category, same audience, similar price, in stock:
+  babasaleh.related) are rendered right away with no extra request. Products without a pick fall
+  back to Shopify's recommendations, loaded when the section scrolls into view.
+{%- endcomment -%}
+{%- assign picks = product.metafields.babasaleh.related.value -%}
 <section
   class="section related-products color-{{ section.settings.color_scheme }}"
   style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
 >
+  {%- if picks != blank and picks.count > 0 -%}
+    <div class="page-width">
+      <div class="section-header">
+        <div class="section-header__text"><h2 class="h2">{{ section.settings.heading }}</h2></div>
+      </div>
+      <ul class="slider" role="list" data-slider style="--slides-desktop: 6; --slides-tablet: 3; --slide-mobile: 46%;">
+        {%- assign n = 0 -%}
+        {%- for pick in picks -%}
+          {%- if pick.available and pick.id != product.id and n < section.settings.products_to_show -%}
+            {%- assign n = n | plus: 1 -%}
+            <li>{% render 'product-card', product: pick %}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- else -%}
   <product-recommendations
     class="page-width"
     data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_to_show }}&intent={{ section.settings.intent }}"
@@ -22,6 +44,7 @@
       </ul>
     {%- endif -%}
   </product-recommendations>
+  {%- endif -%}
 </section>
 
 {% schema %}

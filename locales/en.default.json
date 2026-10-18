@@ -80,6 +80,12 @@
         "one": "{{ count }} colour",
         "other": "{{ count }} colours"
       }
+    },
+    "bought_together": {
+      "title": "Frequently bought together",
+      "this_item": "This item",
+      "total": "Total",
+      "add_all": "Add all to cart"
     }
   },
   "reviews": {

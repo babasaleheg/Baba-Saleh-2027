@@ -17,6 +17,7 @@ step seo_bilingual.py
 step sync.py sort-stock
 step sync.py reviews-sync
 step came_from.py
+step recommendations.py
 if [ -n "$failed" ]; then
   echo "FAILED:$failed"
   exit 1

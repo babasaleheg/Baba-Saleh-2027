@@ -1,0 +1,241 @@
+{%- comment -%}
+  "Frequently bought together" under Add to cart: this product + up to 2 add-ons from the
+  product's babasaleh.bought_together metafield (picked nightly from past orders).
+  Rendered on the server, so it adds no requests; one small click handler in theme.js adds
+  the ticked items to the cart in one go.
+  - product, variant: the product and its selected variant
+{%- endcomment -%}
+{%- liquid
+  assign addons = product.metafields.babasaleh.bought_together.value
+  assign shown = 0
+  for addon in addons
+    if addon.available and addon.id != product.id
+      assign shown = shown | plus: 1
+    endif
+  endfor
+-%}
+{%- if shown > 0 and product.available -%}
+  {%- assign total = variant.price -%}
+  <bought-together class="fbt" data-money-format="{{ shop.money_format | strip_html | escape }}">
+    <p class="fbt__title">{{ 'products.bought_together.title' | t }}</p>
+
+    <ul class="fbt__list" role="list">
+      <li class="fbt__item fbt__item--main">
+        <label class="fbt__check">
+          <input type="checkbox" checked disabled data-fbt-main>
+          <span class="fbt__tick" aria-hidden="true">{% render 'icon', icon: 'check' %}</span>
+        </label>
+        <span class="fbt__thumb">
+          {%- assign img = variant.featured_image | default: product.featured_image -%}
+          {%- if img -%}{{ img | image_url: width: 160 | image_tag: loading: 'lazy', width: 80, height: 80, alt: product.title | escape }}{%- endif -%}
+        </span>
+        <span class="fbt__text">
+          <span class="fbt__name">{{ 'products.bought_together.this_item' | t }}</span>
+          <span class="fbt__price" data-fbt-main-price data-price="{{ variant.price }}">{{ variant.price | money }}</span>
+        </span>
+      </li>
+      {%- assign count = 0 -%}
+      {%- for addon in addons -%}
+        {%- unless addon.available and addon.id != product.id -%}{%- continue -%}{%- endunless -%}
+        {%- assign count = count | plus: 1 -%}
+        {%- if count > 2 -%}{%- break -%}{%- endif -%}
+        {%- assign av = addon.selected_or_first_available_variant -%}
+        {%- assign total = total | plus: av.price -%}
+        <li class="fbt__item" data-fbt-item>
+          <label class="fbt__check">
+            <input type="checkbox" checked data-fbt-toggle aria-label="{{ addon.title | escape }}">
+            <span class="fbt__tick" aria-hidden="true">{% render 'icon', icon: 'check' %}</span>
+          </label>
+          <a class="fbt__thumb" href="{{ addon.url }}">
+            {%- if addon.featured_image -%}{{ addon.featured_image | image_url: width: 160 | image_tag: loading: 'lazy', width: 80, height: 80, alt: addon.title | escape }}{%- endif -%}
+          </a>
+          <span class="fbt__text">
+            <a class="fbt__name" href="{{ addon.url }}">{{ addon.title }}</a>
+            {%- assign available_variants = addon.variants | where: 'available' -%}
+            {%- if addon.has_only_default_variant or available_variants.size == 1 -%}
+              <input type="hidden" value="{{ av.id }}" data-fbt-variant data-price="{{ av.price }}">
+            {%- else -%}
+              <select class="fbt__select" data-fbt-variant aria-label="{{ addon.options | join: ' / ' | escape }}">
+                {%- for v in available_variants limit: 30 -%}
+                  <option value="{{ v.id }}" data-price="{{ v.price }}"{% if v.id == av.id %} selected{% endif %}>{{ v.title }}</option>
+                {%- endfor -%}
+              </select>
+            {%- endif -%}
+            <span class="fbt__price">{{ av.price | money }}</span>
+          </span>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    <div class="fbt__footer">
+      <p class="fbt__total">
+        <span class="text-muted">{{ 'products.bought_together.total' | t }}</span>
+        <strong data-fbt-total>{{ total | money }}</strong>
+      </p>
+      <button type="button" class="button fbt__add" data-fbt-add data-label-many="{{ 'products.bought_together.add_all' | t }}" data-label-one="{{ 'products.product.add_to_cart' | t }}">
+        {{ 'products.bought_together.add_all' | t }}
+      </button>
+    </div>
+    <p class="form-message form-message--error" data-fbt-error hidden></p>
+  </bought-together>
+{%- endif -%}
+
+{% stylesheet %}
+  .fbt {
+    display: grid;
+    gap: 0.875rem;
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    background: var(--color-bg);
+  }
+
+  .fbt__title {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.9375rem;
+  }
+
+  .fbt__list {
+    display: grid;
+    gap: 0.625rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .fbt__item {
+    display: grid;
+    grid-template-columns: auto 3.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .fbt__item.is-off .fbt__thumb,
+  .fbt__item.is-off .fbt__text {
+    opacity: 0.45;
+  }
+
+  .fbt__check {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    cursor: pointer;
+  }
+
+  .fbt__check input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .fbt__tick {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    border: 1.5px solid var(--color-fg);
+    border-radius: 0.375rem;
+    color: transparent;
+    transition: background-color 0.15s ease;
+  }
+
+  .fbt__tick .icon {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .fbt__check input:checked + .fbt__tick {
+    background: #febd19;
+    border-color: #febd19;
+    color: #0a0a0a;
+  }
+
+  .fbt__check input:disabled + .fbt__tick {
+    opacity: 0.7;
+  }
+
+  .fbt__check input:focus-visible + .fbt__tick {
+    outline: 2px solid var(--color-fg);
+    outline-offset: 2px;
+  }
+
+  .fbt__thumb {
+    display: block;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 0.625rem;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .fbt__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+  }
+
+  .fbt__text {
+    display: grid;
+    gap: 0.125rem;
+    min-width: 0;
+    font-size: 0.875rem;
+  }
+
+  .fbt__name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .fbt__item--main .fbt__name {
+    font-weight: 600;
+  }
+
+  .fbt__price {
+    font-weight: 700;
+  }
+
+  .fbt__select {
+    justify-self: start;
+    max-width: 100%;
+    padding: 0.125rem 1.75rem 0.125rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background-color: var(--color-bg);
+    color: inherit;
+    font: inherit;
+    font-size: 0.8125rem;
+  }
+
+  .fbt__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-block-start: 0.75rem;
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .fbt__total {
+    display: grid;
+    margin: 0;
+    font-size: 0.8125rem;
+  }
+
+  .fbt__total strong {
+    font-size: 1.0625rem;
+  }
+
+  .fbt__add {
+    flex-shrink: 0;
+    min-height: 2.75rem;
+    padding-inline: 1.25rem;
+  }
+{% endstylesheet %}

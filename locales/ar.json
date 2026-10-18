@@ -88,6 +88,12 @@
         "many": "{{ count }} لونًا",
         "other": "{{ count }} لون"
       }
+    },
+    "bought_together": {
+      "title": "يُشترى معاً غالباً",
+      "this_item": "هذا المنتج",
+      "total": "الإجمالي",
+      "add_all": "أضف الكل للسلة"
     }
   },
   "reviews": {
