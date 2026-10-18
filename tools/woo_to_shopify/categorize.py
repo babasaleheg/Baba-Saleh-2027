@@ -61,6 +61,9 @@ FIXES = {
     "Venum Challenger Boxing Headgear – Black &amp; Gold": "cat:boxing",
     "Venum Challenger Boxing Headgear – Black & Gold": "cat:boxing",
     "Clinch Kickboxing Shin Guards": "cat:boxing",
+    "Venum MMA Shin Guards": "cat:boxing",
+    "Clinch Boxing Head Guard": "cat:boxing",
+    "H-Shape Soccer Coaching Board – 30 × 45 cm": "cat:coaching",
 }
 
 AUDIENCE = [(r"\b(kids?|boys?|girls?|baby|junior|children)\b", "for:kids"), (r"\b(women|women’s|women's|ladies|hijab)\b", "for:women"), (r"\b(men|men’s|men's)\b", "for:men")]
