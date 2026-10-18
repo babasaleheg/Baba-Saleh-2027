@@ -765,6 +765,14 @@ h4,
 
 .card__media {
   aspect-ratio: var(--card-ratio, 1);
+  /* The media frame is its own layer (Safari clip fix below), so it sits above the card link
+     to keep the quick-add button clickable; clicks on the photo itself fall through to the link. */
+  z-index: 2;
+  pointer-events: none;
+}
+
+.card__media .card__quick-add {
+  pointer-events: auto;
 }
 
 .card__media img {
