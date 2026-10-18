@@ -138,7 +138,13 @@
 
     <div class="card__info">
       {%- if settings.card_show_vendor -%}
-        <span class="card__vendor">{% render 'vendor-name', vendor: product.vendor %}</span>
+        {%- comment -%} Own, unbranded products show no brand; the empty line keeps cards in a row aligned {%- endcomment -%}
+        {%- assign vendor_key = product.vendor | downcase -%}
+        {%- if vendor_key == 'baba saleh' or vendor_key == 'baba saleh sports egypt' or vendor_key == 'brands' -%}
+          <span class="card__vendor" aria-hidden="true">&nbsp;</span>
+        {%- else -%}
+          <span class="card__vendor">{% render 'vendor-name', vendor: product.vendor %}</span>
+        {%- endif -%}
       {%- endif -%}
       <h3 class="card__title">
         <a href="{{ product.url }}" class="card__link" title="{{ product.title | escape }}">{{ product.title }}</a>

@@ -159,6 +159,27 @@ def plan_handle(p, taken):
     return None
 
 
+OWN_VENDORS = {"", "baba saleh", "baba saleh sports egypt", "brands", "brand", "other"}
+BRANDS = ["Venum", "Track", "Kiko", "La Mer", "Lamer", "LiveUp", "LivePro", "Kuna", "Wilson", "Dunlop", "Cougar", "Wish",
+          "Everlast", "Cressi", "Spurt", "Manta", "Speedo", "Arena", "Adidas", "Nike", "Puma", "Reebok", "Asics", "New Balance",
+          "Skechers", "Mikasa", "Molten", "Spalding", "Donic", "Butterfly", "Stiga", "Yonex", "Head", "Babolat", "Clinch",
+          "Reusch", "Fox 40", "Arawaza", "Wesing", "Kimo", "Mosha", "Gamma", "Odea", "Mondial", "Heats", "Manizia", "Fox"]
+BRAND_NAMES = {"lamer": "La Mer", "la mer": "La Mer", "liveup": "LiveUp", "livepro": "LivePro", "fox": "Fox"}
+
+
+def plan_vendor(p, title):
+    """Products filed under the store name (or "Brands") get the brand their title names, e.g. Venum."""
+    if (p["vendor"] or "").strip().lower() not in OWN_VENDORS:
+        return None
+    for b in BRANDS:
+        if re.search(rf"(?<![\w-]){re.escape(b)}(?![\w-])", title, re.I):
+            if b.lower() in {"head", "fox"} and not re.match(rf"{b}\b", title, re.I):
+                continue  # "Head Guard", "Fox" only when the title starts with the brand
+            name = BRAND_NAMES.get(b.lower(), b)
+            return name if name != p["vendor"] else None
+    return "Baba Saleh" if p["vendor"] != "Baba Saleh" else None
+
+
 def main():
     dry = "--dry-run" in sys.argv
     after, products = None, []
@@ -177,6 +198,10 @@ def main():
         if title != p["title"]:
             upd["title"] = title
             stats["titles cleaned"] += 1
+        vendor = plan_vendor(p, title)
+        if vendor:
+            upd["vendor"] = vendor
+            stats["brands set"] += 1
         new_handle = plan_handle(p, taken)
         if new_handle:
             upd["handle"], upd["redirectNewHandle"] = new_handle, True

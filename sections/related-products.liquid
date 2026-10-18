@@ -47,6 +47,15 @@
   {%- endif -%}
 </section>
 
+{% stylesheet %}
+  /* Phones: the product section above already ends with enough space */
+  @media screen and (max-width: 749px) {
+    .related-products {
+      --section-pt: 0px !important;
+    }
+  }
+{% endstylesheet %}
+
 {% schema %}
 {
   "name": "t:sections.related_products.name",

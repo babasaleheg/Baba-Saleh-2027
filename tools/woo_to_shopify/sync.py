@@ -521,8 +521,9 @@ def clip(text, limit):
 
 def own_brand(p):
     """True when the title doesn't need the vendor added (store brand, or the brand is already a word in it)."""
-    words = re.findall(r"\w+", p["title"].lower())
-    return p["vendor"] in ("", STORE) or p["vendor"].lower() in words
+    title = " " + " ".join(re.findall(r"\w+", p["title"].lower())) + " "
+    vendor = " ".join(re.findall(r"\w+", p["vendor"].lower()))
+    return p["vendor"] in ("", STORE) or vendor in ("baba saleh sports egypt", "brands") or f" {vendor} " in title
 
 
 def product_seo_title(p):

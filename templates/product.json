@@ -88,10 +88,6 @@
       "type": "size-guide",
       "settings": {}
     },
-    "reviews": {
-      "type": "judgeme-reviews",
-      "settings": {}
-    },
     "related": {
       "type": "related-products",
       "settings": {
@@ -125,7 +121,6 @@
   "order": [
     "main",
     "size_guide",
-    "reviews",
     "related",
     "17920444113730fa6c"
   ]

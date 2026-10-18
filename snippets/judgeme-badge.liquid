@@ -24,4 +24,34 @@
   .jdgm-preview-badge {
     font-size: 0.875rem;
   }
+
+  /* Judge.me review widget (app block at the end of the product page): same side margins and
+     width as the rest of the page, and a short form (no review title, no photo upload). */
+  .shopify-app-block .jdgm-review-widget,
+  .jdgm-widget.jdgm-review-widget {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--page-width);
+    margin-inline: auto !important;
+    padding-inline: 1rem !important;
+    padding-block: 2rem 3rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .shopify-app-block .jdgm-review-widget,
+    .jdgm-widget.jdgm-review-widget {
+      padding-inline: 2rem !important;
+    }
+  }
+
+  .jdgm-rev-widg__title {
+    text-align: start !important;
+    font-family: var(--font-heading-family);
+  }
+
+  .jdgm-form__fieldset:has([name='review_title']),
+  .jdgm-form__fieldset:has(.jdgm-picture-fieldset),
+  .jdgm-picture-fieldset {
+    display: none !important;
+  }
 {% endstylesheet %}
