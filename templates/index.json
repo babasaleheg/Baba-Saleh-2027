@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -725,12 +734,38 @@
         "padding_top": 48,
         "padding_bottom": 48
       }
+    },
+    "new_arrivals": {
+      "type": "featured-collection",
+      "blocks": {
+        "tab_new": {
+          "type": "tab",
+          "settings": {
+            "collection": "new-arrivals",
+            "label": "New arrivals"
+          }
+        }
+      },
+      "block_order": [
+        "tab_new"
+      ],
+      "settings": {
+        "eyebrow": "Just landed",
+        "heading": "New arrivals",
+        "products_to_show": 12,
+        "columns_desktop": 6,
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
     }
   },
   "order": [
     "hero",
     "usp",
     "sports",
+    "new_arrivals",
     "trending",
     "flash_sale",
     "categories",
