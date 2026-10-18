@@ -184,8 +184,10 @@ def main():
 
             # English SEO (fill empty only)
             seo = {"title": p["seo"]["title"] or product_seo_title(p), "description": p["seo"]["description"] or product_seo_description(p)}
-            if seo != p["seo"] and not DRY:
-                gql(PRODUCT_SEO_UPDATE, {"p": {"id": p["id"], "seo": seo}})
+            if not p["seo"]["title"] and seo["title"] == p["title"]:
+                seo["title"] = None  # Shopify keeps an SEO title equal to the product title as empty
+            if (seo["title"], seo["description"]) != (p["seo"]["title"], p["seo"]["description"]) and not DRY:
+                gql(PRODUCT_SEO_UPDATE, {"p": {"id": p["id"], "seo": {k: v for k, v in seo.items() if v}}})
                 stats["en_seo"] += 1
 
             # English alt text linked to the category

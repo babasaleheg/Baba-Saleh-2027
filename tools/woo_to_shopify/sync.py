@@ -560,7 +560,9 @@ def seo():
             stats["products"] += 1
             fields = {}
             if not p["seo"]["title"] or old_style_seo_title(p["seo"]["title"]):
-                fields["title"] = product_seo_title(p)
+                # Shopify stores an SEO title equal to the product title as empty, so skip those
+                if product_seo_title(p) != p["title"] or p["seo"]["title"]:
+                    fields["title"] = product_seo_title(p)
             if not p["seo"]["description"]:
                 fields["description"] = product_seo_description(p)
             if fields:
