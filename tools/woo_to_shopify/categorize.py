@@ -61,6 +61,20 @@ FIXES = {
     "Venum Challenger Boxing Headgear – Black &amp; Gold": "cat:boxing",
     "Venum Challenger Boxing Headgear – Black & Gold": "cat:boxing",
     "Clinch Kickboxing Shin Guards": "cat:boxing",
+    "Electric Air Pump": "cat:sports-accessories",
+    "Foot Pump 25 cm": "cat:sports-accessories",
+    "Large Floor Pump": "cat:sports-accessories",
+    "Mini Foot Pump": "cat:sports-accessories",
+    "Metal Ball Inflation Needle": "cat:sports-accessories",
+    "Patinage One Row": "cat:skating",
+    "Kids’ Tricycle with Seat & Backrest": "cat:cycling",
+    "Airplane Kids’ Tricycle": "cat:cycling",
+    "Beach Boat Tool Set": "cat:beach-toys",
+    "Two-Tone Swimming Training Resistance Band": "cat:swim-training",
+    "Ear and Nose Plugs Set": "cat:swim-accessories",
+    "Training Speed Hoops": "cat:coaching",
+    "Kepal Hand Wrist Exerciser": "cat:fitness-accessories",
+    "Doubles Slalom Bag (2-Person)": "cat:games",
     "Track Women’s Swimsuit": "cat:women-swimwear",
     "Track Tight Gym Shorts": "cat:shorts",
     "Moto Boxing Mouth Guard": "cat:boxing",
@@ -77,6 +91,13 @@ FIXES = {
     "Venum MMA Shin Guards": "cat:boxing",
     "Clinch Boxing Head Guard": "cat:boxing",
     "H-Shape Soccer Coaching Board – 30 × 45 cm": "cat:coaching",
+}
+
+# Products whose audience tag is wrong: title -> correct for: tag
+AUDIENCE_FIXES = {
+    "Women’s Dinosaur Slides": "for:women",
+    "Track Women’s Swimsuit": "for:women",
+    "Track Men’s 3-Line Tracksuit": "for:men",
 }
 
 AUDIENCE = [(r"\b(kids?|boys?|girls?|baby|junior|children)\b", "for:kids"), (r"\b(women|women’s|women's|ladies|hijab)\b", "for:women"), (r"\b(men|men’s|men's)\b", "for:men")]
@@ -167,6 +188,17 @@ def main():
             if errs:
                 log(f"  error: {errs}")
         done += 1
+    for p in products:
+        want = AUDIENCE_FIXES.get(p["title"].strip())
+        have = [t for t in p["tags"] if t.startswith("for:")]
+        if not want and len(have) > 1:
+            want = "for:kids" if "for:kids" in have else sorted(have)[0]  # girls' items are kids', not women's
+        if want and have != [want]:
+            log(f"{'would set' if dry else 'set'} {want:24} {p['title']}")
+            if not dry:
+                tags = sorted({t for t in p["tags"] if not t.startswith("for:")} | {want})
+                gql(UPDATE, {"p": {"id": p["id"], "tags": tags}})
+            done += 1
     log(f"categorized {done} products" + (f"; no rule matched: {unknown}" if unknown else ""))
 
 
