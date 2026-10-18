@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>Welcome to Baba Saleh | أهلاً بك في بابا صالح</title>
+  <style>
+    @media (max-width: 620px) {
+      .card { border-radius: 0 !important; }
+      .px { padding-left: 22px !important; padding-right: 22px !important; }
+      .h1 { font-size: 26px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background:#f6f6f4;">
+  <div style="display:none; max-height:0; overflow:hidden; opacity:0;">Your account is ready, and here is 15% off your first order. حسابك جاهز، وده خصم ١٥٪ على أول طلب.</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f4;">
+    <tr>
+      <td align="center" style="padding:28px 12px 40px;">
+        <table role="presentation" class="card" width="560" cellpadding="0" cellspacing="0" style="width:100%; max-width:560px; background:#ffffff; border-radius:24px; overflow:hidden;">
+          <tr><td align="center" style="padding:30px 24px 6px;"><a href="{{ shop.url }}"><img src="https://cdn.shopify.com/s/files/1/0788/6746/4240/files/baba-saleh-email-logo.png?v=1792046047" alt="baba saleh" width="170" style="display:block; width:170px; height:auto; border:0;"></a></td></tr>
+
+          <tr>
+            <td class="px" style="padding:26px 44px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;">
+              <p style="margin:0 0 10px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:#71717a;">Welcome to the team</p>
+              <h1 class="h1" style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:30px; line-height:1.2; font-weight:700; letter-spacing:-0.5px; color:#0a0a0a;">Welcome{% if customer.first_name %}, {{ customer.first_name }}{% endif %}!</h1>
+              <p style="margin:12px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:15px; line-height:1.65; color:#3f3f46;">Your Baba Saleh account is ready. Gear up for every sport, from the gym to the pool, with original brands, cash on delivery and fast delivery across Egypt.</p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px; border-top:1px solid #ececec;"><tr><td dir="rtl" style="padding-top:16px; text-align:right;">
+                <p dir="rtl" style="margin:0px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:24px; line-height:1.7; font-weight:700; color:#0a0a0a; text-align:right;">أهلاً بك{% if customer.first_name %} يا {{ customer.first_name }}{% endif %}&rlm;!</p>
+                <p dir="rtl" style="margin:8px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:15px; line-height:1.7; font-weight:400; color:#3f3f46; text-align:right;">حسابك في بابا صالح جاهز. جهّز نفسك لكل رياضة، من الجيم لحمام السباحة، مع ماركات أصلية والدفع عند الاستلام وتوصيل سريع لكل مصر.</p>
+              </td></tr></table>
+            </td>
+          </tr>
+
+
+          <!-- Welcome code: 15% off, up to 50 EGP, orders from 500 EGP, once per customer -->
+          {%- assign bs_code = 'WELCOME15' -%}
+          <tr>
+            <td class="px" style="padding:24px 44px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#febd19; border-radius:20px;">
+                <tr>
+                  <td align="center" style="padding:24px 22px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;">
+                    <p style="margin:0 0 4px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:#0a0a0a;">Your welcome gift · <span style="font-family:Tahoma,'Segoe UI',Arial,sans-serif; letter-spacing:0;">هدية الترحيب</span></p>
+                    <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:30px; line-height:1.2; font-weight:800; color:#0a0a0a;">15% off your first order</p>
+                    <p dir="rtl" style="margin:4px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:22px; line-height:1.5; font-weight:700; color:#0a0a0a; text-align:center;">خصم ١٥٪ على أول طلب</p>
+                    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:16px auto 0;"><tr>
+                      <td style="background:#ffffff; border:2px dashed #0a0a0a; border-radius:14px; padding:12px 26px; font-family:'Courier New',Courier,monospace; font-size:24px; font-weight:700; letter-spacing:3px; color:#0a0a0a;">{{ bs_code }}</td>
+                    </tr></table>
+                    <p style="margin:14px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; line-height:1.6; color:#0a0a0a;">Use it at checkout on orders of 500 EGP or more. Up to 50 EGP off, once per customer.</p>
+                    <p dir="rtl" style="margin:4px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:13px; line-height:1.7; color:#0a0a0a; text-align:center;">استخدمه عند الدفع للطلبات من ٥٠٠ جنيه. خصم حتى ٥٠ جنيه، مرة واحدة لكل عميل.</p>
+                    <a href="{{ shop.url }}/discount/{{ bs_code }}" style="display:inline-block; margin-top:16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; background:#0a0a0a; color:#ffffff; text-decoration:none; font-size:14px; font-weight:700; padding:12px 24px; border-radius:999px;">Apply my code · <span style="font-family:Tahoma,'Segoe UI',Arial,sans-serif;">استخدم الكود</span></a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" style="padding:24px 44px 0;">
+              <a href="{{ shop.url }}" style="display:inline-block; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; background:#0a0a0a; color:#ffffff; text-decoration:none; font-size:15px; font-weight:600; padding:15px 28px; border-radius:999px;">Start shopping · <span style="font-family:Tahoma,'Segoe UI',Arial,sans-serif;">ابدأ التسوق</span></a>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" style="padding:34px 44px 8px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+                <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:19px; font-weight:700; color:#0a0a0a;">Shop by sport</td>
+                <td dir="rtl" align="right" style="font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:16px; font-weight:700; color:#0a0a0a;">تسوق حسب الرياضة</td>
+              </tr></table>
+            </td>
+          </tr>
+          <tr>
+            <td class="px" style="padding:0 38px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr><td width="33.33%" valign="top" style="padding:6px;"><a href="{{ shop.url }}/collections/fitness" style="text-decoration:none;"><img src="https://cdn.shopify.com/s/files/1/0788/6746/4240/collections/FITT.jpg?v=1791454077&width=480&height=480&crop=center" alt="Gym & Fitness" width="148" style="display:block; width:100%; max-width:148px; height:auto; border-radius:16px; border:0;"><p style="margin:8px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; font-weight:600; color:#0a0a0a; text-align:center;">Gym & Fitness</p><p dir="rtl" style="margin:2px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:12px; color:#71717a; text-align:center;">الجيم واللياقة</p></a></td><td width="33.33%" valign="top" style="padding:6px;"><a href="{{ shop.url }}/collections/football-equipment" style="text-decoration:none;"><img src="https://cdn.shopify.com/s/files/1/0788/6746/4240/collections/football-ball-2-w.jpg?v=1791454083&width=480&height=480&crop=center" alt="Football" width="148" style="display:block; width:100%; max-width:148px; height:auto; border-radius:16px; border:0;"><p style="margin:8px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; font-weight:600; color:#0a0a0a; text-align:center;">Football</p><p dir="rtl" style="margin:2px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:12px; color:#71717a; text-align:center;">كرة القدم</p></a></td><td width="33.33%" valign="top" style="padding:6px;"><a href="{{ shop.url }}/collections/shoes" style="text-decoration:none;"><img src="https://cdn.shopify.com/s/files/1/0788/6746/4240/collections/ChatGPT-Image-May-27-2025-11_16_36-PM.jpg?v=1791454333&width=480&height=480&crop=center" alt="Footwear" width="148" style="display:block; width:100%; max-width:148px; height:auto; border-radius:16px; border:0;"><p style="margin:8px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; font-weight:600; color:#0a0a0a; text-align:center;">Footwear</p><p dir="rtl" style="margin:2px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:12px; color:#71717a; text-align:center;">الأحذية</p></a></td></tr>
+                <tr><td width="33.33%" valign="top" style="padding:6px;"><a href="{{ shop.url }}/collections/tracksuits" style="text-decoration:none;"><img src="https://cdn.shopify.com/s/files/1/0788/6746/4240/collections/e55473a8-0c3a-486f-932a-b95644030bef-1.jpg?v=1791454329&width=480&height=480&crop=center" alt="Tracksuits" width="148" style="display:block; width:100%; max-width:148px; height:auto; border-radius:16px; border:0;"><p style="margin:8px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; font-weight:600; color:#0a0a0a; text-align:center;">Tracksuits</p><p dir="rtl" style="margin:2px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:12px; color:#71717a; text-align:center;">الترينجات</p></a></td><td width="33.33%" valign="top" style="padding:6px;"><a href="{{ shop.url }}/collections/beach-equipment" style="text-decoration:none;"><img src="https://cdn.shopify.com/s/files/1/0788/6746/4240/collections/Beach-Equipment.jpg?v=1791454057&width=480&height=480&crop=center" alt="Beach & Pool" width="148" style="display:block; width:100%; max-width:148px; height:auto; border-radius:16px; border:0;"><p style="margin:8px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; font-weight:600; color:#0a0a0a; text-align:center;">Beach & Pool</p><p dir="rtl" style="margin:2px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:12px; color:#71717a; text-align:center;">البحر والبيسين</p></a></td><td width="33.33%" valign="top" style="padding:6px;"><a href="{{ shop.url }}/collections/goggles" style="text-decoration:none;"><img src="https://cdn.shopify.com/s/files/1/0788/6746/4240/collections/Goggles.jpg?v=1791454133&width=480&height=480&crop=center" alt="Swimming" width="148" style="display:block; width:100%; max-width:148px; height:auto; border-radius:16px; border:0;"><p style="margin:8px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; font-weight:600; color:#0a0a0a; text-align:center;">Swimming</p><p dir="rtl" style="margin:2px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:12px; color:#71717a; text-align:center;">السباحة</p></a></td></tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" style="padding:30px 44px 0;">
+              <a href="{{ shop.url }}/collections/sale" style="text-decoration:none;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a; border-radius:20px;">
+                  <tr>
+                    <td style="padding:26px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;">
+                      <p style="margin:0 0 6px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:#febd19;">Sale now on · <span style="font-family:Tahoma,'Segoe UI',Arial,sans-serif; letter-spacing:0;">عروض الآن</span></p>
+                      <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:26px; line-height:1.2; font-weight:700; color:#ffffff;">Up to 50% off sports favourites</p>
+                      <p dir="rtl" style="margin:6px 0 16px; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:20px; line-height:1.5; font-weight:700; color:#ffffff; text-align:left;">خصومات حتى ٥٠٪</p>
+                      <span style="display:inline-block; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; background:#febd19; color:#0a0a0a; font-size:14px; font-weight:700; padding:12px 22px; border-radius:999px;">Shop the sale · <span style="font-family:Tahoma,'Segoe UI',Arial,sans-serif;">تسوق العروض</span></span>
+                    </td>
+                  </tr>
+                </table>
+              </a>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" style="padding:24px 38px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+                <td width="50%" valign="top" style="padding:6px;"><a href="{{ shop.url }}/collections/all?sort_by=created-descending" style="text-decoration:none;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ececec; border-radius:18px;"><tr><td style="padding:20px 18px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;">
+<p style="margin:0 0 6px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:11px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:#71717a;">Just landed</p>
+<p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:20px; line-height:1.2; font-weight:700; color:#0a0a0a;">New arrivals</p>
+<p dir="rtl" style="margin:4px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:16px; line-height:1.7; font-weight:700; color:#0a0a0a; text-align:left;">وصل حديثاً</p>
+<p style="margin:12px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; font-weight:600; color:#0a0a0a; text-decoration:underline;">See what's new · <span dir="rtl" style="font-family:Tahoma,'Segoe UI',Arial,sans-serif;">شوف الجديد</span></p>
+</td></tr></table></a></td>
+                <td width="50%" valign="top" style="padding:6px;"><a href="{{ shop.url }}/collections/all?sort_by=best-selling" style="text-decoration:none;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ececec; border-radius:18px;"><tr><td style="padding:20px 18px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;">
+<p style="margin:0 0 6px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:11px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:#71717a;">Most loved</p>
+<p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:20px; line-height:1.2; font-weight:700; color:#0a0a0a;">Best sellers</p>
+<p dir="rtl" style="margin:4px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:16px; line-height:1.7; font-weight:700; color:#0a0a0a; text-align:left;">الأكثر مبيعاً</p>
+<p style="margin:12px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; font-weight:600; color:#0a0a0a; text-decoration:underline;">Shop favourites · <span dir="rtl" style="font-family:Tahoma,'Segoe UI',Arial,sans-serif;">تسوق المفضل</span></p>
+</td></tr></table></a></td>
+              </tr></table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" style="padding:30px 44px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ececec; border-radius:20px;">
+                <tr>
+                  <td width="50%" valign="top" style="padding:16px 18px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;"><div style="width:24px; height:3px; border-radius:3px; background:#febd19; font-size:0; line-height:0; margin:0 0 10px;">&nbsp;</div>
+<p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; color:#0a0a0a;">Fast delivery</p><p style="margin:2px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; line-height:1.5; color:#71717a;">2–5 days across Egypt</p>
+<p dir="rtl" style="margin:8px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:13px; font-weight:700; color:#0a0a0a; text-align:left;">توصيل سريع</p><p dir="rtl" style="margin:0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:12px; line-height:1.6; color:#71717a; text-align:left;">من ٢ إلى ٥ أيام لكل مصر</p></td>
+                  <td width="50%" valign="top" style="padding:16px 18px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;"><div style="width:24px; height:3px; border-radius:3px; background:#febd19; font-size:0; line-height:0; margin:0 0 10px;">&nbsp;</div>
+<p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; color:#0a0a0a;">Cash on delivery</p><p style="margin:2px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; line-height:1.5; color:#71717a;">Pay when it arrives</p>
+<p dir="rtl" style="margin:8px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:13px; font-weight:700; color:#0a0a0a; text-align:left;">الدفع عند الاستلام</p><p dir="rtl" style="margin:0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:12px; line-height:1.6; color:#71717a; text-align:left;">ادفع لما الطلب يوصلك</p></td>
+                </tr>
+                <tr>
+                  <td width="50%" valign="top" style="padding:0 18px 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;"><div style="width:24px; height:3px; border-radius:3px; background:#febd19; font-size:0; line-height:0; margin:0 0 10px;">&nbsp;</div>
+<p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; color:#0a0a0a;">Easy returns</p><p style="margin:2px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; line-height:1.5; color:#71717a;">7 days, no stress</p>
+<p dir="rtl" style="margin:8px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:13px; font-weight:700; color:#0a0a0a; text-align:left;">استرجاع سهل</p><p dir="rtl" style="margin:0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:12px; line-height:1.6; color:#71717a; text-align:left;">خلال ٧ أيام</p></td>
+                  <td width="50%" valign="top" style="padding:0 18px 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;"><div style="width:24px; height:3px; border-radius:3px; background:#febd19; font-size:0; line-height:0; margin:0 0 10px;">&nbsp;</div>
+<p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; color:#0a0a0a;">Original brands</p><p style="margin:2px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; line-height:1.5; color:#71717a;">Wilson, Venum, Cressi & more</p>
+<p dir="rtl" style="margin:8px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:13px; font-weight:700; color:#0a0a0a; text-align:left;">ماركات أصلية</p><p dir="rtl" style="margin:0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:12px; line-height:1.6; color:#71717a; text-align:left;">ويلسون، فينوم، كريسي وغيرها</p></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" style="padding:34px 44px 38px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #ececec;">
+                <tr><td style="padding:22px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; line-height:1.6; color:#3f3f46;">Need help? Reply to this email or message us on <a href="https://wa.me/201028305495" style="color:#0a0a0a; font-weight:600; text-decoration:underline;">WhatsApp</a>.</td></tr>
+                <tr><td dir="rtl" style="padding:6px 0 0; font-family:Tahoma,'Segoe UI',Arial,sans-serif; font-size:14px; line-height:1.7; color:#3f3f46; text-align:right;">محتاج مساعدة؟ رد على الإيميل ده أو كلمنا على <a href="https://wa.me/201028305495" style="color:#0a0a0a; font-weight:700; text-decoration:underline;">واتساب</a>.</td></tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="width:100%; max-width:560px;">
+          <tr>
+            <td align="center" style="padding:22px 24px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.8; color:#71717a;">
+              <a href="{{ shop.url }}" style="color:#0a0a0a; font-weight:600; text-decoration:none;">Shop · <span style="font-family:Tahoma,'Segoe UI',Arial,sans-serif;">المتجر</span></a> &nbsp;|&nbsp;
+              <a href="https://wa.me/201028305495" style="color:#0a0a0a; font-weight:600; text-decoration:none;">WhatsApp · <span style="font-family:Tahoma,'Segoe UI',Arial,sans-serif;">واتساب</span></a> &nbsp;|&nbsp;
+              <a href="{{ shop.url }}/pages/contact" style="color:#0a0a0a; font-weight:600; text-decoration:none;">Contact · <span style="font-family:Tahoma,'Segoe UI',Arial,sans-serif;">تواصل معنا</span></a><br>
+              © {{ 'now' | date: '%Y' }} {{ shop.name }}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
