@@ -66,9 +66,11 @@
 {%- endif -%}
 
 {% stylesheet %}
-  .seo-content__grid--faq-only {
+  /* FAQ on its own: one centred column (the two-column rule below must not apply) */
+  .seo-content__grid.seo-content__grid--faq-only {
     display: block;
-    max-width: 48rem;
+    max-width: 56rem;
+    margin-inline: auto;
   }
 
   .seo-content__grid {
@@ -114,7 +116,7 @@
   }
 
   @media screen and (min-width: 990px) {
-    .seo-content__grid {
+    .seo-content__grid:not(.seo-content__grid--faq-only) {
       grid-template-columns: 1.1fr 1fr;
       gap: 5rem;
     }
