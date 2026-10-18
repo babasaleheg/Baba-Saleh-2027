@@ -220,10 +220,14 @@ def main():
                 title_ar, force = fixed, ("title",)
             brand_part = "" if own_brand(p) else f" – {brand_ar(p['vendor'])}"
             cat_part = f" – {category_ar}" if category_ar else ""
+            # No store name in the SEO title: the theme adds it to the page title, and Google Shopping
+            # shows this text as the product name. Older runs added "| بابا صالح مصر"; rebuild those.
+            current_meta = (res["ar"].get("meta_title") or ("",))[0] or ""
+            if current_meta.rstrip().endswith(f"| {STORE_AR} مصر"):
+                force = force + ("meta_title",)
             register(p["id"], res, {
                 "title": title_ar,
-                "meta_title": next((t for t in (f"{title_ar}{brand_part} | {STORE_AR} مصر", f"{title_ar}{brand_part}",
-                                                f"{title_ar} | {STORE_AR} مصر") if len(t) <= 70), clip(title_ar, 70)),
+                "meta_title": next((t for t in (f"{title_ar}{brand_part}",) if len(t) <= 70), clip(title_ar, 70)),
                 "meta_description": clip(f"{title_ar}{brand_part}{cat_part}. الدفع عند الاستلام وشحن سريع لجميع محافظات مصر من {STORE_AR}.", 160),
             }, stats, force)
 

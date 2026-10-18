@@ -526,12 +526,16 @@ def own_brand(p):
 
 
 def product_seo_title(p):
-    """Longest of: title – brand | Baba Saleh Egypt, title – brand, title | Baba Saleh Egypt, title (max 70 chars)."""
+    """title – brand, or just the title (max 70 chars). No store name: the theme adds
+    "| Baba Saleh Egypt" to the page title, and Google Shopping uses this text as the product name."""
     brand = "" if own_brand(p) else f" – {p['vendor']}"
-    for t in (f"{p['title']}{brand} | {STORE} Egypt", f"{p['title']}{brand}", f"{p['title']} | {STORE} Egypt"):
-        if len(t) <= 70:
-            return t
-    return clip(p["title"], 70)
+    t = f"{p['title']}{brand}"
+    return t if len(t) <= 70 else clip(p["title"], 70)
+
+
+def old_style_seo_title(title):
+    """SEO titles this script used to write ended with the store name; those get rebuilt."""
+    return bool(title) and title.rstrip().endswith(f"| {STORE} Egypt")
 
 
 def product_seo_description(p):
@@ -555,7 +559,7 @@ def seo():
         for p in page["nodes"]:
             stats["products"] += 1
             fields = {}
-            if not p["seo"]["title"]:
+            if not p["seo"]["title"] or old_style_seo_title(p["seo"]["title"]):
                 fields["title"] = product_seo_title(p)
             if not p["seo"]["description"]:
                 fields["description"] = product_seo_description(p)
