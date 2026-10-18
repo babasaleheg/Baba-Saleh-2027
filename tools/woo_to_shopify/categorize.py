@@ -61,6 +61,18 @@ FIXES = {
     "Venum Challenger Boxing Headgear – Black &amp; Gold": "cat:boxing",
     "Venum Challenger Boxing Headgear – Black & Gold": "cat:boxing",
     "Clinch Kickboxing Shin Guards": "cat:boxing",
+    "Captain Armband": "cat:football",
+    "Basketball & Bowling Game 2 in 1": "cat:games",
+    "Venum Headguard": "cat:boxing",
+    "Bandage Pair 2.5 m – Blue": "cat:boxing",
+    "Disney Kids’ Swim Set": "cat:kids-swimwear",
+    "Kids’ Swim Set – Black, Blue, Orange & White": "cat:kids-swimwear",
+    "Kids’ Swim Set – Black, Pink & Purple": "cat:kids-swimwear",
+    "Inflatable Water Ball": "cat:beach-toys",
+    "Champion Water Ball": "cat:beach-toys",
+    "Color Hoop Dumbbell": "cat:weights",
+    "Girls’ Samba Shoes": "cat:running-shoes",
+    "Track Half-Sleeve & Shorts Swimsuit": "cat:men-swimwear",
     "Electric Air Pump": "cat:sports-accessories",
     "Foot Pump 25 cm": "cat:sports-accessories",
     "Large Floor Pump": "cat:sports-accessories",
@@ -98,12 +110,20 @@ AUDIENCE_FIXES = {
     "Women’s Dinosaur Slides": "for:women",
     "Track Women’s Swimsuit": "for:women",
     "Track Men’s 3-Line Tracksuit": "for:men",
+    "Girls’ Crocs Sandals": "for:women",
+    "Girls’ Samba Shoes": "for:women",
+    "Girls’ Running Shoes": "for:women",
+    "Goalkeeper Jersey": "for:kids",
+    "Crocs – Black, Navy Blue & White": "for:kids",
+    "Comfort Clogs": "for:kids",
+    "Fashion Slide Slippers": "for:kids",
+    "Track Half-Sleeve & Shorts Swimsuit": "for:men",
 }
 
 AUDIENCE = [(r"\b(kids?|boys?|girls?|baby|junior|children)\b", "for:kids"), (r"\b(women|women’s|women's|ladies|hijab)\b", "for:women"), (r"\b(men|men’s|men's)\b", "for:men")]
 
 PRODUCTS_Q = """query($a: String) { products(first: 250, after: $a, query: "status:active") {
-  pageInfo { hasNextPage endCursor } nodes { id title productType tags } } }"""
+  pageInfo { hasNextPage endCursor } nodes { id title productType tags options { name optionValues { name } } } } }"""
 UPDATE = """mutation($p: ProductUpdateInput!) { productUpdate(product: $p) { userErrors { field message } } }"""
 TAXONOMY_PREFIXES = ("cat:", "dept:", "group:")
 
@@ -188,6 +208,29 @@ def main():
             if errs:
                 log(f"  error: {errs}")
         done += 1
+    # Swimwear sold in both kids' (numbers) and adult (S, M, L...) sizes shows in both sections
+    for p in products:
+        cat = next((t for t in p["tags"] if t.startswith("cat:")), None)
+        if cat not in ("cat:kids-swimwear", "cat:men-swimwear"):
+            continue
+        sizes = [v["name"].strip().upper() for o in p.get("options", []) if "size" in o["name"].lower() for v in o["optionValues"]]
+        kid = any(re.fullmatch(r"\d{1,2}", v) and int(v) <= 16 for v in sizes)
+        adult = any(v in ("S", "M", "L", "XL", "2XL", "XXL", "3XL") for v in sizes)
+        t = p["title"].lower().replace("’", "'")
+        if cat == "cat:men-swimwear":
+            other = "x:kids-swimwear"
+        elif re.search(r"girl|women|bikini|burkini|dress|skirt", t):
+            other = "x:women-swimwear"
+        elif re.search(r"short|jammer|trunk|brief", t):
+            other = "x:men-swimwear"
+        else:
+            other = None  # unisex swimsuit: no adult section is clearly right
+        if other and kid and adult and other not in p["tags"]:
+            log(f"{'would add' if dry else 'add'} {other:24} {p['title']}")
+            if not dry:
+                gql("mutation($id: ID!, $t: [String!]!) { tagsAdd(id: $id, tags: $t) { userErrors { message } } }", {"id": p["id"], "t": [other]})
+            done += 1
+
     for p in products:
         want = AUDIENCE_FIXES.get(p["title"].strip())
         have = [t for t in p["tags"] if t.startswith("for:")]
