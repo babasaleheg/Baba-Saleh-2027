@@ -180,6 +180,40 @@ def plan_vendor(p, title):
     return "Baba Saleh" if p["vendor"] != "Baba Saleh" else None
 
 
+REORDER = """mutation($pid: ID!, $o: [OptionReorderInput!]!) { productOptionsReorder(productId: $pid, options: $o) {
+  userErrors { field message } } }"""
+LETTER_ORDER = ["XXXS", "XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL", "7XL", "8XL", "9XL", "10XL"]
+
+
+def size_key(name):
+    """Sort key: letter sizes XS..10XL, then numbers low to high (28/29, 6-8, 10 kg, 2Y), One Size last."""
+    v = norm_size(name).upper().replace(" ", "") if name else ""
+    v = {"XXL": "2XL", "XXXL": "3XL", "XXXXL": "4XL", "XXXXXL": "5XL", "2XS": "XXS", "3XS": "XXXS"}.get(v, v)
+    if v in LETTER_ORDER:
+        return (0, LETTER_ORDER.index(v), "")
+    m = re.match(r"(\d+(?:[.,]\d+)?)", v)
+    if m:
+        return (1, float(m.group(1).replace(",", ".")), v)
+    if "ONE" in v or "FREE" in v:
+        return (3, 0, v)
+    return (2, 0, v)
+
+
+def plan_order(p):
+    """Size / weight options whose values are out of order -> reorder input, else None."""
+    out, changed = [], False
+    for o in p["options"]:
+        values = o["optionValues"]
+        name = o["name"].lower()
+        if any(k in name for k in ("size", "مقاس", "weight", "وزن")) and len(values) > 1:
+            ordered = sorted(values, key=lambda v: size_key(v["name"]))
+            if [v["id"] for v in ordered] != [v["id"] for v in values]:
+                changed = True
+                values = ordered
+        out.append({"id": o["id"], "values": [{"id": v["id"]} for v in values]})
+    return out if changed else None
+
+
 def main():
     dry = "--dry-run" in sys.argv
     after, products = None, []
@@ -229,6 +263,14 @@ def main():
                 errs = gql(OPTION_UPDATE, {"pid": p["id"], "o": o, "v": v or None})["productOptionUpdate"]["userErrors"]
                 if errs:
                     log(f"  error: {errs}")
+
+        order = plan_order(p)
+        if order:
+            stats["sizes put in order"] += 1
+            if not dry:
+                errs = gql(REORDER, {"pid": p["id"], "o": order})["productOptionsReorder"]["userErrors"]
+                if errs:
+                    log(f"  reorder error {p['title'][:40]}: {errs}")
 
     # Arabic for option names, colour words and new descriptions
     if not dry:

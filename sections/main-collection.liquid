@@ -9,15 +9,10 @@
   <facet-filters class="section collection color-{{ section.settings.color_scheme }}" data-section-id="{{ section.id }}" style="--section-pt: 2rem; --section-pb: 4rem;">
     <div class="page-width">
       {%- if request.page_type == 'collection' -%}
-        <header class="collection__header{% if section.settings.show_image and collection.image %} collection__header--image{% endif %}">
-          {%- if section.settings.show_image and collection.image -%}
-            <div class="media collection__banner">
-              {%- assign collection_alt = collection.image.alt | default: collection.title -%}
-              {{ collection.image | image_url: width: 2400 | image_tag: loading: 'eager', sizes: '160px', widths: '160, 320, 480', alt: collection_alt }}
-            </div>
-          {%- endif -%}
+        {%- comment -%} Just the name, in bold: no banner box, products start higher {%- endcomment -%}
+        <header class="collection__header">
           <div class="collection__header-text">
-            <h1 class="h1">{{ collection.title }}</h1>
+            <h1 class="collection__title">{{ collection.title }}</h1>
             {%- if section.settings.show_description and collection.description != blank -%}
               <div class="rte collection__description">{{ collection.description }}</div>
             {%- endif -%}
@@ -103,10 +98,19 @@
 {%- endpaginate -%}
 
 {% stylesheet %}
+  .collection__title {
+    margin: 0;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
   .collection__header {
     display: grid;
-    gap: 1rem;
-    margin-block-end: 2rem;
+    gap: 0.5rem;
+    margin-block-end: 1.25rem;
   }
 
   /* Slim banner: title on one side, the square category image on the other (never cropped). */
