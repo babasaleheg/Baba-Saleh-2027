@@ -10,7 +10,7 @@ category or audience from the photo (e.g. an adult model in Kids' Swimwear).
     python3 photo_sheets.py --cat kids-swimwear
 Writes PNGs to $DATA_DIR/sheets/ and prints their paths.
 """
-import argparse, io, os, textwrap, urllib.request
+import argparse, io, os, re, statistics, textwrap, urllib.request
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
@@ -22,11 +22,12 @@ from sync import gql
 D = os.environ.get("DATA_DIR", "woo_data")
 OUT = os.path.join(D, "sheets")
 CACHE = os.path.join(D, "thumbs")
+CHECKED = os.path.join(os.path.dirname(os.path.abspath(__file__)), "price_checked.txt")
 STORE = "https://babasaleh.com/cdn/shop/files/"
 COLS, ROWS, TW, TH, LH = 6, 5, 200, 200, 64
 
 Q = """query($a: String, $q: String) { products(first: 250, after: $a, query: $q) { pageInfo { hasNextPage endCursor }
-  nodes { id title tags featuredMedia { preview { image { url } } } } } }"""
+  nodes { id title handle tags createdAt updatedAt priceRangeV2 { minVariantPrice { amount } } featuredMedia { preview { image { url } } } } } }"""
 
 
 def font(size):
@@ -53,15 +54,36 @@ def thumb(p):
     return Image.open(path)
 
 
+def kind(title):
+    """The product's kind: last word of the name before any size/colour part ("Door Pull-Up Bar 100 cm" -> "bar")."""
+    name = re.split(r"\s[–-]\s|,|\(|\d", title.lower().replace("’", "'"))[0]
+    words = re.findall(r"[a-z][a-z'-]+", name)
+    return words[-1].rstrip("s") if words else ""
+
+
+def price(p):
+    return float(p["priceRangeV2"]["minVariantPrice"]["amount"])
+
+
+def price_flags(items):
+    """Products priced under a quarter or over 4x the median of 3+ same-category products of the same kind."""
+    flags = {}
+    for p in items:
+        k = kind(p["title"])
+        peers = [price(o) for o in items if o is not p and k and kind(o["title"]) == k and price(o) > 0]
+        if len(peers) >= 3 and price(p) > 0:
+            med = statistics.median(peers)
+            if price(p) < med / 4 or price(p) > med * 4:
+                flags[p["id"]] = med
+    return flags
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=float)
     ap.add_argument("--cat")
     args = ap.parse_args()
     q = "status:active"
-    if args.days:
-        since = (datetime.now(timezone.utc) - timedelta(days=args.days)).strftime("%Y-%m-%dT%H:%M:%SZ")
-        q += f" AND (created_at:>'{since}' OR updated_at:>'{since}')"
     products, after = [], None
     while True:
         page = gql(Q, {"a": after, "q": q})["products"]
@@ -71,11 +93,17 @@ def main():
         after = page["pageInfo"]["endCursor"]
     os.makedirs(OUT, exist_ok=True)
     os.makedirs(CACHE, exist_ok=True)
-    groups = defaultdict(list)
+    by_cat = defaultdict(list)
     for p in products:
-        cat = next((t[4:] for t in p["tags"] if t.startswith("cat:")), "NONE")
-        if not args.cat or cat == args.cat:
-            groups[cat].append(p)
+        by_cat[next((t[4:] for t in p["tags"] if t.startswith("cat:")), "NONE")].append(p)
+    checked = set(open(CHECKED, encoding="utf-8").read().splitlines()) if os.path.exists(CHECKED) else set()
+    flags = {pid: med for items in by_cat.values() for pid, med in price_flags(items).items()}
+    flags = {pid: med for pid, med in flags.items() if next(p["title"] for p in products if p["id"] == pid) not in checked}
+    since = (datetime.now(timezone.utc) - timedelta(days=args.days)).strftime("%Y-%m-%dT%H:%M:%SZ") if args.days else ""
+    groups = {cat: [p for p in items if max(p["createdAt"], p["updatedAt"]) > since or p["id"] in flags]
+              for cat, items in by_cat.items() if not args.cat or cat == args.cat}
+    groups = {cat: items for cat, items in groups.items() if items}
+    products = [p for items in groups.values() for p in items]
     with ThreadPoolExecutor(12) as ex:
         thumbs = dict(zip([p["id"] for p in products], ex.map(thumb, products)))
     small, tiny = font(13), font(11)
@@ -102,11 +130,20 @@ def main():
                 for j, line in enumerate(lines):
                     dr.text((x + 4, y + TH + 2 + j * 15), line, fill="black", font=small)
                 dr.text((x + 4, y + TH + 34), f"#{start + i + 1} for:{aud}" + (f" +{extra}" if extra else ""), fill="#b45309", font=tiny)
+                flag = flags.get(p["id"])
+                dr.text((x + 4, y + TH + 48), f"{price(p):g} EGP" + (f"  PRICE? peers ~{flag:g}" if flag else ""),
+                        fill="red" if flag else "#555", font=tiny)
                 dr.rectangle([x, y, x + TW - 1, y + TH + LH - 1], outline="#e5e5e5")
             path = os.path.join(OUT, f"{cat}_{start // (COLS * ROWS) + 1}.png")
             sheet.save(path)
             paths.append(path)
+    with open(os.path.join(OUT, "price_flags.txt"), "w") as f:
+        for cat, items in sorted(by_cat.items()):
+            for p in items:
+                if p["id"] in flags:
+                    f.write(f"{p['title']} | {cat} | {price(p):g} EGP | similar ~{flags[p['id']]:g} EGP | /products/{p['handle']}\n")
     print("\n".join(paths))
+    print(f"price flags: {len(flags)} (see {OUT}/price_flags.txt)")
     print(f"{len(paths)} sheets, {sum(len(v) for v in groups.values())} products")
 
 

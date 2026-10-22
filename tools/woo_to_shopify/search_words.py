@@ -4,7 +4,8 @@ Shopify search matches whole words in the title and tags. Shoppers type everyday
 words ("كورة", "جزمة", "ترنج") while titles use another spelling ("كرة", "حذاء", "ترينج"),
 so those searches miss most products. For every product this adds the other spellings of
 the words in its English or Arabic name as search tags (only tags from the lists below are
-ever added). Runs nightly.
+ever added), and removes words from the lists that no longer fit (e.g. after a product is
+renamed). Runs nightly.
 
     python3 search_words.py            # add missing search words
     python3 search_words.py --dry-run
@@ -83,6 +84,7 @@ ALL_WORDS = {w for _, words in GROUPS for w in words}
 
 PRODUCTS_Q = """query($a: String) { products(first: 250, after: $a, query: "status:active") {
   pageInfo { hasNextPage endCursor } nodes { id title tags } } }"""
+TAGS_REMOVE = """mutation($id: ID!, $t: [String!]!) { tagsRemove(id: $id, tags: $t) { userErrors { message } } }"""
 TAGS_ADD = """mutation($id: ID!, $t: [String!]!) { tagsAdd(id: $id, tags: $t) { userErrors { message } } }"""
 
 
@@ -113,6 +115,13 @@ def main():
             stats["products"] += 1
             want = words_for(p["title"], ar_titles.get(p["id"]))
             missing = sorted(want - set(p["tags"]))
+            stale = sorted((set(p["tags"]) & ALL_WORDS) - want)
+            if stale:
+                stats["words removed"] += len(stale)
+                if not DRY:
+                    gql(TAGS_REMOVE, {"id": p["id"], "t": stale})
+                elif stats["words removed"] <= 40:
+                    log(p["title"], "-", stale)
             if not missing:
                 continue
             stats["products updated"] += 1
