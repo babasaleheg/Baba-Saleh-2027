@@ -280,6 +280,11 @@
           </li>
         {%- endfor -%}
       </ul>
+      {%- assign branches_url = routes.root_url | append: '/pages/about-baba-saleh' | replace: '//', '/' | append: '#branches' -%}
+      <a href="{{ branches_url }}" class="menu-drawer__branches">
+        {%- render 'icon', icon: 'pin' -%}
+        {{- 'header.our_branches' | t -}}
+      </a>
       {%- if info_menu.links.size > 0 -%}
         <ul class="menu-drawer__info" role="list">
           {%- for link in info_menu.links -%}
@@ -828,6 +833,32 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
     box-shadow: 0 10px 20px -12px rgba(229, 32, 46, 0.8);
+  }
+
+  .menu-drawer__branches {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-block-start: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: #febd19;
+    color: #0a0a0a;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 0 10px 20px -12px rgba(254, 189, 25, 0.9);
+  }
+
+  [dir='rtl'] .menu-drawer__branches {
+    letter-spacing: 0;
+  }
+
+  .menu-drawer__branches .icon {
+    width: 1.125rem;
+    height: 1.125rem;
   }
 
   .menu-drawer__link--sale .icon {
