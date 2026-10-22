@@ -1,0 +1,288 @@
+{%- comment -%}
+  Bold, branded shortcut tiles (Shop for Men / Women / Kids, Shop by budget...).
+  No images: big type in the brand colours, so it is light and fast.
+  - style "tiles": label + product count + arrow
+  - style "price": "Under" + a big number + "EGP"
+{%- endcomment -%}
+{%- assign tile_style = section.settings.style -%}
+<section
+  class="section quick-links quick-links--{{ tile_style }} color-{{ section.settings.color_scheme }}"
+  style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="quick-links__head">
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        <h2 class="h2">{{ section.settings.heading }}</h2>
+      </div>
+    {%- endif -%}
+    <ul class="quick-links__list" role="list" style="--ql-count: {{ section.blocks.size }}">
+      {%- for block in section.blocks -%}
+        {%- assign c = block.settings.collection -%}
+        {%- assign url = block.settings.link | default: c.url | default: '#' -%}
+        <li {{ block.shopify_attributes }}>
+          <a href="{{ url }}" class="quick-link quick-link--{{ block.settings.color }}">
+            {%- if tile_style == 'price' -%}
+              <span class="quick-link__pre">{{ block.settings.pre }}</span>
+              <span class="quick-link__big">{{ block.settings.label }}</span>
+              <span class="quick-link__unit">{{ block.settings.unit }}</span>
+            {%- else -%}
+              <span class="quick-link__label">{{ block.settings.label | default: c.title }}</span>
+              {%- if c != blank and c.products_count > 0 -%}
+                <span class="quick-link__meta">{{ 'sections.quick_links.products' | t: count: c.products_count }}</span>
+              {%- endif -%}
+            {%- endif -%}
+            <span class="quick-link__arrow" aria-hidden="true">{% render 'icon', icon: 'arrow' %}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+  .quick-links__head {
+    display: grid;
+    gap: 0.25rem;
+    margin-block-end: 1.25rem;
+  }
+
+  .quick-links__list {
+    display: grid;
+    grid-template-columns: repeat(var(--ql-count, 3), minmax(0, 1fr));
+    gap: 0.625rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .quick-links--price .quick-links__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .quick-links--price .quick-link {
+    min-height: 6.5rem;
+  }
+
+  /* Phones: price tiles are small, the whole tile is the button, no arrow chip */
+  @media screen and (max-width: 749px) {
+    .quick-links--price .quick-link__arrow {
+      display: none;
+    }
+  }
+
+  .quick-link {
+    --ql-bg: #febd19;
+    --ql-fg: #0a0a0a;
+    --ql-accent: #0a0a0a;
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-content: end;
+    gap: 0.25rem;
+    min-height: 7.5rem;
+    padding: 1rem 1rem 1.125rem;
+    border-radius: 1.375rem;
+    background: var(--ql-bg);
+    color: var(--ql-fg);
+    text-decoration: none;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 10px 24px -18px rgba(0, 0, 0, 0.55);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* soft light sweep for depth */
+  .quick-link::before {
+    content: '';
+    position: absolute;
+    inset: -40% -20% auto auto;
+    z-index: -1;
+    width: 70%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255, 255, 255, 0.35), transparent);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .quick-link--black {
+    --ql-bg: #0a0a0a;
+    --ql-fg: #ffffff;
+    --ql-accent: #febd19;
+  }
+
+  .quick-link--black::before {
+    background: radial-gradient(closest-side, rgba(254, 189, 25, 0.28), transparent);
+  }
+
+  .quick-link--red {
+    --ql-bg: #e5242b;
+    --ql-fg: #ffffff;
+    --ql-accent: #ffffff;
+  }
+
+  .quick-link--cream {
+    --ql-bg: #fff4d6;
+    --ql-fg: #0a0a0a;
+    --ql-accent: #0a0a0a;
+  }
+
+  .quick-link--white {
+    --ql-bg: #ffffff;
+    --ql-fg: #0a0a0a;
+    --ql-accent: #0a0a0a;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08) inset, 0 10px 24px -18px rgba(0, 0, 0, 0.45);
+  }
+
+  .quick-link__label {
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: clamp(1.25rem, 0.95rem + 1.6vw, 2.25rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .quick-link__meta,
+  .quick-link__pre,
+  .quick-link__unit {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    opacity: 0.75;
+  }
+
+  .quick-link__big {
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: clamp(2.25rem, 1.6rem + 3vw, 4rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .quick-link__arrow {
+    position: absolute;
+    inset-block-start: 0.875rem;
+    inset-inline-end: 0.875rem;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--ql-fg) 12%, transparent);
+    color: var(--ql-accent);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease;
+  }
+
+  .quick-link__arrow .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  [dir='rtl'] .quick-link__arrow .icon {
+    transform: scaleX(-1);
+  }
+
+  .quick-link:active {
+    transform: scale(0.97);
+  }
+
+  @media (hover: hover) {
+    .quick-link:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 22px 40px -22px rgba(0, 0, 0, 0.6);
+    }
+
+    .quick-link:hover::before {
+      transform: scale(1.25);
+    }
+
+    .quick-link:hover .quick-link__arrow {
+      transform: translateX(3px);
+      background: var(--ql-accent);
+      color: var(--ql-bg);
+    }
+
+    [dir='rtl'] .quick-link:hover .quick-link__arrow {
+      transform: translateX(-3px);
+    }
+  }
+
+  .quick-link:focus-visible {
+    outline: 3px solid #febd19;
+    outline-offset: 3px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .quick-links__list {
+      gap: 1rem;
+    }
+
+    .quick-link {
+      min-height: 10rem;
+      padding: 1.5rem;
+      border-radius: 1.75rem;
+    }
+
+    .quick-links--price .quick-links__list {
+      grid-template-columns: repeat(var(--ql-count, 4), minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .quick-link,
+    .quick-link::before,
+    .quick-link__arrow {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Quick links",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "default": "tiles",
+      "label": "Style",
+      "options": [
+        { "value": "tiles", "label": "Tiles (name + product count)" },
+        { "value": "price", "label": "Price (big number)" }
+      ]
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:settings.eyebrow" },
+    { "type": "text", "id": "heading", "label": "t:settings.heading" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32, "label": "t:settings.padding_top" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32, "label": "t:settings.padding_bottom" }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Link",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "url", "id": "link", "label": "Or a link" },
+        { "type": "text", "id": "pre", "label": "Small text above (price style)" },
+        { "type": "text", "id": "label", "label": "Label / number" },
+        { "type": "text", "id": "unit", "label": "Small text below (price style)" },
+        {
+          "type": "select",
+          "id": "color",
+          "default": "yellow",
+          "label": "Colour",
+          "options": [
+            { "value": "yellow", "label": "Brand yellow" },
+            { "value": "black", "label": "Black" },
+            { "value": "red", "label": "Red" },
+            { "value": "cream", "label": "Cream" },
+            { "value": "white", "label": "White" }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Quick links", "blocks": [{ "type": "link" }, { "type": "link" }, { "type": "link" }] }]
+}
+{% endschema %}

@@ -214,6 +214,9 @@
       "hours": "ساعة",
       "minutes": "دقيقة",
       "seconds": "ثانية"
+    },
+    "quick_links": {
+      "products": "{{ count }} منتج"
     }
   },
   "templates": {

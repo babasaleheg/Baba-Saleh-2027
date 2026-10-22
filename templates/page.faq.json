@@ -1,0 +1,107 @@
+{
+  "sections": {
+    "main": {
+      "type": "faq-accordion",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "What does Baba Saleh sell?",
+            "answer": "<p>Baba Saleh (بابا صالح) sells sports equipment and sportswear in Egypt: gym and fitness equipment, swimming gear and swimwear, football, basketball, racket sports, martial arts, beach gear, trophies and medals, and kids' toys.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Do you deliver to all of Egypt?",
+            "answer": "<p>Yes. We deliver to every governorate in Egypt, usually within 2–5 days.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Can I pay cash on delivery?",
+            "answer": "<p>Yes. You can pay in cash when your order arrives, anywhere in Egypt.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>You can return eligible items within 7 days. See our <a href=\"/policies/refund-policy\">refund policy</a> for details.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Which brands do you carry?",
+            "answer": "<p>Wilson, Everlast, Venum, Cressi, Dunlop, Track, Kuna, Spurt, LivePro, LiveUp, Cougar, Kiko, Manta, Wish and our own Baba Saleh range.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "How can I contact Baba Saleh?",
+            "answer": "<p>Message us on WhatsApp or email support@babasaleh.com — real people reply fast.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "Do you have stores I can visit?",
+            "answer": "<p>Yes. Visit us at our branches in Al Ahram, Imbaba, Giza, Maadi and 6th of October. Find addresses and directions on our <a href=\"/pages/contact-us\">contact page</a>.</p>"
+          }
+        },
+        "q8": {
+          "type": "question",
+          "settings": {
+            "question": "Are your products original?",
+            "answer": "<p>Yes. We sell original products from the brands we carry, plus our own Baba Saleh and Track ranges.</p>"
+          }
+        },
+        "q9": {
+          "type": "question",
+          "settings": {
+            "question": "How do I track my order?",
+            "answer": "<p>Open the link in your order confirmation email, or sign in to your account to see your order status.</p>"
+          }
+        },
+        "q10": {
+          "type": "question",
+          "settings": {
+            "question": "Can I cancel my order?",
+            "answer": "<p>Yes, before it ships. Message us on WhatsApp with your order number and we will cancel it.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7",
+        "q8",
+        "q9",
+        "q10"
+      ],
+      "settings": {
+        "eyebrow": "Help",
+        "heading": "Frequently asked questions",
+        "text": "<p>Quick answers about delivery, payment, returns and our stores.</p>",
+        "button_label": "Chat on WhatsApp",
+        "button_link": "https://wa.me/201028305495",
+        "show_search": true,
+        "open_first": false,
+        "structured_data": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

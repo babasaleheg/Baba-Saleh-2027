@@ -187,6 +187,9 @@
       "hours": "Hrs",
       "minutes": "Min",
       "seconds": "Sec"
+    },
+    "quick_links": {
+      "products": "{{ count }} products"
     }
   },
   "templates": {

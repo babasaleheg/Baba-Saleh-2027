@@ -671,70 +671,6 @@
         "color_scheme": "scheme-5"
       }
     },
-    "seo": {
-      "type": "seo-content",
-      "blocks": {
-        "faq_1": {
-          "type": "question",
-          "settings": {
-            "question": "What does Baba Saleh sell?",
-            "answer": "<p>Baba Saleh (بابا صالح) sells sports equipment and sportswear in Egypt: gym and fitness equipment, swimming gear and swimwear, football, basketball, racket sports, martial arts, beach gear, trophies and medals, and kids' toys.</p>"
-          }
-        },
-        "faq_2": {
-          "type": "question",
-          "settings": {
-            "question": "Do you deliver to all of Egypt?",
-            "answer": "<p>Yes. We deliver to every governorate in Egypt, usually within 2–5 days.</p>"
-          }
-        },
-        "faq_3": {
-          "type": "question",
-          "settings": {
-            "question": "Can I pay cash on delivery?",
-            "answer": "<p>Yes. You can pay in cash when your order arrives, anywhere in Egypt.</p>"
-          }
-        },
-        "faq_4": {
-          "type": "question",
-          "settings": {
-            "question": "What is your return policy?",
-            "answer": "<p>You can return eligible items within 7 days. See our <a href=\"/policies/refund-policy\">refund policy</a> for details.</p>"
-          }
-        },
-        "faq_5": {
-          "type": "question",
-          "settings": {
-            "question": "Which brands do you carry?",
-            "answer": "<p>Wilson, Everlast, Venum, Cressi, Dunlop, Track, Kuna, Spurt, LivePro, LiveUp, Cougar, Kiko, Manta, Wish and our own Baba Saleh range.</p>"
-          }
-        },
-        "faq_6": {
-          "type": "question",
-          "settings": {
-            "question": "How can I contact Baba Saleh?",
-            "answer": "<p>Message us on WhatsApp or email support@babasaleh.com — real people reply fast.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "faq_1",
-        "faq_2",
-        "faq_3",
-        "faq_4",
-        "faq_5",
-        "faq_6"
-      ],
-      "settings": {
-        "eyebrow": "",
-        "heading": "",
-        "text": "",
-        "faq_heading": "Frequently asked questions",
-        "color_scheme": "scheme-1",
-        "padding_top": 48,
-        "padding_bottom": 48
-      }
-    },
     "new_arrivals": {
       "type": "featured-collection",
       "blocks": {
@@ -761,27 +697,30 @@
       }
     },
     "shop_for": {
-      "type": "collection-list",
+      "type": "quick-links",
       "blocks": {
         "men": {
-          "type": "collection",
+          "type": "link",
           "settings": {
             "collection": "men",
-            "title": "Men"
+            "label": "Men",
+            "color": "black"
           }
         },
         "women": {
-          "type": "collection",
+          "type": "link",
           "settings": {
             "collection": "women",
-            "title": "Women"
+            "label": "Women",
+            "color": "yellow"
           }
         },
         "kids": {
-          "type": "collection",
+          "type": "link",
           "settings": {
             "collection": "kids",
-            "title": "Kids"
+            "label": "Kids",
+            "color": "red"
           }
         }
       },
@@ -791,44 +730,75 @@
         "kids"
       ],
       "settings": {
+        "style": "tiles",
         "eyebrow": "",
         "heading": "Shop for",
-        "layout": "trio",
-        "show_view_all": false,
         "color_scheme": "scheme-1",
         "padding_top": 24,
         "padding_bottom": 24
       }
     },
     "budget": {
-      "type": "featured-collection",
+      "type": "quick-links",
       "blocks": {
         "b25": {
-          "type": "tab",
+          "type": "link",
           "settings": {
             "collection": "under-25-egp",
-            "label": "Under 25 EGP"
+            "pre": "Under",
+            "label": "25",
+            "unit": "EGP",
+            "color": "yellow"
           }
         },
         "b50": {
-          "type": "tab",
+          "type": "link",
           "settings": {
             "collection": "under-50-egp",
-            "label": "Under 50 EGP"
+            "pre": "Under",
+            "label": "50",
+            "unit": "EGP",
+            "color": "black"
           }
         },
         "b100": {
-          "type": "tab",
+          "type": "link",
           "settings": {
             "collection": "under-100-egp",
-            "label": "Under 100 EGP"
+            "pre": "Under",
+            "label": "100",
+            "unit": "EGP",
+            "color": "red"
           }
         },
         "b250": {
-          "type": "tab",
+          "type": "link",
           "settings": {
             "collection": "under-250-egp",
-            "label": "Under 250 EGP"
+            "pre": "Under",
+            "label": "250",
+            "unit": "EGP",
+            "color": "yellow"
+          }
+        },
+        "b500": {
+          "type": "link",
+          "settings": {
+            "collection": "under-500-egp",
+            "pre": "Under",
+            "label": "500",
+            "unit": "EGP",
+            "color": "white"
+          }
+        },
+        "b1000": {
+          "type": "link",
+          "settings": {
+            "collection": "under-1000-egp",
+            "pre": "Under",
+            "label": "1000",
+            "unit": "EGP",
+            "color": "black"
           }
         }
       },
@@ -836,17 +806,17 @@
         "b25",
         "b50",
         "b100",
-        "b250"
+        "b250",
+        "b500",
+        "b1000"
       ],
       "settings": {
+        "style": "price",
         "eyebrow": "Great value",
         "heading": "Shop by budget",
-        "products_to_show": 12,
-        "columns_desktop": 6,
-        "show_view_all": true,
         "color_scheme": "scheme-1",
-        "padding_top": 40,
-        "padding_bottom": 40
+        "padding_top": 24,
+        "padding_bottom": 24
       }
     }
   },
@@ -865,7 +835,6 @@
     "sportswear",
     "brands",
     "toys",
-    "marquee",
-    "seo"
+    "marquee"
   ]
 }
