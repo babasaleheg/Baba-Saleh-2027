@@ -1107,10 +1107,29 @@
       });
       this.onPop = () => this.#render(window.location.href, false);
       window.addEventListener('popstate', this.onPop);
+      this.#watchMore();
     }
 
     disconnectedCallback() {
       window.removeEventListener('popstate', this.onPop);
+      this.moreObserver?.disconnect();
+    }
+
+    /* Infinite scroll: load the next page as the shopper nears the end of the grid.
+       The "Load more" link stays as a fallback (no JS, slow networks) and for crawlers. */
+    #watchMore() {
+      this.moreObserver?.disconnect();
+      const more = this.querySelector('.collection__more');
+      if (!more || !('IntersectionObserver' in window)) return;
+      this.moreObserver = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting) || this.loadingMore) return;
+          const link = this.querySelector('[data-load-more]');
+          if (link) this.#loadMore(link);
+        },
+        { rootMargin: '0px 0px 900px 0px' }
+      );
+      this.moreObserver.observe(more);
     }
 
     #onChange = debounce(() => {
@@ -1156,6 +1175,7 @@
         url.searchParams.delete('section_id');
         if (push) window.history.pushState({}, '', url);
         revealAll(this);
+        this.#watchMore();
 
         if (focusName) {
           const target = [...this.querySelectorAll(`[name="${CSS.escape(focusName)}"]`)].find(
@@ -1172,6 +1192,8 @@
     }
 
     async #loadMore(link) {
+      if (this.loadingMore) return;
+      this.loadingMore = true;
       link.classList.add('is-loading');
       const url = new URL(link.href, window.location.origin);
       url.searchParams.set('section_id', this.sectionId);
@@ -1191,6 +1213,8 @@
         window.location.href = link.href;
       } finally {
         link.classList.remove('is-loading');
+        this.loadingMore = false;
+        this.#watchMore(); // re-arm: loads the next page right away if the end is still in view
       }
     }
   }
