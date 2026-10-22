@@ -103,6 +103,35 @@ FIXES = {
     "Venum MMA Shin Guards": "cat:boxing",
     "Clinch Boxing Head Guard": "cat:boxing",
     "H-Shape Soccer Coaching Board – 30 × 45 cm": "cat:coaching",
+    # photo audit
+    "Track 3D Slip Swimsuit": "cat:men-swimwear",
+    "Track 3D Half Stretch Swim Shorts": "cat:men-swimwear",
+    "Track Half-Length Swim Shorts": "cat:men-swimwear",
+    "Track Girls’ Swimsuit": "cat:women-swimwear",
+    "Track Kids’ 3D Swimsuit Set – Top & Pants": "cat:women-swimwear",
+    "Kiko Kids’ Modest Burkini Set": "cat:women-swimwear",
+    "Multicolor Basketball, Size 5 – White": "cat:football",
+    "Men’s Cowboy Hat": "cat:hats",
+    "Baby Float with Canopy & Water Gun": "cat:pool-floats",
+    "Hand Wraps": "cat:sports-accessories",
+    "Plain Hand Wrap": "cat:sports-accessories",
+    "Racket Set": "cat:beach-toys",
+    "Single Racket, 27 cm": "cat:beach-toys",
+    "Star Training Plate": "cat:coaching",
+    "Track Weight Bench with Barbell Rack": "cat:gym-machines",
+    "Kango Gloves – Pakistani": "cat:boxing",
+    "One Hand Handle": "cat:weights",
+    "Zigzag Bar 25 mm": "cat:weights",
+    "Triceps Bar": "cat:weights",
+    "Infinity Foot Tensioner": "cat:fitness-accessories",
+    "Track Cable Cross Tensioner": "cat:fitness-accessories",
+    "Doubles Slalom Bag (2-Person)": "cat:camping",
+    "Kuna One-Sided Bouncing Ball": "cat:boxing",
+    "Wolon Curve Elbow Support": "cat:martial-arts-gear",
+    "Wolon Metallic Elbow Support": "cat:martial-arts-gear",
+    "Cressi Clio Fins": "cat:diving",
+    "Sweat T-Shirt": "cat:jackets",
+    "Shark Beach": "cat:beach-toys",
 }
 
 # Products whose audience tag is wrong: title -> correct for: tag
@@ -118,6 +147,31 @@ AUDIENCE_FIXES = {
     "Comfort Clogs": "for:kids",
     "Fashion Slide Slippers": "for:kids",
     "Track Half-Sleeve & Shorts Swimsuit": "for:men",
+    # photo audit: adult models (kids' sizes, if any, are sold from the adult section)
+    "Track 3D Slip Swimsuit": "for:men",
+    "Track 3D Half Stretch Swim Shorts": "for:men",
+    "Track Half-Length Swim Shorts": "for:men",
+    "Track Girls’ Swimsuit": "for:women",
+    "Track Kids’ 3D Swimsuit Set – Top & Pants": "for:women",
+    "Kiko Kids’ Modest Burkini Set": "for:women",
+    "Track Girls’ 3-Line Tracksuit": "for:women",
+    "Track Girls’ Tracksuit – Burgundy, Fuchsia & Navy Blue": "for:women",
+    "Girls’ Flared Leggings": "for:women",
+    "Charleston Leggings Pants": "for:women",
+    "Charleston Pants": "for:women",
+    "Track Tracksuit": "for:men",
+    "Waterproof Jacket": "for:men",
+    "Sleeve T-Shirt": "for:men",
+    "Track T-Shirt": "for:men",
+    "Track T-Shirt – Light Brown, Brown & Blue": "for:men",
+    "Combat Sports Shorts": "for:men",
+    "MMA Boxing Shorts": "for:men",
+    "Venum Boxing Shorts": "for:men",
+    "Venum Combat Sports Shorts": "for:men",
+    "Venum Combat Sports Shorts Black, Red & White": "for:men",
+    "Disney Water Bottle": "for:kids",
+    "Slide Sandals": "for:kids",
+    "Girls’ Beach Sun Hat": "for:kids",
 }
 
 AUDIENCE = [(r"\b(kids?|boys?|girls?|baby|junior|children)\b", "for:kids"), (r"\b(women|women’s|women's|ladies|hijab)\b", "for:women"), (r"\b(men|men’s|men's)\b", "for:men")]
@@ -208,27 +262,13 @@ def main():
             if errs:
                 log(f"  error: {errs}")
         done += 1
-    # Swimwear sold in both kids' (numbers) and adult (S, M, L...) sizes shows in both sections
+    # Each swimwear item shows in one section only (its cat:): no adult models in Kids', no kids in Women's
     for p in products:
-        cat = next((t for t in p["tags"] if t.startswith("cat:")), None)
-        if cat not in ("cat:kids-swimwear", "cat:men-swimwear"):
-            continue
-        sizes = [v["name"].strip().upper() for o in p.get("options", []) if "size" in o["name"].lower() for v in o["optionValues"]]
-        kid = any(re.fullmatch(r"\d{1,2}", v) and int(v) <= 16 for v in sizes)
-        adult = any(v in ("S", "M", "L", "XL", "2XL", "XXL", "3XL") for v in sizes)
-        t = p["title"].lower().replace("’", "'")
-        if cat == "cat:men-swimwear":
-            other = "x:kids-swimwear"
-        elif re.search(r"girl|women|bikini|burkini|dress|skirt", t):
-            other = "x:women-swimwear"
-        elif re.search(r"short|jammer|trunk|brief", t):
-            other = "x:men-swimwear"
-        else:
-            other = None  # unisex swimsuit: no adult section is clearly right
-        if other and kid and adult and other not in p["tags"]:
-            log(f"{'would add' if dry else 'add'} {other:24} {p['title']}")
+        extra = [t for t in p["tags"] if t in ("x:men-swimwear", "x:women-swimwear", "x:kids-swimwear")]
+        if extra:
+            log(f"{'would remove' if dry else 'remove'} {','.join(extra):24} {p['title']}")
             if not dry:
-                gql("mutation($id: ID!, $t: [String!]!) { tagsAdd(id: $id, tags: $t) { userErrors { message } } }", {"id": p["id"], "t": [other]})
+                gql("mutation($id: ID!, $t: [String!]!) { tagsRemove(id: $id, tags: $t) { userErrors { message } } }", {"id": p["id"], "t": extra})
             done += 1
 
     for p in products:
