@@ -759,6 +759,95 @@
         "padding_top": 40,
         "padding_bottom": 40
       }
+    },
+    "shop_for": {
+      "type": "collection-list",
+      "blocks": {
+        "men": {
+          "type": "collection",
+          "settings": {
+            "collection": "men",
+            "title": "Men"
+          }
+        },
+        "women": {
+          "type": "collection",
+          "settings": {
+            "collection": "women",
+            "title": "Women"
+          }
+        },
+        "kids": {
+          "type": "collection",
+          "settings": {
+            "collection": "kids",
+            "title": "Kids"
+          }
+        }
+      },
+      "block_order": [
+        "men",
+        "women",
+        "kids"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Shop for",
+        "layout": "trio",
+        "show_view_all": false,
+        "color_scheme": "scheme-1",
+        "padding_top": 24,
+        "padding_bottom": 24
+      }
+    },
+    "budget": {
+      "type": "featured-collection",
+      "blocks": {
+        "b25": {
+          "type": "tab",
+          "settings": {
+            "collection": "under-25-egp",
+            "label": "Under 25 EGP"
+          }
+        },
+        "b50": {
+          "type": "tab",
+          "settings": {
+            "collection": "under-50-egp",
+            "label": "Under 50 EGP"
+          }
+        },
+        "b100": {
+          "type": "tab",
+          "settings": {
+            "collection": "under-100-egp",
+            "label": "Under 100 EGP"
+          }
+        },
+        "b250": {
+          "type": "tab",
+          "settings": {
+            "collection": "under-250-egp",
+            "label": "Under 250 EGP"
+          }
+        }
+      },
+      "block_order": [
+        "b25",
+        "b50",
+        "b100",
+        "b250"
+      ],
+      "settings": {
+        "eyebrow": "Great value",
+        "heading": "Shop by budget",
+        "products_to_show": 12,
+        "columns_desktop": 6,
+        "show_view_all": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
     }
   },
   "order": [
@@ -766,7 +855,9 @@
     "usp",
     "sports",
     "new_arrivals",
+    "shop_for",
     "trending",
+    "budget",
     "flash_sale",
     "categories",
     "swimming",

@@ -26,7 +26,14 @@
     {%- endif -%}
 
     {%- if layout == 'circles' -%}<circle-slider class="circle-slider">{%- endif -%}
-    <ul class="collection-list__grid collection-list__grid--{{ layout }}" role="list" style="--circle-cols: {{ circle_cols }}"{% if layout == 'circles' %} data-circle-track{% endif %}>
+    {%- liquid
+      assign grid_class = 'collection-list__grid--' | append: layout
+      if layout == 'trio'
+        assign grid_class = 'collection-list__grid--cards collection-list__grid--trio'
+        assign layout = 'cards'
+      endif
+    -%}
+    <ul class="collection-list__grid {{ grid_class }}" role="list" style="--circle-cols: {{ circle_cols }}"{% if layout == 'circles' %} data-circle-track{% endif %}>
       {%- for block in section.blocks -%}
         {%- liquid
           assign collection = block.settings.collection
@@ -76,6 +83,26 @@
 {% stylesheet %}
   .collection-list__grid {
     margin: 0;
+  }
+
+  /* Trio: three equal, tall boxes (Men / Women / Kids), three in a row on every screen */
+  .collection-list__grid.collection-list__grid--trio {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.625rem;
+  }
+
+  .collection-list__grid--trio .collection-tile--cards .collection-tile__media {
+    aspect-ratio: 4 / 5;
+  }
+
+  .collection-list__grid--trio .collection-tile--cards .collection-tile__title {
+    font-size: clamp(0.9375rem, 0.8rem + 0.9vw, 1.5rem);
+  }
+
+  @media screen and (min-width: 750px) {
+    .collection-list__grid.collection-list__grid--trio {
+      gap: 1.25rem;
+    }
   }
 
   /* Circles — "shop by sport" swiper: one row, 2 per view on phones, 6 on desktop */
@@ -255,7 +282,8 @@
       "options": [
         { "value": "circles", "label": "t:sections.collection_list.settings.layout.options__1" },
         { "value": "cards", "label": "t:sections.collection_list.settings.layout.options__2" },
-        { "value": "bento", "label": "t:sections.collection_list.settings.layout.options__3" }
+        { "value": "bento", "label": "t:sections.collection_list.settings.layout.options__3" },
+        { "value": "trio", "label": "3 large boxes" }
       ]
     },
     { "type": "checkbox", "id": "show_view_all", "default": true, "label": "t:settings.show_view_all" },
