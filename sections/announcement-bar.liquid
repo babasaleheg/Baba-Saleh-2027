@@ -33,7 +33,10 @@
     </div>
     <div class="announcement__utility announcement__utility--end">
       {%- if section.settings.secondary_text != blank and section.settings.secondary_link != blank -%}
-        <a href="{{ section.settings.secondary_link }}">{{ section.settings.secondary_text }}</a>
+        <a href="{{ section.settings.secondary_link }}{% if section.settings.secondary_anchor != blank %}#{{ section.settings.secondary_anchor }}{% endif %}" class="announcement__branches">
+          {%- render 'icon', icon: 'pin' -%}
+          {{- section.settings.secondary_text -}}
+        </a>
       {%- endif -%}
       {%- if section.settings.show_language and localization.available_languages.size > 1 -%}
         {% render 'language-switcher', id_prefix: 'Announcement', compact: true, label: 'name' %}
@@ -44,6 +47,25 @@
 {%- endif -%}
 
 {% stylesheet %}
+  .announcement__branches {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-weight: 700;
+    color: #febd19 !important;
+    text-decoration: none;
+  }
+
+  .announcement__branches .icon {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .announcement__branches:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
   .announcement {
     display: block;
     background: var(--color-bg);
@@ -203,6 +225,12 @@
       "label": "t:sections.announcement.settings.secondary_link.label"
     },
     {
+      "type": "text",
+      "id": "secondary_anchor",
+      "label": "Link section (optional)",
+      "info": "Jump to a section on that page, e.g. branches"
+    },
+    {
       "type": "checkbox",
       "id": "show_language",
       "default": true,
@@ -242,7 +270,8 @@
             { "value": "cash", "label": "t:settings.icon_options.cash" },
             { "value": "return", "label": "t:settings.icon_options.return" },
             { "value": "bolt", "label": "t:settings.icon_options.bolt" },
-            { "value": "star", "label": "t:settings.icon_options.star" }
+            { "value": "star", "label": "t:settings.icon_options.star" },
+            { "value": "pin", "label": "t:pages.icons.pin" }
           ]
         }
       ]

@@ -37,21 +37,31 @@
             "icon": "bolt",
             "link": "shopify://collections/sale"
           }
+        },
+        "a4": {
+          "type": "message",
+          "settings": {
+            "text": "Visit our 5 branches",
+            "icon": "pin",
+            "link": "shopify://pages/about-baba-saleh"
+          }
         }
       },
       "block_order": [
         "a1",
         "a2",
-        "a3"
+        "a3",
+        "a4"
       ],
       "settings": {
         "interval": 5,
         "color_scheme": "scheme-3",
         "contact_text": "Need help? Chat on WhatsApp",
         "contact_link": "",
-        "secondary_text": "",
-        "secondary_link": "/account",
-        "show_language": true
+        "secondary_text": "Our branches",
+        "secondary_link": "shopify://pages/about-baba-saleh",
+        "show_language": true,
+        "secondary_anchor": "branches"
       }
     },
     "header": {
