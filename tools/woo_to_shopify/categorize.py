@@ -132,6 +132,7 @@ FIXES = {
     "Cressi Clio Fins": "cat:diving",
     "Sweat T-Shirt": "cat:jackets",
     "Shark Beach": "cat:beach-toys",
+    "Value Wrist Wraps": "cat:fitness-accessories",
 }
 
 # Products whose audience tag is wrong: title -> correct for: tag
