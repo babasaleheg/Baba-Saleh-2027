@@ -23,7 +23,7 @@
     assign apply_heading = 'pages.jobs.apply_heading' | t
   endif
 -%}
-<job-board class="section jobs color-{{ section.settings.color_scheme }}" style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;">
+<job-board id="jobs" class="section jobs color-{{ section.settings.color_scheme }}" style="--section-pt: {{ section.settings.padding_top }}px; --section-pb: {{ section.settings.padding_bottom }}px;">
   <section class="page-width" aria-labelledby="JobsHeading-{{ section.id }}">
     <div class="section-header">
       <div class="section-header__text">
@@ -210,6 +210,11 @@
 </job-board>
 
 {% stylesheet %}
+  /* "See open positions" (#jobs) lands below the sticky header */
+  #jobs {
+    scroll-margin-top: 6rem;
+  }
+
   job-board {
     display: block;
   }
