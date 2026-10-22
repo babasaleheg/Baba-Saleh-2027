@@ -584,10 +584,12 @@
     gap: 1.25rem;
   }
 
+  /* Desktop: the photos stay in view while the (longer) details column scrolls, so there is
+     no empty space under the gallery. */
   @media screen and (min-width: 990px) {
-    .product__info {
+    .product__gallery {
       position: sticky;
-      top: 6rem;
+      top: 7.5rem;
     }
   }
 
