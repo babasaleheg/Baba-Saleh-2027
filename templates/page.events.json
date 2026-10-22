@@ -15,26 +15,26 @@
         "style": "bold",
         "color_scheme": "scheme-3",
         "show_breadcrumb": true,
-        "eyebrow": "Events & custom printing",
-        "title": "Make your event *unforgettable*",
+        "eyebrow": "Custom printing & branding",
+        "title": "Custom prints for your *event*",
         "title_size": "h1",
-        "subtitle": "<p>From inflatable gates and medals to printed banners and team apparel, our experienced team handles event production and custom printing so every detail matches your vision.</p>",
-        "button_label": "Plan your event on WhatsApp",
+        "subtitle": "<p>Inflatable gates, banners, medals and team apparel, designed and printed to your brand. You run the event; we make everything that carries your name.</p>",
+        "button_label": "Get a quote on WhatsApp",
         "button_link": "https://wa.me/201028305495",
         "button_label_2": "See our work",
         "button_link_2": "#gallery",
         "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.17-PM.jpg",
-        "badge_text": "Events • Medals • Printing",
+        "badge_text": "Gates • Banners • Medals • Apparel",
         "chip_1": "Sports days & runs",
-        "chip_2": "Delivered & set up",
-        "ribbon": "Inflatable gates, Medals & trophies, Printed banners, Custom team apparel, Custom graphics, Sports days"
+        "chip_2": "Delivered to your venue",
+        "ribbon": "Inflatable gates, Printed banners, Medals & trophies, Custom team apparel, Flags & backdrops, Custom graphics"
       }
     },
     "services": {
       "type": "value-cards",
       "settings": {
         "eyebrow": "What we do",
-        "heading": "Event services",
+        "heading": "What we print",
         "center_header": true,
         "columns_desktop": 4,
         "padding_top": 80,
@@ -48,7 +48,7 @@
             "icon": "star",
             "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.16-PM-1.jpg",
             "title": "Inflatable gates",
-            "text": "<p>Eye-catching start and finish gates. We handle the details so you can enjoy the event.</p>"
+            "text": "<p>Branded start and finish gates and arches, printed with your logo and colours.</p>"
           }
         },
         "b": {
@@ -66,8 +66,8 @@
           "settings": {
             "icon": "printer",
             "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.16-PM-2.jpg",
-            "title": "Print services",
-            "text": "<p>Quality printed materials that make your event's message shine.</p>"
+            "title": "Banners & backdrops",
+            "text": "<p>Roll-ups, banners, backdrops and flags printed in sharp, lasting colour.</p>"
           }
         },
         "d": {
@@ -75,8 +75,8 @@
           "settings": {
             "icon": "bolt",
             "image": "shopify://shop_images/WhatsApp-Image-2025-11-24-at-1.31.18-PM-1.jpg",
-            "title": "Custom graphics",
-            "text": "<p>Tailored graphics that bring your vision to life and lift your brand.</p>"
+            "title": "Custom team apparel",
+            "text": "<p>T-shirts, jerseys and caps printed with your team or company logo.</p>"
           }
         }
       },
@@ -92,7 +92,7 @@
       "settings": {
         "eyebrow": "Event highlights",
         "heading": "See our work",
-        "text": "<p>Banners, gates, medals and apparel from events we have produced.</p>",
+        "text": "<p>Gates, banners, medals and apparel we have printed for our clients.</p>",
         "anchor": "gallery",
         "color_scheme": "scheme-1",
         "padding_top": 40,
@@ -198,7 +198,7 @@
       "type": "value-cards",
       "settings": {
         "eyebrow": "Our process",
-        "heading": "From idea to event day",
+        "heading": "From idea to delivery",
         "style": "steps",
         "center_header": true,
         "columns_desktop": 4,
@@ -212,7 +212,7 @@
           "settings": {
             "icon": "none",
             "title": "Tell us your idea",
-            "text": "<p>Share the date, the number of people and what you need.</p>"
+            "text": "<p>Share what you need, the quantities and your date.</p>"
           }
         },
         "s2": {
@@ -235,8 +235,8 @@
           "type": "card",
           "settings": {
             "icon": "none",
-            "title": "Event day",
-            "text": "<p>We deliver and set up on time, so you can focus on the fun.</p>"
+            "title": "Delivery",
+            "text": "<p>We deliver your prints on time, ready for your event.</p>"
           }
         }
       },
@@ -260,7 +260,7 @@
           "settings": {
             "quote": "Baba Saleh Sports transformed our event! Their printed materials were top-quality, and their attention to detail was remarkable.",
             "author": "Event client",
-            "role": "Event production"
+            "role": "Custom printing"
           }
         },
         "t2": {
@@ -270,28 +270,19 @@
             "author": "Team client",
             "role": "Custom team apparel"
           }
-        },
-        "t3": {
-          "type": "quote",
-          "settings": {
-            "quote": "Working with Baba Saleh Sports was seamless. They helped us visualize our event, and we couldn't be more pleased with the results!",
-            "author": "Corporate client",
-            "role": "Event production"
-          }
         }
       },
       "block_order": [
         "t1",
-        "t2",
-        "t3"
+        "t2"
       ]
     },
     "cta": {
       "type": "cta-banner",
       "settings": {
-        "eyebrow": "Planning an event?",
-        "heading": "Let's make it happen",
-        "text": "<p>Tell us about your event and get a quote from our team.</p>",
+        "eyebrow": "Need custom prints?",
+        "heading": "Let's print it",
+        "text": "<p>Send us your idea and get a quote from our team.</p>",
         "button_label": "Get a quote on WhatsApp",
         "button_link": "https://wa.me/201028305495",
         "button_label_2": "",
