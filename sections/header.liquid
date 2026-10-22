@@ -681,6 +681,88 @@
     transform: scale(1.05);
   }
 
+  /* ---- Mega menu look: warm panel, white column cards, page dimmed behind ---- */
+  .mega {
+    background: #f6f5f1;
+    border-block: 0;
+    border-radius: 0 0 1.75rem 1.75rem;
+    /* dim the page under the open menu (only below the header) */
+    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.35), 0 0 0 100vmax rgba(10, 10, 10, 0.38);
+    clip-path: inset(0 -100vmax -100vmax -100vmax);
+  }
+
+  .mega__inner {
+    gap: 1.25rem;
+    padding-block: 1.5rem 1.75rem;
+  }
+
+  .mega__columns {
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 1rem;
+  }
+
+  .mega__columns:not(.mega__columns--flat) .mega__column {
+    padding: 1.25rem 1.25rem 1.375rem;
+    border-radius: 1.25rem;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -16px rgba(0, 0, 0, 0.18);
+  }
+
+  .mega__columns:not(.mega__columns--flat) .mega__heading {
+    display: inline-grid;
+    gap: 0.5rem;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .mega__columns:not(.mega__columns--flat) .mega__heading::before {
+    content: '';
+    width: 1.5rem;
+    height: 3px;
+    border-radius: 3px;
+    background: #febd19;
+  }
+
+  .mega__link {
+    display: inline-block;
+    color: #4b4b4b;
+    transition: color 0.2s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .mega__link:hover,
+  .mega__heading:hover {
+    text-decoration: none;
+  }
+
+  .mega__link:hover {
+    color: var(--color-fg);
+    font-weight: 600;
+    transform: translateX(4px);
+  }
+
+  [dir='rtl'] .mega__link:hover {
+    transform: translateX(-4px);
+  }
+
+  .mega__promo {
+    align-content: start;
+    padding: 0.75rem;
+    border-radius: 1.25rem;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -16px rgba(0, 0, 0, 0.18);
+  }
+
+  .mega__promo .media,
+  .mega__promo img {
+    border-radius: 0.875rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mega__link {
+      transition: none;
+    }
+  }
+
   /* Mobile drawer menu */
   .menu-drawer__list {
     display: grid;
