@@ -62,7 +62,7 @@ GROUPS = [
     (r"bicycle|\bbike\b|tricycle|balance bike", ["عجلة", "عجله", "دراجة", "بسكلتة", "عجلة اطفال"]),
     (r"skate|roller", ["باتيناج", "سكيت", "سكيتنج", "اسكيت"]),
     (r"skateboard|penny board", ["سكيت بورد", "لوح تزلج"]),
-    (r"toy|blocks|doll|car\b|puzzle", ["لعبة", "لعب", "العاب", "ألعاب", "لعب اطفال"]),
+    (r"toy|blocks|doll|\bcars?\b|puzzle", ["لعبة", "لعب", "العاب", "ألعاب", "لعب اطفال"]),
     (r"water gun|blaster", ["مسدس مية", "مسدس مياه", "رشاش مية"]),
     (r"tent|camping|sleeping bag", ["خيمة", "خيمه", "تخييم", "رحلات"]),
     (r"whistle", ["صفارة", "صفاره"]),
