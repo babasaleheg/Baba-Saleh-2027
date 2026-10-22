@@ -110,7 +110,13 @@
       <branch-map class="branches__map" data-reveal>
         <div class="branches__map-tabs" role="group" aria-label="{{ 'pages.branches.map_label' | t }}">
           {%- for block in section.blocks -%}
-            {%- assign q = 'Baba Saleh Sports ' | append: block.settings.address | default: block.settings.name | url_encode -%}
+            {%- liquid
+              if block.settings.map_query != blank
+                assign q = block.settings.map_query | url_encode
+              else
+                assign q = 'Baba Saleh Sports ' | append: block.settings.address | default: block.settings.name | url_encode
+              endif
+            -%}
             <button
               type="button"
               class="branches__map-tab"
@@ -124,7 +130,13 @@
           {%- endfor -%}
         </div>
         {%- assign first_branch = section.blocks.first -%}
-        {%- assign q = 'Baba Saleh Sports ' | append: first_branch.settings.address | url_encode -%}
+        {%- liquid
+          if first_branch.settings.map_query != blank
+            assign q = first_branch.settings.map_query | url_encode
+          else
+            assign q = 'Baba Saleh Sports ' | append: first_branch.settings.address | url_encode
+          endif
+        -%}
         <div class="branches__map-frame">
           <iframe
             data-src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed&hl={{ request.locale.iso_code }}"
@@ -484,6 +496,7 @@
         { "type": "text", "id": "phone", "label": "t:pages.branches.phone_label" },
         { "type": "text", "id": "whatsapp", "label": "t:pages.branches.whatsapp_label", "info": "t:pages.branches.whatsapp_info" },
         { "type": "url", "id": "map_url", "label": "t:pages.branches.map_url", "info": "t:pages.branches.map_url_info" },
+        { "type": "text", "id": "map_query", "label": "Map search", "info": "What the embedded map looks up, e.g. a mall or landmark name. Leave empty to use Baba Saleh Sports + address." },
         { "type": "image_picker", "id": "image", "label": "t:settings.image" }
       ]
     }
