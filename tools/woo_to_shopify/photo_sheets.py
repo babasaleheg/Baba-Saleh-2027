@@ -8,6 +8,7 @@ category or audience from the photo (e.g. an adult model in Kids' Swimwear).
     python3 photo_sheets.py               # every active product, grouped by category
     python3 photo_sheets.py --days 1      # only products created/updated in the last day
     python3 photo_sheets.py --cat kids-swimwear
+    python3 photo_sheets.py --flagged     # only products whose price is far from similar ones
 Writes PNGs to $DATA_DIR/sheets/ and prints their paths.
 """
 import argparse, io, os, re, statistics, textwrap, urllib.request
@@ -82,6 +83,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=float)
     ap.add_argument("--cat")
+    ap.add_argument("--flagged", action="store_true", help="only price-flagged products, on their own sheets")
     args = ap.parse_args()
     q = "status:active"
     products, after = [], None
@@ -102,6 +104,8 @@ def main():
     since = (datetime.now(timezone.utc) - timedelta(days=args.days)).strftime("%Y-%m-%dT%H:%M:%SZ") if args.days else ""
     groups = {cat: [p for p in items if max(p["createdAt"], p["updatedAt"]) > since or p["id"] in flags]
               for cat, items in by_cat.items() if not args.cat or cat == args.cat}
+    if args.flagged:
+        groups = {"price-flagged": [p for items in by_cat.values() for p in items if p["id"] in flags]}
     groups = {cat: items for cat, items in groups.items() if items}
     products = [p for items in groups.values() for p in items]
     with ThreadPoolExecutor(12) as ex:

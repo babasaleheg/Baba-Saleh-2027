@@ -49,13 +49,12 @@ RULES = [
 
 # Products whose existing category is wrong: title -> correct category.
 FIXES = {
-    "Tartan Men's Socks, 3 Stripe": "cat:football",
     "Silicone Sports Bottle - Brown": "cat:water-bottles",
     "Sports Training Mesh Tank Vest": "cat:coaching",
     "Bar 180 cm": "cat:weights",
     "bar 180cm": "cat:weights",
     "Bar 150cm": "cat:weights",
-    "Muscle Training Bar": "cat:weights",
+    "Muscle Training Bar": "cat:fitness-accessories",
     "Hook Bar Lifting Straps": "cat:fitness-accessories",
     "Women’s Dinosaur Slides": "cat:slippers",
     "Venum Challenger Boxing Headgear – Black &amp; Gold": "cat:boxing",
@@ -70,7 +69,6 @@ FIXES = {
     "Kids’ Swim Set – Black, Pink & Purple": "cat:kids-swimwear",
     "Inflatable Water Ball": "cat:beach-toys",
     "Champion Water Ball": "cat:beach-toys",
-    "Color Hoop Dumbbell": "cat:weights",
     "Girls’ Samba Shoes": "cat:running-shoes",
     "Track Half-Sleeve & Shorts Swimsuit": "cat:men-swimwear",
     "Electric Air Pump": "cat:sports-accessories",
@@ -132,6 +130,9 @@ FIXES = {
     "Cressi Clio Fins": "cat:diving",
     "Sweat T-Shirt": "cat:jackets",
     "Shark Beach": "cat:beach-toys",
+    "Color Weight Plates": "cat:weights",
+    "Men’s Turf Football Shoes – Dotted Stars": "cat:football-shoes",
+    "Men’s Turf Football Shoes – 3 Stripes": "cat:football-shoes",
     "Value Wrist Wraps": "cat:fitness-accessories",
 }
 
