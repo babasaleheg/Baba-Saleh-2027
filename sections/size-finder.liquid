@@ -1,0 +1,1155 @@
+{%- comment -%}
+  Size finder: "Find my size" under the Size option opens a 3-step panel
+    1. sex, height and weight (live estimate)   2. body shape (chest, stomach, hips)
+    3. best size with fit match, per-area fit (snug / ideal / roomy) and "Select size".
+  Kids' clothing (for:kids with age sizes 2-18) uses 2 steps: height and weight.
+  The answers are kept in this browser only (localStorage), so every product then shows
+  "Your size: L" straight away. Clothing and swimwear only; footwear keeps the size guide.
+  Sizes understood: XS-5XL (also XXL / XXXL), EU clothing numbers (34-58), kids' ages.
+{%- endcomment -%}
+{%- liquid
+  assign ptype = product.type | downcase
+  assign is_clothing = false
+  if product.tags contains 'dept:clothing' or ptype contains 'swim' or ptype contains 'tracksuit' or ptype contains 'shirt' or ptype contains 'pants' or ptype contains 'shorts' or ptype contains 'jacket' or ptype contains 'bra' or ptype contains 'legging' or ptype contains 'burkini'
+    assign is_clothing = true
+  endif
+  if product.tags contains 'dept:footwear' or ptype contains 'shoe' or ptype contains 'slipper' or ptype contains 'sandal'
+    assign is_clothing = false
+  endif
+
+  assign size_index = -1
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name contains 'size' or option_name contains 'مقاس'
+      assign size_index = forloop.index0
+      break
+    endif
+  endfor
+
+  assign is_ar = false
+  if request.locale.iso_code == 'ar'
+    assign is_ar = true
+  endif
+
+  assign default_sex = 'male'
+  assign fixed_sex = nil
+  if product.tags contains 'for:women'
+    assign default_sex = 'female'
+    assign fixed_sex = 'female'
+  elsif product.tags contains 'for:men'
+    assign fixed_sex = 'male'
+  endif
+  assign is_kids = false
+  if product.tags contains 'for:kids'
+    assign is_kids = true
+  endif
+-%}
+{%- if is_clothing and size_index >= 0 -%}
+  {%- assign size_option = product.options_with_values[size_index] -%}
+  <dialog class="size-finder" id="SizeFinder-{{ section.id }}" aria-labelledby="SizeFinderTitle-{{ section.id }}">
+    <div class="size-finder__panel">
+      <div class="size-finder__top">
+        <p class="size-finder__eyebrow">{% if is_ar %}اعرف مقاسك المظبوط{% else %}Find your perfect size{% endif %}</p>
+        <button type="button" class="size-finder__close" data-sf-close aria-label="{{ 'general.close' | t }}">
+          {% render 'icon', icon: 'close' %}
+        </button>
+      </div>
+
+      <div class="size-finder__product">
+        {%- if product.featured_image -%}
+          {{ product.featured_image | image_url: width: 160 | image_tag: loading: 'lazy', width: 56, height: 56, alt: '' }}
+        {%- endif -%}
+        <div>
+          <p class="size-finder__product-title">{{ product.title }}</p>
+          <p class="size-finder__product-price">{{ product.selected_or_first_available_variant.price | money }}</p>
+        </div>
+      </div>
+
+      <div class="size-finder__progress" aria-hidden="true"><span data-sf-bar></span></div>
+      <p class="size-finder__count" data-sf-count></p>
+
+      <div class="size-finder__body">
+        {%- comment -%} Step 1: measurements {%- endcomment -%}
+        <section class="size-finder__step" data-sf-step="1">
+          <h2 class="size-finder__title" id="SizeFinderTitle-{{ section.id }}">{% if is_ar %}يلا نلاقي مقاسك{% else %}Let's find your fit{% endif %}</h2>
+          <p class="size-finder__lead">{% if is_ar %}طولك ووزنك بس. حرّك المؤشر للتعديل.{% else %}Two measurements are all it takes. Drag to adjust.{% endif %}</p>
+
+          <div class="size-finder__sex" data-sf-sex-wrap>
+            <p class="size-finder__label">{% if is_ar %}المقاسات{% else %}Sizing{% endif %}</p>
+            <div class="size-finder__segment" role="radiogroup">
+              <button type="button" role="radio" data-sf-sex="female">{% if is_ar %}حريمي{% else %}Female{% endif %}</button>
+              <button type="button" role="radio" data-sf-sex="male">{% if is_ar %}رجالي{% else %}Male{% endif %}</button>
+            </div>
+          </div>
+
+          <div class="size-finder__measure">
+            <svg class="size-finder__figure" data-sf-figure viewBox="0 0 60 160" aria-hidden="true">
+              <g data-sf-body>
+                <circle cx="30" cy="12" r="9"/>
+                <path d="M19 26h22c4 0 6 3 6 7l2 44c0 3-4 3-5 0l-3-36v115h-8l-2-70h-2l-2 70h-8V41l-3 36c-1 3-5 3-5 0l2-44c0-4 2-7 6-7z"/>
+              </g>
+            </svg>
+            <div class="size-finder__sliders">
+              <div class="size-finder__slider">
+                <p class="size-finder__label">{% if is_ar %}الطول{% else %}Height{% endif %}</p>
+                <p class="size-finder__value"><span data-sf-out="h"></span> <small>{% if is_ar %}سم{% else %}cm{% endif %}</small></p>
+                <div class="size-finder__range">
+                  <button type="button" data-sf-step-btn="h" data-sf-delta="-1" aria-label="−">−</button>
+                  <input type="range" data-sf-in="h" step="1" aria-label="{% if is_ar %}الطول{% else %}Height{% endif %}">
+                  <button type="button" data-sf-step-btn="h" data-sf-delta="1" aria-label="+">+</button>
+                </div>
+              </div>
+              <div class="size-finder__slider">
+                <p class="size-finder__label">{% if is_ar %}الوزن{% else %}Weight{% endif %}</p>
+                <p class="size-finder__value"><span data-sf-out="w"></span> <small>{% if is_ar %}كجم{% else %}kg{% endif %}</small></p>
+                <div class="size-finder__range">
+                  <button type="button" data-sf-step-btn="w" data-sf-delta="-1" aria-label="−">−</button>
+                  <input type="range" data-sf-in="w" step="1" aria-label="{% if is_ar %}الوزن{% else %}Weight{% endif %}">
+                  <button type="button" data-sf-step-btn="w" data-sf-delta="1" aria-label="+">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="size-finder__estimate">
+            <div>
+              <p class="size-finder__label">{% if is_ar %}تقدير مبدئي{% else %}Live estimate{% endif %}</p>
+              <p class="size-finder__hint">{% if is_ar %}هيتظبط أكتر في الخطوة الجاية{% else %}Refined in the next step{% endif %}</p>
+            </div>
+            <span class="size-finder__estimate-size" data-sf-live></span>
+          </div>
+        </section>
+
+        {%- comment -%} Step 2: body shape (adults) {%- endcomment -%}
+        <section class="size-finder__step" data-sf-step="2" hidden>
+          <h2 class="size-finder__title">{% if is_ar %}شكل جسمك{% else %}Your shape{% endif %}</h2>
+          <p class="size-finder__lead">{% if is_ar %}الهدوم بتتلبس على الجسم مش على الأرقام. مش متأكد؟ سيبها على المتوسط.{% else %}Clothes fit bodies, not numbers. Not sure? Leave it at average.{% endif %}</p>
+          {%- liquid
+            if is_ar
+              assign shape_rows = 'chest:الصدر:أنحف:متوسط:أعرض|stomach:البطن:مسطحة:متوسطة:بارزة|hips:الوسط والأرداف:أضيق:متوسط:أعرض'
+            else
+              assign shape_rows = 'chest:Chest:Slimmer:Average:Broader|stomach:Stomach:Flatter:Average:Rounder|hips:Hips:Narrower:Average:Fuller'
+            endif
+            assign shape_rows = shape_rows | split: '|'
+          -%}
+          {%- for row in shape_rows -%}
+            {%- assign parts = row | split: ':' -%}
+            <div class="size-finder__shape" role="radiogroup" aria-label="{{ parts[1] }}">
+              <p class="size-finder__label">{{ parts[1] }}</p>
+              <div class="size-finder__tiles">
+                {%- for n in (2..4) -%}
+                  {%- assign level = forloop.index0 | minus: 1 -%}
+                  <button type="button" role="radio" class="size-finder__tile" data-sf-shape="{{ parts[0] }}" data-sf-level="{{ level }}">
+                    <svg viewBox="0 0 32 40" aria-hidden="true">
+                      {%- case parts[0] -%}
+                        {%- when 'chest' -%}
+                          {%- case level -%}{%- when -1 -%}<path d="M11 6h10l-1 28h-8z"/>{%- when 0 -%}<path d="M9 6h14l-2 28H11z"/>{%- else -%}<path d="M5 6h22l-4 28H9z"/>{%- endcase -%}
+                        {%- when 'stomach' -%}
+                          {%- case level -%}{%- when -1 -%}<path d="M12 6v28M20 6v28"/>{%- when 0 -%}<path d="M12 6v28M19 6c4 6 4 22 0 28"/>{%- else -%}<path d="M12 6v28M18 6c9 6 9 22 0 28"/>{%- endcase -%}
+                        {%- else -%}
+                          {%- case level -%}{%- when -1 -%}<path d="M13 6c-2 9 2 13 0 28M19 6c2 9-2 13 0 28"/>{%- when 0 -%}<path d="M12 6c-5 10 3 14-1 28M20 6c5 10-3 14 1 28"/>{%- else -%}<path d="M12 6c-9 11 4 16-2 28M20 6c9 11-4 16 2 28"/>{%- endcase -%}
+                      {%- endcase -%}
+                    </svg>
+                    <span>{{ parts[n] }}</span>
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </section>
+
+        {%- comment -%} Step 3: result {%- endcomment -%}
+        <section class="size-finder__step size-finder__result" data-sf-step="3" hidden>
+          <p class="size-finder__label size-finder__center">{% if is_ar %}أنسب مقاس ليك{% else %}Best match{% endif %}</p>
+          <div class="size-finder__ring"><span data-sf-best></span></div>
+          <p class="size-finder__match"><span data-sf-pct></span>% {% if is_ar %}تطابق{% else %}fit match{% endif %}</p>
+          <p class="size-finder__lead size-finder__center" data-sf-confidence></p>
+
+          <div class="size-finder__sizes" data-sf-sizes role="radiogroup"></div>
+          <p class="size-finder__hint size-finder__center">{% if is_ar %}اضغط على أي مقاس تشوف هيبقى عامل إزاي.{% else %}Tap a size to see how it would fit.{% endif %}</p>
+
+          <div class="size-finder__fit">
+            <div class="size-finder__fit-head" aria-hidden="true">
+              <span></span>
+              <span>{% if is_ar %}ضيق{% else %}Snug{% endif %}</span>
+              <span>{% if is_ar %}مظبوط{% else %}Ideal{% endif %}</span>
+              <span>{% if is_ar %}واسع{% else %}Roomy{% endif %}</span>
+            </div>
+            <div data-sf-fit-rows></div>
+          </div>
+
+          <div class="size-finder__note">
+            <p class="size-finder__label">{% if is_ar %}ملاحظة عن المقاس{% else %}Fit note{% endif %}</p>
+            <p data-sf-note></p>
+          </div>
+          <p class="size-finder__disclaimer">{% if is_ar %}ده ترشيح عام، والمقاس ممكن يختلف حسب الموديل وذوقك في اللبس.{% else %}This is a general recommendation. Fit may vary by style and preference.{% endif %}</p>
+        </section>
+      </div>
+
+      <p class="size-finder__privacy">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        {% if is_ar %}بيتحفظ على جهازك بس، عشان كل منتج يوريك مقاسك.{% else %}Saved privately on this device, so every piece shows your size.{% endif %}
+      </p>
+
+      <div class="size-finder__actions">
+        <button type="button" class="size-finder__back" data-sf-back aria-label="{% if is_ar %}رجوع{% else %}Back{% endif %}">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <button type="button" class="size-finder__next" data-sf-next></button>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="application/json" id="SizeFinderData-{{ section.id }}">
+    {
+      "kids": {{ is_kids | json }},
+      "sex": {{ default_sex | json }},
+      "fixed": {{ fixed_sex | json }},
+      "sizeIndex": {{ size_index }},
+      "sizes": [{%- for value in size_option.values -%}{"v": {{ value | json }}, "a": {{ value.available | json }}}{% unless forloop.last %},{% endunless %}{%- endfor -%}],
+      "t": {
+        "find": {{ 'Find my size' | json }},
+        "yours": {{ 'Your size' | json }},
+        "edit": {{ 'Edit' | json }},
+        "next": {{ 'Continue' | json }},
+        "show": {{ 'See my size' | json }},
+        "select": {{ 'Select size' | json }},
+        "of": " / ",
+        "chest": {{ 'Chest' | json }}, "waist": {{ 'Waist' | json }}, "hips": {{ 'Hips' | json }}, "length": {{ 'Length' | json }}, "width": {{ 'Width' | json }},
+        "snug": {{ 'Snug' | json }}, "ideal": {{ 'Ideal' | json }}, "roomy": {{ 'Roomy' | json }},
+        "c_high": {{ 'A confident match for your measurements.' | json }},
+        "c_mid": {{ 'A good match. Check the fit details below.' | json }},
+        "c_low": {{ 'You are between sizes. See the fit details below.' | json }},
+        "n_true": {{ 'Against your measurements, this piece fits true to size.' | json }},
+        "n_snug": {{ 'May feel snug. Choose one size up for a looser fit.' | json }},
+        "n_roomy": {{ 'A relaxed fit. Choose one size down for a closer fit.' | json }},
+        "n_out": {{ 'Your best size (%1) is sold out. %2 is the closest available.' | json }}
+      }{%- if is_ar -%},
+      "ar": {
+        "find": "اعرف مقاسك", "yours": "مقاسك", "edit": "تعديل", "next": "التالي", "show": "اعرف مقاسي", "select": "اختار مقاس",
+        "chest": "الصدر", "waist": "الوسط", "hips": "الأرداف", "length": "الطول", "width": "العرض",
+        "snug": "ضيق", "ideal": "مظبوط", "roomy": "واسع",
+        "c_high": "مقاس مناسب جداً لمقاساتك.", "c_mid": "مقاس مناسب. شوف تفاصيل المقاس تحت.", "c_low": "إنت بين مقاسين. شوف التفاصيل تحت.",
+        "n_true": "بالنسبة لمقاساتك، القطعة دي مقاسها مظبوط.", "n_snug": "ممكن تبقى ضيقة شوية. اختار مقاس أكبر لو بتحب الواسع.",
+        "n_roomy": "قصّة واسعة شوية. اختار مقاس أصغر لو بتحب المحزق.", "n_out": "مقاسك الأنسب (%1) خلص. أقرب مقاس متاح %2."
+      }{%- endif -%}
+    }
+  </script>
+
+  <script>
+    (() => {
+      const dialog = document.getElementById('SizeFinder-{{ section.id }}');
+      const data = JSON.parse(document.getElementById('SizeFinderData-{{ section.id }}').textContent);
+      const t = Object.assign({}, data.t, data.ar || {});
+      const KEY = data.kids ? 'bs-fit-kids' : 'bs-fit';
+
+      /* ---- size tables (body measurements in cm; centre of each size) ---- */
+      const ADULT = {
+        male: [['XS', 84, 70, 0, 165], ['S', 90, 76, 0, 170], ['M', 96, 82, 0, 175], ['L', 102, 88, 0, 180], ['XL', 108, 94, 0, 184],
+               ['2XL', 114, 100, 0, 187], ['3XL', 120, 106, 0, 189], ['4XL', 126, 112, 0, 190], ['5XL', 132, 118, 0, 191]],
+        female: [['XS', 80, 62, 88, 158], ['S', 85, 67, 93, 162], ['M', 90, 72, 98, 166], ['L', 96, 78, 104, 170], ['XL', 102, 84, 110, 173],
+                 ['2XL', 108, 90, 116, 175], ['3XL', 114, 96, 122, 177], ['4XL', 120, 102, 128, 178], ['5XL', 126, 108, 134, 179]],
+      };
+      const EU = { male: { 44: 'XS', 46: 'S', 48: 'M', 50: 'L', 52: 'XL', 54: '2XL', 56: '3XL', 58: '4XL' },
+                   female: { 34: 'XS', 36: 'S', 38: 'M', 40: 'L', 42: 'XL', 44: '2XL', 46: '3XL', 48: '4XL' } };
+      const KIDS = { 2: 92, 3: 98, 4: 104, 5: 110, 6: 116, 7: 122, 8: 128, 9: 134, 10: 140, 11: 146, 12: 152, 13: 158, 14: 164, 15: 168, 16: 172, 18: 176 };
+
+      const norm = (raw) => {
+        const s = String(raw).toUpperCase().replace(/\s+/g, '');
+        if (/^X{2,5}L$/.test(s)) return (s.length - 1) + 'XL';
+        if (/^[2-5]X$/.test(s)) return s + 'L';
+        return s;
+      };
+      const sizeKey = (raw, sex) => {
+        const s = norm(raw);
+        if (data.kids) {
+          const n = parseInt(s, 10);
+          return n >= 2 && n <= 18 && KIDS[n] ? n : null;
+        }
+        if (ADULT.male.some((r) => r[0] === s)) return s;
+        const n = parseInt(s, 10);
+        return EU[sex] && EU[sex][n] ? EU[sex][n] : null;
+      };
+
+      /* ---- state ---- */
+      let saved = null;
+      try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+      const state = Object.assign(
+        data.kids ? { h: 128, w: 26 } : { sex: data.sex, h: data.sex === 'female' ? 163 : 176, w: data.sex === 'female' ? 62 : 78, chest: 0, stomach: 0, hips: 0 },
+        saved || {}
+      );
+      // women's / men's products always use their own size table; unisex ones use the saved choice
+      if (!data.kids && (data.fixed || !saved)) state.sex = data.fixed || data.sex;
+      let step = 1;
+      let preview = null;
+      const steps = data.kids ? [1, 3] : [1, 2, 3];
+      const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+      /* ---- body estimate from height, weight, sex and shape ---- */
+      const body = () => {
+        const bmi = state.w / Math.pow(state.h / 100, 2);
+        if (state.sex === 'female') {
+          return { chest: 88 + (bmi - 22) * 2.2 + (state.h - 165) * 0.15 + state.chest * 4,
+                   waist: 70 + (bmi - 22) * 2.6 + state.stomach * 5,
+                   hips: 96 + (bmi - 22) * 2.4 + (state.h - 165) * 0.2 + state.hips * 5, h: state.h };
+        }
+        return { chest: 96 + (bmi - 23) * 2.3 + (state.h - 175) * 0.2 + state.chest * 4,
+                 waist: 82 + (bmi - 23) * 3 + state.stomach * 5 + state.hips * 1.5, hips: 0, h: state.h };
+      };
+
+      /* every size of this product that we understand, with its fit numbers */
+      const options = () => {
+        const sex = state.sex || 'male';
+        return data.sizes.map((s) => ({ ...s, key: sizeKey(s.v, sex) })).filter((s) => s.key !== null);
+      };
+
+      const fitRows = (key) => {
+        if (data.kids) {
+          const hc = KIDS[key];
+          const wExp = 16.5 * Math.pow(hc / 100, 2);
+          return [['length', (state.h - hc) / 5], ['width', (state.w - wExp) / (wExp * 0.15)]];
+        }
+        const row = ADULT[state.sex].find((r) => r[0] === key);
+        const b = body();
+        const rows = [['chest', (b.chest - row[1]) / 4], ['waist', (b.waist - row[2]) / 4]];
+        if (state.sex === 'female') rows.push(['hips', (b.hips - row[3]) / 4]);
+        rows.push(['length', (b.h - row[4]) / 5]);
+        return rows; // value > 0: body bigger than the size (snug); < 0: roomy
+      };
+
+      const score = (key) => {
+        const rows = fitRows(key);
+        const weights = data.kids ? [0.7, 0.3] : state.sex === 'female' ? [0.35, 0.25, 0.25, 0.15] : [0.45, 0.35, 0.2];
+        return rows.reduce((sum, r, i) => sum + Math.abs(r[1]) * weights[i], 0);
+      };
+
+      const recommend = () => {
+        const list = options();
+        if (!list.length) return null;
+        const ranked = list.map((s) => ({ ...s, d: score(s.key) })).sort((a, b) => a.d - b.d);
+        const best = ranked[0];
+        const bestAvailable = ranked.find((s) => s.a) || best;
+        return { best, pick: bestAvailable, pct: Math.max(60, Math.min(98, Math.round(98 - best.d * 14))) };
+      };
+
+      /* ---- rendering ---- */
+      const $ = (sel) => dialog.querySelector(sel);
+      const $$ = (sel) => dialog.querySelectorAll(sel);
+      const ranges = data.kids ? { h: [80, 180], w: [10, 90] } : { h: [140, 210], w: [35, 180] };
+
+      const drawMeasure = () => {
+        ['h', 'w'].forEach((k) => {
+          const input = $(`[data-sf-in="${k}"]`);
+          input.min = ranges[k][0];
+          input.max = ranges[k][1];
+          input.value = state[k];
+          input.style.setProperty('--fill', ((state[k] - ranges[k][0]) / (ranges[k][1] - ranges[k][0])) * 100 + '%');
+          $(`[data-sf-out="${k}"]`).textContent = state[k];
+        });
+        $$('[data-sf-sex]').forEach((b) => {
+          const on = b.dataset.sfSex === state.sex;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-checked', on);
+        });
+        const bmi = state.w / Math.pow(state.h / 100, 2);
+        const sx = Math.max(0.75, Math.min(1.6, 0.6 + bmi / 55));
+        const sy = Math.max(0.6, Math.min(1.08, state.h / (data.kids ? 170 : 195)));
+        $('[data-sf-body]').setAttribute('transform', `translate(30 160) scale(${sx.toFixed(3)} ${sy.toFixed(3)}) translate(-30 -160)`);
+        const r = recommend();
+        $('[data-sf-live]').textContent = r ? r.best.v : '–';
+      };
+
+      const drawShape = () => {
+        $$('[data-sf-shape]').forEach((b) => {
+          const on = Number(b.dataset.sfLevel) === state[b.dataset.sfShape];
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-checked', on);
+        });
+      };
+
+      const drawResult = () => {
+        const r = recommend();
+        if (!r) return;
+        const current = preview || r.pick;
+        $('[data-sf-best]').textContent = r.pick.v;
+        $('[data-sf-pct]').textContent = r.pct;
+        $('[data-sf-confidence]').textContent = r.pct >= 88 ? t.c_high : r.pct >= 75 ? t.c_mid : t.c_low;
+
+        const sizes = $('[data-sf-sizes]');
+        sizes.innerHTML = '';
+        options().forEach((s) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.setAttribute('role', 'radio');
+          b.className = 'size-finder__size' + (s.v === current.v ? ' is-active' : '') + (s.v === r.pick.v ? ' is-best' : '') + (s.a ? '' : ' is-out');
+          b.setAttribute('aria-checked', s.v === current.v);
+          b.textContent = s.v;
+          b.addEventListener('click', () => { preview = s; drawResult(); });
+          sizes.append(b);
+        });
+
+        const rows = fitRows(current.key);
+        $('[data-sf-fit-rows]').innerHTML = rows.map(([name, v]) => {
+          const label = v > 0.75 ? t.snug : v < -0.75 ? t.roomy : t.ideal;
+          const pos = Math.max(6, Math.min(94, 50 - v * 22));
+          return `<div class="size-finder__fit-row"><span>${t[name]}</span><div class="size-finder__track"><i style="inset-inline-start:${pos}%"></i></div><b>${label}</b></div>`;
+        }).join('');
+
+        const snug = rows.some((r2) => r2[1] > 1.25);
+        const roomy = rows.every((r2) => r2[1] < -0.75);
+        let note = snug ? t.n_snug : roomy ? t.n_roomy : t.n_true;
+        if (!preview && !r.best.a && r.pick.v !== r.best.v) note = t.n_out.replace('%1', r.best.v).replace('%2', r.pick.v);
+        $('[data-sf-note]').textContent = note;
+        $('[data-sf-next]').textContent = `${t.select} ${current.v}`;
+        $('[data-sf-next]').disabled = !current.a;
+      };
+
+      const draw = () => {
+        const index = steps.indexOf(step);
+        $$('[data-sf-step]').forEach((s) => { s.hidden = Number(s.dataset.sfStep) !== step; });
+        $('[data-sf-bar]').style.width = ((index + 1) / steps.length) * 100 + '%';
+        $('[data-sf-count]').textContent = `0${index + 1}${t.of}0${steps.length}`;
+        $('[data-sf-back]').style.visibility = index === 0 ? 'hidden' : 'visible';
+        $('[data-sf-sex-wrap]').hidden = !!data.kids;
+        const last = index === steps.length - 1;
+        $('[data-sf-next]').disabled = false;
+        if (step === 1) drawMeasure();
+        if (step === 2) drawShape();
+        if (last) drawResult();
+        else $('[data-sf-next]').textContent = index === steps.length - 2 ? t.show : t.next;
+      };
+
+      /* ---- the size option on the page ---- */
+      let sizeFieldset = null;
+      const picker = () => document.querySelector('variant-picker');
+      const findFieldset = () => {
+        if (sizeFieldset) return sizeFieldset;
+        sizeFieldset = picker()?.querySelector(`fieldset[data-option-index="${data.sizeIndex}"]`) || null;
+        return sizeFieldset;
+      };
+      const selectOnPage = (value) => {
+        const input = [...(findFieldset()?.querySelectorAll('input') || [])].find((i) => i.value === value);
+        if (!input) return;
+        input.checked = true;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+
+      let trigger = null;
+      const drawTrigger = () => {
+        if (!trigger) return;
+        const r = saved ? recommend() : null;
+        trigger.querySelector('[data-sf-trigger-text]').innerHTML = r
+          ? `${t.yours}: <strong>${r.pick.v}</strong> <u>${t.edit}</u>`
+          : t.find;
+      };
+
+      const open = () => { step = 1; preview = null; draw(); dialog.showModal(); };
+
+      /* ---- events ---- */
+      $$('[data-sf-sex]').forEach((b) => b.addEventListener('click', () => { state.sex = b.dataset.sfSex; draw(); }));
+      $$('[data-sf-in]').forEach((input) => input.addEventListener('input', () => { state[input.dataset.sfIn] = Number(input.value); drawMeasure(); }));
+      $$('[data-sf-step-btn]').forEach((b) => b.addEventListener('click', () => {
+        const k = b.dataset.sfStepBtn;
+        state[k] = Math.max(ranges[k][0], Math.min(ranges[k][1], state[k] + Number(b.dataset.sfDelta)));
+        drawMeasure();
+      }));
+      $$('[data-sf-shape]').forEach((b) => b.addEventListener('click', () => { state[b.dataset.sfShape] = Number(b.dataset.sfLevel); drawShape(); }));
+      $('[data-sf-back]').addEventListener('click', () => { step = steps[Math.max(0, steps.indexOf(step) - 1)]; preview = null; draw(); });
+      $('[data-sf-next]').addEventListener('click', () => {
+        const index = steps.indexOf(step);
+        if (index < steps.length - 1) {
+          step = steps[index + 1];
+          if (step === 3) { save(); saved = state; drawTrigger(); }
+          draw();
+          return;
+        }
+        const r = recommend();
+        selectOnPage((preview || r.pick).v);
+        dialog.close();
+      });
+      $('[data-sf-close]').addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+
+      const place = () => {
+        if (!options().length) return; // sizes we can't map (e.g. "One size"): keep only the size guide
+        const fieldset = findFieldset();
+        if (!fieldset || fieldset.querySelector('[data-sf-open]')) return;
+        trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'size-finder__open';
+        trigger.dataset.sfOpen = '';
+        trigger.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><path d="M12 8v7M8 11h8M10 21l2-6 2 6"/></svg><span data-sf-trigger-text></span>';
+        trigger.addEventListener('click', open);
+        const values = fieldset.querySelector('.option__values');
+        if (values) values.after(trigger);
+        else fieldset.append(trigger);
+        drawTrigger();
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
+      else place();
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .size-finder__open {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-block-start: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-fg);
+    border-radius: 999px;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .size-finder__open strong {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    background: #febd19;
+    color: #0a0a0a;
+  }
+
+  .size-finder__open u {
+    margin-inline-start: auto;
+    font-weight: 500;
+    text-underline-offset: 3px;
+  }
+
+  .size-finder__open span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  @media (hover: hover) {
+    .size-finder__open:hover {
+      background: var(--color-fg);
+      color: var(--color-bg);
+    }
+  }
+
+  .size-finder {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-end: 0;
+    inset-inline-start: auto;
+    width: min(28rem, 100vw);
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    box-shadow: -20px 0 60px -20px rgba(0, 0, 0, 0.35);
+  }
+
+  .size-finder[open] {
+    animation: size-finder-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes size-finder-in {
+    from { transform: translateX(var(--sf-from, 100%)); }
+    to { transform: none; }
+  }
+
+  [dir='rtl'] .size-finder {
+    --sf-from: -100%;
+  }
+
+  .size-finder::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .size-finder__panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.25rem 1.25rem 0;
+  }
+
+  .size-finder__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .size-finder__eyebrow,
+  .size-finder__label,
+  .size-finder__count {
+    margin: 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  [dir='rtl'] .size-finder__eyebrow,
+  [dir='rtl'] .size-finder__label {
+    letter-spacing: 0;
+    font-size: 0.8125rem;
+  }
+
+  .size-finder__close {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .size-finder__close .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .size-finder__product {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-block-start: 1rem;
+    padding: 0.75rem;
+    border-radius: 1rem;
+    background: var(--color-surface);
+  }
+
+  .size-finder__product img {
+    width: 3.5rem;
+    height: 3.5rem;
+    object-fit: contain;
+    border-radius: 0.625rem;
+    background: #fff;
+  }
+
+  .size-finder__product p {
+    margin: 0;
+  }
+
+  .size-finder__product-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .size-finder__product-price {
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+
+  .size-finder__progress {
+    height: 3px;
+    margin-block-start: 1.25rem;
+    background: var(--color-border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .size-finder__progress span {
+    display: block;
+    height: 100%;
+    background: #febd19;
+    transition: width 0.35s ease;
+  }
+
+  .size-finder__count {
+    margin-block-start: 0.625rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .size-finder__body {
+    flex: 1;
+    overflow-y: auto;
+    padding-block: 0.5rem 1rem;
+  }
+
+  .size-finder__step {
+    display: grid;
+    gap: 1.25rem;
+    animation: size-finder-step 0.3s ease;
+  }
+
+  @keyframes size-finder-step {
+    from { opacity: 0; transform: translateY(6px); }
+  }
+
+  .size-finder__title {
+    margin: 0.25rem 0 -0.75rem;
+    font-size: 1.625rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  [dir='rtl'] .size-finder__title {
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .size-finder__lead,
+  .size-finder__hint {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+
+  .size-finder__hint {
+    font-size: 0.8125rem;
+  }
+
+  .size-finder__center {
+    text-align: center;
+  }
+
+  .size-finder__sex {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .size-finder__segment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0.25rem;
+    border-radius: 999px;
+    background: var(--color-surface);
+  }
+
+  .size-finder__segment button {
+    padding: 0.75rem;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .size-finder__segment button.is-active {
+    background: #0a0a0a;
+    color: #fff;
+  }
+
+  .size-finder__measure {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .size-finder__figure {
+    width: 100%;
+    height: 11rem;
+    fill: #0a0a0a;
+  }
+
+  .size-finder__figure g {
+    transition: transform 0.25s ease;
+  }
+
+  .size-finder__sliders {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .size-finder__slider {
+    display: grid;
+    gap: 0.125rem;
+  }
+
+  .size-finder__value {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .size-finder__value small {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+
+  .size-finder__range {
+    display: grid;
+    grid-template-columns: 2rem 1fr 2rem;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .size-finder__range button {
+    height: 2rem;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-size: 1.25rem;
+    cursor: pointer;
+  }
+
+  .size-finder__range input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to var(--sf-dir, right), #0a0a0a var(--fill, 50%), var(--color-border) var(--fill, 50%));
+    border-radius: 2px;
+    outline: none;
+  }
+
+  [dir='rtl'] .size-finder__range input {
+    --sf-dir: left;
+  }
+
+  .size-finder__range input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1.5px solid #0a0a0a;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    cursor: grab;
+  }
+
+  .size-finder__range input::-moz-range-thumb {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1.5px solid #0a0a0a;
+    border-radius: 50%;
+    background: #fff;
+    cursor: grab;
+  }
+
+  .size-finder__range input:focus-visible::-webkit-slider-thumb {
+    outline: 3px solid #febd19;
+  }
+
+  .size-finder__estimate {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.125rem;
+    border-radius: 1rem;
+    background: #0a0a0a;
+    color: #fff;
+  }
+
+  .size-finder__estimate p {
+    margin: 0;
+  }
+
+  .size-finder__estimate .size-finder__label,
+  .size-finder__estimate .size-finder__hint {
+    color: #a1a1aa;
+  }
+
+  .size-finder__estimate-size {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #febd19;
+  }
+
+  .size-finder__shape {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .size-finder__tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .size-finder__tile {
+    display: grid;
+    justify-items: center;
+    gap: 0.375rem;
+    padding: 0.75rem 0.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.875rem;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  [dir='rtl'] .size-finder__tile {
+    font-size: 0.8125rem;
+    letter-spacing: 0;
+  }
+
+  .size-finder__tile svg {
+    width: 2rem;
+    height: 2.5rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .size-finder__tile.is-active {
+    border-color: #0a0a0a;
+    background: #fff6dd;
+    box-shadow: inset 0 0 0 1px #0a0a0a;
+  }
+
+  .size-finder__result {
+    justify-items: stretch;
+  }
+
+  .size-finder__ring {
+    display: grid;
+    place-items: center;
+    width: 9.5rem;
+    height: 9.5rem;
+    margin: 0 auto;
+    border: 2px solid #0a0a0a;
+    border-radius: 50%;
+    box-shadow: 0 0 0 8px #fff6dd;
+  }
+
+  .size-finder__ring span {
+    font-size: 3.5rem;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+  }
+
+  .size-finder__match {
+    margin: 0;
+    text-align: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .size-finder__sizes {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-block-start: 0.5rem;
+  }
+
+  .size-finder__size {
+    min-width: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .size-finder__size.is-best {
+    border-color: #febd19;
+  }
+
+  .size-finder__size.is-active {
+    border-color: #0a0a0a;
+    background: #0a0a0a;
+    color: #fff;
+  }
+
+  .size-finder__size.is-out {
+    opacity: 0.45;
+    text-decoration: line-through;
+  }
+
+  .size-finder__fit {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+  }
+
+  .size-finder__fit-head,
+  .size-finder__fit-row {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr 4rem;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .size-finder__fit-head {
+    grid-template-columns: 4.5rem 1fr 1fr 1fr 4rem;
+    color: var(--color-muted);
+    text-align: center;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.625rem;
+    font-weight: 600;
+  }
+
+  .size-finder__fit-head::after {
+    content: '';
+  }
+
+  .size-finder__fit-row span {
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+  }
+
+  [dir='rtl'] .size-finder__fit-row span,
+  [dir='rtl'] .size-finder__fit-head {
+    letter-spacing: 0;
+    font-size: 0.75rem;
+  }
+
+  .size-finder__fit-row b {
+    text-align: end;
+    font-weight: 600;
+  }
+
+  .size-finder__track {
+    position: relative;
+    height: 2px;
+    background: linear-gradient(to right, var(--color-border) 33%, #febd19 33% 67%, var(--color-border) 67%);
+    border-radius: 2px;
+  }
+
+  .size-finder__track i {
+    position: absolute;
+    top: 50%;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: #0a0a0a;
+    transform: translate(-50%, -50%);
+    transition: inset-inline-start 0.3s ease;
+  }
+
+  [dir='rtl'] .size-finder__track i {
+    transform: translate(50%, -50%);
+  }
+
+  .size-finder__note {
+    display: grid;
+    gap: 0.375rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: var(--color-surface);
+  }
+
+  .size-finder__note p:last-child {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  .size-finder__disclaimer {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    text-align: center;
+  }
+
+  .size-finder__privacy {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin: 0;
+    padding-block: 0.625rem;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .size-finder__actions {
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+    gap: 0.5rem;
+    padding-block: 0 max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .size-finder__back,
+  .size-finder__next {
+    height: 3.25rem;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .size-finder__back {
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    background: none;
+    color: inherit;
+  }
+
+  [dir='rtl'] .size-finder__back svg {
+    transform: scaleX(-1);
+  }
+
+  .size-finder__next {
+    border: 0;
+    background: #0a0a0a;
+    color: #febd19;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+  }
+
+  .size-finder__next:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .size-finder button:focus-visible {
+    outline: 3px solid #febd19;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .size-finder[open],
+    .size-finder__step,
+    .size-finder__figure g,
+    .size-finder__track i {
+      animation: none;
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Size finder",
+  "tag": "div",
+  "class": "section-size-finder",
+  "settings": []
+}
+{% endschema %}

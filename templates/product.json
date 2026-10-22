@@ -116,11 +116,16 @@
         "judge_me_reviews_review_widget_MUPNrE"
       ],
       "settings": {}
+    },
+    "size_finder": {
+      "type": "size-finder",
+      "settings": {}
     }
   },
   "order": [
     "main",
     "size_guide",
+    "size_finder",
     "related",
     "17920444113730fa6c"
   ]
