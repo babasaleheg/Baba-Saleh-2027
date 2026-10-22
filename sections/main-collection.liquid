@@ -13,9 +13,6 @@
         <header class="collection__header">
           <div class="collection__header-text">
             <h1 class="collection__title">{{ collection.title }}</h1>
-            {%- if section.settings.show_description and collection.description != blank -%}
-              <div class="rte collection__description">{{ collection.description }}</div>
-            {%- endif -%}
           </div>
         </header>
       {%- endif -%}
@@ -93,6 +90,16 @@
       </div>
     </div>
 
+    {%- comment -%} Category text for shoppers and Google: below the products so they come first; first page only {%- endcomment -%}
+    {%- if request.page_type == 'collection' and section.settings.show_description and collection.description != blank and paginate.current_page == 1 -%}
+      <div class="page-width">
+        <div class="collection__about">
+          <h2 class="collection__about-title">{{ 'collections.about' | t: title: collection.title }}</h2>
+          <div class="rte collection__description">{{ collection.description }}</div>
+        </div>
+      </div>
+    {%- endif -%}
+
     {% render 'facets', results: results, results_url: results_url, terms: terms %}
   </facet-filters>
 {%- endpaginate -%}
@@ -155,15 +162,23 @@
     gap: 0.75rem;
   }
 
-  /* Phones: straight to the products */
-  @media screen and (max-width: 749px) {
-    .collection__description {
-      display: none;
-    }
+  .collection__about {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 52rem;
+    margin-block-start: 3rem;
+    padding-block-start: 2rem;
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .collection__about-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
   }
 
   .collection__description {
-    max-width: 44rem;
+    font-size: 0.9375rem;
     opacity: 0.85;
   }
 

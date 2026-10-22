@@ -127,6 +127,7 @@
     }
   },
   "collections": {
+    "about": "About {{ title }}",
     "product_count": {
       "zero": "No products",
       "one": "{{ count }} product",

@@ -147,6 +147,7 @@
     }
   },
   "collections": {
+    "about": "عن {{ title }}",
     "product_count": {
       "zero": "لا توجد منتجات",
       "one": "منتج واحد",
