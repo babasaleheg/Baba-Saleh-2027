@@ -12,7 +12,18 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="canonical" href="{{ canonical_url }}">
+    {%- comment -%}
+      Shopify's built-in "Contact information" policy page is a bare text page that Google
+      sends people to; send them (and Google) to the real Contact us page instead.
+    {%- endcomment -%}
+    {%- if request.path contains '/policies/contact-information' -%}
+      {%- assign contact_url = routes.root_url | append: '/pages/contact-us' | replace: '//', '/' -%}
+      <meta http-equiv="refresh" content="0; url={{ contact_url }}">
+      <link rel="canonical" href="{{ request.origin }}{{ contact_url }}">
+      <script>window.location.replace({{ contact_url | json }});</script>
+    {%- else -%}
+      <link rel="canonical" href="{{ canonical_url }}">
+    {%- endif -%}
 
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" sizes="32x32" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
