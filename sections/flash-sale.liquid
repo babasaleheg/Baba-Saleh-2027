@@ -43,9 +43,17 @@
 
     <ul class="slider flash-sale__slider" role="list" data-slider style="--slides-desktop: 3; --slides-tablet: 2; --slide-mobile: 46%;">
       {%- if collection != blank and collection.products_count > 0 -%}
-        {%- for product in collection.products limit: limit -%}
-          <li>{% render 'product-card', product: product %}</li>
-        {%- endfor -%}
+{%- comment -%} In stock first, sold out last (fills up to the limit) {%- endcomment -%}
+              {%- assign shown = 0 -%}
+              {%- for pass in (1..2) -%}
+                {%- for product in collection.products limit: 50 -%}
+                  {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+                  {%- assign card_pass = 2 -%}{%- if product.available -%}{%- assign card_pass = 1 -%}{%- endif -%}
+                  {%- if card_pass != pass -%}{%- continue -%}{%- endif -%}
+                  <li>{% render 'product-card', product: product, index: shown %}</li>
+                  {%- assign shown = shown | plus: 1 -%}
+                {%- endfor -%}
+              {%- endfor -%}
       {%- else -%}
         {%- for i in (1..4) -%}
           <li>{% render 'product-card', product: blank %}</li>

@@ -61,8 +61,16 @@
         >
           {%- if collection != blank and collection.products_count > 0 -%}
             {%- if forloop.first -%}
-              {%- for product in collection.products limit: limit -%}
-                <li>{% render 'product-card', product: product, index: forloop.index0 %}</li>
+{%- comment -%} In stock first, sold out last (fills up to the limit) {%- endcomment -%}
+              {%- assign shown = 0 -%}
+              {%- for pass in (1..2) -%}
+                {%- for product in collection.products limit: 50 -%}
+                  {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+                  {%- assign card_pass = 2 -%}{%- if product.available -%}{%- assign card_pass = 1 -%}{%- endif -%}
+                  {%- if card_pass != pass -%}{%- continue -%}{%- endif -%}
+                  <li>{% render 'product-card', product: product, index: shown %}</li>
+                  {%- assign shown = shown | plus: 1 -%}
+                {%- endfor -%}
               {%- endfor -%}
             {%- else -%}
               {%- comment -%} Hidden tabs load when opened (collection.cards view), keeping the page light {%- endcomment -%}

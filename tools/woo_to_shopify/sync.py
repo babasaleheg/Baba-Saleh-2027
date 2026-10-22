@@ -424,6 +424,8 @@ COLLECTIONS_Q = """query($after: String) { collections(first: 50, after: $after)
 COLLECTION_PRODUCTS_Q = """query($id: ID!, $after: String, $key: ProductCollectionSortKeys!, $rev: Boolean!) {
   collection(id: $id) { products(first: 250, after: $after, sortKey: $key, reverse: $rev) {
     pageInfo { hasNextPage endCursor } nodes { id totalInventory tracksInventory } } } }"""
+AVAILABLE_Q = """query($after: String) { products(first: 100, after: $after) { pageInfo { hasNextPage endCursor }
+  nodes { id variants(first: 100) { nodes { availableForSale } } } } }"""
 COLLECTION_UPDATE = """mutation($input: CollectionInput!) { collectionUpdate(input: $input) { userErrors { field message } } }"""
 METAFIELDS_SET = """mutation($m: [MetafieldsSetInput!]!) { metafieldsSet(metafields: $m) { userErrors { field message } } }"""
 REORDER = """mutation($id: ID!, $moves: [MoveInput!]!) { collectionReorderProducts(id: $id, moves: $moves) {
@@ -441,6 +443,15 @@ def sort_stock():
     Collections are switched to manual order; the order they had before is saved in the
     babasaleh.base_sort metafield and used to order products within the in-stock and
     sold-out groups, so re-running keeps e.g. best-selling order while stock changes."""
+    # "Sold out" exactly as the shop shows it: no variant can be bought
+    sellable, p_after = {}, None
+    while True:
+        pp = gql(AVAILABLE_Q, {"after": p_after})["products"]
+        for p in pp["nodes"]:
+            sellable[p["id"]] = any(v["availableForSale"] for v in p["variants"]["nodes"])
+        if not pp["pageInfo"]["hasNextPage"]:
+            break
+        p_after = pp["pageInfo"]["endCursor"]
     after, stats = None, {"collections": 0, "reordered": 0, "products_moved": 0}
     while True:
         page = gql(COLLECTIONS_Q, {"after": after})["collections"]
@@ -460,7 +471,7 @@ def sort_stock():
                 if not pp["pageInfo"]["hasNextPage"]:
                     break
                 p_after = pp["pageInfo"]["endCursor"]
-            in_stock = lambda p: p["totalInventory"] > 0 or not p["tracksInventory"]
+            in_stock = lambda p: sellable.get(p["id"], p["totalInventory"] > 0 or not p["tracksInventory"])
             wanted = [p["id"] for p in products if in_stock(p)] + [p["id"] for p in products if not in_stock(p)]
             if c["sortOrder"] != "MANUAL":
                 gql(COLLECTION_UPDATE, {"input": {"id": c["id"], "sortOrder": "MANUAL"}})

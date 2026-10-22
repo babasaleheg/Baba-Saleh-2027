@@ -74,7 +74,7 @@
             alt: card_alt,
             class: 'card__image'
         }}
-        {%- if settings.card_show_secondary_image and second_image -%}
+        {%- if settings.card_show_secondary_image and second_image and product.available -%}
           {{
             second_image
             | image_url: width: 900

@@ -1,11 +1,14 @@
 {%- layout none -%}
 {%- comment -%}
   Product cards only, fetched by hidden "Trending now" tabs when they are opened
-  (featured-collection + ProductTabs in theme.js). Collection order already puts
-  in-stock products first.
+  (featured-collection + ProductTabs in theme.js). In-stock products first, sold out last.
 {%- endcomment -%}
 {%- paginate collection.products by 24 -%}
-  {%- for product in collection.products -%}
-    <li>{% render 'product-card', product: product, index: forloop.index0 %}</li>
+  {%- for pass in (1..2) -%}
+    {%- for product in collection.products -%}
+      {%- assign card_pass = 2 -%}{%- if product.available -%}{%- assign card_pass = 1 -%}{%- endif -%}
+      {%- if card_pass != pass -%}{%- continue -%}{%- endif -%}
+      <li>{% render 'product-card', product: product, index: forloop.index0 %}</li>
+    {%- endfor -%}
   {%- endfor -%}
 {%- endpaginate -%}
