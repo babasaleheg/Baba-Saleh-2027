@@ -8,10 +8,10 @@
   <div class="predictive" id="predictive-search-results">
     {%- if queries.size > 0 or collections.size > 0 -%}
       <ul class="predictive__chips" role="list">
-        {%- for query in queries -%}
+        {%- for query in queries limit: 6 -%}
           <li><a class="predictive__chip" href="{{ query.url }}">{{ query.styled_text }}</a></li>
         {%- endfor -%}
-        {%- for collection in collections -%}
+        {%- for collection in collections limit: 6 -%}
           <li><a class="predictive__chip predictive__chip--collection" href="{{ collection.url }}">{{ collection.title }}</a></li>
         {%- endfor -%}
       </ul>
@@ -20,7 +20,18 @@
     {%- if products.size > 0 -%}
       <p class="eyebrow predictive__label">{{ 'general.search.products' | t }}</p>
       <ul class="predictive__products" role="listbox">
-        {%- for product in products limit: 6 -%}
+        {%- comment -%} In-stock products first, sold out last {%- endcomment -%}
+        {%- assign shown = 0 -%}
+        {%- for pass in (1..2) -%}
+        {%- for product in products -%}
+          {%- liquid
+            assign product_pass = 2
+            if product.available
+              assign product_pass = 1
+            endif
+          -%}
+          {%- if product_pass != pass or shown >= 6 -%}{%- continue -%}{%- endif -%}
+          {%- assign shown = shown | plus: 1 -%}
           <li role="option">
             <a href="{{ product.url }}" class="predictive__product">
               <div class="media media--square predictive__image">
@@ -34,6 +45,7 @@
               </div>
             </a>
           </li>
+        {%- endfor -%}
         {%- endfor -%}
       </ul>
     {%- endif -%}

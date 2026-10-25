@@ -1067,7 +1067,7 @@
       }
       this.controller = new AbortController();
       try {
-        const url = `${routes.predictiveSearch}?q=${encodeURIComponent(terms)}&resources[type]=product,collection,query&resources[limit]=6&section_id=predictive-search`;
+        const url = `${routes.predictiveSearch}?q=${encodeURIComponent(terms)}&resources[type]=product,collection,query&resources[limit]=10&section_id=predictive-search`;
         const response = await fetch(url, { signal: this.controller.signal });
         if (!response.ok) throw new Error(String(response.status));
         const html = await response.text();
@@ -1221,7 +1221,13 @@
         const grid = this.querySelector('[data-product-grid]');
         const freshGrid = doc.querySelector('[data-product-grid]');
         if (grid && freshGrid) {
+          // Shopify's pages can overlap (search sorted by relevance): skip products already shown
+          const key = (li) => li.querySelector('a[href*="/products/"]')?.getAttribute('href').split('?')[0];
+          const seen = new Set([...grid.children, ...this.parked].map(key).filter(Boolean));
           for (const li of [...freshGrid.children]) {
+            const k = key(li);
+            if (k && seen.has(k)) continue;
+            if (k) seen.add(k);
             if (li.querySelector('.card--sold-out')) this.parked.push(li);
             else grid.append(li);
           }

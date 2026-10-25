@@ -55,8 +55,13 @@
               {%- endfor -%}
               {%- endfor -%}
             </ul>
-            {%- if paginate.pages > 1 -%}
-              {% render 'pagination', paginate: paginate %}
+            {%- comment -%} Infinite scroll like collections, so sold-out items stay after every in-stock one across all pages {%- endcomment -%}
+            {%- if paginate.next -%}
+              <div class="collection__more">
+                {%- assign shown = paginate.current_offset | plus: search.results.size -%}
+                <p class="text-muted">{{ 'collections.showing' | t: shown: shown, total: paginate.items }}</p>
+                <a href="{{ paginate.next.url }}" class="button button--secondary" data-load-more>{{ 'collections.load_more' | t }}</a>
+              </div>
             {%- endif -%}
           {%- else -%}
             <div class="empty-state">
