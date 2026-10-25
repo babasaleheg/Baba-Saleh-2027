@@ -280,6 +280,8 @@ def main():
             errs = gql(UPDATE, {"p": update})["productUpdate"]["userErrors"]
             if errs:
                 log(f"  error: {errs}")
+            else:
+                p["tags"] = update["tags"]  # later steps below must build on the new tags, not the old ones
         done += 1
     # Each swimwear item shows in one section only (its cat:): no adult models in Kids', no kids in Women's
     for p in products:
@@ -288,6 +290,7 @@ def main():
             log(f"{'would remove' if dry else 'remove'} {','.join(extra):24} {p['title']}")
             if not dry:
                 gql("mutation($id: ID!, $t: [String!]!) { tagsRemove(id: $id, tags: $t) { userErrors { message } } }", {"id": p["id"], "t": extra})
+                p["tags"] = [t for t in p["tags"] if t not in extra]
             done += 1
 
     for p in products:
