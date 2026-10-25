@@ -129,7 +129,7 @@ FIXES = {
     "Wolon Metallic Elbow Support": "cat:martial-arts-gear",
     "Cressi Clio Fins": "cat:diving",
     "Sweat T-Shirt": "cat:jackets",
-    "Shark Beach": "cat:beach-toys",
+    "Shark Beach Flip-Flops": "cat:slippers",
     "Color Weight Plates": "cat:weights",
     "Sports Wristbands – Yellow": "cat:sports-accessories",
     "Sports Wristband – White": "cat:sports-accessories",
