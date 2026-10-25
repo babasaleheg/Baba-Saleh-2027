@@ -1107,12 +1107,27 @@
       });
       this.onPop = () => this.#render(window.location.href, false);
       window.addEventListener('popstate', this.onPop);
+      this.#parkSoldOut();
       this.#watchMore();
     }
 
     disconnectedCallback() {
       window.removeEventListener('popstate', this.onPop);
       this.moreObserver?.disconnect();
+    }
+
+    /* Sold out last across the whole list, on every sort and on brand/type pages: while more
+       pages are coming, sold-out cards wait here and are added after the last page. */
+    #parkSoldOut() {
+      this.parked = [];
+      const grid = this.querySelector('[data-product-grid]');
+      if (!grid || !this.querySelector('[data-load-more]')) return;
+      for (const li of [...grid.children]) {
+        if (li.querySelector('.card--sold-out')) {
+          this.parked.push(li);
+          li.remove();
+        }
+      }
     }
 
     /* Infinite scroll: load the next page as the shopper nears the end of the grid.
@@ -1175,6 +1190,7 @@
         url.searchParams.delete('section_id');
         if (push) window.history.pushState({}, '', url);
         revealAll(this);
+        this.#parkSoldOut();
         this.#watchMore();
 
         if (focusName) {
@@ -1204,10 +1220,19 @@
         const doc = parseHTML(html);
         const grid = this.querySelector('[data-product-grid]');
         const freshGrid = doc.querySelector('[data-product-grid]');
-        if (grid && freshGrid) grid.append(...freshGrid.children);
+        if (grid && freshGrid) {
+          for (const li of [...freshGrid.children]) {
+            if (li.querySelector('.card--sold-out')) this.parked.push(li);
+            else grid.append(li);
+          }
+        }
         const more = this.querySelector('.collection__more');
         const freshMore = doc.querySelector('.collection__more');
         if (more) freshMore ? (more.innerHTML = freshMore.innerHTML) : more.remove();
+        if (!freshMore && grid) {
+          grid.append(...this.parked); // last page: now the sold-out items, at the very end
+          this.parked = [];
+        }
         revealAll(this);
       } catch {
         window.location.href = link.href;
