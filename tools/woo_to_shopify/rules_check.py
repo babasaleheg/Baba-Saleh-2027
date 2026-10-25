@@ -29,6 +29,9 @@ MARKERS = {
     "sections/main-collection.liquid": ["for pass in (1..2)"],
     "sections/main-search.liquid": ["for pass in (1..3)", "data-load-more"],
     "sections/predictive-search.liquid": ["product_pass"],
+    "sections/featured-collection.liquid": ["for pass in (1..2)"],
+    "sections/flash-sale.liquid": ["for pass in (1..2)"],
+    "templates/collection.cards.liquid": ["card_pass"],
 }
 # storefront pages whose first page must list every in-stock product before any sold-out one
 PAGES = [
