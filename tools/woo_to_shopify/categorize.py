@@ -193,7 +193,7 @@ AUDIENCE_FIXES = {
     "Girls’ Beach Sun Hat": "for:kids",
 }
 
-AUDIENCE = [(r"\b(kids?|boys?|girls?|baby|junior|children)\b", "for:kids"), (r"\b(women|women’s|women's|ladies|hijab)\b", "for:women"), (r"\b(men|men’s|men's)\b", "for:men")]
+AUDIENCE = [(r"\b(kids?|boys?|girls?|baby(?! blue)|junior|children)\b", "for:kids"), (r"\b(women|women’s|women's|ladies|hijab)\b", "for:women"), (r"\b(men|men’s|men's)\b", "for:men")]
 
 PRODUCTS_Q = """query($a: String) { products(first: 250, after: $a, query: "status:active") {
   pageInfo { hasNextPage endCursor } nodes { id title productType tags options { name optionValues { name } } } } }"""
@@ -237,14 +237,25 @@ def guess(title, similar=None):
     return None
 
 
+TYPE_CAT = {v["type"]: k for k, v in TAX.items()}
+
+
 def plan(p, similar=None):
-    cats = [t for t in p["tags"] if t.startswith("cat:")]
+    """Every product ends with exactly one cat: tag, that category's dept:/group: tags and its product type.
+    Runs on every product, every night, so a category added back by another tool or by hand
+    (a product in two categories, a swimsuit in Sportswear) is put right again."""
+    cats = sorted({t for t in p["tags"] if t.startswith("cat:") and t in TAX})
     target = FIXES.get(p["title"].strip())
-    if target and cats == [target]:
-        target = None
-    if not target and cats:
-        return None
-    target = target or guess(p["title"], similar)
+    if not target:
+        if len(cats) == 1:
+            target = cats[0]
+        elif len(cats) > 1:
+            # conflicting categories: the product type decides, then the title, then the first one
+            by_type = TYPE_CAT.get(p.get("productType") or "")
+            by_title = guess(p["title"], similar)
+            target = by_type if by_type in cats else by_title if by_title in cats else cats[0]
+        else:
+            target = guess(p["title"], similar)
     if not target or target not in TAX:
         return ("unknown", None)
     tags = [t for t in p["tags"] if not t.startswith(TAXONOMY_PREFIXES)] + [target] + TAX[target]["tags"]
@@ -253,7 +264,10 @@ def plan(p, similar=None):
             if re.search(rx, p["title"].lower()):
                 tags.append(tag)
                 break
-    return (target, {"id": p["id"], "tags": sorted(set(tags)), "productType": TAX[target]["type"]})
+    tags = sorted(set(tags))
+    if tags == sorted(set(p["tags"])) and p.get("productType") == TAX[target]["type"]:
+        return None
+    return (target, {"id": p["id"], "tags": tags, "productType": TAX[target]["type"]})
 
 
 def main():
