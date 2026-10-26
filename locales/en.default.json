@@ -54,6 +54,7 @@
   },
   "products": {
     "product": {
+      "sold_30d": "Sold {{ count }} times in the last 30 days",
       "category": "Category",
       "add_to_cart": "Add to cart",
       "added": "Added to your cart",

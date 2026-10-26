@@ -15,11 +15,13 @@ step product_quality.py
 step collection_audit.py
 step sync.py seo
 step seo_bilingual.py
+step ar_descriptions.py export
 step sync.py sort-stock
 step rules_check.py
 step sync.py reviews-sync
 step came_from.py
 step recommendations.py
+step sold_counter.py
 step search_words.py
 if [ -n "$failed" ]; then
   echo "FAILED:$failed"

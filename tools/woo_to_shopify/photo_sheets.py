@@ -9,6 +9,7 @@ category or audience from the photo (e.g. an adult model in Kids' Swimwear).
     python3 photo_sheets.py --days 1      # only products created in the last day
     python3 photo_sheets.py --cat kids-swimwear
     python3 photo_sheets.py --flagged     # only products whose price is far from similar ones
+    python3 photo_sheets.py --days 1 --rotate   # nightly: new products + a seventh of all categories
 Writes PNGs to $DATA_DIR/sheets/ and prints their paths.
 """
 import argparse, io, os, re, statistics, textwrap, urllib.request
@@ -84,6 +85,9 @@ def main():
     ap.add_argument("--days", type=float)
     ap.add_argument("--cat")
     ap.add_argument("--flagged", action="store_true", help="only price-flagged products, on their own sheets")
+    ap.add_argument("--rotate", action="store_true",
+                    help="with --days: also every product of a seventh of the categories (a different seventh each day), "
+                         "so every product's photo is looked at again once a week")
     args = ap.parse_args()
     q = "status:active"
     products, after = [], None
@@ -105,6 +109,12 @@ def main():
     # new products only: the nightly scripts touch every product, so updatedAt says nothing
     groups = {cat: [p for p in items if p["createdAt"] > since or p["id"] in flags]
               for cat, items in by_cat.items() if not args.cat or cat == args.cat}
+    if args.rotate:
+        cats = sorted(by_cat)
+        today = datetime.now(timezone.utc).toordinal() % 7
+        for cat in cats[today::7]:
+            if not args.cat or cat == args.cat:
+                groups[cat] = by_cat[cat]
     if args.flagged:
         groups = {"price-flagged": [p for items in by_cat.values() for p in items if p["id"] in flags]}
     groups = {cat: items for cat, items in groups.items() if items}
