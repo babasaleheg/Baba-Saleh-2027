@@ -17,7 +17,12 @@ never bypass or undo them, in any change, app, script or scheduled task.
    product types or `cat:` tags, never on broad `dept:` tags. `collection_audit.py` checks.
 4. Only the nightly **"Baba Saleh daily store sync"** may change product categories, tags or
    types automatically. Do not add another scheduled task or app that edits them.
-5. Brand yellow `#FEBD19` (never blue), Century Gothic-style font; product grids 6 columns on
+5. **Arabic pages never show English text**: every product, collection and page has Arabic
+   title, description and SEO. The nightly writes Arabic for anything new or edited
+   (`ar_descriptions.py`, `seo_bilingual.py`).
+6. **Only real numbers**: no fake counters or invented social proof ("23 people watching").
+   The sales badge uses real orders from the last 30 days (`sold_counter.py`).
+7. Brand yellow `#FEBD19` (never blue), Century Gothic-style font; product grids 6 columns on
    desktop, 2 on mobile; Track = تراك in Arabic; returns window 7 days; don't duplicate themes.
 
 ## Working on the theme
