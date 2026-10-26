@@ -8,7 +8,7 @@
 The nightly runs "export"; whoever reviews the night (the nightly assistant) writes the Arabic
 for each file and runs "apply". Keep the same HTML structure (paragraphs, lists) as the English.
 """
-import json, os, sys
+import json, os, re, sys
 from collections import Counter
 
 from seo_bilingual import register, resources, resources_by_id
@@ -45,10 +45,23 @@ def export(per_file):
     log(f"ar-descriptions to write: {len(items)} in {len(files)} file(s)")
 
 
+def is_arabic(html):
+    letters = re.sub(r"<[^>]+>|[^A-Za-z\u0600-\u06FF]", "", html)
+    return bool(letters) and sum("\u0600" <= c <= "\u06FF" for c in letters) >= 0.6 * len(letters)
+
+
 def apply(paths):
-    data = {}
+    # only ids that still need Arabic, only text that is really Arabic (protects against mixed-up batches)
+    wanted = {x["id"] for x in todo()}
+    data, skipped = {}, 0
     for path in paths:
-        data.update(json.load(open(path, encoding="utf-8")))
+        for rid, html in json.load(open(path, encoding="utf-8")).items():
+            if rid in wanted and is_arabic(html):
+                data[rid] = html
+            else:
+                skipped += 1
+    if skipped:
+        log(f"ar-descriptions skipped {skipped} entries (not needed any more, or not Arabic)")
     ids = list(data)
     st = Counter()
     for i in range(0, len(ids), 200):
