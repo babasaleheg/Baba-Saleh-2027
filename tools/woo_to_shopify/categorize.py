@@ -194,7 +194,9 @@ AUDIENCE_FIXES = {
     "Slide Sandals": "for:kids",
     "Girls’ Beach Sun Hat": "for:kids",
     "Small Football Set": "for:kids",
-    "Venum Combat Sports Shorts Black, Red & White": "for:men",
+    "Venum Combat Sports Shorts – Black, Red & White": "for:men",
+    "Gym Shorts": "for:women",
+    "High Waist Gym Shorts": "for:women",
     "Sports Training Mesh Tank Vest": "for:men",
 }
 
