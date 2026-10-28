@@ -1,79 +1,802 @@
 {
- "_note": "Nov 1-7 2026 offers (عروض الاسبوع الاول من نوفمبر PDF). price = sale price from the PDF; rule 'sizes' maps the size part of the variant title. compareAt during the offer = max(existing compareAt, current price).",
+ "_note": "Nov 1-7 2026 offers. Each value is [PDF old price, PDF sale price]. 'sizes' maps the size part of the variant title ('*' = other sizes). During the offer: price = sale, compareAt = PDF old price (owner's choice, Oct 28).",
  "products": [
-  {"id":10307358261296,"h":"track-swimming-robe-kids-swimwear","sku":"2399xx04","sizes":{"4":522,"6":540,"8":558,"10":576,"12":585,"14":594,"16":612,"18":630}},
-  {"id":10307372875824,"h":"track-swimming-robe","sku":"2399xx05/06/03","sizes":{"4":522,"6":540,"8":558,"10":576,"12":585,"14":594,"16":612,"18":630}},
-  {"id":10308532240432,"h":"swimmer-swimming-goggles475","sku":"331036","price":79.2},
-  {"id":10307332800560,"h":"track-front-swimming-snorkel","sku":"331110","price":172},
-  {"id":10307349938224,"h":"snorkel-swimming-tube","sku":"331122","price":204},
-  {"id":10307379593264,"h":"clear-mouth-guard","sku":"331140","price":48},
-  {"id":10307534192688,"h":"spirit-swimming-goggles","sku":"331201","price":188},
-  {"id":10307562111024,"h":"swimming-goggles-green-and-purple","sku":"331507","price":280},
-  {"id":10308456546352,"h":"junior-swimming-goggles","sku":"331507","price":280},
-  {"id":10307534159920,"h":"mondial-swimming-goggles","sku":"331508","price":360},
-  {"id":10343648985136,"h":"mondial-swimming-goggles-baba-saleh-sports-egypt","sku":"331508","price":360},
-  {"id":10343656652848,"h":"mondial-swimming-goggles-green-blue","sku":"331509","price":368},
-  {"id":10343662878768,"h":"mondial-swimming-goggles-swimming-goggles","sku":"331510","price":260},
-  {"id":10307561029680,"h":"swimming-goggles-swimming-goggles","sku":"331512","price":280},
-  {"id":10308295032880,"h":"mondial-swimming-goggles-338-white","sku":"331512","price":280},
-  {"id":10308295393328,"h":"mondial-swimming-goggles-338-black","sku":"331512","price":280},
-  {"id":10307561095216,"h":"swimming-goggles-style-2-swimming-goggles","sku":"331513","price":248},
-  {"id":10307534323760,"h":"mondial-swimming-goggles-black-and-purple","sku":"331516","price":336},
-  {"id":10307360882736,"h":"2x-swimming-goggles","sku":"331802","price":32},
-  {"id":10307399057456,"h":"track-wide-view-swimming-goggles","sku":"331803","price":44},
-  {"id":10307367895088,"h":"track-swimming-goggles","sku":"331804","price":164},
-  {"id":10307341713456,"h":"full-mask-swimming-goggles","sku":"331805","price":128},
-  {"id":10307368681520,"h":"silicone-swimming-goggles","sku":"331806","price":196},
-  {"id":10307375235120,"h":"mc518-silicone-swimming-goggles-pink","sku":"331806","price":196},
-  {"id":10307375300656,"h":"mc518-silicone-swimming-goggles-blue","sku":"331806","price":196},
-  {"id":10307367469104,"h":"track-swimming-goggles-black-pink-and-white","sku":"331808","price":169.6},
-  {"id":10307368747056,"h":"swimming-goggles","sku":"331809","price":192},
-  {"id":10307373432880,"h":"track-prescription-swimming-goggles","sku":"331810","price":200},
-  {"id":10307704324144,"h":"junior-swim-goggles","sku":"331811","price":100},
-  {"id":10307372744752,"h":"track-swim-goggles","sku":"331813","price":168},
-  {"id":10307369533488,"h":"track-swimming-goggles-purple-blue-and-orange","sku":"331814","price":140},
-  {"id":10307368812592,"h":"swimming-goggles-black-white-and-yellow","sku":"331815","price":148},
-  {"id":10307704389680,"h":"junior-mirror-swim-goggles","sku":"331816","price":176},
-  {"id":10307371565104,"h":"mirror-swim-goggles","sku":"331817","price":316},
-  {"id":10307369599024,"h":"track-swimming-goggles-navy-blue-purple-and-white","sku":"331818","price":216},
-  {"id":10307358687280,"h":"track-swimming-goggles-navy-blue-baby-blue-and-pink","sku":"331819","price":96},
-  {"id":10307341156400,"h":"junior-mirrored-swimming-goggles","sku":"331820","price":144},
-  {"id":10307331555376,"h":"track-full-face-swimming-goggles","sku":"331821","price":160},
-  {"id":10307360817200,"h":"track-silicone-swimming-goggles","sku":"331823","price":140},
-  {"id":10307361243184,"h":"track-swimming-goggles-black-blue-and-white","sku":"331824","price":156},
-  {"id":10307340173360,"h":"track-mirror-swimming-goggles-swimming-goggles","sku":"331825","price":252},
-  {"id":10307355705392,"h":"kids-swimming-goggles","sku":"331827","price":60},
-  {"id":10307343941680,"h":"track-mirror-swimming-goggles","sku":"331830","price":208},
-  {"id":10307344007216,"h":"track-swimming-goggles-black-blue-and-yellow","sku":"331831","price":108},
-  {"id":10307420651568,"h":"track-swimming-goggles-black-blue-and-pink","sku":"331832","price":104},
-  {"id":10307344072752,"h":"two-colors-track-swimming-goggles","sku":"331833","price":136},
-  {"id":10343659962416,"h":"track-two-color-swimming-goggles","sku":"331834","price":120},
-  {"id":10343644790832,"h":"track-swimming-goggles-baba-saleh-sports-egypt","sku":"331835","price":116},
-  {"id":10307344171056,"h":"track-swimming-goggles-assorted-colors","sku":"331837","price":152},
-  {"id":10343640465456,"h":"track-junior-swimming-goggles-baba-saleh-sports-egypt","sku":"331838","price":124},
-  {"id":10307343876144,"h":"kids-swimming-goggles-blue-green-orange-and-purple","sku":"331841","price":48},
-  {"id":10307382247472,"h":"conquest-playboy-footwear","sku":"337037","price":126},
-  {"id":10307369959472,"h":"pool-buoy","sku":"337038","price":148.5},
-  {"id":10308163567664,"h":"manta-diving-fins","sku":"338001/338002","sizes":{"28/29":180,"30/31":180,"32/33":180,"*":445.5}},
-  {"id":10307712745520,"h":"cressi-clio-fins","sku":"338003","price":2227.5},
-  {"id":10307337453616,"h":"track-training-fins","sku":"338005-7","sizes":{"27/29":396,"30/32":396,"33/35":427.5,"36/38":427.5,"39/41":472.5}},
-  {"id":10308163108912,"h":"spurt-swimming-fins","sku":"338246","price":607.5},
-  {"id":10307369271344,"h":"long-fins","sku":"338301","price":810},
-  {"id":10307356885040,"h":"track-long-swimming-fins","sku":"338302","price":1125},
-  {"id":10307372646448,"h":"track-fins","sku":"338801/338802","sizes":{"35/36":562.5,"37/38":562.5,"39/40":562.5,"41/42":675,"43/44":675,"45/46":675}},
-  {"id":10307372580912,"h":"track-swimming-fins","sku":"338803/338804","sizes":{"28/29":382.5,"30/31":382.5,"32/33":382.5,"34/35":382.5,"36/38":427.5}},
-  {"id":10307336929328,"h":"mens-3d-shorts","sku":"233906","price":130},
-  {"id":10307336831024,"h":"kids-3d-shorts","sku":"233906","price":130},
-  {"id":10307356196912,"h":"resistance-training-band","sku":"367042","price":225},
-  {"id":10324171882544,"h":"ab-wheel-roller","sku":"361005","price":130},
-  {"id":10307369828400,"h":"hand-exercises-ball","sku":"363001","price":20},
-  {"id":10307378839600,"h":"individual-skipping-rope-pink","sku":"371801","price":17},
-  {"id":10307378905136,"h":"individual-skipping-rope-green","sku":"371801","price":17},
-  {"id":10307378970672,"h":"individual-skipping-rope-blue","sku":"371801","price":17},
-  {"id":10307379036208,"h":"individual-skipping-rope-black","sku":"371801","price":17},
-  {"id":10307367534640,"h":"jump-rope","sku":"371801","price":17},
-  {"id":10307369205808,"h":"asis-mens-half-sneakers","sku":"415038","price":1650},
-  {"id":10307367960624,"h":"asis-mens-sneakers","sku":"415038","price":1650}
+  {
+   "id": 10307358261296,
+   "h": "track-swimming-robe-kids-swimwear",
+   "sku": "2399xx04",
+   "sizes": {
+    "4": [
+     580,
+     522
+    ],
+    "6": [
+     600,
+     540
+    ],
+    "8": [
+     620,
+     558
+    ],
+    "10": [
+     640,
+     576
+    ],
+    "12": [
+     650,
+     585
+    ],
+    "14": [
+     660,
+     594
+    ],
+    "16": [
+     680,
+     612
+    ],
+    "18": [
+     700,
+     630
+    ]
+   }
+  },
+  {
+   "id": 10307372875824,
+   "h": "track-swimming-robe",
+   "sku": "2399xx05/06/03",
+   "sizes": {
+    "4": [
+     580,
+     522
+    ],
+    "6": [
+     600,
+     540
+    ],
+    "8": [
+     620,
+     558
+    ],
+    "10": [
+     640,
+     576
+    ],
+    "12": [
+     650,
+     585
+    ],
+    "14": [
+     660,
+     594
+    ],
+    "16": [
+     680,
+     612
+    ],
+    "18": [
+     700,
+     630
+    ]
+   }
+  },
+  {
+   "id": 10308532240432,
+   "h": "swimmer-swimming-goggles475",
+   "sku": "331036",
+   "price": [
+    99.0,
+    79.2
+   ]
+  },
+  {
+   "id": 10307332800560,
+   "h": "track-front-swimming-snorkel",
+   "sku": "331110",
+   "price": [
+    215.0,
+    172
+   ]
+  },
+  {
+   "id": 10307349938224,
+   "h": "snorkel-swimming-tube",
+   "sku": "331122",
+   "price": [
+    255.0,
+    204
+   ]
+  },
+  {
+   "id": 10307379593264,
+   "h": "clear-mouth-guard",
+   "sku": "331140",
+   "price": [
+    60.0,
+    48
+   ]
+  },
+  {
+   "id": 10307534192688,
+   "h": "spirit-swimming-goggles",
+   "sku": "331201",
+   "price": [
+    235.0,
+    188
+   ]
+  },
+  {
+   "id": 10307562111024,
+   "h": "swimming-goggles-green-and-purple",
+   "sku": "331507",
+   "price": [
+    350.0,
+    280
+   ]
+  },
+  {
+   "id": 10308456546352,
+   "h": "junior-swimming-goggles",
+   "sku": "331507",
+   "price": [
+    350.0,
+    280
+   ]
+  },
+  {
+   "id": 10307534159920,
+   "h": "mondial-swimming-goggles",
+   "sku": "331508",
+   "price": [
+    450.0,
+    360
+   ]
+  },
+  {
+   "id": 10343648985136,
+   "h": "mondial-swimming-goggles-baba-saleh-sports-egypt",
+   "sku": "331508",
+   "price": [
+    450.0,
+    360
+   ]
+  },
+  {
+   "id": 10343656652848,
+   "h": "mondial-swimming-goggles-green-blue",
+   "sku": "331509",
+   "price": [
+    460.0,
+    368
+   ]
+  },
+  {
+   "id": 10343662878768,
+   "h": "mondial-swimming-goggles-swimming-goggles",
+   "sku": "331510",
+   "price": [
+    325.0,
+    260
+   ]
+  },
+  {
+   "id": 10307561029680,
+   "h": "swimming-goggles-swimming-goggles",
+   "sku": "331512",
+   "price": [
+    350.0,
+    280
+   ]
+  },
+  {
+   "id": 10308295032880,
+   "h": "mondial-swimming-goggles-338-white",
+   "sku": "331512",
+   "price": [
+    350.0,
+    280
+   ]
+  },
+  {
+   "id": 10308295393328,
+   "h": "mondial-swimming-goggles-338-black",
+   "sku": "331512",
+   "price": [
+    350.0,
+    280
+   ]
+  },
+  {
+   "id": 10307561095216,
+   "h": "swimming-goggles-style-2-swimming-goggles",
+   "sku": "331513",
+   "price": [
+    310.0,
+    248
+   ]
+  },
+  {
+   "id": 10307534323760,
+   "h": "mondial-swimming-goggles-black-and-purple",
+   "sku": "331516",
+   "price": [
+    420.0,
+    336
+   ]
+  },
+  {
+   "id": 10307360882736,
+   "h": "2x-swimming-goggles",
+   "sku": "331802",
+   "price": [
+    40.0,
+    32
+   ]
+  },
+  {
+   "id": 10307399057456,
+   "h": "track-wide-view-swimming-goggles",
+   "sku": "331803",
+   "price": [
+    55.0,
+    44
+   ]
+  },
+  {
+   "id": 10307367895088,
+   "h": "track-swimming-goggles",
+   "sku": "331804",
+   "price": [
+    205.0,
+    164
+   ]
+  },
+  {
+   "id": 10307341713456,
+   "h": "full-mask-swimming-goggles",
+   "sku": "331805",
+   "price": [
+    160.0,
+    128
+   ]
+  },
+  {
+   "id": 10307368681520,
+   "h": "silicone-swimming-goggles",
+   "sku": "331806",
+   "price": [
+    245.0,
+    196
+   ]
+  },
+  {
+   "id": 10307375235120,
+   "h": "mc518-silicone-swimming-goggles-pink",
+   "sku": "331806",
+   "price": [
+    245.0,
+    196
+   ]
+  },
+  {
+   "id": 10307375300656,
+   "h": "mc518-silicone-swimming-goggles-blue",
+   "sku": "331806",
+   "price": [
+    245.0,
+    196
+   ]
+  },
+  {
+   "id": 10307367469104,
+   "h": "track-swimming-goggles-black-pink-and-white",
+   "sku": "331808",
+   "price": [
+    212.0,
+    169.6
+   ]
+  },
+  {
+   "id": 10307368747056,
+   "h": "swimming-goggles",
+   "sku": "331809",
+   "price": [
+    240.0,
+    192
+   ]
+  },
+  {
+   "id": 10307373432880,
+   "h": "track-prescription-swimming-goggles",
+   "sku": "331810",
+   "price": [
+    250.0,
+    200
+   ]
+  },
+  {
+   "id": 10307704324144,
+   "h": "junior-swim-goggles",
+   "sku": "331811",
+   "price": [
+    125.0,
+    100
+   ]
+  },
+  {
+   "id": 10307372744752,
+   "h": "track-swim-goggles",
+   "sku": "331813",
+   "price": [
+    210.0,
+    168
+   ]
+  },
+  {
+   "id": 10307369533488,
+   "h": "track-swimming-goggles-purple-blue-and-orange",
+   "sku": "331814",
+   "price": [
+    175.0,
+    140
+   ]
+  },
+  {
+   "id": 10307368812592,
+   "h": "swimming-goggles-black-white-and-yellow",
+   "sku": "331815",
+   "price": [
+    185.0,
+    148
+   ]
+  },
+  {
+   "id": 10307704389680,
+   "h": "junior-mirror-swim-goggles",
+   "sku": "331816",
+   "price": [
+    220.0,
+    176
+   ]
+  },
+  {
+   "id": 10307371565104,
+   "h": "mirror-swim-goggles",
+   "sku": "331817",
+   "price": [
+    395.0,
+    316
+   ]
+  },
+  {
+   "id": 10307369599024,
+   "h": "track-swimming-goggles-navy-blue-purple-and-white",
+   "sku": "331818",
+   "price": [
+    270.0,
+    216
+   ]
+  },
+  {
+   "id": 10307358687280,
+   "h": "track-swimming-goggles-navy-blue-baby-blue-and-pink",
+   "sku": "331819",
+   "price": [
+    120.0,
+    96
+   ]
+  },
+  {
+   "id": 10307341156400,
+   "h": "junior-mirrored-swimming-goggles",
+   "sku": "331820",
+   "price": [
+    180.0,
+    144
+   ]
+  },
+  {
+   "id": 10307331555376,
+   "h": "track-full-face-swimming-goggles",
+   "sku": "331821",
+   "price": [
+    200.0,
+    160
+   ]
+  },
+  {
+   "id": 10307360817200,
+   "h": "track-silicone-swimming-goggles",
+   "sku": "331823",
+   "price": [
+    175.0,
+    140
+   ]
+  },
+  {
+   "id": 10307361243184,
+   "h": "track-swimming-goggles-black-blue-and-white",
+   "sku": "331824",
+   "price": [
+    195.0,
+    156
+   ]
+  },
+  {
+   "id": 10307340173360,
+   "h": "track-mirror-swimming-goggles-swimming-goggles",
+   "sku": "331825",
+   "price": [
+    315.0,
+    252
+   ]
+  },
+  {
+   "id": 10307355705392,
+   "h": "kids-swimming-goggles",
+   "sku": "331827",
+   "price": [
+    75.0,
+    60
+   ]
+  },
+  {
+   "id": 10307343941680,
+   "h": "track-mirror-swimming-goggles",
+   "sku": "331830",
+   "price": [
+    260.0,
+    208
+   ]
+  },
+  {
+   "id": 10307344007216,
+   "h": "track-swimming-goggles-black-blue-and-yellow",
+   "sku": "331831",
+   "price": [
+    135.0,
+    108
+   ]
+  },
+  {
+   "id": 10307420651568,
+   "h": "track-swimming-goggles-black-blue-and-pink",
+   "sku": "331832",
+   "price": [
+    130.0,
+    104
+   ]
+  },
+  {
+   "id": 10307344072752,
+   "h": "two-colors-track-swimming-goggles",
+   "sku": "331833",
+   "price": [
+    170.0,
+    136
+   ]
+  },
+  {
+   "id": 10343659962416,
+   "h": "track-two-color-swimming-goggles",
+   "sku": "331834",
+   "price": [
+    150.0,
+    120
+   ]
+  },
+  {
+   "id": 10343644790832,
+   "h": "track-swimming-goggles-baba-saleh-sports-egypt",
+   "sku": "331835",
+   "price": [
+    145.0,
+    116
+   ]
+  },
+  {
+   "id": 10307344171056,
+   "h": "track-swimming-goggles-assorted-colors",
+   "sku": "331837",
+   "price": [
+    190.0,
+    152
+   ]
+  },
+  {
+   "id": 10343640465456,
+   "h": "track-junior-swimming-goggles-baba-saleh-sports-egypt",
+   "sku": "331838",
+   "price": [
+    155.0,
+    124
+   ]
+  },
+  {
+   "id": 10307343876144,
+   "h": "kids-swimming-goggles-blue-green-orange-and-purple",
+   "sku": "331841",
+   "price": [
+    60.0,
+    48
+   ]
+  },
+  {
+   "id": 10307382247472,
+   "h": "conquest-playboy-footwear",
+   "sku": "337037",
+   "price": [
+    140.0,
+    126
+   ]
+  },
+  {
+   "id": 10307369959472,
+   "h": "pool-buoy",
+   "sku": "337038",
+   "price": [
+    165.0,
+    148.5
+   ]
+  },
+  {
+   "id": 10308163567664,
+   "h": "manta-diving-fins",
+   "sku": "338001/338002",
+   "sizes": {
+    "28/29": [
+     200,
+     180
+    ],
+    "30/31": [
+     200,
+     180
+    ],
+    "32/33": [
+     200,
+     180
+    ],
+    "*": [
+     495,
+     445.5
+    ]
+   }
+  },
+  {
+   "id": 10307712745520,
+   "h": "cressi-clio-fins",
+   "sku": "338003",
+   "price": [
+    2475.0,
+    2227.5
+   ]
+  },
+  {
+   "id": 10307337453616,
+   "h": "track-training-fins",
+   "sku": "338005-7",
+   "sizes": {
+    "27/29": [
+     440,
+     396
+    ],
+    "30/32": [
+     440,
+     396
+    ],
+    "33/35": [
+     475,
+     427.5
+    ],
+    "36/38": [
+     475,
+     427.5
+    ],
+    "39/41": [
+     525,
+     472.5
+    ]
+   }
+  },
+  {
+   "id": 10308163108912,
+   "h": "spurt-swimming-fins",
+   "sku": "338246",
+   "price": [
+    675.0,
+    607.5
+   ]
+  },
+  {
+   "id": 10307369271344,
+   "h": "long-fins",
+   "sku": "338301",
+   "price": [
+    900.0,
+    810
+   ]
+  },
+  {
+   "id": 10307356885040,
+   "h": "track-long-swimming-fins",
+   "sku": "338302",
+   "price": [
+    1250.0,
+    1125
+   ]
+  },
+  {
+   "id": 10307372646448,
+   "h": "track-fins",
+   "sku": "338801/338802",
+   "sizes": {
+    "35/36": [
+     625,
+     562.5
+    ],
+    "37/38": [
+     625,
+     562.5
+    ],
+    "39/40": [
+     625,
+     562.5
+    ],
+    "41/42": [
+     750,
+     675
+    ],
+    "43/44": [
+     750,
+     675
+    ],
+    "45/46": [
+     750,
+     675
+    ]
+   }
+  },
+  {
+   "id": 10307372580912,
+   "h": "track-swimming-fins",
+   "sku": "338803/338804",
+   "sizes": {
+    "28/29": [
+     425,
+     382.5
+    ],
+    "30/31": [
+     425,
+     382.5
+    ],
+    "32/33": [
+     425,
+     382.5
+    ],
+    "34/35": [
+     425,
+     382.5
+    ],
+    "36/38": [
+     475,
+     427.5
+    ]
+   }
+  },
+  {
+   "id": 10307336929328,
+   "h": "mens-3d-shorts",
+   "sku": "233906",
+   "price": [
+    160.0,
+    130
+   ]
+  },
+  {
+   "id": 10307336831024,
+   "h": "kids-3d-shorts",
+   "sku": "233906",
+   "price": [
+    160.0,
+    130
+   ]
+  },
+  {
+   "id": 10307356196912,
+   "h": "resistance-training-band",
+   "sku": "367042",
+   "price": [
+    275.0,
+    225
+   ]
+  },
+  {
+   "id": 10324171882544,
+   "h": "ab-wheel-roller",
+   "sku": "361005",
+   "price": [
+    160.0,
+    130
+   ]
+  },
+  {
+   "id": 10307369828400,
+   "h": "hand-exercises-ball",
+   "sku": "363001",
+   "price": [
+    20.0,
+    20
+   ]
+  },
+  {
+   "id": 10307378839600,
+   "h": "individual-skipping-rope-pink",
+   "sku": "371801",
+   "price": [
+    18.0,
+    17
+   ]
+  },
+  {
+   "id": 10307378905136,
+   "h": "individual-skipping-rope-green",
+   "sku": "371801",
+   "price": [
+    18.0,
+    17
+   ]
+  },
+  {
+   "id": 10307378970672,
+   "h": "individual-skipping-rope-blue",
+   "sku": "371801",
+   "price": [
+    18.0,
+    17
+   ]
+  },
+  {
+   "id": 10307379036208,
+   "h": "individual-skipping-rope-black",
+   "sku": "371801",
+   "price": [
+    18.0,
+    17
+   ]
+  },
+  {
+   "id": 10307367534640,
+   "h": "jump-rope",
+   "sku": "371801",
+   "price": [
+    18.0,
+    17
+   ]
+  },
+  {
+   "id": 10307369205808,
+   "h": "asis-mens-half-sneakers",
+   "sku": "415038",
+   "price": [
+    2200.0,
+    1650
+   ]
+  },
+  {
+   "id": 10307367960624,
+   "h": "asis-mens-sneakers",
+   "sku": "415038",
+   "price": [
+    2200.0,
+    1650
+   ]
+  }
  ],
- "not_on_store": ["23390210-23390226 carbon stretch shorts","23590108-23590122 carbon swimsuit","403401","403402","402405","402406"]
+ "not_on_store": [
+  "23390210-23390226 carbon stretch shorts",
+  "23590108-23590122 carbon swimsuit",
+  "403401",
+  "403402",
+  "402405",
+  "402406"
+ ]
 }

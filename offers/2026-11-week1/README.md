@@ -7,7 +7,8 @@ Source: owner's PDF "عروض الاسبوع الاول من نوفمبر" (110 
   menu link snippet `nov-offers-link` (desktop pill + mobile drawer card), header edits. Copies in `theme/`.
   Link shows all November (Nov 1–30 Cairo); `?nov=preview` shows it early. Page sorted price low to high, infinite scroll.
   Week 1 discounts: Nov 1–7. Week 2 data comes from the owner later.
-- Prices: `rules.json`. Apply at 2026-10-31T22:00Z: price = sale price, compareAt = max(old compareAt, old price).
+- Prices: `rules.json` ([PDF old, PDF sale]). Apply at 2026-10-31T22:00Z: price = sale, compareAt = PDF old price.
+- Page cards show the PDF old price crossed out, sale price, % ribbon and "You save" from `snippets/nov-offer-prices.liquid` (made from rules.json as `nov-data.json`); "up to" % is the highest in that file (25%, ASIS). For week 2 replace that snippet and the hero dates/start/end.
   Revert at 2026-11-07T22:00Z from `originals.json` (saved at apply time).
 - Not on the store: carbon stretch shorts 2339021x, carbon swimsuit 2359010x/2359011x/2359012x, socks 403401/403402/402405/402406.
   Draft products skipped: 331122 (Front Swimming Snorkel), 331509 (Mondial 337).

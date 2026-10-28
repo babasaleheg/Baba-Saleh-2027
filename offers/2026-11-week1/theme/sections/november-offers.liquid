@@ -31,7 +31,7 @@
   <div class="nov__ticker" aria-hidden="true">
     <div class="nov__ticker-track">
       {%- for i in (1..4) -%}
-        <span dir="rtl" lang="ar">عروض نوفمبر</span><span dir="rtl" lang="ar">{{ section.settings.ticker_ar }}</span><span>November offers</span><span>{{ section.settings.ticker_en }}</span>
+        <span dir="rtl" lang="ar">عروض نوفمبر</span><span dir="rtl" lang="ar">خصم لحد <i data-nov-max data-ar>{{ section.settings.max_ar }}</i>٪</span><span>November offers</span><span>Up to <i data-nov-max>{{ section.settings.max_pct }}</i>% off</span>
       {%- endfor -%}
     </div>
   </div>
@@ -49,7 +49,7 @@
         <span class="nov__title-ar" lang="ar" dir="rtl">عروض نوفمبر</span>
         {%- unless is_ar -%}<span class="nov__title-en">November offers</span>{%- endunless -%}
       </h1>
-      <p class="nov__offer">{% if is_ar %}{{ section.settings.offer_ar }}{% else %}{{ section.settings.offer_en }}{% endif %}</p>
+      <p class="nov__offer">{% if is_ar %}خصم لحد <span data-nov-max data-ar>{{ section.settings.max_ar }}</span>٪{% else %}Up to <span data-nov-max>{{ section.settings.max_pct }}</span>% off{% endif %}</p>
       <p class="nov__text">{% if is_ar %}{{ section.settings.text_ar }}{% else %}{{ section.settings.text_en }}{% endif %}</p>
     </div>
 
@@ -88,10 +88,19 @@
   </div>
   <span id="NovProducts" class="nov__anchor"></span>
 </section>
+<script type="application/json" id="NovPrices">{% render 'nov-offer-prices' %}</script>
+<script>
+  window.novStrings = {
+    from: {{ 'products.product.price_from' | t: price: '' | strip | json }},
+    save: {% if is_ar %}'وفّر {n} جنيه'{% else %}'You save EGP {n}'{% endif %},
+    ribbon: {% if is_ar %}'عرض'{% else %}'Offer'{% endif %},
+    ar: {{ is_ar | json }}
+  };
+</script>
 
 <script>
   (function () {
-    var root = document.currentScript.previousElementSibling;
+    var root = document.querySelector('[data-nov]');
     var start = +root.dataset.start * 1000, end = +root.dataset.end * 1000;
     var el = {
       d: root.querySelector('[data-d]'), h: root.querySelector('[data-h]'),
@@ -111,6 +120,59 @@
       setTimeout(tick, 1000 - now % 1000);
     }
     tick();
+
+    // This week's PDF prices on every card: old price crossed out, new price, EGP saved, ribbon.
+    // Not after the week ends: then the cards show the store's own prices again.
+    var prices = {};
+    try { prices = JSON.parse(document.getElementById('NovPrices').textContent); } catch (e) {}
+    var t = window.novStrings;
+    var arDigits = function (x) { return String(x).replace(/[0-9]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; }); };
+    var egp = function (n) {
+      return 'EGP ' + (n % 1 ? n.toFixed(2) : String(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+    var pct = function (p) { return Math.round((p[0] - p[1]) / p[0] * 100); };
+
+    var max = 0;
+    Object.keys(prices).forEach(function (h) { max = Math.max(max, pct(prices[h])); });
+    if (max) root.querySelectorAll('[data-nov-max]').forEach(function (el) {
+      el.textContent = el.hasAttribute('data-ar') ? arDigits(max) : max;
+    });
+
+    function dress(card) {
+      if (card.dataset.nov) return;
+      card.dataset.nov = '1';
+      var link = card.querySelector('a[href*="/products/"]');
+      var handle = link && link.getAttribute('href').split('/products/')[1].split(/[?#]/)[0];
+      var p = prices[handle];
+      var media = card.querySelector('.card__media');
+      var off = p ? pct(p) : 0;
+      if (media) {
+        var ribbon = document.createElement('span');
+        ribbon.className = 'nov-ribbon' + (off > 0 ? ' nov-ribbon--off' : '');
+        ribbon.setAttribute('dir', 'ltr');
+        ribbon.textContent = off > 0 ? '-' + off + '%' : t.ribbon;
+        media.appendChild(ribbon);
+      }
+      var price = card.querySelector('.price');
+      if (!p || off <= 0 || !price) return;
+      var saved = Math.round((p[0] - p[1]) * 100) / 100;
+      price.classList.add('nov-price');
+      price.innerHTML =
+        '<span class="nov-price__now">' + (p[2] && t.from ? '<small>' + t.from + '</small> ' : '') +
+        '<b>' + egp(p[1]) + '</b><s>' + egp(p[0]) + '</s></span>' +
+        '<span class="nov-price__save">' + t.save.replace('{n}', t.ar ? egp(saved).replace('EGP ', '') : egp(saved).replace('EGP ', '')) + '</span>';
+    }
+
+    function dressAll() {
+      if (root.dataset.state === 'ended') return;
+      document.querySelectorAll('.product-grid .card').forEach(dress);
+    }
+    dressAll();
+    document.addEventListener('DOMContentLoaded', function () {
+      dressAll();
+      var grid = document.querySelector('[data-results]');
+      if (grid) new MutationObserver(dressAll).observe(grid, { childList: true, subtree: true });
+    });
   })();
 </script>
 
@@ -441,6 +503,52 @@
   .nov[data-state='ended'] .nov__pill,
   .nov[data-state='ended'] .nov__live-dot { display: none; }
 
+  /* Offer prices and ribbon on the cards (design system: sale-red only for the sale price and % badge) */
+  .shopify-section:has(.nov) + .shopify-section .card__badges { display: none; }
+
+  .shopify-section:has(.nov) + .shopify-section .card__media { position: relative; overflow: hidden; }
+
+  .nov-ribbon {
+    position: absolute;
+    inset-block-start: 14px;
+    inset-inline-start: -34px;
+    z-index: 2;
+    width: 120px;
+    padding-block: 4px;
+    background: #0a0a0a;
+    color: #febd19;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: center;
+    transform: rotate(-45deg);
+    pointer-events: none;
+  }
+
+  [dir='rtl'] .nov-ribbon { transform: rotate(45deg); }
+
+  .nov-ribbon--off { background: #e5202e; color: #ffffff; }
+
+  .nov-price { display: grid; justify-items: start; gap: 6px; }
+
+  .nov-price__now { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+
+  .nov-price__now small { font-size: 13px; color: #52525b; }
+
+  .nov-price__now b { color: #e5202e; font-weight: 700; font-size: 18px; line-height: 24px; }
+
+  .nov-price__now s { color: #52525b; font-size: 13px; line-height: 18px; }
+
+  .nov-price__save {
+    padding: 2px 10px;
+    border-radius: 9999px;
+    background: #febd19;
+    color: #0a0a0a;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
   /* The product grid under the hero: no second title; white product cards framed by the yellow page */
   .shopify-section:has(.nov) + .shopify-section .collection__header { display: none; }
 
@@ -489,12 +597,10 @@
     { "type": "text", "id": "end", "default": "1794088800", "label": "End (Unix seconds)", "info": "1794088800 = Nov 8 2026, 00:00 Cairo (offers run through Nov 7)" },
     { "type": "text", "id": "dates_ar", "default": "من ١ لـ ٧ نوفمبر", "label": "Dates (Arabic)" },
     { "type": "text", "id": "dates_en", "default": "Nov 1 – 7", "label": "Dates (English)" },
-    { "type": "text", "id": "offer_ar", "default": "خصم لحد ٢٠٪", "label": "Offer line (Arabic)" },
-    { "type": "text", "id": "offer_en", "default": "Up to 20% off", "label": "Offer line (English)" },
+    { "type": "text", "id": "max_pct", "default": "25", "label": "Highest % off", "info": "Fallback; the page works it out from this week's prices" },
+    { "type": "text", "id": "max_ar", "default": "٢٥", "label": "Highest % off, Arabic digits" },
     { "type": "text", "id": "text_ar", "default": "على نظارات وزعانف ومستلزمات السباحة والجيم. أسبوع واحد بس.", "label": "Text (Arabic)" },
-    { "type": "text", "id": "text_en", "default": "Swim goggles, fins, swimwear and gym gear. One week only.", "label": "Text (English)" },
-    { "type": "text", "id": "ticker_ar", "default": "خصم لحد ٢٠٪", "label": "Ticker text (Arabic)" },
-    { "type": "text", "id": "ticker_en", "default": "Up to 20% off", "label": "Ticker text (English)" }
+    { "type": "text", "id": "text_en", "default": "Swim goggles, fins, swimwear and gym gear. One week only.", "label": "Text (English)" }
   ],
   "presets": [{ "name": "November offers hero" }]
 }
