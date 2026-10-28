@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "hero": {
+      "type": "november-offers",
+      "settings": {
+        "start": "1793484000",
+        "end": "1794088800"
+      }
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "show_image": false,
+        "show_description": false,
+        "products_per_page": 48,
+        "columns_desktop": 4,
+        "pagination": "load_more",
+        "color_scheme": "scheme-4"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main"
+  ]
+}

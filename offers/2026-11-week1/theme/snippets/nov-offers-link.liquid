@@ -1,0 +1,47 @@
+{%- comment -%}
+  "عروض نوفمبر" menu link, shown only while the offer runs:
+  Nov 1 00:00 to Nov 7 23:59 Cairo time (UTC+2) = 1793484000 to 1794088800.
+  Liquid hides it outside the window; the script in the menu re-checks the clock in the
+  browser so a cached page never shows it after the end. ?nov=preview shows it early.
+  style: 'nav' (desktop row) or 'drawer' (mobile menu).
+{%- endcomment -%}
+{%- liquid
+  assign nov_start = 1793484000
+  assign nov_end = 1794088800
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign nov_live = false
+  if now_ts >= nov_start and now_ts < nov_end
+    assign nov_live = true
+  endif
+  if request.design_mode
+    assign nov_live = true
+  endif
+  assign nov_url = routes.collections_url | append: '/november-offers'
+  assign nov_current = false
+  if collection.handle == 'november-offers'
+    assign nov_current = true
+  endif
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+-%}
+{%- if style == 'drawer' -%}
+  <li data-nov-link data-nov-start="{{ nov_start }}" data-nov-end="{{ nov_end }}"{% unless nov_live %} hidden{% endunless %}>
+    <a href="{{ nov_url }}" class="nov-drawer-link"{% if nov_current %} aria-current="page"{% endif %}>
+      <span class="nov-drawer-link__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      <span class="nov-drawer-link__text">
+        <span class="nov-drawer-link__title" lang="ar">عروض نوفمبر</span>
+        <span class="nov-drawer-link__sub">{% if is_ar %}خصومات لحد ٧ نوفمبر بس{% else %}November offers · until Nov 7{% endif %}</span>
+      </span>
+      {% render 'icon', icon: 'arrow' %}
+    </a>
+  </li>
+{%- else -%}
+  <li class="nav__item" data-nov-link data-nov-start="{{ nov_start }}" data-nov-end="{{ nov_end }}"{% unless nov_live %} hidden{% endunless %}>
+    <a href="{{ nov_url }}" class="nav__link nav__link--nov{% if nov_current %} is-active{% endif %}"{% if nov_current %} aria-current="page"{% endif %}>
+      <span class="nav__nov-dot" aria-hidden="true"></span>
+      <span lang="ar">عروض نوفمبر</span>
+    </a>
+  </li>
+{%- endif -%}
