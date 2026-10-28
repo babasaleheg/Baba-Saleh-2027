@@ -441,8 +441,24 @@
   .nov[data-state='ended'] .nov__pill,
   .nov[data-state='ended'] .nov__live-dot { display: none; }
 
-  /* The product grid under the hero: no second title */
+  /* The product grid under the hero: no second title; white product cards framed by the yellow page */
   .shopify-section:has(.nov) + .shopify-section .collection__header { display: none; }
+
+  .shopify-section:has(.nov) + .shopify-section .product-grid > li {
+    padding: 8px 8px 16px;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #0a0a0a;
+  }
+
+  .shopify-section:has(.nov) + .shopify-section .card,
+  .shopify-section:has(.nov) + .shopify-section .card__media {
+    background: #ffffff;
+  }
+
+  .shopify-section:has(.nov) + .shopify-section .card__info {
+    padding-inline: 8px;
+  }
 
   @media screen and (min-width: 750px) {
     .nov__inner {
