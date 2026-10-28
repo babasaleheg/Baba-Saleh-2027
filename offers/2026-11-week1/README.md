@@ -12,3 +12,7 @@ Source: owner's PDF "عروض الاسبوع الاول من نوفمبر" (110 
   Revert at 2026-11-07T22:00Z from `originals.json` (saved at apply time).
 - Not on the store: carbon stretch shorts 2339021x, carbon swimsuit 2359010x/2359011x/2359012x, socks 403401/403402/402405/402406.
   Draft products skipped: 331122 (Front Swimming Snorkel), 331509 (Mondial 337).
+- Home page: section `nov-home-banner` in the header group (renders on the home page only, until the week ends):
+  mega countdown, "up to" %, button to the page, 16 biggest discounts (`snippets/nov-offer-top.liquid`).
+- Card dressing shared in `snippets/nov-offer-cards.liquid`. Before Nov 1 the cards on the page and banner have no
+  add-to-cart button and say "Offer starts Nov 1".

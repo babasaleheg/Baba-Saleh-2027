@@ -1,0 +1,330 @@
+{%- comment -%}
+  عروض نوفمبر home page banner: big countdown, highest % off, button to the offers page and a row of
+  the biggest discounts (PDF before/after, % and EGP saved, via snippets/nov-offer-cards.liquid).
+  Sits in the header group (under the header) and renders on the home page only, from now until
+  the week's offers end. Times are Cairo (UTC+2), as Unix seconds.
+{%- endcomment -%}
+{%- liquid
+  assign nov_start = section.settings.start | plus: 0
+  assign nov_end = section.settings.end | plus: 0
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign state = 'live'
+  if now_ts < nov_start
+    assign state = 'before'
+  endif
+  assign show = true
+  if request.page_type != 'index' or now_ts >= nov_end
+    assign show = false
+  endif
+  if request.design_mode and request.page_type == 'index'
+    assign show = true
+  endif
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+  assign offers = collections['november-offers']
+-%}
+{%- if show and offers != blank -%}
+  <section
+    class="novh nov-dressed color-scheme-4"
+    data-novh
+    data-state="{{ state }}"
+    data-start="{{ nov_start }}"
+    data-end="{{ nov_end }}"
+    aria-labelledby="NovhTitle"
+  >
+    <div class="novh__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="novh__inner page-width">
+      <div class="novh__text">
+        <p class="novh__dates">
+          <span class="novh__dot" aria-hidden="true"></span>
+          {% if is_ar %}{{ section.settings.dates_ar }}{% else %}{{ section.settings.dates_en }}{% endif %}
+        </p>
+        <h2 id="NovhTitle" class="novh__title">
+          <span class="novh__title-ar" lang="ar" dir="rtl">عروض نوفمبر</span>
+          <span class="novh__title-en">November Sale</span>
+        </h2>
+        <p class="novh__offer">
+          {%- if is_ar -%}خصم لحد <span data-nov-max data-ar>{{ section.settings.max_ar }}</span>٪{%- else -%}Up to <span data-nov-max>{{ section.settings.max_pct }}</span>% off{%- endif -%}
+        </p>
+      </div>
+
+      <div class="novh__clock">
+        <p class="novh__clock-label">
+          <span data-when="before">{% if is_ar %}العروض تبدأ خلال{% else %}Offers start in{% endif %}</span>
+          <span data-when="live">{% if is_ar %}العروض تنتهي خلال{% else %}Offers end in{% endif %}</span>
+        </p>
+        <div class="novh__pill" role="timer" aria-live="off" dir="ltr">
+          <span class="novh__unit"><b data-d>00</b><small>{% if is_ar %}يوم{% else %}days{% endif %}</small></span>
+          <span class="novh__sep" aria-hidden="true">:</span>
+          <span class="novh__unit"><b data-h>00</b><small>{% if is_ar %}ساعة{% else %}hrs{% endif %}</small></span>
+          <span class="novh__sep" aria-hidden="true">:</span>
+          <span class="novh__unit"><b data-m>00</b><small>{% if is_ar %}دقيقة{% else %}min{% endif %}</small></span>
+          <span class="novh__sep" aria-hidden="true">:</span>
+          <span class="novh__unit"><b data-s>00</b><small>{% if is_ar %}ثانية{% else %}sec{% endif %}</small></span>
+        </div>
+        <a href="{{ offers.url }}" class="novh__cta">
+          {% if is_ar %}تسوق عروض نوفمبر{% else %}Shop the November Sale{% endif %}
+          {% render 'icon', icon: 'arrow' %}
+        </a>
+      </div>
+    </div>
+
+    <div class="novh__rail page-width">
+      <ul class="novh__list" role="list" data-novh-list>
+        {%- capture top -%}{% render 'nov-offer-top' %}{%- endcapture -%}
+        {%- assign top = top | strip | split: ',' -%}
+        {%- for handle in top limit: section.settings.products_to_show -%}
+          {%- assign product = all_products[handle] -%}
+          {%- if product != blank -%}<li>{% render 'product-card', product: product, index: 99 %}</li>{%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+
+  {% render 'nov-offer-cards' %}
+
+  <script>
+    (function () {
+      var root = document.querySelector('[data-novh]');
+      if (!root) return;
+      var start = +root.dataset.start * 1000, end = +root.dataset.end * 1000;
+      var el = {
+        d: root.querySelector('[data-d]'), h: root.querySelector('[data-h]'),
+        m: root.querySelector('[data-m]'), s: root.querySelector('[data-s]')
+      };
+      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      function tick() {
+        var now = Date.now();
+        if (now >= end) { root.hidden = true; return; }
+        var state = now < start ? 'before' : 'live';
+        if (root.dataset.state !== state) root.dataset.state = state;
+        var left = Math.floor(((state === 'before' ? start : end) - now) / 1000);
+        el.d.textContent = pad(Math.floor(left / 86400));
+        el.h.textContent = pad(Math.floor(left % 86400 / 3600));
+        el.m.textContent = pad(Math.floor(left % 3600 / 60));
+        el.s.textContent = pad(left % 60);
+        setTimeout(tick, 1000 - now % 1000);
+      }
+      tick();
+      if (root.hidden) return;
+
+      var max = window.novMax();
+      if (max) root.querySelectorAll('[data-nov-max]').forEach(function (n) {
+        n.textContent = n.hasAttribute('data-ar') ? window.novArDigits(max) : max;
+      });
+
+      window.novDress(root.querySelector('[data-novh-list]'), root.dataset.state);
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .novh {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #febd19;
+    color: #0a0a0a;
+  }
+
+  .novh[hidden] { display: none; }
+
+  .novh__bars {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 16px;
+    z-index: -1;
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    height: 60%;
+  }
+
+  .novh__bars i {
+    width: clamp(24px, 5vw, 72px);
+    border-radius: 9999px 9999px 0 0;
+    background: #ffd25e;
+    transform-origin: bottom;
+    animation: novh-bar 3.2s cubic-bezier(0.45, 0, 0.2, 1) infinite alternate;
+  }
+
+  .novh__bars i:nth-child(1), .novh__bars i:nth-child(6) { height: 34%; }
+  .novh__bars i:nth-child(2), .novh__bars i:nth-child(5) { height: 62%; animation-delay: -0.6s; }
+  .novh__bars i:nth-child(3), .novh__bars i:nth-child(4) { height: 92%; animation-delay: -1.2s; }
+
+  @keyframes novh-bar {
+    from { transform: scaleY(0.75); }
+    to { transform: scaleY(1); }
+  }
+
+  .novh__inner {
+    display: grid;
+    gap: 24px;
+    padding-block: 32px 24px;
+  }
+
+  .novh__text { display: grid; justify-items: start; gap: 8px; }
+
+  .novh__dates {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    background: #0a0a0a;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .novh__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: #febd19;
+    animation: novh-pulse 1.6s ease-out infinite;
+  }
+
+  @keyframes novh-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(254, 189, 25, 0.7); }
+    100% { box-shadow: 0 0 0 10px rgba(254, 189, 25, 0); }
+  }
+
+  .novh__title { display: grid; margin: 0; }
+
+  .novh__title-ar {
+    justify-self: start;
+    font-family: 'Cairo', var(--font-heading-family);
+    font-weight: 700;
+    font-size: clamp(48px, 12vw, 112px);
+    line-height: 1.29;
+  }
+
+  .novh__title-en {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  .novh__offer {
+    margin: 0;
+    font-weight: 700;
+    font-size: clamp(28px, 6vw, 40px);
+    line-height: 1.2;
+  }
+
+  .novh__clock { display: grid; justify-items: start; gap: 12px; align-content: center; }
+
+  .novh__clock-label { margin: 0; font-weight: 700; font-size: 16px; line-height: 24px; }
+
+  /* The mega counter: one black pill, big yellow numbers */
+  .novh__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 9999px;
+    background: #0a0a0a;
+    color: #febd19;
+  }
+
+  .novh__unit { display: grid; justify-items: center; min-width: 3.25rem; }
+
+  .novh__unit b {
+    font-weight: 700;
+    font-size: clamp(36px, 9vw, 72px);
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .novh__unit small { color: #ffffff; font-size: 13px; line-height: 18px; }
+
+  .novh__sep { align-self: start; font-weight: 700; font-size: clamp(28px, 7vw, 56px); line-height: 1.1; opacity: 0.6; }
+
+  .novh__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 0 32px;
+    border-radius: 9999px;
+    background: #0a0a0a;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+
+  .novh__cta:hover { transform: translateY(-2px); }
+  .novh__cta .icon { width: 20px; height: 20px; }
+
+  .novh [data-when] { display: none; }
+  .novh[data-state='before'] [data-when='before'],
+  .novh[data-state='live'] [data-when='live'] { display: inline; }
+
+  /* Row of white product cards on the yellow band */
+  .novh__rail { padding-block-end: 32px; }
+
+  .novh__list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 46%;
+    gap: 16px;
+    margin: 0;
+    padding: 0 0 8px;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+
+  .novh__list > li {
+    scroll-snap-align: start;
+    padding: 8px 8px 16px;
+    border-radius: 12px;
+    background: #ffffff;
+  }
+
+  .novh .card,
+  .novh .card__media { background: #ffffff; }
+
+  .novh .card__info { padding-inline: 8px; }
+
+  @media screen and (min-width: 750px) {
+    .novh__list { grid-auto-columns: calc((100% - 64px) / 5); }
+  }
+
+  @media screen and (min-width: 990px) {
+    .novh__inner {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding-block: 48px 32px;
+    }
+
+    .novh__rail { padding-block-end: 48px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .novh__bars i, .novh__dot { animation: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "November sale banner",
+  "settings": [
+    { "type": "text", "id": "start", "default": "1793484000", "label": "Start (Unix seconds)", "info": "1793484000 = Nov 1 2026, 00:00 Cairo" },
+    { "type": "text", "id": "end", "default": "1794088800", "label": "End (Unix seconds)", "info": "Banner hides at this time" },
+    { "type": "text", "id": "dates_ar", "default": "من ١ لـ ٧ نوفمبر", "label": "Dates (Arabic)" },
+    { "type": "text", "id": "dates_en", "default": "Nov 1 – 7", "label": "Dates (English)" },
+    { "type": "text", "id": "max_pct", "default": "25", "label": "Highest % off" },
+    { "type": "text", "id": "max_ar", "default": "٢٥", "label": "Highest % off, Arabic digits" },
+    { "type": "range", "id": "products_to_show", "min": 4, "max": 20, "step": 1, "default": 16, "label": "Products" }
+  ]
+}
+{% endschema %}

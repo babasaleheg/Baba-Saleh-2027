@@ -1,0 +1,117 @@
+{%- comment -%}
+  عروض نوفمبر card dressing, shared by the offers page and the home page banner.
+  Puts this week's PDF prices (snippets/nov-offer-prices.liquid) on product cards: old price
+  crossed out, sale price, EGP saved and a % ribbon. Before the start the cards say when the offer
+  opens and have no add-to-cart button; after the end nothing is changed.
+  Usage: {% render 'nov-offer-cards' %} once, then window.novDress(container, state) in a script.
+{%- endcomment -%}
+{%- liquid
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+-%}
+<script type="application/json" id="NovPrices">{% render 'nov-offer-prices' %}</script>
+<script>
+  (function () {
+    var t = {
+      from: {{ 'products.product.price_from' | t: price: '' | strip | json }},
+      save: {% if is_ar %}'وفّر {n} جنيه'{% else %}'You save EGP {n}'{% endif %},
+      soon: {% if is_ar %}'العرض يبدأ ١ نوفمبر'{% else %}'Offer starts Nov 1'{% endif %},
+      ribbon: {% if is_ar %}'عرض'{% else %}'Offer'{% endif %}
+    };
+    var prices = {};
+    try { prices = JSON.parse(document.getElementById('NovPrices').textContent); } catch (e) {}
+    var egp = function (n) { return (n % 1 ? n.toFixed(2) : String(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
+    var pct = function (p) { return Math.round((p[0] - p[1]) / p[0] * 100); };
+
+    window.novPrices = prices;
+    window.novPct = function (handle) { var p = prices[handle]; return p ? pct(p) : 0; };
+    window.novHandle = function (card) {
+      var link = card.querySelector('a[href*="/products/"]');
+      return link ? link.getAttribute('href').split('/products/')[1].split(/[?#]/)[0] : '';
+    };
+    window.novMax = function () {
+      var max = 0;
+      Object.keys(prices).forEach(function (h) { max = Math.max(max, pct(prices[h])); });
+      return max;
+    };
+    window.novArDigits = function (x) {
+      return String(x).replace(/[0-9]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; });
+    };
+
+    function dress(card, state) {
+      if (card.dataset.nov) return;
+      card.dataset.nov = '1';
+      var p = prices[window.novHandle(card)];
+      var off = p ? pct(p) : 0;
+      var media = card.querySelector('.card__media');
+      if (media) {
+        var ribbon = document.createElement('span');
+        ribbon.className = 'nov-ribbon' + (off > 0 ? ' nov-ribbon--off' : '');
+        ribbon.setAttribute('dir', 'ltr');
+        ribbon.textContent = off > 0 ? '-' + off + '%' : t.ribbon;
+        media.appendChild(ribbon);
+      }
+      if (state === 'before') card.classList.add('nov-soon');
+      var price = card.querySelector('.price');
+      if (!p || off <= 0 || !price) return;
+      price.classList.add('nov-price');
+      price.innerHTML =
+        '<span class="nov-price__now">' + (p[2] && t.from ? '<small>' + t.from + '</small> ' : '') +
+        '<b>EGP ' + egp(p[1]) + '</b><s>EGP ' + egp(p[0]) + '</s></span>' +
+        '<span class="nov-price__save">' + t.save.replace('{n}', egp(Math.round((p[0] - p[1]) * 100) / 100)) + '</span>' +
+        (state === 'before' ? '<span class="nov-price__soon">' + t.soon + '</span>' : '');
+    }
+
+    window.novDress = function (scope, state) {
+      if (state === 'ended') return;
+      scope.querySelectorAll('.card').forEach(function (card) { dress(card, state); });
+    };
+  })();
+</script>
+<style>
+  .nov-dressed .card__badges { display: none; }
+  .nov-dressed .card__media { position: relative; overflow: hidden; }
+
+  .nov-ribbon {
+    position: absolute;
+    inset-block-start: 14px;
+    inset-inline-start: -34px;
+    z-index: 2;
+    width: 120px;
+    padding-block: 4px;
+    background: #0a0a0a;
+    color: #febd19;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: center;
+    transform: rotate(-45deg);
+    pointer-events: none;
+  }
+
+  [dir='rtl'] .nov-ribbon { transform: rotate(45deg); }
+  .nov-ribbon--off { background: #e5202e; color: #ffffff; }
+
+  .nov-price { display: grid; justify-items: start; gap: 6px; }
+  .nov-price__now { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+  .nov-price__now small { font-size: 13px; color: #52525b; }
+  .nov-price__now b { color: #e5202e; font-weight: 700; font-size: 18px; line-height: 24px; }
+  .nov-price__now s { color: #52525b; font-size: 13px; line-height: 18px; }
+
+  .nov-price__save {
+    padding: 2px 10px;
+    border-radius: 9999px;
+    background: #febd19;
+    color: #0a0a0a;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .nov-price__soon { font-size: 13px; line-height: 18px; font-weight: 700; color: #0a0a0a; }
+
+  /* No buying from these cards before the offer opens */
+  .nov-soon .card__quick-add { display: none !important; }
+</style>
