@@ -29,11 +29,11 @@
 {%- if style == 'drawer' -%}
   <li data-nov-link data-nov-start="{{ nov_start }}" data-nov-end="{{ nov_end }}"{% unless nov_live %} hidden{% endunless %}>
     <a href="{{ nov_url }}" class="nov-drawer-link"{% if nov_current %} aria-current="page"{% endif %}>
-      <span class="nov-drawer-link__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
       <span class="nov-drawer-link__text">
         <span class="nov-drawer-link__title" lang="ar">عروض نوفمبر</span>
-        <span class="nov-drawer-link__sub">{% if is_ar %}خصومات لحد ٧ نوفمبر بس{% else %}November offers · until Nov 7{% endif %}</span>
+        <span class="nov-drawer-link__sub">{% if is_ar %}خصم لحد ٢٠٪{% else %}Up to 20% off{% endif %}</span>
       </span>
+      <span class="nov-drawer-link__date">{% if is_ar %}لحد ٧ نوفمبر{% else %}Until Nov 7{% endif %}</span>
       {% render 'icon', icon: 'arrow' %}
     </a>
   </li>
