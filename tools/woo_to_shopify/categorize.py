@@ -129,6 +129,10 @@ FIXES = {
     "Wolon Metallic Elbow Support": "cat:martial-arts-gear",
     "Cressi Clio Fins": "cat:diving",
     "Sweat T-Shirt": "cat:jackets",
+    "Hooded Sweatshirt": "cat:jackets",
+    "Athletics Discus": "cat:coaching",
+    "Taekwondo Chest Guard – Red": "cat:taekwondo",
+    "Women’s Leggings & Sports Bra Set": "cat:sports-bras",
     "Shark Beach Flip-Flops": "cat:slippers",
     "Basketball Training Agenda": "cat:coaching",
     "Track Front Swimming Snorkel": "cat:swim-training",
@@ -196,6 +200,7 @@ AUDIENCE_FIXES = {
     "Small Football Set": "for:kids",
     "Venum Combat Sports Shorts – Black, Red & White": "for:men",
     "Gym Shorts": "for:women",
+    "Women’s Leggings & Sports Bra Set": "for:women",
     "High Waist Gym Shorts": "for:women",
     "Sports Training Mesh Tank Vest": "for:men",
 }
