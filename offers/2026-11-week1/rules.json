@@ -789,14 +789,62 @@
     2200.0,
     1650
    ]
+  },
+  {
+   "id": 10345575841840,
+   "h": "track-carbon-championship-stretch-swim-shorts",
+   "sku": "2339021x-2339022x",
+   "price": [
+    650,
+    585
+   ]
+  },
+  {
+   "id": 10345575874608,
+   "h": "track-carbon-championship-swimsuit-tank-shorts",
+   "sku": "235901xx",
+   "price": [
+    850,
+    765
+   ]
+  },
+  {
+   "id": 10345575940144,
+   "h": "mens-long-cotton-socks",
+   "sku": "403401",
+   "price": [
+    40,
+    30
+   ]
+  },
+  {
+   "id": 10345575972912,
+   "h": "mens-short-socks",
+   "sku": "403402",
+   "price": [
+    35,
+    30
+   ]
+  },
+  {
+   "id": 10345576005680,
+   "h": "womens-long-socks",
+   "sku": "402405",
+   "price": [
+    40,
+    30
+   ]
+  },
+  {
+   "id": 10345576038448,
+   "h": "womens-short-socks",
+   "sku": "402406",
+   "price": [
+    35,
+    30
+   ]
   }
  ],
- "not_on_store": [
-  "23390210-23390226 carbon stretch shorts",
-  "23590108-23590122 carbon swimsuit",
-  "403401",
-  "403402",
-  "402405",
-  "402406"
- ]
+ "not_on_store": [],
+ "_created_oct28": "Carbon shorts, carbon swimsuit and 4 socks created as DRAFT on Oct 28 (owner adds photos and activates)."
 }

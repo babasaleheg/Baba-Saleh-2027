@@ -10,7 +10,7 @@ Source: owner's PDF "عروض الاسبوع الاول من نوفمبر" (110 
 - Prices: `rules.json` ([PDF old, PDF sale]). Apply at 2026-10-31T22:00Z: price = sale, compareAt = PDF old price.
 - Page cards show the PDF old price crossed out, sale price, % ribbon and "You save" from `snippets/nov-offer-prices.liquid` (made from rules.json as `nov-data.json`); "up to" % is the highest in that file (25%, ASIS). For week 2 replace that snippet and the hero dates/start/end.
   Revert at 2026-11-07T22:00Z from `originals.json` (saved at apply time).
-- Not on the store: carbon stretch shorts 2339021x, carbon swimsuit 2359010x/2359011x/2359012x, socks 403401/403402/402405/402406.
+- Created as DRAFT on Oct 28 (owner adds photos, activates): Track Carbon Championship Stretch Swim Shorts (23390210-26), Track Carbon Championship Swimsuit – Tank & Shorts (23590108-22), 4 socks (403401/403402/402405/402406). In the collection and rules.json.
   Draft products skipped: 331122 (Front Swimming Snorkel), 331509 (Mondial 337).
 - Home page: section `nov-home-banner` in the header group (renders on the home page only, until the week ends):
   mega countdown, "up to" %, button to the page, 16 biggest discounts (`snippets/nov-offer-top.liquid`).
