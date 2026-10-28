@@ -49,8 +49,10 @@
       if (media) {
         var ribbon = document.createElement('span');
         ribbon.className = 'nov-ribbon' + (off > 0 ? ' nov-ribbon--off' : '');
-        ribbon.setAttribute('dir', 'ltr');
-        ribbon.textContent = off > 0 ? '-' + off + '%' : t.ribbon;
+        var label = document.createElement('bdi');
+        label.textContent = off > 0 ? '-' + off + '%' : t.ribbon;
+        if (off > 0) label.dir = 'ltr';
+        ribbon.appendChild(label);
         media.appendChild(ribbon);
       }
       if (state === 'before') card.classList.add('nov-soon');
