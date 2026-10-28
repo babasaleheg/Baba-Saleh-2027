@@ -17,7 +17,7 @@
     var t = {
       from: {{ 'products.product.price_from' | t: price: '' | strip | json }},
       save: {% if is_ar %}'وفّر {n} جنيه'{% else %}'You save EGP {n}'{% endif %},
-      soon: {% if is_ar %}'العرض يبدأ ١ نوفمبر'{% else %}'Offer starts Nov 1'{% endif %},
+      soon: {% if is_ar %}'العرض يبدأ 1 نوفمبر'{% else %}'Offer starts Nov 1'{% endif %},
       ribbon: {% if is_ar %}'عرض'{% else %}'Offer'{% endif %}
     };
     var prices = {};
@@ -37,7 +37,7 @@
       return max;
     };
     window.novArDigits = function (x) {
-      return String(x).replace(/[0-9]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; });
+      return String(x);
     };
 
     function dress(card, state) {

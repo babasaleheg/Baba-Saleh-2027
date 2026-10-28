@@ -31,7 +31,7 @@
   <div class="nov__ticker" aria-hidden="true">
     <div class="nov__ticker-track">
       {%- for i in (1..4) -%}
-        <span dir="rtl" lang="ar">عروض نوفمبر</span><span dir="rtl" lang="ar">خصم لحد <i data-nov-max data-ar>{{ section.settings.max_ar }}</i>٪</span><span>November offers</span><span>Up to <i data-nov-max>{{ section.settings.max_pct }}</i>% off</span>
+        <span dir="rtl" lang="ar">عروض نوفمبر</span><span dir="rtl" lang="ar">خصم لحد <i data-nov-max data-ar>{{ section.settings.max_ar }}</i>%</span><span>November offers</span><span>Up to <i data-nov-max>{{ section.settings.max_pct }}</i>% off</span>
       {%- endfor -%}
     </div>
   </div>
@@ -49,7 +49,7 @@
         <span class="nov__title-ar" lang="ar" dir="rtl">عروض نوفمبر</span>
         {%- unless is_ar -%}<span class="nov__title-en">November offers</span>{%- endunless -%}
       </h1>
-      <p class="nov__offer">{% if is_ar %}خصم لحد <span data-nov-max data-ar>{{ section.settings.max_ar }}</span>٪{% else %}Up to <span data-nov-max>{{ section.settings.max_pct }}</span>% off{% endif %}</p>
+      <p class="nov__offer">{% if is_ar %}خصم لحد <span data-nov-max data-ar>{{ section.settings.max_ar }}</span>%{% else %}Up to <span data-nov-max>{{ section.settings.max_pct }}</span>% off{% endif %}</p>
       <p class="nov__text">{% if is_ar %}{{ section.settings.text_ar }}{% else %}{{ section.settings.text_en }}{% endif %}</p>
     </div>
 
@@ -505,10 +505,10 @@
   "settings": [
     { "type": "text", "id": "start", "default": "1793484000", "label": "Start (Unix seconds)", "info": "1793484000 = Nov 1 2026, 00:00 Cairo" },
     { "type": "text", "id": "end", "default": "1794088800", "label": "End (Unix seconds)", "info": "1794088800 = Nov 8 2026, 00:00 Cairo (offers run through Nov 7)" },
-    { "type": "text", "id": "dates_ar", "default": "من ١ لـ ٧ نوفمبر", "label": "Dates (Arabic)" },
+    { "type": "text", "id": "dates_ar", "default": "من 1 لـ 7 نوفمبر", "label": "Dates (Arabic)" },
     { "type": "text", "id": "dates_en", "default": "Nov 1 – 7", "label": "Dates (English)" },
     { "type": "text", "id": "max_pct", "default": "25", "label": "Highest % off", "info": "Fallback; the page works it out from this week's prices" },
-    { "type": "text", "id": "max_ar", "default": "٢٥", "label": "Highest % off, Arabic digits" },
+    { "type": "text", "id": "max_ar", "default": "25", "label": "Highest % off, Arabic digits" },
     { "type": "text", "id": "text_ar", "default": "على نظارات وزعانف ومستلزمات السباحة والجيم. أسبوع واحد بس.", "label": "Text (Arabic)" },
     { "type": "text", "id": "text_en", "default": "Swim goggles, fins, swimwear and gym gear. One week only.", "label": "Text (English)" }
   ],

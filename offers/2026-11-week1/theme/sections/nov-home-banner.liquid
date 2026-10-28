@@ -46,7 +46,7 @@
           <span class="novh__title-en">November Sale</span>
         </h2>
         <p class="novh__offer">
-          {%- if is_ar -%}خصم لحد <span data-nov-max data-ar>{{ section.settings.max_ar }}</span>٪{%- else -%}Up to <span data-nov-max>{{ section.settings.max_pct }}</span>% off{%- endif -%}
+          {%- if is_ar -%}خصم لحد <span data-nov-max data-ar>{{ section.settings.max_ar }}</span>%{%- else -%}Up to <span data-nov-max>{{ section.settings.max_pct }}</span>% off{%- endif -%}
         </p>
       </div>
 
@@ -320,10 +320,10 @@
   "settings": [
     { "type": "text", "id": "start", "default": "1793484000", "label": "Start (Unix seconds)", "info": "1793484000 = Nov 1 2026, 00:00 Cairo" },
     { "type": "text", "id": "end", "default": "1794088800", "label": "End (Unix seconds)", "info": "Banner hides at this time" },
-    { "type": "text", "id": "dates_ar", "default": "من ١ لـ ٧ نوفمبر", "label": "Dates (Arabic)" },
+    { "type": "text", "id": "dates_ar", "default": "من 1 لـ 7 نوفمبر", "label": "Dates (Arabic)" },
     { "type": "text", "id": "dates_en", "default": "Nov 1 – 7", "label": "Dates (English)" },
     { "type": "text", "id": "max_pct", "default": "25", "label": "Highest % off" },
-    { "type": "text", "id": "max_ar", "default": "٢٥", "label": "Highest % off, Arabic digits" },
+    { "type": "text", "id": "max_ar", "default": "25", "label": "Highest % off, Arabic digits" },
     { "type": "range", "id": "products_to_show", "min": 4, "max": 20, "step": 1, "default": 16, "label": "Products" }
   ]
 }
