@@ -1,12 +1,11 @@
 {%- comment -%}
-  "عروض نوفمبر" menu link, shown all of November:
-  Nov 1 00:00 to Nov 30 23:59 Cairo time (UTC+2) = 1793484000 to 1796076000.
+  "عروض نوفمبر" menu link, shown from now (owner, Oct 28) to Nov 30 23:59 Cairo time (UTC+2) = 1796076000.
   Liquid hides it outside the window; the script in the menu re-checks the clock in the
   browser so a cached page never shows it after the end. ?nov=preview shows it early.
   style: 'nav' (desktop row) or 'drawer' (mobile menu).
 {%- endcomment -%}
 {%- liquid
-  assign nov_start = 1793484000
+  assign nov_start = 0
   assign nov_end = 1796076000
   assign now_ts = 'now' | date: '%s' | plus: 0
   assign nov_live = false
