@@ -1,8 +1,9 @@
 {%- comment -%}
   عروض نوفمبر landing hero, built on the Baba Saleh design system (scheme 4 Yellow:
   brand-yellow fill, ink text, ink pill button, black countdown pill; sale-red stays on product prices).
-  Counts down to the start, then to the end; after the end it says the offers are over and points
-  to the sale. Times are Cairo (UTC+2), as Unix seconds.
+  The page stays up all November; each week's discounts get their own start/end here. Counts down to
+  the start, then to the end; between weeks it says the next offers are coming. Times are Cairo
+  (UTC+2), as Unix seconds.
 {%- endcomment -%}
 {%- liquid
   assign nov_start = section.settings.start | plus: 0
@@ -40,7 +41,7 @@
   <div class="nov__inner page-width">
     <p class="nov__dates">
       <span class="nov__live-dot" aria-hidden="true"></span>
-      {% if is_ar %}من ١ لـ ٧ نوفمبر{% else %}Nov 1 – 7 only{% endif %}
+      {% if is_ar %}{{ section.settings.dates_ar }}{% else %}{{ section.settings.dates_en }}{% endif %}
     </p>
 
     <div class="nov__head">
@@ -56,7 +57,7 @@
       <p class="nov__clock-label">
         <span data-when="before">{% if is_ar %}العروض تبدأ خلال{% else %}Offers start in{% endif %}</span>
         <span data-when="live">{% if is_ar %}العروض تنتهي خلال{% else %}Offers end in{% endif %}</span>
-        <span data-when="ended">{% if is_ar %}العروض خلصت. استنوا العروض الجاية{% else %}These offers have ended. Watch for the next ones{% endif %}</span>
+        <span data-when="ended">{% if is_ar %}عروض الأسبوع الجاي قريب. خليك متابع{% else %}Next week's offers are coming soon{% endif %}</span>
       </p>
       <div class="nov__pill" role="timer" aria-live="off" dir="ltr">
         <span class="nov__unit"><b data-d>00</b><small>{% if is_ar %}يوم{% else %}days{% endif %}</small></span>
@@ -470,6 +471,8 @@
   "settings": [
     { "type": "text", "id": "start", "default": "1793484000", "label": "Start (Unix seconds)", "info": "1793484000 = Nov 1 2026, 00:00 Cairo" },
     { "type": "text", "id": "end", "default": "1794088800", "label": "End (Unix seconds)", "info": "1794088800 = Nov 8 2026, 00:00 Cairo (offers run through Nov 7)" },
+    { "type": "text", "id": "dates_ar", "default": "من ١ لـ ٧ نوفمبر", "label": "Dates (Arabic)" },
+    { "type": "text", "id": "dates_en", "default": "Nov 1 – 7", "label": "Dates (English)" },
     { "type": "text", "id": "offer_ar", "default": "خصم لحد ٢٠٪", "label": "Offer line (Arabic)" },
     { "type": "text", "id": "offer_en", "default": "Up to 20% off", "label": "Offer line (English)" },
     { "type": "text", "id": "text_ar", "default": "على نظارات وزعانف ومستلزمات السباحة والجيم. أسبوع واحد بس.", "label": "Text (Arabic)" },

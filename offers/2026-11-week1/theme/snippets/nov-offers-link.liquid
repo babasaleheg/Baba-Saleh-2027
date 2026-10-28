@@ -1,13 +1,13 @@
 {%- comment -%}
-  "عروض نوفمبر" menu link, shown only while the offer runs:
-  Nov 1 00:00 to Nov 7 23:59 Cairo time (UTC+2) = 1793484000 to 1794088800.
+  "عروض نوفمبر" menu link, shown all of November:
+  Nov 1 00:00 to Nov 30 23:59 Cairo time (UTC+2) = 1793484000 to 1796076000.
   Liquid hides it outside the window; the script in the menu re-checks the clock in the
   browser so a cached page never shows it after the end. ?nov=preview shows it early.
   style: 'nav' (desktop row) or 'drawer' (mobile menu).
 {%- endcomment -%}
 {%- liquid
   assign nov_start = 1793484000
-  assign nov_end = 1794088800
+  assign nov_end = 1796076000
   assign now_ts = 'now' | date: '%s' | plus: 0
   assign nov_live = false
   if now_ts >= nov_start and now_ts < nov_end
@@ -33,7 +33,7 @@
         <span class="nov-drawer-link__title" lang="ar">عروض نوفمبر</span>
         <span class="nov-drawer-link__sub">{% if is_ar %}خصم لحد ٢٠٪{% else %}Up to 20% off{% endif %}</span>
       </span>
-      <span class="nov-drawer-link__date">{% if is_ar %}لحد ٧ نوفمبر{% else %}Until Nov 7{% endif %}</span>
+      <span class="nov-drawer-link__date">{% if is_ar %}كل نوفمبر{% else %}All November{% endif %}</span>
       {% render 'icon', icon: 'arrow' %}
     </a>
   </li>
