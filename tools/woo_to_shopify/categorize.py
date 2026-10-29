@@ -186,6 +186,7 @@ AUDIENCE_FIXES = {
     "Track Girls’ 3-Line Tracksuit": "for:women",
     "Track Girls’ Tracksuit – Burgundy, Fuchsia & Navy Blue": "for:women",
     "Girls’ Flared Leggings": "for:women",
+    "Women’s Flared Leggings": "for:women",
     "Charleston Leggings Pants": "for:women",
     "Charleston Pants": "for:women",
     "Track Tracksuit": "for:men",
