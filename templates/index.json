@@ -17,6 +17,7 @@
           "settings": {
             "collection": "tracksuits",
             "color_scheme": "scheme-4",
+            "overlay": 20,
             "eyebrow": "Autumn 2026",
             "heading": "Back to training",
             "text": "Tracksuits, jackets and backpacks for school, club and the cooler days ahead.",
@@ -24,8 +25,7 @@
             "button_label": "Shop tracksuits",
             "button_link": "shopify://collections/tracksuits",
             "button_label_2": "Backpacks",
-            "button_link_2": "shopify://collections/bags-backpacks",
-            "overlay": 20
+            "button_link_2": "shopify://collections/bags-backpacks"
           }
         },
         "slide_2": {
@@ -33,6 +33,7 @@
           "settings": {
             "collection": "gym-equipment",
             "color_scheme": "scheme-5",
+            "overlay": 20,
             "eyebrow": "Gym & fitness",
             "heading": "Train indoors, stay strong",
             "text": "Weights, bands, mats and machines for home and gym.",
@@ -40,8 +41,7 @@
             "button_label": "Shop gym",
             "button_link": "shopify://collections/gym-equipment",
             "button_label_2": "Home workout",
-            "button_link_2": "shopify://collections/home-workout-equipment",
-            "overlay": 20
+            "button_link_2": "shopify://collections/home-workout-equipment"
           }
         },
         "slide_3": {
@@ -49,6 +49,7 @@
           "settings": {
             "collection": "football-equipment",
             "color_scheme": "scheme-3",
+            "overlay": 20,
             "eyebrow": "New season",
             "heading": "Kick off the season",
             "text": "Balls, boots, shin guards and training kit for club and school teams.",
@@ -56,7 +57,6 @@
             "button_label": "Shop football",
             "button_link": "shopify://collections/football-equipment",
             "button_label_2": "Football shoes",
-            "overlay": 20,
             "button_link_2": "shopify://collections/football-shoes"
           }
         }
@@ -390,10 +390,15 @@
         "products_to_show": 12,
         "columns_desktop": 5,
         "show_view_all": true,
+        "one_per_model": true,
         "color_scheme": "scheme-1",
         "padding_top": 40,
         "padding_bottom": 40,
-        "one_per_model": true
+        "pinned": [
+          "track-swimming-backpack-style-10-swim-accessories",
+          "track-swimming-backpack-swim-accessories",
+          "track-swimming-backpack-style-3-swim-accessories"
+        ]
       }
     },
     "promos": {
@@ -475,64 +480,64 @@
         "brand_1": {
           "type": "brand",
           "settings": {
-            "name": "Wilson",
-            "logo": "shopify://shop_images/Wilson-logo.png"
+            "logo": "shopify://shop_images/Wilson-logo.png",
+            "name": "Wilson"
           }
         },
         "brand_2": {
           "type": "brand",
           "settings": {
-            "name": "Everlast",
-            "logo": "shopify://shop_images/ev.png"
+            "logo": "shopify://shop_images/ev.png",
+            "name": "Everlast"
           }
         },
         "brand_3": {
           "type": "brand",
           "settings": {
-            "name": "Venum",
-            "logo": "shopify://shop_images/Venum.png"
+            "logo": "shopify://shop_images/Venum.png",
+            "name": "Venum"
           }
         },
         "brand_4": {
           "type": "brand",
           "settings": {
-            "name": "Cressi",
-            "logo": "shopify://shop_images/cr.png"
+            "logo": "shopify://shop_images/cr.png",
+            "name": "Cressi"
           }
         },
         "brand_5": {
           "type": "brand",
           "settings": {
-            "name": "Dunlop",
-            "logo": "shopify://shop_images/dunlop.png"
+            "logo": "shopify://shop_images/dunlop.png",
+            "name": "Dunlop"
           }
         },
         "brand_6": {
           "type": "brand",
           "settings": {
-            "name": "Spurt",
-            "logo": "shopify://shop_images/Spurt.png"
+            "logo": "shopify://shop_images/Spurt.png",
+            "name": "Spurt"
           }
         },
         "brand_7": {
           "type": "brand",
           "settings": {
-            "name": "Livepro",
-            "logo": "shopify://shop_images/livepro.png"
+            "logo": "shopify://shop_images/livepro.png",
+            "name": "Livepro"
           }
         },
         "brand_8": {
           "type": "brand",
           "settings": {
-            "name": "Liveup",
-            "logo": "shopify://shop_images/liveup-1.png"
+            "logo": "shopify://shop_images/liveup-1.png",
+            "name": "Liveup"
           }
         },
         "brand_9": {
           "type": "brand",
           "settings": {
-            "name": "Cougar",
-            "logo": "shopify://shop_images/cougar.png"
+            "logo": "shopify://shop_images/cougar.png",
+            "name": "Cougar"
           }
         },
         "brand_10": {
@@ -544,8 +549,8 @@
         "brand_11": {
           "type": "brand",
           "settings": {
-            "name": "Kuna",
-            "logo": "shopify://shop_images/ku.png"
+            "logo": "shopify://shop_images/ku.png",
+            "name": "Kuna"
           }
         },
         "brand_12": {
@@ -557,29 +562,29 @@
         "brand_13": {
           "type": "brand",
           "settings": {
-            "name": "Manta",
-            "logo": "shopify://shop_images/manta.png"
+            "logo": "shopify://shop_images/manta.png",
+            "name": "Manta"
           }
         },
         "brand_14": {
           "type": "brand",
           "settings": {
-            "name": "Track",
-            "logo": "shopify://shop_images/Track.png"
+            "logo": "shopify://shop_images/Track.png",
+            "name": "Track"
           }
         },
         "brand_15": {
           "type": "brand",
           "settings": {
-            "name": "Wish",
-            "logo": "shopify://shop_images/Wish.png"
+            "logo": "shopify://shop_images/Wish.png",
+            "name": "Wish"
           }
         },
         "brand_16": {
           "type": "brand",
           "settings": {
-            "name": "Baba Saleh",
-            "logo": "shopify://shop_images/baba-saleh-logo-desktop.png"
+            "logo": "shopify://shop_images/baba-saleh-logo-desktop.png",
+            "name": "Baba Saleh"
           }
         }
       },

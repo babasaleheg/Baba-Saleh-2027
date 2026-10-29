@@ -65,12 +65,21 @@
   sold as separate products show once: the model is the item code (first variant's SKU digits). {%- endcomment -%}
               {%- assign shown = 0 -%}
               {%- assign models_shown = '|' -%}
+              {%- assign pinned_ids = '|' -%}
+              {%- for product in section.settings.pinned -%}
+                {%- assign pinned_ids = pinned_ids | append: product.id | append: '|' -%}
+              {%- endfor -%}
               {%- for pass in (1..2) -%}
-                {%- for product in collection.products limit: 50 -%}
+                {%- comment -%} "Show these first" products lead each pass (in stock first, sold out with the sold out) {%- endcomment -%}
+                {%- for step in (1..2) -%}
+                {%- if step == 1 -%}{%- assign list = section.settings.pinned -%}{%- else -%}{%- assign list = collection.products -%}{%- endif -%}
+                {%- for product in list limit: 50 -%}
                   {%- if shown >= limit -%}{%- break -%}{%- endif -%}
                   {%- assign card_pass = 2 -%}{%- if product.available -%}{%- assign card_pass = 1 -%}{%- endif -%}
                   {%- if card_pass != pass -%}{%- continue -%}{%- endif -%}
-                  {%- if section.settings.one_per_model -%}
+                  {%- assign pin_key = '|' | append: product.id | append: '|' -%}
+                  {%- if step == 2 and pinned_ids contains pin_key -%}{%- continue -%}{%- endif -%}
+                  {%- if section.settings.one_per_model and step == 2 -%}
                     {%- assign model = product.variants.first.sku | remove: '#' | remove: '/' | strip | slice: 0, 6 -%}
                     {%- if model != blank -%}
                       {%- assign model_key = '|' | append: model | append: '|' -%}
@@ -78,8 +87,13 @@
                       {%- assign models_shown = models_shown | append: model | append: '|' -%}
                     {%- endif -%}
                   {%- endif -%}
+                  {%- if step == 1 -%}
+                    {%- assign model = product.variants.first.sku | remove: '#' | remove: '/' | strip | slice: 0, 6 -%}
+                    {%- if model != blank -%}{%- assign models_shown = models_shown | append: model | append: '|' -%}{%- endif -%}
+                  {%- endif -%}
                   <li>{% render 'product-card', product: product, index: shown %}</li>
                   {%- assign shown = shown | plus: 1 -%}
+                {%- endfor -%}
                 {%- endfor -%}
               {%- endfor -%}
             {%- else -%}
@@ -126,6 +140,7 @@
     { "type": "range", "id": "products_to_show", "min": 4, "max": 24, "step": 1, "default": 12, "label": "t:sections.featured_collection.settings.products_to_show.label" },
     { "type": "range", "id": "columns_desktop", "min": 3, "max": 6, "step": 1, "default": 4, "label": "t:settings.columns_desktop" },
     { "type": "checkbox", "id": "show_view_all", "default": true, "label": "t:settings.show_view_all" },
+    { "type": "product_list", "id": "pinned", "limit": 12, "label": "Show these first", "info": "Shown at the start of the first tab while in stock (sold out ones move to the end)." },
     { "type": "checkbox", "id": "one_per_model", "default": false, "label": "One product per model", "info": "Colours sold as separate products of the same model (same item code) show once." },
     { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
     { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
