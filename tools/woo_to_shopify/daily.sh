@@ -20,6 +20,7 @@ step sync.py sort-stock
 step rules_check.py
 step sync.py reviews-sync
 step came_from.py
+step stock_from.py
 step recommendations.py
 step sold_counter.py
 step search_words.py
