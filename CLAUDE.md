@@ -24,10 +24,11 @@ never bypass or undo them, in any change, app, script or scheduled task.
    The sales badge uses real orders from the last 30 days (`sold_counter.py`).
 7. Brand yellow `#FEBD19` (never blue), Century Gothic-style font; product grids 6 columns on
    desktop, 2 on mobile; Track = تراك in Arabic; returns window 7 days; don't duplicate themes.
-8. **Website stock comes only from the October Branch count or from the owner's own edits in
-   Shopify.** Nothing else may set or change inventory: no script, app, scheduled task or the
-   staff portal's daily sync may overwrite a quantity the owner set (e.g. 0 = sold out), or split
-   one item code's stock across colours/sizes. Tools here only read stock (`stock_from.py`).
+8. **Website stock changes only when the owner uploads an October Branch sheet (portal), or
+   when the owner edits it in Shopify.** No sheet, no change. Nothing else may set or change
+   inventory: no script, app, scheduled task, till sale or the staff portal's daily sync may
+   overwrite a quantity the owner set (e.g. 0 = sold out), or split one item code's stock across
+   colours/sizes. Tools here only read stock (`stock_from.py`). Portal: migration 0018, `lib/sync.ts`.
 
 ## Working on the theme
 - Live theme: `gid://shopify/OnlineStoreTheme/166776471600`. Push with
