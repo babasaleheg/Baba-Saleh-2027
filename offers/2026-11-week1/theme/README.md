@@ -1,6 +1,7 @@
 Live-theme copies (theme "Baba Saleh 2027 – November offers", 167216709680) of files changed for the
 November offers. The full set is on branch claude/great-gauss-bqy749.
 
+- sections/header.liquid: menu spacing tightened by screen width so every link (incl. تخفيضات) fits.
 - sections/november-offers.liquid: ticker shows one language per page, each phrase kept together.
 - snippets/nov-offer-product.liquid + sections/main-product.liquid: before the week starts, product
   pages of offer products show the coming offer price (PDF old price crossed out, % and EGP saved),
