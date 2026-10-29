@@ -1,0 +1,55 @@
+{%- comment -%}
+  عروض نوفمبر on the product page. Before the week starts the store price is still the normal one,
+  so this shows the coming offer (PDF sale price, old price crossed out, EGP saved) under the price,
+  matching the cards on the offers page. Once the week starts the scheduled task sets the real prices
+  (compare-at = old price) and the theme's own crossed-out price takes over, so nothing is shown here.
+  Week dates: Cairo time as Unix seconds, same as the home banner (header group, nov-home): update weekly.
+{%- endcomment -%}
+{%- liquid
+  assign nov_start = 1793484000
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+-%}
+{%- if now_ts < nov_start -%}
+  <div class="nov-pdp" data-nov-pdp data-handle="{{ product.handle }}" data-start="{{ nov_start }}" hidden></div>
+  <script>
+    (function () {
+      var box = document.currentScript.previousElementSibling;
+      var p = ({% render 'nov-offer-prices' %})[box.dataset.handle];
+      if (!p || p[1] >= p[0] || Date.now() / 1000 >= +box.dataset.start) return;
+      var egp = function (n) { return (n % 1 ? n.toFixed(2) : String(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
+      var off = Math.round((p[0] - p[1]) / p[0] * 100);
+      var save = egp(Math.round((p[0] - p[1]) * 100) / 100);
+      box.innerHTML = {% if is_ar %}
+        '<span class="nov-pdp__tag">عروض نوفمبر · من 1 نوفمبر</span>' +
+        '<span class="nov-pdp__price">' + (p[2] ? 'من ' : '') + '<b dir="ltr">EGP ' + egp(p[1]) + '</b> <s dir="ltr">EGP ' + egp(p[0]) + '</s> <bdi dir="ltr" class="nov-pdp__off">-' + off + '%</bdi></span>' +
+        '<span class="nov-pdp__save">وفّر ' + save + ' جنيه</span>'
+      {% else %}
+        '<span class="nov-pdp__tag">November offers · from Nov 1</span>' +
+        '<span class="nov-pdp__price">' + (p[2] ? 'From ' : '') + '<b>EGP ' + egp(p[1]) + '</b> <s>EGP ' + egp(p[0]) + '</s> <span class="nov-pdp__off">-' + off + '%</span></span>' +
+        '<span class="nov-pdp__save">You save EGP ' + save + '</span>'
+      {% endif %};
+      box.hidden = false;
+    })();
+  </script>
+  <style>
+    .nov-pdp {
+      display: grid;
+      gap: 0.25rem;
+      justify-items: start;
+      margin-block: 0.5rem 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-small, 8px);
+      background: #febd19;
+      color: #0a0a0a;
+    }
+    .nov-pdp__tag { font-size: 0.8125rem; font-weight: 700; }
+    .nov-pdp__price b { font-size: 1.25rem; }
+    .nov-pdp__price s { opacity: 0.6; margin-inline-start: 0.25rem; }
+    .nov-pdp__off { display: inline-block; margin-inline-start: 0.375rem; padding: 0 0.375rem; border-radius: 4px; background: #0a0a0a; color: #febd19; font-size: 0.8125rem; font-weight: 700; }
+    .nov-pdp__save { font-size: 0.875rem; font-weight: 600; }
+  </style>
+{%- endif -%}

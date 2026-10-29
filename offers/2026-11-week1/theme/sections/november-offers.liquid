@@ -1,0 +1,526 @@
+{%- comment -%}
+  عروض نوفمبر landing hero, built on the Baba Saleh design system (scheme 4 Yellow:
+  brand-yellow fill, ink text, ink pill button, black countdown pill; sale-red stays on product prices).
+  The page stays up all November; each week's discounts get their own start/end here. Counts down to
+  the start, then to the end; between weeks it says the next offers are coming. Times are Cairo
+  (UTC+2), as Unix seconds.
+{%- endcomment -%}
+{%- liquid
+  assign nov_start = section.settings.start | plus: 0
+  assign nov_end = section.settings.end | plus: 0
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign state = 'live'
+  if now_ts < nov_start
+    assign state = 'before'
+  elsif now_ts >= nov_end
+    assign state = 'ended'
+  endif
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+-%}
+<section
+  class="nov color-scheme-4"
+  data-nov
+  data-state="{{ state }}"
+  data-start="{{ nov_start }}"
+  data-end="{{ nov_end }}"
+  aria-labelledby="NovTitle"
+>
+  <div class="nov__ticker" aria-hidden="true">
+    <div class="nov__ticker-track">
+      {%- comment -%} One language per page; each phrase in one <bdi> so the number and % stay in place {%- endcomment -%}
+      {%- for i in (1..8) -%}
+        {%- if is_ar -%}
+          <span lang="ar"><bdi>عروض نوفمبر</bdi></span><span lang="ar"><bdi>خصم لحد <i data-nov-max data-ar>{{ section.settings.max_ar }}</i>%</bdi></span>
+        {%- else -%}
+          <span><bdi>November offers</bdi></span><span><bdi>Up to <i data-nov-max>{{ section.settings.max_pct }}</i>% off</bdi></span>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="nov__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+  <div class="nov__inner page-width">
+    <p class="nov__dates">
+      <span class="nov__live-dot" aria-hidden="true"></span>
+      {% if is_ar %}{{ section.settings.dates_ar }}{% else %}{{ section.settings.dates_en }}{% endif %}
+    </p>
+
+    <div class="nov__head">
+      <h1 id="NovTitle" class="nov__title">
+        <span class="nov__title-ar" lang="ar" dir="rtl">عروض نوفمبر</span>
+        {%- unless is_ar -%}<span class="nov__title-en">November offers</span>{%- endunless -%}
+      </h1>
+      <p class="nov__offer">{% if is_ar %}خصم لحد <span data-nov-max data-ar>{{ section.settings.max_ar }}</span>%{% else %}Up to <span data-nov-max>{{ section.settings.max_pct }}</span>% off{% endif %}</p>
+      <p class="nov__text">{% if is_ar %}{{ section.settings.text_ar }}{% else %}{{ section.settings.text_en }}{% endif %}</p>
+    </div>
+
+    <div class="nov__clock">
+      <p class="nov__clock-label">
+        <span data-when="before">{% if is_ar %}العروض تبدأ خلال{% else %}Offers start in{% endif %}</span>
+        <span data-when="live">{% if is_ar %}العروض تنتهي خلال{% else %}Offers end in{% endif %}</span>
+        <span data-when="ended">{% if is_ar %}عروض الأسبوع الجاي قريب. خليك متابع{% else %}Next week's offers are coming soon{% endif %}</span>
+      </p>
+      <div class="nov__pill" role="timer" aria-live="off" dir="ltr">
+        <span class="nov__unit"><b data-d>00</b><small>{% if is_ar %}يوم{% else %}days{% endif %}</small></span>
+        <span class="nov__sep" aria-hidden="true">:</span>
+        <span class="nov__unit"><b data-h>00</b><small>{% if is_ar %}ساعة{% else %}hrs{% endif %}</small></span>
+        <span class="nov__sep" aria-hidden="true">:</span>
+        <span class="nov__unit"><b data-m>00</b><small>{% if is_ar %}دقيقة{% else %}min{% endif %}</small></span>
+        <span class="nov__sep" aria-hidden="true">:</span>
+        <span class="nov__unit"><b data-s>00</b><small>{% if is_ar %}ثانية{% else %}sec{% endif %}</small></span>
+      </div>
+    </div>
+
+    <ul class="nov__trust" role="list">
+      <li>{% render 'icon', icon: 'truck' %}{% if is_ar %}توصيل لكل محافظات مصر{% else %}Delivery across all of Egypt{% endif %}</li>
+      <li>{% render 'icon', icon: 'cash' %}{% if is_ar %}الدفع عند الاستلام{% else %}Cash on delivery{% endif %}</li>
+    </ul>
+
+    <div class="nov__actions">
+      <a href="#NovProducts" class="nov__cta" data-when="before live">
+        {% if is_ar %}تسوق العروض{% else %}Shop the offers{% endif %}
+        {% render 'icon', icon: 'arrow' %}
+      </a>
+      <a href="{{ routes.collections_url }}/sale" class="nov__cta" data-when="ended">
+        {% if is_ar %}شوف عروض تانية{% else %}See other deals{% endif %}
+        {% render 'icon', icon: 'arrow' %}
+      </a>
+    </div>
+  </div>
+  <span id="NovProducts" class="nov__anchor"></span>
+</section>
+{% render 'nov-offer-cards' %}
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-nov]');
+    var start = +root.dataset.start * 1000, end = +root.dataset.end * 1000;
+    var el = {
+      d: root.querySelector('[data-d]'), h: root.querySelector('[data-h]'),
+      m: root.querySelector('[data-m]'), s: root.querySelector('[data-s]')
+    };
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function tick() {
+      var now = Date.now();
+      var state = now < start ? 'before' : now < end ? 'live' : 'ended';
+      if (root.dataset.state !== state) root.dataset.state = state;
+      var left = Math.max(0, Math.floor(((state === 'before' ? start : end) - now) / 1000));
+      el.d.textContent = pad(Math.floor(left / 86400));
+      el.h.textContent = pad(Math.floor(left % 86400 / 3600));
+      el.m.textContent = pad(Math.floor(left % 3600 / 60));
+      el.s.textContent = pad(left % 60);
+      if (state === 'ended') return;
+      setTimeout(tick, 1000 - now % 1000);
+    }
+    tick();
+
+    // This week's PDF prices on every card (snippets/nov-offer-cards.liquid), also on cards that
+    // infinite scroll adds. Not after the week ends: then the cards show the store's own prices.
+    var max = window.novMax();
+    if (max) root.querySelectorAll('[data-nov-max]').forEach(function (el) {
+      el.textContent = el.hasAttribute('data-ar') ? window.novArDigits(max) : max;
+    });
+    document.documentElement.classList.add('nov-dressed');
+    function dressAll() {
+      var grid = document.querySelector('[data-results]');
+      if (grid) window.novDress(grid, root.dataset.state);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      dressAll();
+      var grid = document.querySelector('[data-results]');
+      if (grid) new MutationObserver(dressAll).observe(grid, { childList: true, subtree: true });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* Baba Saleh design system tokens (tokens.json v2) */
+  .nov {
+    --bs-brand-yellow: #febd19;
+    --bs-yellow-soft: #ffd25e;
+    --bs-ink: #0a0a0a;
+    --bs-on-yellow: #0a0a0a;
+    --bs-white: #ffffff;
+    --bs-space-1: 4px;
+    --bs-space-2: 8px;
+    --bs-space-4: 16px;
+    --bs-space-6: 24px;
+    --bs-space-8: 32px;
+    --bs-space-12: 48px;
+    --bs-radius-md: 12px;
+    --bs-radius-pill: 9999px;
+    --bs-font-sans: 'Century Gothic', 'CenturyGothic', 'Didact Gothic', 'Cairo', system-ui, sans-serif;
+    --bs-font-arabic: 'Cairo', 'Century Gothic', 'Didact Gothic', system-ui, sans-serif;
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 0;
+    background: var(--bs-brand-yellow);
+    color: var(--bs-on-yellow);
+  }
+
+  [dir='rtl'] .nov {
+    --bs-font-sans: var(--bs-font-arabic);
+  }
+
+  /* Ticker: ink strip, brand-yellow words */
+  .nov__ticker {
+    overflow: hidden;
+    background: var(--bs-ink);
+    color: var(--bs-brand-yellow);
+    font-family: var(--bs-font-sans);
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+
+  .nov__ticker-track {
+    display: inline-flex;
+    gap: var(--bs-space-6);
+    padding-block: var(--bs-space-2);
+    animation: nov-ticker 40s linear infinite;
+  }
+
+  .nov__ticker-track span {
+    unicode-bidi: isolate;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-space-6);
+  }
+
+  .nov__ticker-track i {
+    font-style: normal;
+  }
+
+  .nov__ticker-track span[lang='ar'] {
+    font-family: var(--bs-font-arabic);
+  }
+
+  .nov__ticker-track span::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: var(--bs-radius-pill);
+    background: currentColor;
+  }
+
+  [dir='rtl'] .nov__ticker-track {
+    animation-name: nov-ticker-rtl;
+  }
+
+  @keyframes nov-ticker {
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes nov-ticker-rtl {
+    to { transform: translateX(50%); }
+  }
+
+  /* Bar pattern echoing the icon: pill bars rising to the centre, in yellow-soft */
+  .nov__bars {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: var(--bs-space-4);
+    z-index: -1;
+    display: flex;
+    align-items: flex-end;
+    gap: var(--bs-space-4);
+    height: 78%;
+  }
+
+  .nov__bars i {
+    width: clamp(28px, 6vw, 84px);
+    border-radius: var(--bs-radius-pill) var(--bs-radius-pill) 0 0;
+    background: var(--bs-yellow-soft);
+    transform-origin: bottom;
+    animation: nov-bar 3.2s cubic-bezier(0.45, 0, 0.2, 1) infinite alternate;
+  }
+
+  .nov__bars i:nth-child(1), .nov__bars i:nth-child(6) { height: 34%; }
+  .nov__bars i:nth-child(2), .nov__bars i:nth-child(5) { height: 62%; animation-delay: -0.6s; }
+  .nov__bars i:nth-child(3), .nov__bars i:nth-child(4) { height: 92%; animation-delay: -1.2s; }
+
+  @keyframes nov-bar {
+    from { transform: scaleY(0.75); }
+    to { transform: scaleY(1); }
+  }
+
+  .nov__inner {
+    position: relative;
+    display: grid;
+    justify-items: start;
+    gap: var(--bs-space-6);
+    padding-block: var(--bs-space-8);
+  }
+
+  .nov__dates {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-space-2);
+    margin: 0;
+    padding: var(--bs-space-2) var(--bs-space-4);
+    border-radius: var(--bs-radius-pill);
+    background: var(--bs-ink);
+    color: var(--bs-white);
+    font-family: var(--bs-font-sans);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .nov__live-dot {
+    width: var(--bs-space-2);
+    height: var(--bs-space-2);
+    border-radius: var(--bs-radius-pill);
+    background: var(--bs-brand-yellow);
+    box-shadow: 0 0 0 0 rgba(254, 189, 25, 0.7);
+    animation: nov-pulse 1.6s ease-out infinite;
+  }
+
+  @keyframes nov-pulse {
+    to { box-shadow: 0 0 0 10px rgba(254, 189, 25, 0); }
+  }
+
+  .nov__head {
+    display: grid;
+    justify-items: start;
+    gap: var(--bs-space-2);
+  }
+
+  .nov__title {
+    display: grid;
+    margin: 0;
+  }
+
+  /* display-ar: Cairo 700, line height 72/56 */
+  .nov__title-ar {
+    justify-self: start;
+    font-family: var(--bs-font-arabic);
+    font-weight: 700;
+    font-size: clamp(56px, 15vw, 144px);
+    line-height: 1.29;
+    animation: nov-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .nov__title-en {
+    font-family: var(--bs-font-sans);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  @keyframes nov-rise {
+    from { opacity: 0; transform: translateY(0.3em); }
+  }
+
+  /* Offer line: h1 (40/44) in English, h1-ar (36/52) in Arabic */
+  .nov__offer {
+    margin: var(--bs-space-4) 0 0;
+    font-family: var(--bs-font-sans);
+    font-weight: 700;
+    font-size: clamp(28px, 6vw, 40px);
+    line-height: 1.1;
+  }
+
+  [dir='rtl'] .nov__offer {
+    font-size: clamp(28px, 6vw, 36px);
+    line-height: 1.45;
+  }
+
+  /* body / body-ar */
+  .nov__text {
+    max-width: 34rem;
+    margin: 0;
+    font-family: var(--bs-font-sans);
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  [dir='rtl'] .nov__text {
+    line-height: 28px;
+  }
+
+  .nov__clock {
+    display: grid;
+    justify-items: start;
+    gap: var(--bs-space-2);
+  }
+
+  .nov__clock-label {
+    margin: 0;
+    font-family: var(--bs-font-sans);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  /* The black countdown pill on yellow */
+  .nov__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-space-2);
+    padding: var(--bs-space-2) var(--bs-space-6);
+    border-radius: var(--bs-radius-pill);
+    background: var(--bs-ink);
+    color: var(--bs-brand-yellow);
+  }
+
+  .nov__unit {
+    display: grid;
+    justify-items: center;
+    min-width: 2.75rem;
+  }
+
+  .nov__unit b {
+    font-family: var(--bs-font-sans);
+    font-weight: 700;
+    font-size: clamp(28px, 6vw, 40px);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .nov__unit small {
+    color: var(--bs-white);
+    font-family: var(--bs-font-sans);
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .nov__sep {
+    align-self: start;
+    font-weight: 700;
+    font-size: clamp(24px, 5vw, 32px);
+    line-height: 1.3;
+    opacity: 0.6;
+  }
+
+  .nov__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bs-space-2) var(--bs-space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--bs-font-sans);
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .nov__trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-space-2);
+  }
+
+  .nov__trust .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nov__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bs-space-4);
+  }
+
+  /* Primary pill button: ink fill, white label */
+  .nov__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-space-2);
+    min-height: 52px;
+    padding: 0 var(--bs-space-8);
+    border-radius: var(--bs-radius-pill);
+    background: var(--bs-ink);
+    color: var(--bs-white);
+    font-family: var(--bs-font-sans);
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+
+  .nov__cta:hover {
+    transform: translateY(-2px);
+  }
+
+  .nov__cta .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nov__anchor {
+    position: absolute;
+    inset-block-end: 0;
+  }
+
+  /* Show only the parts that match the countdown state */
+  .nov [data-when] { display: none; }
+  .nov[data-state='before'] [data-when~='before'],
+  .nov[data-state='live'] [data-when~='live'],
+  .nov[data-state='ended'] [data-when~='ended'] { display: inline-flex; }
+  .nov[data-state='ended'] .nov__pill,
+  .nov[data-state='ended'] .nov__live-dot { display: none; }
+
+  /* The product grid under the hero: no second title; white product cards framed by the yellow page */
+  .shopify-section:has(.nov) + .shopify-section .collection__header { display: none; }
+
+  .shopify-section:has(.nov) + .shopify-section .product-grid > li {
+    padding: 8px 8px 16px;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #0a0a0a;
+  }
+
+  .shopify-section:has(.nov) + .shopify-section .card,
+  .shopify-section:has(.nov) + .shopify-section .card__media {
+    background: #ffffff;
+  }
+
+  .shopify-section:has(.nov) + .shopify-section .card__info {
+    padding-inline: 8px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .nov__inner {
+      padding-block: var(--bs-space-12);
+    }
+
+    .nov__pill {
+      gap: var(--bs-space-4);
+      padding-inline: var(--bs-space-8);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nov__ticker-track,
+    .nov__bars i,
+    .nov__live-dot,
+    .nov__title-ar {
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "November offers hero",
+  "settings": [
+    { "type": "text", "id": "start", "default": "1793484000", "label": "Start (Unix seconds)", "info": "1793484000 = Nov 1 2026, 00:00 Cairo" },
+    { "type": "text", "id": "end", "default": "1794088800", "label": "End (Unix seconds)", "info": "1794088800 = Nov 8 2026, 00:00 Cairo (offers run through Nov 7)" },
+    { "type": "text", "id": "dates_ar", "default": "من 1 لـ 7 نوفمبر", "label": "Dates (Arabic)" },
+    { "type": "text", "id": "dates_en", "default": "Nov 1 – 7", "label": "Dates (English)" },
+    { "type": "text", "id": "max_pct", "default": "25", "label": "Highest % off", "info": "Fallback; the page works it out from this week's prices" },
+    { "type": "text", "id": "max_ar", "default": "25", "label": "Highest % off, Arabic digits" },
+    { "type": "text", "id": "text_ar", "default": "على نظارات وزعانف ومستلزمات السباحة والجيم. أسبوع واحد بس.", "label": "Text (Arabic)" },
+    { "type": "text", "id": "text_en", "default": "Swim goggles, fins, swimwear and gym gear. One week only.", "label": "Text (English)" }
+  ],
+  "presets": [{ "name": "November offers hero" }]
+}
+{% endschema %}
