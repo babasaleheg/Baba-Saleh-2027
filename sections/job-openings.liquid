@@ -2,6 +2,8 @@
   Careers: open roles as cards with location filter chips and an application form built on
   Shopify's contact form (no file uploads, so applicants share a CV link or send it on WhatsApp).
   <job-board> in theme.js handles filtering and pre-fills the form when "Apply" is pressed.
+  Each location has its own link for ads: /pages/join-us?branch=<URL name> (e.g. ?branch=october)
+  opens with that location's roles and its branch chosen in the form; picking a chip updates the link.
 {%- endcomment -%}
 {%- liquid
   assign locations = ''
@@ -38,7 +40,16 @@
         <div class="jobs__filters" role="group" aria-label="{{ 'pages.jobs.filter_label' | t }}" hidden data-job-filters>
           <button type="button" class="jobs__chip" aria-pressed="true" data-location="">{{ 'pages.jobs.all_locations' | t }}</button>
           {%- for location in locations -%}
-            <button type="button" class="jobs__chip" aria-pressed="false" data-location="{{ location | escape }}">
+            {%- liquid
+              assign location_key = location | handleize
+              for block in section.blocks
+                if block.settings.location == location and block.settings.url_key != blank
+                  assign location_key = block.settings.url_key | handleize
+                  break
+                endif
+              endfor
+            -%}
+            <button type="button" class="jobs__chip" aria-pressed="false" data-location="{{ location | escape }}" data-key="{{ location_key }}">
               {%- render 'icon', icon: 'pin' -%}
               {{ location }}
             </button>
@@ -49,7 +60,8 @@
 
       <ul class="jobs__grid" role="list">
         {%- for block in section.blocks -%}
-          <li class="job-card" data-reveal style="--reveal-index: {{ forloop.index0 }}" data-location="{{ block.settings.location | escape }}" {{ block.shopify_attributes }}>
+          {%- assign card_key = block.settings.url_key | default: block.settings.location | handleize -%}
+          <li class="job-card" data-reveal style="--reveal-index: {{ forloop.index0 }}" data-location="{{ block.settings.location | escape }}" data-key="{{ card_key }}" {{ block.shopify_attributes }}>
             <div class="job-card__tags">
               {%- if block.settings.location != blank -%}
                 <span class="badge badge--muted">{% render 'icon', icon: 'pin' %}{{ block.settings.location }}</span>
@@ -176,6 +188,10 @@
             </select>
             {%- render 'icon', icon: 'chevron-down' -%}
           </div>
+        </div>
+        <div class="field">
+          <label class="field__label" for="Apply-salary-{{ section.id }}">{{ 'pages.form.expected_salary' | t }} <span aria-hidden="true">*</span></label>
+          <input class="field__input" type="text" id="Apply-salary-{{ section.id }}" name="contact[Expected salary (EGP/month)]" inputmode="numeric" dir="ltr" placeholder="{{ 'pages.form.expected_salary_placeholder' | t }}" required>
         </div>
         {%- if section.settings.ask_military -%}
           <div class="field">
@@ -432,6 +448,7 @@
       "settings": [
         { "type": "text", "id": "title", "default": "Sales associate", "label": "t:pages.jobs.role_title" },
         { "type": "text", "id": "location", "default": "Maadi", "label": "t:pages.jobs.location", "info": "t:pages.jobs.location_info" },
+        { "type": "text", "id": "url_key", "label": "Link name", "info": "Short English name for this location's link, e.g. october gives /pages/join-us?branch=october. Leave empty to use the location name." },
         { "type": "text", "id": "type", "default": "Full-time", "label": "t:pages.jobs.type" },
         { "type": "richtext", "id": "text", "label": "t:settings.text" }
       ]

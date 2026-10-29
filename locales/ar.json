@@ -333,6 +333,8 @@
       "cv_link": "رابط سيرتك الذاتية (Google Drive أو LinkedIn…)",
       "cv_link_hint": "اختياري. يمكنك أيضاً إرسال السيرة الذاتية على واتساب.",
       "email": "البريد الإلكتروني",
+      "expected_salary": "الراتب الشهري المتوقع (جنيه)",
+      "expected_salary_placeholder": "مثلاً 8000",
       "experience": "الخبرة في البيع / الرياضة",
       "experience_options": {
         "none": "بدون خبرة",

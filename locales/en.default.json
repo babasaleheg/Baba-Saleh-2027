@@ -298,6 +298,8 @@
       "cv_link": "Link to your CV (Google Drive, LinkedIn…)",
       "cv_link_hint": "Optional. You can also send your CV on WhatsApp.",
       "email": "Email",
+      "expected_salary": "Expected monthly salary (EGP)",
+      "expected_salary_placeholder": "e.g. 8000",
       "experience": "Retail / sports experience",
       "experience_options": {
         "none": "No experience",

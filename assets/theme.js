@@ -1420,6 +1420,7 @@
   customElements.define('faq-filter', FaqFilter);
 
   // Careers: location filter chips + "Apply" pre-fills role and branch in the form.
+  // ?branch=<key> (e.g. ?branch=october, for ads) opens on that location; chips keep the link in step.
   class JobBoard extends HTMLElement {
     connectedCallback() {
       this.cards = [...this.querySelectorAll('.job-card')];
@@ -1429,13 +1430,39 @@
         filters.hidden = false;
         filters.addEventListener('click', (event) => {
           const chip = event.target.closest('[data-location]');
-          if (chip) this.filter(chip);
+          if (chip) {
+            this.filter(chip);
+            const url = new URL(window.location.href);
+            if (chip.dataset.key) url.searchParams.set('branch', chip.dataset.key);
+            else url.searchParams.delete('branch');
+            history.replaceState(history.state, '', url);
+          }
         });
       }
       this.addEventListener('click', (event) => {
         const apply = event.target.closest('[data-apply-role]');
         if (apply) this.prefill(apply);
       });
+      this.openBranch(new URLSearchParams(window.location.search).get('branch'), filters);
+    }
+
+    // "october" matches the key "october" or a key made from the name, like "6th-of-october"
+    openBranch(wanted, filters) {
+      const key = (wanted || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      if (!key) return;
+      const matches = (el) => el.dataset.key === key || (el.dataset.key || '').split('-').includes(key);
+      const cards = this.cards.filter(matches);
+      if (!cards.length) return;
+      const chip = filters && [...filters.querySelectorAll('[data-key]')].find(matches);
+      if (chip) this.filter(chip);
+      const branch = this.querySelector('[data-apply-branch-select]');
+      const wantedBranch = cards[0].querySelector('[data-apply-branch]')?.dataset.applyBranch.toLowerCase();
+      const option = branch && [...branch.options].find((o) => wantedBranch && o.value.toLowerCase() === wantedBranch);
+      if (option) branch.value = option.value;
+      const roles = new Set(cards.map((c) => c.querySelector('[data-apply-role]')?.dataset.applyRole));
+      const role = this.querySelector('[data-apply-role-input]');
+      if (role && roles.size === 1) role.value = [...roles][0];
+      if (!window.location.hash) requestAnimationFrame(() => this.scrollIntoView({ block: 'start' }));
     }
 
     filter(chip) {
