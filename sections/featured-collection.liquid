@@ -61,13 +61,23 @@
         >
           {%- if collection != blank and collection.products_count > 0 -%}
             {%- if forloop.first -%}
-{%- comment -%} In stock first, sold out last (fills up to the limit) {%- endcomment -%}
+{%- comment -%} In stock first, sold out last (fills up to the limit). With "one product per model", colours
+  sold as separate products show once: the model is the item code (first variant's SKU digits). {%- endcomment -%}
               {%- assign shown = 0 -%}
+              {%- assign models_shown = '|' -%}
               {%- for pass in (1..2) -%}
                 {%- for product in collection.products limit: 50 -%}
                   {%- if shown >= limit -%}{%- break -%}{%- endif -%}
                   {%- assign card_pass = 2 -%}{%- if product.available -%}{%- assign card_pass = 1 -%}{%- endif -%}
                   {%- if card_pass != pass -%}{%- continue -%}{%- endif -%}
+                  {%- if section.settings.one_per_model -%}
+                    {%- assign model = product.variants.first.sku | remove: '#' | remove: '/' | strip | slice: 0, 6 -%}
+                    {%- if model != blank -%}
+                      {%- assign model_key = '|' | append: model | append: '|' -%}
+                      {%- if models_shown contains model_key -%}{%- continue -%}{%- endif -%}
+                      {%- assign models_shown = models_shown | append: model | append: '|' -%}
+                    {%- endif -%}
+                  {%- endif -%}
                   <li>{% render 'product-card', product: product, index: shown %}</li>
                   {%- assign shown = shown | plus: 1 -%}
                 {%- endfor -%}
@@ -116,6 +126,7 @@
     { "type": "range", "id": "products_to_show", "min": 4, "max": 24, "step": 1, "default": 12, "label": "t:sections.featured_collection.settings.products_to_show.label" },
     { "type": "range", "id": "columns_desktop", "min": 3, "max": 6, "step": 1, "default": 4, "label": "t:settings.columns_desktop" },
     { "type": "checkbox", "id": "show_view_all", "default": true, "label": "t:settings.show_view_all" },
+    { "type": "checkbox", "id": "one_per_model", "default": false, "label": "One product per model", "info": "Colours sold as separate products of the same model (same item code) show once." },
     { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
     { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
     { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_bottom" }

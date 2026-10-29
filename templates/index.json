@@ -392,7 +392,8 @@
         "show_view_all": true,
         "color_scheme": "scheme-1",
         "padding_top": 40,
-        "padding_bottom": 40
+        "padding_bottom": 40,
+        "one_per_model": true
       }
     },
     "promos": {
