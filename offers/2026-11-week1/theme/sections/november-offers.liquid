@@ -61,7 +61,7 @@
     <div class="nov__clock">
       <p class="nov__clock-label">
         <span data-when="before">{% if is_ar %}العروض تبدأ خلال{% else %}Offers start in{% endif %}</span>
-        <span data-when="live">{% if is_ar %}العروض تنتهي خلال{% else %}Offers end in{% endif %}</span>
+        <span data-when="live" class="nov__now"><i class="nov__live-dot" aria-hidden="true"></i>{% if is_ar %}عروض نوفمبر بدأت دلوقتي{% else %}The November Sale is now live{% endif %}</span>
         <span data-when="ended">{% if is_ar %}عروض الأسبوع الجاي قريب. خليك متابع{% else %}Next week's offers are coming soon{% endif %}</span>
       </p>
       <div class="nov__pill" role="timer" aria-live="off" dir="ltr">
@@ -107,7 +107,14 @@
     function tick() {
       var now = Date.now();
       var state = now < start ? 'before' : now < end ? 'live' : 'ended';
-      if (root.dataset.state !== state) root.dataset.state = state;
+      if (root.dataset.state !== state) {
+        root.dataset.state = state;
+        // The week started while the page was open: cards get add-to-cart, no reload needed
+        if (state === 'live') {
+          document.querySelectorAll('.nov-soon').forEach(function (c) { c.classList.remove('nov-soon'); });
+          document.querySelectorAll('.nov-price__soon').forEach(function (n) { n.remove(); });
+        }
+      }
       var left = Math.max(0, Math.floor(((state === 'before' ? start : end) - now) / 1000));
       el.d.textContent = pad(Math.floor(left / 86400));
       el.h.textContent = pad(Math.floor(left % 86400 / 3600));
@@ -462,6 +469,11 @@
 
   /* Show only the parts that match the countdown state */
   .nov [data-when] { display: none; }
+  /* Once the week starts the counter goes and the label says the sale is live */
+  .nov[data-state='live'] .nov__pill { display: none; }
+  .nov__now .nov__live-dot { background: currentColor; }
+  .nov__now { align-items: center; gap: 10px; font-size: 24px; line-height: 32px; font-weight: 800; }
+  .nov[data-state='live'] .nov__now[data-when] { display: inline-flex; }
   .nov[data-state='before'] [data-when~='before'],
   .nov[data-state='live'] [data-when~='live'],
   .nov[data-state='ended'] [data-when~='ended'] { display: inline-flex; }
