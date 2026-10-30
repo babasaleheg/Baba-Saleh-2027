@@ -129,6 +129,8 @@ FIXES = {
     "Wolon Metallic Elbow Support": "cat:martial-arts-gear",
     "Cressi Clio Fins": "cat:diving",
     "Sweat T-Shirt": "cat:jackets",
+    "Judo Suit": "cat:karate",
+    "Fashion Doll": "cat:toys",
     "Track Swimming Backpack – Style 1": "cat:backpacks",
     "Track Swimming Backpack – Style 2": "cat:backpacks",
     "Track Swimming Backpack – Style 3": "cat:backpacks",
@@ -189,6 +191,9 @@ AUDIENCE_FIXES = {
     "Goalkeeper Jersey": "for:kids",
     "Crocs – Black, Navy Blue & White": "for:kids",
     "Comfort Clogs": "for:kids",
+    "Boat-Shaped Float": "for:kids",
+    "Star-Shaped Float": "for:kids",
+    "Fashion Doll": "for:kids",
     "Fashion Slide Slippers": "for:kids",
     "Track Half-Sleeve & Shorts Swimsuit": "for:men",
     # photo audit: adult models (kids' sizes, if any, are sold from the adult section)
