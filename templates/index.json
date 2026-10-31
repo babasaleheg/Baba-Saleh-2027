@@ -852,7 +852,11 @@
         "pinned": [
           "sponeta-tennis-table",
           "sponeta-s3-47i-indoor-table-tennis-table",
-          "sponeta-s43e-outdoor-tennis-table"
+          "sponeta-s43e-outdoor-tennis-table",
+          "loki-table-tennis-set"
+        ],
+        "hidden": [
+          "table-tennis-racket-set"
         ]
       }
     }

@@ -69,6 +69,10 @@
               {%- for product in section.settings.pinned -%}
                 {%- assign pinned_ids = pinned_ids | append: product.id | append: '|' -%}
               {%- endfor -%}
+              {%- comment -%} "Hide from this row" products are skipped (shown first counts as shown, not hidden) {%- endcomment -%}
+              {%- for product in section.settings.hidden -%}
+                {%- assign pinned_ids = pinned_ids | append: product.id | append: '|' -%}
+              {%- endfor -%}
               {%- for pass in (1..2) -%}
                 {%- comment -%} "Show these first" products lead each pass (in stock first, sold out with the sold out) {%- endcomment -%}
                 {%- for step in (1..2) -%}
@@ -141,6 +145,7 @@
     { "type": "range", "id": "columns_desktop", "min": 3, "max": 6, "step": 1, "default": 4, "label": "t:settings.columns_desktop" },
     { "type": "checkbox", "id": "show_view_all", "default": true, "label": "t:settings.show_view_all" },
     { "type": "product_list", "id": "pinned", "limit": 12, "label": "Show these first", "info": "Shown at the start of the first tab while in stock (sold out ones move to the end)." },
+    { "type": "product_list", "id": "hidden", "limit": 24, "label": "Hide from this row", "info": "These products never show in this row." },
     { "type": "checkbox", "id": "one_per_model", "default": false, "label": "One product per model", "info": "Colours sold as separate products of the same model (same item code) show once." },
     { "type": "color_scheme", "id": "color_scheme", "default": "scheme-1", "label": "t:settings.color_scheme" },
     { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48, "label": "t:settings.padding_top" },
