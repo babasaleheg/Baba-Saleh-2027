@@ -5,7 +5,8 @@
 
 Fixes (active and draft products):
   - Titles: HTML entities, underscores and doubled spaces cleaned; all-lowercase titles capitalised.
-  - Options: "size" -> "Size"; weight-only sizes -> "Weight"; team/sponsor "colours" -> "Design".
+  - Options: "size" -> "Size"; weight-only sizes -> "Weight"; band strengths -> "Resistance" (Light, Medium, ...);
+    team/sponsor "colours" -> "Design".
   - Option values: one spelling per size ("2X Large" -> "2XL", "Large" -> "L", "28_29" -> "28/29",
     "10 KG" -> "10 kg") and per colour ("navy blue" -> "Navy Blue", known typos fixed).
   - Arabic for option names and colour/size words (Color -> اللون, Navy Blue -> كحلي, ...).
@@ -51,9 +52,23 @@ DESIGNS = {"qatar alrways": "Qatar Airways", "emirates fly better": "Emirates Fl
 LETTER_SIZES = {"xxs": "2XS", "xs": "XS", "s": "S", "small": "S", "m": "M", "medium": "M", "l": "L", "large": "L",
                 "xl": "XL", "x large": "XL", "x-large": "XL", "xxl": "2XL", "2x large": "2XL", "2xl": "2XL", "xxxl": "3XL",
                 "3x large": "3XL", "3xl": "3XL", "4x large": "4XL", "4xl": "4XL", "5xl": "5XL", "6xl": "6XL", "7xl": "7XL",
-                "8xl": "8XL", "2xs": "2XS", "3xs": "3XS", "free size": "One Size", "one size": "One Size", "onesize": "One Size"}
-OPTION_AR = {"Size": "المقاس", "Color": "اللون", "Weight": "الوزن", "Design": "التصميم", "Gender": "النوع", "Brand": "الماركة"}
-VALUE_AR = {en: ar for en, ar in COLORS.values()} | {"One Size": "مقاس واحد", "Men": "رجالي", "Women": "حريمي", "Kids": "أطفال", "Unisex": "للجنسين"}
+                "8xl": "8XL", "xxxxl": "4XL", "xxxxxl": "5XL", "2xs": "2XS", "3xs": "3XS", "free size": "One Size", "one size": "One Size", "onesize": "One Size"}
+# Band strengths sold as "sizes" ("medium Resistance Bands") -> option "Resistance", one spelling each
+RESISTANCE = [(r"(x|extra)[\s-]*light", "Extra Light"), (r"medium[\s-]*high", "Medium-High"), (r"(x|extra)[\s-]*(heavy|high)", "Extra Heavy"),
+              (r"light", "Light"), (r"medium", "Medium"), (r"(high|heavy)", "High")]
+RESISTANCE_AR = {"Extra Light": "خفيف جدًا", "Light": "خفيف", "Medium": "متوسط", "Medium-High": "فوق المتوسط", "High": "عالي",
+                 "Extra Heavy": "عالي جدًا"}
+OPTION_AR = {"Size": "المقاس", "Color": "اللون", "Weight": "الوزن", "Design": "التصميم", "Gender": "النوع", "Brand": "الماركة",
+             "Resistance": "المقاومة", "Eyewear frame color": "لون الإطار"}
+VALUE_AR = {en: ar for en, ar in COLORS.values()} | {"One Size": "مقاس واحد", "Men": "رجالي", "Women": "حريمي", "Kids": "أطفال",
+                                                   "Unisex": "للجنسين"} | RESISTANCE_AR
+
+
+def norm_resistance(v):
+    low = v.strip().lower()
+    if not re.search(r"resistance|^(x|extra)?[\s-]*(light|medium|high|heavy)", low):
+        return None
+    return next((name for rx, name in RESISTANCE if re.search(rx, low)), None)
 
 DEPT_TEXT = {  # short, honest category descriptions (EN, AR)
     "dept:sports": ("Sports equipment chosen for training and match days.", "معدات رياضية مختارة للتمرين وأيام المباريات."),
@@ -113,7 +128,12 @@ def plan_options(p):
         low = name.lower()
         new_name = None
         changes = []
-        if low in ("size", "sizes", "المقاس"):
+        bands = [norm_resistance(v["name"]) for v in vals]
+        if low in ("size", "sizes", "resistance") and all(bands):
+            if name != "Resistance":
+                new_name = "Resistance"
+            changes = [(v["id"], b) for v, b in zip(vals, bands) if b != v["name"]]
+        elif low in ("size", "sizes", "المقاس"):
             fixed = [(v["id"], norm_size(v["name"])) for v in vals]
             if is_weight([f for _, f in fixed]):
                 new_name = "Weight"
@@ -205,8 +225,11 @@ def plan_order(p):
     for o in p["options"]:
         values = o["optionValues"]
         name = o["name"].lower()
-        if any(k in name for k in ("size", "مقاس", "weight", "وزن")) and len(values) > 1:
-            ordered = sorted(values, key=lambda v: size_key(v["name"]))
+        if any(k in name for k in ("size", "مقاس", "weight", "وزن", "resistance")) and len(values) > 1:
+            order = [n for _, n in RESISTANCE]
+            light_to_heavy = ["Extra Light", "Light", "Medium", "Medium-High", "High", "Extra Heavy"]
+            key = (lambda v: light_to_heavy.index(v["name"]) if v["name"] in order else 99) if name == "resistance" else (lambda v: size_key(v["name"]))
+            ordered = sorted(values, key=key)
             if [v["id"] for v in ordered] != [v["id"] for v in values]:
                 changed = True
                 values = ordered
