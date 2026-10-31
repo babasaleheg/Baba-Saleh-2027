@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -10,7 +19,7 @@
         "style": "bold",
         "color_scheme": "scheme-3",
         "button_label": "Chat on WhatsApp",
-        "button_link": "https://wa.me/201028305495",
+        "button_link": "https://wa.me/201093552015",
         "button_label_2": "Find a branch",
         "button_link_2": "#branches",
         "ribbon": "WhatsApp support, 5 branches, Delivery to all of Egypt, Cash on delivery, 7-day returns"
@@ -20,8 +29,8 @@
       "type": "main-contact",
       "settings": {
         "heading": "Talk to us",
-        "whatsapp": "+20 102 830 5495",
-        "phone": "+20 102 830 5495",
+        "whatsapp": "+20 109 355 2015",
+        "phone": "+20 109 355 2015",
         "email": "support@babasaleh.com",
         "hours": "Saturday – Thursday, 10 am – 10 pm",
         "form_heading": "Send us a message"
@@ -89,7 +98,7 @@
             "area": "Giza",
             "address": "5 Cairo University Street, Giza",
             "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Cairo+University+Street+Giza",
-            "whatsapp": "+20 102 830 5495",
+            "whatsapp": "+20 109 355 2015",
             "image": "shopify://shop_images/bs-branch-giza.png"
           }
         },
@@ -100,7 +109,7 @@
             "area": "Cairo",
             "address": "Darna Towers, 27, Maadi, Cairo",
             "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Darna+Towers+Maadi",
-            "whatsapp": "+20 102 830 5495",
+            "whatsapp": "+20 109 355 2015",
             "image": "shopify://shop_images/bs-branch-maadi.png"
           }
         },
@@ -111,7 +120,7 @@
             "area": "Giza",
             "address": "La Cite Mall, 6th of October City",
             "map_url": "https://maps.app.goo.gl/xjcaiujnHjc3Ntww8",
-            "whatsapp": "+20 102 830 5495",
+            "whatsapp": "+20 109 355 2015",
             "image": "shopify://shop_images/bs-branch-october.png",
             "map_query": "بابا صالح La Cité Mall, 6th of October City"
           }
@@ -123,7 +132,7 @@
             "area": "Giza",
             "address": "Block 32, 2 Talaat Harb Street, Imbaba",
             "map_url": "https://maps.google.com/?q=Baba+Saleh+Sports+Imbaba",
-            "whatsapp": "+20 102 830 5495",
+            "whatsapp": "+20 109 355 2015",
             "image": "shopify://shop_images/bs-branch-imbaba.png"
           }
         },
@@ -134,7 +143,7 @@
             "area": "Giza",
             "address": "50 Al Ahram Street, Giza",
             "map_url": "https://maps.app.goo.gl/EN6BNcv8vnVpJhpGA",
-            "whatsapp": "+20 102 830 5495",
+            "whatsapp": "+20 109 355 2015",
             "image": "shopify://shop_images/bs-branch-ahram.jpg",
             "phone": "+20 3 5726955"
           }

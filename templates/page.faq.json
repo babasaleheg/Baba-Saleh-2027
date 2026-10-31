@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -91,7 +100,7 @@
         "heading": "Frequently asked questions",
         "text": "<p>Quick answers about delivery, payment, returns and our stores.</p>",
         "button_label": "Chat on WhatsApp",
-        "button_link": "https://wa.me/201028305495",
+        "button_link": "https://wa.me/201093552015",
         "show_search": true,
         "open_first": false,
         "structured_data": true,

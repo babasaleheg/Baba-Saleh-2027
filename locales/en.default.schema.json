@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "settings": {
     "alignment": "Alignment",
@@ -663,7 +672,7 @@
       "name": "Branch locations",
       "phone_label": "Phone label",
       "structured_data": "Structured data",
-      "whatsapp_info": "Number with country code, e.g. +20 102 830 5495",
+      "whatsapp_info": "Number with country code, e.g. +20 109 355 2015",
       "whatsapp_label": "Whatsapp label",
       "show_map": "Show interactive map"
     },
@@ -675,7 +684,7 @@
       "linkedin": "Linkedin",
       "name": "Contact page",
       "show_social": "Show social",
-      "whatsapp_info": "Number with country code, e.g. +20 102 830 5495",
+      "whatsapp_info": "Number with country code, e.g. +20 109 355 2015",
       "whatsapp_label": "Whatsapp label"
     },
     "content": {

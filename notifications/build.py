@@ -19,7 +19,7 @@ BLUE = INK  # links: brand black (no blue in emails)
 SURFACE, MUTED, LINE, WHITE = "#F4F4F5", "#6B7280", "#E4E4E7", "#FFFFFF"
 LOGO = "https://babasaleh.myshopify.com/cdn/shop/files/baba-saleh-logo-desktop.png"
 SITE = "https://babasaleh.com"
-WA_LINK, WA_TEXT = "https://wa.me/201028305495", "+20 102 830 5495"
+WA_LINK, WA_TEXT = "https://wa.me/201093552015", "+20 109 355 2015"
 EMAIL = "support@babasaleh.com"
 ADMIN = "https://admin.shopify.com/store/x1hnz9-tu"
 FONTS_LINK = ("https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700"

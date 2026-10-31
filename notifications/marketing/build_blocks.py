@@ -16,7 +16,7 @@ OUT = Path(__file__).resolve().parent
 INK, YELLOW, CREAM, MUTED, LINE = "#0A0A0A", "#FEBD19", "#FFF6DD", "#71717A", "#E4E4E7"
 EN = "'Poppins', Arial, Helvetica, sans-serif"
 AR = "'Cairo', Tahoma, Arial, sans-serif"
-WA = "https://wa.me/201028305495"
+WA = "https://wa.me/201093552015"
 NAME = '{{ customer.first_name | default: "there" }}'
 NAME_AR = '<span style="direction:ltr;unicode-bidi:embed;">{{ customer.first_name }}</span>'
 
@@ -94,7 +94,7 @@ def whatsapp():
     <p dir="rtl" style="direction:rtl;unicode-bidi:embed;margin:2px 0 14px;font-family:{AR};font-size:14px;line-height:1.7;color:{INK};font-weight:600;">عندك سؤال؟ كلمنا على واتساب</p>
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
       <td style="background:{INK};border-radius:999px;">
-        <a href="{WA}" style="display:inline-block;padding:12px 26px;font-family:{EN};font-size:14px;font-weight:700;color:{YELLOW};text-decoration:none;{LTR_ISO}">+20 102 830 5495</a>
+        <a href="{WA}" style="display:inline-block;padding:12px 26px;font-family:{EN};font-size:14px;font-weight:700;color:{YELLOW};text-decoration:none;{LTR_ISO}">+20 109 355 2015</a>
       </td>
     </tr></table>
     <p style="margin:16px 0 0;font-family:{EN};font-size:12px;line-height:1.6;color:{MUTED};">Baba Saleh Sports &middot; 5 branches in Cairo &amp; Giza</p>

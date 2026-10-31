@@ -25,5 +25,5 @@ Order online and pay cash on delivery, with delivery to all governorates and 7-d
 
 **Text block (bottom):**
 
-Questions? WhatsApp us on +20 102 830 5495 or visit one of our 5 branches.
-عندك سؤال؟ كلمنا واتساب على 01028305495 أو زور أي فرع من فروعنا الخمسة.
+Questions? WhatsApp us on +20 109 355 2015 or visit one of our 5 branches.
+عندك سؤال؟ كلمنا واتساب على 01093552015 أو زور أي فرع من فروعنا الخمسة.

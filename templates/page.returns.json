@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -8,7 +17,7 @@
         "title": "Easy *returns* & refunds",
         "subtitle": "<p>Changed your mind or need another size? Here's how returns, exchanges and refunds work.</p>",
         "button_label": "Start a return on WhatsApp",
-        "button_link": "https://wa.me/201028305495",
+        "button_link": "https://wa.me/201093552015",
         "style": "bold",
         "color_scheme": "scheme-3",
         "ribbon": "7-day returns, Free exchanges on faulty items, Refunds to your original payment, Return in any branch"
