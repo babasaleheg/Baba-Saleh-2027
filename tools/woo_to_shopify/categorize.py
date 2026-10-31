@@ -192,6 +192,8 @@ AUDIENCE_FIXES = {
     "Goalkeeper Jersey": "for:kids",
     "Crocs – Black, Navy Blue & White": "for:kids",
     "Comfort Clogs": "for:kids",
+    "Cartoon Swim Ring – 56 cm": "for:kids",
+    "Inflatable Arm Bands": "for:kids",
     "Boat-Shaped Float": "for:kids",
     "Star-Shaped Float": "for:kids",
     "Fashion Doll": "for:kids",
@@ -231,6 +233,8 @@ AUDIENCE_FIXES = {
     "Sports Training Mesh Tank Vest": "for:men",
 }
 
+# Categories that are always for children: a product there with no audience gets for:kids
+KIDS_CATS = ("cat:beach-toys", "cat:toys", "cat:kids-swimwear")
 AUDIENCE = [(r"\b(kids?|boys?|girls?|baby(?! blue)|junior|children)\b", "for:kids"), (r"\b(women|women’s|women's|ladies|hijab)\b", "for:women"), (r"\b(men|men’s|men's)\b", "for:men")]
 
 PRODUCTS_Q = """query($a: String) { products(first: 250, after: $a, query: "status:active") {
@@ -302,6 +306,9 @@ def plan(p, similar=None):
             if re.search(rx, p["title"].lower()):
                 tags.append(tag)
                 break
+        else:
+            if target in KIDS_CATS:
+                tags.append("for:kids")
     tags = sorted(set(tags))
     if tags == sorted(set(p["tags"])) and p.get("productType") == TAX[target]["type"]:
         return None
