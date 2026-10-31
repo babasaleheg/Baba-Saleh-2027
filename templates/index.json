@@ -824,6 +824,32 @@
         "padding_top": 24,
         "padding_bottom": 24
       }
+    },
+    "table_tennis": {
+      "type": "featured-collection",
+      "blocks": {
+        "tab_1": {
+          "type": "tab",
+          "settings": {
+            "collection": "ping-pong-equipment",
+            "label": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_1"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Table tennis",
+        "products_to_show": 12,
+        "columns_desktop": 5,
+        "show_view_all": true,
+        "one_per_model": false,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
     }
   },
   "order": [
@@ -837,6 +863,7 @@
     "flash_sale",
     "categories",
     "swimming",
+    "table_tennis",
     "promos",
     "sportswear",
     "brands",
