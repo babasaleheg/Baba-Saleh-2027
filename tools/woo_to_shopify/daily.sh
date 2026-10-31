@@ -12,6 +12,7 @@ step() {
 }
 step categorize.py
 step product_quality.py
+step zero_price.py
 step collection_audit.py
 step sync.py seo
 step seo_bilingual.py
