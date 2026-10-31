@@ -129,6 +129,7 @@ FIXES = {
     "Wolon Metallic Elbow Support": "cat:martial-arts-gear",
     "Cressi Clio Fins": "cat:diving",
     "Sweat T-Shirt": "cat:jackets",
+    "Boys’ Carbon Stretch Competition Jammers": "cat:kids-swimwear",
     "Judo Suit": "cat:karate",
     "Fashion Doll": "cat:toys",
     "Track Swimming Backpack – Style 1": "cat:backpacks",
