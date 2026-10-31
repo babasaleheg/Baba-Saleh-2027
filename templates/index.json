@@ -848,7 +848,12 @@
         "one_per_model": false,
         "color_scheme": "scheme-1",
         "padding_top": 40,
-        "padding_bottom": 40
+        "padding_bottom": 40,
+        "pinned": [
+          "sponeta-tennis-table",
+          "sponeta-s3-47i-indoor-table-tennis-table",
+          "sponeta-s43e-outdoor-tennis-table"
+        ]
       }
     }
   },

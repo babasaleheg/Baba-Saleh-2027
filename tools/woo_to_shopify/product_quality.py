@@ -183,7 +183,7 @@ OWN_VENDORS = {"", "baba saleh", "baba saleh sports egypt", "brands", "brand", "
 BRANDS = ["Venum", "Track", "Kiko", "La Mer", "Lamer", "LiveUp", "LivePro", "Kuna", "Wilson", "Dunlop", "Cougar", "Wish",
           "Everlast", "Cressi", "Spurt", "Manta", "Speedo", "Arena", "Adidas", "Nike", "Puma", "Reebok", "Asics", "New Balance",
           "Skechers", "Mikasa", "Molten", "Spalding", "Donic", "Butterfly", "Stiga", "Yonex", "Head", "Babolat", "Clinch",
-          "Reusch", "Fox 40", "Arawaza", "Wesing", "Kimo", "Mosha", "Gamma", "Odea", "Mondial", "Heats", "Manizia", "Fox"]
+          "Reusch", "Sponeta", "Fox 40", "Arawaza", "Wesing", "Kimo", "Mosha", "Gamma", "Odea", "Mondial", "Heats", "Manizia", "Fox"]
 BRAND_NAMES = {"lamer": "La Mer", "la mer": "La Mer", "liveup": "LiveUp", "livepro": "LivePro", "fox": "Fox"}
 
 
