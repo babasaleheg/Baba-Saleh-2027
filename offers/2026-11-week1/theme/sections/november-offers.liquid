@@ -59,6 +59,7 @@
     </div>
 
     <div class="nov__clock">
+      <p class="nov__teaser" role="status"><i aria-hidden="true"></i>{% if is_ar %}عروض نوفمبر خلاص فاضل عليها دقايق{% else %}The November Sale starts in just minutes{% endif %}</p>
       <p class="nov__clock-label">
         <span data-when="before">{% if is_ar %}العروض تبدأ خلال{% else %}Offers start in{% endif %}</span>
         <span data-when="live" class="nov__now"><i class="nov__live-dot" aria-hidden="true"></i>{% if is_ar %}عروض نوفمبر بدأت دلوقتي{% else %}The November Sale is now live{% endif %}</span>
@@ -115,6 +116,9 @@
           document.querySelectorAll('.nov-price__soon').forEach(function (n) { n.remove(); });
         }
       }
+      // Last 30 minutes before the start: show the teaser
+      var soon = state === 'before' && start - now <= 30 * 60 * 1000;
+      if (soon !== root.hasAttribute('data-soon')) root.toggleAttribute('data-soon', soon);
       var left = Math.max(0, Math.floor(((state === 'before' ? start : end) - now) / 1000));
       el.d.textContent = pad(Math.floor(left / 86400));
       el.h.textContent = pad(Math.floor(left % 86400 / 3600));
@@ -469,6 +473,14 @@
 
   /* Show only the parts that match the countdown state */
   .nov [data-when] { display: none; }
+  /* Last 30 minutes before the start: a pulsing teaser above the counter */
+  .nov__teaser { display: none; align-items: center; gap: 10px; margin: 0 0 12px; padding: 10px 18px; border-radius: 999px;
+    background: #0a0a0a; color: #febd19; font-weight: 800; font-size: 18px; line-height: 26px; animation: nov-teaser 1.4s ease-in-out infinite; }
+  .nov__teaser i { width: 10px; height: 10px; border-radius: 50%; background: currentColor; flex: none; }
+  .nov[data-state='before'][data-soon] .nov__teaser { display: inline-flex; }
+  @keyframes nov-teaser { 50% { transform: scale(1.04); box-shadow: 0 0 0 6px rgba(10, 10, 10, 0.15); } }
+  @media (prefers-reduced-motion: reduce) { .nov__teaser { animation: none; } }
+
   /* Once the week starts the counter goes and the label says the sale is live */
   .nov[data-state='live'] .nov__pill { display: none; }
   .nov__now .nov__live-dot { background: currentColor; }

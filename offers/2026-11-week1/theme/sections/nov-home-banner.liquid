@@ -51,6 +51,7 @@
       </div>
 
       <div class="novh__clock">
+        <p class="novh__teaser" role="status"><i aria-hidden="true"></i>{% if is_ar %}عروض نوفمبر خلاص فاضل عليها دقايق{% else %}The November Sale starts in just minutes{% endif %}</p>
         <p class="novh__clock-label">
           <span data-when="before">{% if is_ar %}العروض تبدأ خلال{% else %}Offers start in{% endif %}</span>
           <span data-when="live" class="novh__now"><i class="novh__dot" aria-hidden="true"></i>{% if is_ar %}عروض نوفمبر بدأت دلوقتي{% else %}The November Sale is now live{% endif %}</span>
@@ -107,6 +108,9 @@
             document.querySelectorAll('.nov-price__soon').forEach(function (n) { n.remove(); });
           }
         }
+        // Last 30 minutes before the start: show the teaser
+        var soon = state === 'before' && start - now <= 30 * 60 * 1000;
+        if (soon !== root.hasAttribute('data-soon')) root.toggleAttribute('data-soon', soon);
         var left = Math.floor(((state === 'before' ? start : end) - now) / 1000);
         el.d.textContent = pad(Math.floor(left / 86400));
         el.h.textContent = pad(Math.floor(left % 86400 / 3600));
@@ -271,6 +275,14 @@
   .novh__cta .icon { width: 20px; height: 20px; }
 
   .novh [data-when] { display: none; }
+  /* Last 30 minutes before the start: a pulsing teaser above the counter */
+  .novh__teaser { display: none; align-items: center; gap: 10px; margin: 0 0 12px; padding: 10px 18px; border-radius: 999px;
+    background: #0a0a0a; color: #febd19; font-weight: 800; font-size: 18px; line-height: 26px; animation: novh-teaser 1.4s ease-in-out infinite; }
+  .novh__teaser i { width: 10px; height: 10px; border-radius: 50%; background: currentColor; flex: none; }
+  .novh[data-state='before'][data-soon] .novh__teaser { display: inline-flex; }
+  @keyframes novh-teaser { 50% { transform: scale(1.04); box-shadow: 0 0 0 6px rgba(10, 10, 10, 0.15); } }
+  @media (prefers-reduced-motion: reduce) { .novh__teaser { animation: none; } }
+
   /* Once the week starts the counter goes and the label says the sale is live */
   .novh[data-state='live'] .novh__pill { display: none; }
   .novh__now .novh__dot { background: currentColor; }
