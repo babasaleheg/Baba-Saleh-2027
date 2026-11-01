@@ -1,9 +1,14 @@
-"""Show where each order came from (Google, Instagram, ChatGPT, direct...) on the order page.
+"""Order page notes for staff: where the customer came from, their visit and their earlier orders.
 
-Writes the order metafield babasaleh.came_from ("Came from", pinned so it shows on the order
-page) and the same on the draft orders that hold cancelled WooCommerce orders, plus
-babasaleh.visit_details ("Visit details") on Shopify orders, e.g.
-    Landed on Beige Button Up Vest page; ordered 2 min later; 1 visit; first order
+Short, pinned, read-only fields (owned by this app, so staff see them but can't edit them), each
+short enough to show in full on the phone:
+    Came from        Google search · then came back directly
+    Landing page     Beige Button Up Vest page
+    Time to order    2 min after the first visit
+    Visits           1 visit
+    Customer's order 2nd order
+    Previous orders  #3289 · 31 Oct 2026 · EGP 370 · Cancelled   (one line each, newest first)
+"Came from" is also set on the draft orders that hold cancelled WooCommerce orders.
 
     python3 came_from.py            # new Shopify orders (from Shopify's visit tracking)
     python3 came_from.py --woo      # also past WooCommerce orders (from Woo's order attribution)
@@ -18,20 +23,34 @@ from urllib.parse import urlparse
 from sync import gql, log
 
 D = os.environ.get("DATA_DIR", "woo_data")
-NS, KEY, VISIT_KEY = "babasaleh", "came_from", "visit_details"
+NS, KEY = "$app:babasaleh", "came_from"   # app-owned: read-only for staff in Shopify admin
+OLD_NS = "babasaleh"                       # the earlier, editable fields (copied over, then removed)
+FIELDS = [  # key, name, type, description (pinned in this order on the order page)
+    ("came_from", "Came from", "single_line_text_field", "Where the customer came from before ordering"),
+    ("landing_page", "Landing page", "single_line_text_field", "The first page the customer saw"),
+    ("time_to_order", "Time to order", "single_line_text_field", "Time from the first visit to the order"),
+    ("visits", "Visits", "single_line_text_field", "Number of visits before ordering"),
+    ("customer_order", "Customer's order", "single_line_text_field", "Which order of this customer it is"),
+    ("previous_orders", "Previous orders", "multi_line_text_field", "The customer's earlier orders, newest first"),
+]
+VISIT_KEYS = ("landing_page", "time_to_order", "visits", "customer_order")
 DRY = "--dry-run" in sys.argv
 
 DEFINE = """mutation($d: MetafieldDefinitionInput!) { metafieldDefinitionCreate(definition: $d) {
   createdDefinition { id } userErrors { code message } } }"""
 SET = """mutation($m: [MetafieldsSetInput!]!) { metafieldsSet(metafields: $m) { userErrors { field message } } }"""
-ORDERS_Q = """query($a: String) { orders(first: 100, after: $a, reverse: true) { pageInfo { hasNextPage endCursor }
-  nodes { id name processedAt came: metafield(namespace: "babasaleh", key: "came_from") { value }
-    visit: metafield(namespace: "babasaleh", key: "visit_details") { value }
+ORDERS_Q = """query($a: String) { orders(first: 50, after: $a, reverse: true) { pageInfo { hasNextPage endCursor }
+  nodes { id name createdAt processedAt
+    notes: metafields(first: 10, namespace: "$app:babasaleh") { nodes { key value } }
+    old: metafield(namespace: "babasaleh", key: "came_from") { value }
+    customer { orders(first: 15, sortKey: CREATED_AT, reverse: true) { nodes { id name createdAt cancelledAt
+      displayFulfillmentStatus currentTotalPriceSet { shopMoney { amount } } } } }
     customerJourneySummary { ready customerOrderIndex momentsCount { count }
       firstVisit { occurredAt landingPage source sourceType referrerUrl utmParameters { source medium campaign } }
       lastVisit { source sourceType referrerUrl utmParameters { source medium campaign } } } } } }"""
-HAS_Q = """query($ids: [ID!]!) { nodes(ids: $ids) { id ... on Order { came: metafield(namespace: "babasaleh", key: "came_from") { value } }
-  ... on DraftOrder { came: metafield(namespace: "babasaleh", key: "came_from") { value } } } }"""
+HAS_Q = """query($ids: [ID!]!) { nodes(ids: $ids) { id ... on Order { came: metafield(namespace: "$app:babasaleh", key: "came_from") { value } }
+  ... on DraftOrder { came: metafield(namespace: "$app:babasaleh", key: "came_from") { value }
+    old: metafield(namespace: "babasaleh", key: "came_from") { value } } } }"""
 
 NAMES = [  # (text found in the source / referrer, label), most specific first
     ("googlequicksearchbox", "Google app"), ("com.google.android.gm", "Gmail"), ("mail.google", "Gmail"),
@@ -61,12 +80,11 @@ def label(source, kind=None, medium=None, campaign=None):
 
 
 def ensure_definitions():
-    defs = [("Came from", KEY, owner, "Where the customer came from before ordering (Google, Instagram, ChatGPT, direct...)")
-            for owner in ("ORDER", "DRAFTORDER")]
-    defs.append(("Visit details", VISIT_KEY, "ORDER", "First page seen, time to order, number of visits, which order of the customer"))
-    for name, key, owner, desc in defs:
-        d = {"name": name, "namespace": NS, "key": key, "type": "single_line_text_field", "ownerType": owner,
-             "description": desc, "pin": True}
+    defs = [(name, key, typ, "ORDER", desc) for key, name, typ, desc in FIELDS]
+    defs.append(("Came from", KEY, "single_line_text_field", "DRAFTORDER", FIELDS[0][3]))
+    for name, key, typ, owner, desc in defs:
+        d = {"name": name, "namespace": NS, "key": key, "type": typ, "ownerType": owner,
+             "description": desc, "pin": True, "access": {"admin": "MERCHANT_READ"}}
         if DRY:
             continue
         errs = gql(DEFINE, {"d": d})["metafieldDefinitionCreate"]["userErrors"]
@@ -74,9 +92,13 @@ def ensure_definitions():
             log("definition", owner, errs)
 
 
+TYPES = {key: typ for key, _, typ, _ in FIELDS}
+
+
 def write(rows, stats, key=KEY):
     for i in range(0, len(rows), 25):
-        batch = [{"ownerId": oid, "namespace": NS, "key": key, "type": "single_line_text_field", "value": v[:255]}
+        batch = [{"ownerId": oid, "namespace": NS, "key": key, "type": TYPES[key],
+                  "value": v[:255] if TYPES[key] == "single_line_text_field" else v}
                  for oid, v in rows[i:i + 25]]
         if not DRY:
             errs = gql(SET, {"m": batch})["metafieldsSet"]["userErrors"]
@@ -137,51 +159,77 @@ def ago(seconds):
     return f"{round(m / 1440)} days"
 
 
-def visit_details(o, j):
+def visit_fields(o, j):
+    """{landing_page, time_to_order, visits, customer_order} for an order with visit tracking."""
+    out = {}
     first = j.get("firstVisit") or j.get("lastVisit")
-    if not first:
-        return None
-    out = [f"Landed on {page_name(first.get('landingPage'))}"]
-    if first.get("occurredAt") and o.get("processedAt"):
-        t = lambda s: datetime.fromisoformat(s.replace("Z", "+00:00"))
-        out.append(f"ordered {ago((t(o['processedAt']) - t(first['occurredAt'])).total_seconds())} later")
+    if first:
+        out["landing_page"] = page_name(first.get("landingPage"))[:1].upper() + page_name(first.get("landingPage"))[1:]
+        if first.get("occurredAt") and o.get("processedAt"):
+            t = lambda s: datetime.fromisoformat(s.replace("Z", "+00:00"))
+            out["time_to_order"] = f"{ago((t(o['processedAt']) - t(first['occurredAt'])).total_seconds())} after the first visit"
     n = (j.get("momentsCount") or {}).get("count")
     if n:
-        out.append(f"{n} visit{'s' * (n != 1)}")
+        out["visits"] = f"{n} visit{'s' * (n != 1)}"
     k = j.get("customerOrderIndex")
     if k:
-        out.append("first order" if k == 1 else f"{k}{'th' if 10 <= k % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(k % 10, 'th')} order")
-    return "; ".join(out)
+        out["customer_order"] = "1st order" if k == 1 else f"{k}{'th' if 10 <= k % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(k % 10, 'th')} order"
+    return out
+
+
+STATUS = {"FULFILLED": "Shipped", "PARTIALLY_FULFILLED": "Partly shipped", "UNFULFILLED": "Open", "ON_HOLD": "On hold",
+          "IN_PROGRESS": "Open", "SCHEDULED": "Open", "RESTOCKED": "Returned"}
+
+
+def previous_orders(o):
+    """One short line per earlier order of the same customer, newest first (up to 10)."""
+    if not o.get("customer"):
+        return "No customer on this order"
+    before = [x for x in o["customer"]["orders"]["nodes"] if x["id"] != o["id"] and x["createdAt"] < o["createdAt"]]
+    if not before:
+        return "None (first order)"
+    lines = []
+    for x in before[:10]:
+        when = datetime.fromisoformat(x["createdAt"].replace("Z", "+00:00")).strftime("%-d %b %Y")
+        total = float(x["currentTotalPriceSet"]["shopMoney"]["amount"])
+        status = "Cancelled" if x["cancelledAt"] else STATUS.get(x["displayFulfillmentStatus"], x["displayFulfillmentStatus"].title())
+        lines.append(f"{x['name']} · {when} · EGP {total:,.0f} · {status}")
+    return "\n".join(lines)
 
 
 def shopify_orders(stats):
-    rows, visits, after = [], [], None
+    rows = {key: [] for key, *_ in FIELDS}
+    after = None
     while True:
         page = gql(ORDERS_Q, {"a": after})["orders"]
         for o in page["nodes"]:
+            have = {m["key"] for m in o["notes"]["nodes"]}
+            if "previous_orders" not in have:
+                rows["previous_orders"].append((o["id"], previous_orders(o)))
+            if KEY not in have and o["old"]:
+                rows[KEY].append((o["id"], o["old"]["value"]))  # from the earlier editable field
+                have.add(KEY)
             j = o["customerJourneySummary"]
             if j is None or not j["ready"]:
                 continue  # Shopify hasn't worked it out yet (or the order wasn't placed online); try tomorrow
-            if not o["visit"]:
-                v = visit_details(o, j)
-                if v:
-                    visits.append((o["id"], v))
-            if o["came"]:
+            for key, value in visit_fields(o, j).items():
+                if key not in have:
+                    rows[key].append((o["id"], value))
+            if KEY in have:
                 continue
             first, last = visit_label(j["firstVisit"]), visit_label(j["lastVisit"])
             value = first or last or "Unknown (no visit recorded)"
             if first and last and last != first:
                 value += " · then came back directly" if last == "Direct" else f" · then came back via {last}"
-            rows.append((o["id"], value))
+            rows[KEY].append((o["id"], value))
         if not page["pageInfo"]["hasNextPage"]:
             break
         after = page["pageInfo"]["endCursor"]
-    stats["shopify_orders"] = len(rows)
-    stats["visit_details"] = len(visits)
-    for oid, v in (rows + visits)[:5]:
-        log("example", oid.split("/")[-1], v)
-    write(rows, stats)
-    write(visits, stats, VISIT_KEY)
+    for key, items in rows.items():
+        stats[key] = len(items)
+        for oid, v in items[:2]:
+            log("example", key, oid.split("/")[-1], v.replace("\n", " | "))
+        write(items, stats, key)
 
 
 def woo_orders(stats):

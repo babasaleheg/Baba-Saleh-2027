@@ -1,6 +1,6 @@
 """Show staff where the stock for each item of an order is, on the order page.
 
-Writes the order metafield babasaleh.stock_from ("Stock from", pinned, shown under "Came from"):
+Writes the order metafield $app:babasaleh.stock_from ("Stock from", pinned, read-only for staff):
 one line per item with the locations that hold it and how many, most first, e.g.
     Track 3D Slip Swimsuit - Green / M ×1: October Branch 3 · Maadi Branch 1
 Open (not yet fulfilled) orders of the last 30 days are refreshed on every run, so the note follows
@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 
 from sync import gql, log
 
-NS, KEY = "babasaleh", "stock_from"
+NS, KEY = "$app:babasaleh", "stock_from"   # app-owned: staff see it but can't edit it
 DRY = "--dry-run" in sys.argv
 OPEN = {"UNFULFILLED", "PARTIALLY_FULFILLED", "ON_HOLD", "IN_PROGRESS", "OPEN", "PENDING_FULFILLMENT", "SCHEDULED"}
 # the app can't read location names (no read_locations scope); these are the store's locations
@@ -28,7 +28,7 @@ DEFINE = """mutation($d: MetafieldDefinitionInput!) { metafieldDefinitionCreate(
   createdDefinition { id } userErrors { code message } } }"""
 SET = """mutation($m: [MetafieldsSetInput!]!) { metafieldsSet(metafields: $m) { userErrors { field message } } }"""
 ORDERS_Q = """query($a: String, $q: String) { orders(first: 25, after: $a, query: $q) { pageInfo { hasNextPage endCursor }
-  nodes { id name cancelledAt displayFulfillmentStatus note: metafield(namespace: "babasaleh", key: "stock_from") { value }
+  nodes { id name cancelledAt displayFulfillmentStatus note: metafield(namespace: "$app:babasaleh", key: "stock_from") { value }
     lineItems(first: 50) { nodes { name quantity variant { inventoryItem { tracked
       inventoryLevels(first: 20) { nodes { location { id } quantities(names: ["on_hand"]) { quantity } } } } } } } } } }"""
 
@@ -54,7 +54,7 @@ def line(li):
 def main():
     if not DRY:
         errs = gql(DEFINE, {"d": {"name": "Stock from", "namespace": NS, "key": KEY, "type": "multi_line_text_field",
-                                  "ownerType": "ORDER", "pin": True,
+                                  "ownerType": "ORDER", "pin": True, "access": {"admin": "MERCHANT_READ"},
                                   "description": "Where the stock for each item is (location and pieces on hand), for staff"}}
                    )["metafieldDefinitionCreate"]["userErrors"]
         if errs and not any(e["code"] == "TAKEN" for e in errs):
