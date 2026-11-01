@@ -65,6 +65,10 @@
         "judge_me_reviews_preview_badge_hRy6eT": {
           "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {}
+        },
+        "judge_me_reviews_preview_badge_EYW9dC": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
         }
       },
       "block_order": [
@@ -77,7 +81,8 @@
         "description",
         "shipping",
         "share",
-        "judge_me_reviews_preview_badge_hRy6eT"
+        "judge_me_reviews_preview_badge_hRy6eT",
+        "judge_me_reviews_preview_badge_EYW9dC"
       ],
       "settings": {
         "gallery_layout": "grid",
@@ -86,6 +91,10 @@
     },
     "size_guide": {
       "type": "size-guide",
+      "settings": {}
+    },
+    "size_finder": {
+      "type": "size-finder",
       "settings": {}
     },
     "related": {
@@ -115,10 +124,6 @@
       "block_order": [
         "judge_me_reviews_review_widget_MUPNrE"
       ],
-      "settings": {}
-    },
-    "size_finder": {
-      "type": "size-finder",
       "settings": {}
     }
   },
