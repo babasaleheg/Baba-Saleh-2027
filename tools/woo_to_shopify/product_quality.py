@@ -14,8 +14,10 @@ Fixes (active and draft products):
     built from the title plus brand/colour/category; Shopify redirects the old address.
   - Empty descriptions get a short English + Arabic description from the category.
 
+  - Stock tracking: switched on wherever it is off (rule 10); quantities are never changed (rule 8).
+
 Reported for review (quality_report.json): missing Arabic titles, no image, price 0, no category,
-stock not tracked.
+stock tracking that couldn't be switched on.
 """
 import html, json, os, re, sys
 from collections import Counter
@@ -31,7 +33,8 @@ PRODUCTS_Q = """query($a: String) { products(first: 100, after: $a, query: "stat
   pageInfo { hasNextPage endCursor }
   nodes { id title handle status vendor productType tags descriptionHtml totalInventory
     options { id name optionValues { id name } }
-    featuredMedia { id } variants(first: 100) { nodes { price sku inventoryItem { tracked } } } } } }"""
+    featuredMedia { id } variants(first: 100) { nodes { price sku inventoryItem { id tracked } } } } } }"""
+TRACK = """mutation($id: ID!) { inventoryItemUpdate(id: $id, input: { tracked: true }) { userErrors { message } } }"""
 UPDATE = """mutation($p: ProductUpdateInput!) { productUpdate(product: $p) { product { handle } userErrors { field message } } }"""
 OPTION_UPDATE = """mutation($pid: ID!, $o: OptionUpdateInput!, $v: [OptionValueUpdateInput!]) {
   productOptionUpdate(productId: $pid, option: $o, optionValuesToUpdate: $v) { userErrors { field message } } }"""
@@ -334,10 +337,21 @@ def main():
             report["price_zero_active"].append(p["title"])
         if not any(t.startswith("cat:") for t in p["tags"]):
             report["no_category"].append(p["title"])
-        # stock not tracked: the product never sells out and is hidden from the Inventory page (only reported:
-        # turning tracking on is the owner's call, CLAUDE.md rule 8)
-        if p["status"] == "ACTIVE" and any(not v["inventoryItem"]["tracked"] for v in p["variants"]["nodes"]):
-            report["stock_not_tracked"].append(p["title"])
+        # Every product tracks stock (CLAUDE.md rule 10): untracked ones never sell out and are hidden from the
+        # Inventory page. Tracking is switched on; the quantities themselves are never touched (rule 8).
+        untracked = [v["inventoryItem"]["id"] for v in p["variants"]["nodes"] if not v["inventoryItem"]["tracked"]]
+        if untracked:
+            if not dry:
+                for iid in untracked:
+                    errs = gql(TRACK, {"id": iid})["inventoryItemUpdate"]["userErrors"]
+                    if errs:
+                        log(f"  tracking error {p['title'][:40]}: {errs}")
+                        report["stock_not_tracked"].append(p["title"])
+                        break
+                else:
+                    stats["stock tracking switched on"] += len(untracked)
+            else:
+                report["stock_not_tracked"].append(p["title"])
     os.makedirs(os.path.dirname(REPORT), exist_ok=True)
     json.dump(report, open(REPORT, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     log(f"quality {dict(stats)} | to review: " + ", ".join(f"{k}={len(v)}" for k, v in report.items()) + f" -> {REPORT}")
