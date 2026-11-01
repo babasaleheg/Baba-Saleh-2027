@@ -98,6 +98,7 @@
     <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
 
     {{ content_for_header }}
+    {%- render 'judgeme-ar' -%}
   </head>
 
   <body class="color-scheme-1 template-{{ template.name | handle }}{% if settings.animations_enabled %} has-animations{% endif %}">

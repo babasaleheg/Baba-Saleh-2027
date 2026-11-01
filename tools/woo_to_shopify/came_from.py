@@ -12,6 +12,7 @@ short enough to show in full on the phone:
 
     python3 came_from.py            # new Shopify orders (from Shopify's visit tracking)
     python3 came_from.py --woo      # also past WooCommerce orders (from Woo's order attribution)
+    python3 came_from.py --refresh-previous   # rewrite every "Previous orders" note
     python3 came_from.py --dry-run
 
 Orders that already have a value are left alone, so it is safe to run every night.
@@ -44,7 +45,7 @@ ORDERS_Q = """query($a: String) { orders(first: 50, after: $a, reverse: true) { 
     notes: metafields(first: 10, namespace: "$app:babasaleh") { nodes { key value } }
     old: metafield(namespace: "babasaleh", key: "came_from") { value }
     customer { orders(first: 15, sortKey: CREATED_AT, reverse: true) { nodes { id name createdAt cancelledAt
-      displayFulfillmentStatus currentTotalPriceSet { shopMoney { amount } } } } }
+      displayFulfillmentStatus totalPriceSet { shopMoney { amount } } } } }
     customerJourneySummary { ready customerOrderIndex momentsCount { count }
       firstVisit { occurredAt landingPage source sourceType referrerUrl utmParameters { source medium campaign } }
       lastVisit { source sourceType referrerUrl utmParameters { source medium campaign } } } } } }"""
@@ -191,7 +192,7 @@ def previous_orders(o):
     lines = []
     for x in before[:10]:
         when = datetime.fromisoformat(x["createdAt"].replace("Z", "+00:00")).strftime("%-d %b %Y")
-        total = float(x["currentTotalPriceSet"]["shopMoney"]["amount"])
+        total = float(x["totalPriceSet"]["shopMoney"]["amount"])  # the order total as placed (also for cancelled ones)
         status = "Cancelled" if x["cancelledAt"] else STATUS.get(x["displayFulfillmentStatus"], x["displayFulfillmentStatus"].title())
         lines.append(f"{x['name']} · {when} · EGP {total:,.0f} · {status}")
     return "\n".join(lines)
@@ -204,7 +205,7 @@ def shopify_orders(stats):
         page = gql(ORDERS_Q, {"a": after})["orders"]
         for o in page["nodes"]:
             have = {m["key"] for m in o["notes"]["nodes"]}
-            if "previous_orders" not in have:
+            if "previous_orders" not in have or "--refresh-previous" in sys.argv:
                 rows["previous_orders"].append((o["id"], previous_orders(o)))
             if KEY not in have and o["old"]:
                 rows[KEY].append((o["id"], o["old"]["value"]))  # from the earlier editable field

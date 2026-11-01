@@ -1,0 +1,115 @@
+{%- comment -%}
+  Judge.me reviews in Arabic on Arabic pages (Arabic pages never show English text, CLAUDE.md rule 5).
+  Judge.me's own texts are English only (one store language), so on /ar pages they are swapped for
+  Arabic the moment Judge.me sets its settings (before its deferred loader runs), and the widget is
+  laid out right to left.
+{%- endcomment -%}
+{%- if request.locale.iso_code contains 'ar' -%}
+  <script>
+    (function () {
+      var ar = {
+        locale: 'ar',
+        badge_no_review_text: 'لا توجد تقييمات',
+        badge_n_reviews_text: '{{ "{{" }} n }} تقييم',
+        widget_title: 'تقييمات العملاء',
+        widget_open_form_text: 'اكتب تقييمك',
+        widget_close_form_text: 'إلغاء',
+        widget_refresh_page_text: 'تحديث الصفحة',
+        widget_summary_text: 'بناءً على {{ "{{" }} number_of_reviews }} تقييم',
+        widget_no_review_text: 'كن أول من يكتب تقييمًا',
+        widget_name_field_text: 'الاسم',
+        widget_verified_name_field_text: 'الاسم الموثق (يظهر للجميع)',
+        widget_name_placeholder_text: 'الاسم',
+        widget_required_field_error_text: 'الخانة دي مطلوبة.',
+        widget_email_field_text: 'البريد الإلكتروني',
+        widget_verified_email_field_text: 'البريد الموثق (خاص، لا يمكن تعديله)',
+        widget_email_placeholder_text: 'بريدك الإلكتروني',
+        widget_email_field_error_text: 'من فضلك اكتب بريد إلكتروني صحيح.',
+        widget_rating_field_text: 'التقييم',
+        widget_review_title_field_text: 'عنوان التقييم',
+        widget_review_title_placeholder_text: 'اكتب عنوانًا لتقييمك',
+        widget_review_body_field_text: 'تقييمك',
+        widget_review_body_placeholder_text: 'ابدأ الكتابة هنا...',
+        widget_pictures_field_text: 'صورة/فيديو (اختياري)',
+        widget_submit_review_text: 'إرسال التقييم',
+        widget_submit_verified_review_text: 'إرسال التقييم الموثق',
+        widget_show_default_reviews_out_of_total_text: 'عرض {{ "{{" }} n_reviews_shown }} من {{ "{{" }} n_reviews }} تقييم.',
+        widget_show_all_link_text: 'عرض الكل',
+        widget_show_less_link_text: 'عرض أقل',
+        widget_author_said_text: '{{ "{{" }} reviewer_name }} قال:',
+        widget_days_text: 'منذ {{ "{{" }} n }} يوم',
+        widget_weeks_text: 'منذ {{ "{{" }} n }} أسبوع',
+        widget_months_text: 'منذ {{ "{{" }} n }} شهر',
+        widget_years_text: 'منذ {{ "{{" }} n }} سنة',
+        widget_yesterday_text: 'أمس',
+        widget_today_text: 'اليوم',
+        widget_replied_text: 'رد {{ "{{" }} shop_name }}:',
+        widget_read_more_text: 'اقرأ المزيد',
+        widget_rating_filter_see_all_text: 'كل التقييمات',
+        widget_sorting_most_recent_text: 'الأحدث',
+        widget_sorting_highest_rating_text: 'الأعلى تقييمًا',
+        widget_sorting_lowest_rating_text: 'الأقل تقييمًا',
+        widget_sorting_with_pictures_text: 'بالصور فقط',
+        widget_sorting_most_helpful_text: 'الأكثر إفادة',
+        widget_sorting_pictures_first_text: 'الصور أولًا',
+        widget_sorting_videos_first_text: 'الفيديو أولًا',
+        widget_sorting_verified_only_text: 'الموثقة فقط',
+        widget_sorting_most_relevant_text: 'الأكثر صلة',
+        widget_sort_by_text: 'ترتيب حسب',
+        review_widget_clear_filters_text: 'مسح الفلاتر',
+        review_widget_expand_more_text: 'المزيد',
+        review_widget_voting_label: 'مفيد؟',
+        review_widget_shop_reply_label: 'رد {{ "{{" }} shop_name }}:',
+        verified_badge_text: 'موثق',
+        widget_verified_text: 'موثق',
+        widget_verified_by_shop_text: 'موثق من المتجر',
+        widget_review_pending_text: 'قيد المراجعة',
+        widget_load_more_text: 'عرض المزيد',
+        widget_show_more_text: 'عرض المزيد',
+        widget_no_items_text: 'لا توجد نتائج',
+        widget_reviews_subtab_text: 'التقييمات',
+        widget_questions_subtab_text: 'الأسئلة',
+        widget_open_question_form_text: 'اسأل سؤال',
+        widget_summary_average_rating_text: '{{ "{{" }} average_rating }} من 5',
+        widget_number_of_reviews_text: '{{ "{{" }} number_of_reviews }} تقييم',
+        widget_back_button_text: 'رجوع',
+        widget_next_button_text: 'التالي',
+        widget_review_submitted_text: 'تم إرسال التقييم!',
+        review_content_screen_title_text: 'إيه تقييمك للمنتج؟',
+        review_content_introduction_text: 'يسعدنا تشاركنا تجربتك.',
+        one_star_review_guidance_text: 'ضعيف',
+        five_star_review_guidance_text: 'ممتاز',
+        customer_information_screen_title_text: 'عنك',
+        customer_information_introduction_text: 'عرفنا عنك أكتر.',
+        review_submitted_screen_title_text: 'شكرًا على تقييمك!',
+        review_submitted_screen_thank_you_text: 'بنراجعه وهيظهر في المتجر قريب.',
+        reviewer_media_screen_title_picture_or_video_text: 'شارك صورة أو فيديو',
+        reviewer_media_introduction_picture_or_video_text: 'ارفع صورة أو فيديو مع تقييمك.',
+        advanced_settings_next_step_button_text: 'التالي',
+        advanced_settings_close_review_button_text: 'إغلاق',
+        write_review_flow_required_text: 'مطلوب',
+        write_review_flow_privacy_message_text: 'بنحترم خصوصيتك.',
+        write_review_flow_required_field_error_text: 'الخانة دي مطلوبة',
+        write_review_flow_invalid_email_error_text: 'من فضلك اكتب بريد إلكتروني صحيح',
+        write_review_flow_media_upload_text: '<b>اضغط للرفع</b> أو اسحب الملف هنا',
+        branding_text: 'Judge.me'
+      };
+      // Judge.me sets window.jdgmSettings later in the page: patch it the moment it is set
+      var current = window.jdgmSettings;
+      var patch = function (v) { if (v && typeof v === 'object') for (var k in ar) v[k] = ar[k]; return v; };
+      try {
+        Object.defineProperty(window, 'jdgmSettings', {
+          configurable: true,
+          get: function () { return current; },
+          set: function (v) { current = patch(v); }
+        });
+      } catch (e) {}
+      patch(current);
+    })();
+  </script>
+  <style>
+    .jdgm-widget, .jdgm-widget *, .jdgm-rev-widg, .jdgm-rev-widg * { direction: rtl; }
+    .jdgm-widget, .jdgm-rev-widg { text-align: right; }
+    .jdgm-widget input[type='email'], .jdgm-widget .jdgm-rev__timestamp { direction: ltr; unicode-bidi: isolate; }
+  </style>
+{%- endif -%}
