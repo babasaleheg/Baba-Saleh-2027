@@ -99,7 +99,17 @@
               {%- if forloop.first -%}
                 <thead>
                   <tr>
-                    {%- for cell in cells -%}<th scope="col">{{ cell | strip | escape }}</th>{%- endfor -%}
+                    {%- for cell in cells -%}
+                      {%- assign head = cell | strip -%}
+                      {%- if is_ar -%}
+                        {%- comment -%} The guides are English-only metaobjects: column names in Arabic here {%- endcomment -%}
+                        {%- assign head = head | replace: 'Foot length (cm)', 'طول القدم (سم)' | replace: 'Age (approx.)', 'السن (تقريبًا)'
+                          | replace: 'Height (cm)', 'الطول (سم)' | replace: 'Weight (kg)', 'الوزن (كجم)' | replace: 'Chest (cm)', 'الصدر (سم)'
+                          | replace: 'Bust (cm)', 'الصدر (سم)' | replace: 'Waist (cm)', 'الوسط (سم)' | replace: 'Hips (cm)', 'الأرداف (سم)'
+                          | replace: 'US men', 'US رجالي' | replace: 'US women', 'US حريمي' | replace: 'Size', 'المقاس' | replace: 'Age', 'السن' -%}
+                      {%- endif -%}
+                      <th scope="col">{{ head | escape }}</th>
+                    {%- endfor -%}
                   </tr>
                 </thead>
                 <tbody>
@@ -139,6 +149,16 @@
           <h3 class="size-guide__subtitle">{%- if is_ar -%}طريقة القياس{%- else -%}How to measure{%- endif -%}</h3>
           <ul role="list">
             {%- assign lines = guide.how_to_measure.value | newline_to_br | split: '<br />' -%}
+            {%- if is_ar -%}
+              {%- case guide.system.handle -%}
+                {%- when 'mens-clothing' -%}{%- assign lines = 'الصدر: قيس حوالين أعرض جزء في صدرك تحت الإبط.|الوسط: قيس حوالين وسطك الطبيعي فوق الأرداف.|الأرداف: قيس حوالين أعرض جزء في الأرداف.|بين مقاسين؟ اختار الأكبر عشان يبقى مريح.' | split: '|' -%}
+                {%- when 'womens-clothing' -%}{%- assign lines = 'الصدر: قيسي حوالين أعرض جزء في الصدر.|الوسط: قيسي حوالين أضيق جزء في الوسط.|الأرداف: قيسي حوالين أعرض جزء في الأرداف.|البوركيني والمايوهات: لو بين مقاسين اختاري الأكبر.' | split: '|' -%}
+                {%- when 'kids-clothing' -%}{%- assign lines = 'رقم المقاس هو سن الطفل.|الطول أحسن دليل: قيس طفلك وهو واقف مستقيم من غير جزمة.|اختار حسب الطول لو طفلك أطول أو أقصر من المعتاد لسنه.|بيكبر بسرعة؟ اختار مقاس أكبر.' | split: '|' -%}
+                {%- when 'adult-shoes' -%}{%- assign lines = 'اقف على ورقة وعلّم مكان الكعب وأطول صباع.|قيس المسافة بالسنتيمتر ودورها في الجدول.|قيس بالليل لأن الرجل بتبقى في أكبر حجم.|بين مقاسين؟ اختار الأكبر.' | split: '|' -%}
+                {%- when 'kids-shoes' -%}{%- assign lines = 'خلي طفلك يقف على ورقة وعلّم مكان الكعب وأطول صباع.|قيس المسافة بالسنتيمتر ودورها في الجدول.|سيب حوالي 1 سم زيادة عشان الرجل بتكبر.' | split: '|' -%}
+                {%- else -%}{%- assign lines = 'التيشيرتات: قيس حوالين أعرض جزء في الصدر تحت الإبط.|الشورتات والبناطيل: قيس حوالين وسطك الطبيعي فوق الأرداف.|الأحذية: قيس طول رجلك من الكعب لأطول صباع.' | split: '|' -%}
+              {%- endcase -%}
+            {%- endif -%}
             {%- for line in lines -%}
               {%- assign clean_line = line | strip -%}
               {%- if clean_line != blank -%}<li>{{ clean_line | escape }}</li>{%- endif -%}
@@ -148,7 +168,7 @@
       {%- endif -%}
 
       {%- if guide.note != blank -%}
-        <p class="size-guide__note">{{ guide.note.value | escape }}</p>
+        <p class="size-guide__note">{%- if is_ar -%}المقاسات تقريبية وممكن تختلف شوية حسب الماركة.{%- else -%}{{ guide.note.value | escape }}{%- endif -%}</p>
       {%- endif -%}
     </div>
   </dialog>

@@ -133,7 +133,8 @@ def plan_options(p):
             if name != "Resistance":
                 new_name = "Resistance"
             changes = [(v["id"], b) for v, b in zip(vals, bands) if b != v["name"]]
-        elif low in ("size", "sizes", "المقاس"):
+        elif low in ("size", "sizes", "المقاس") or low.startswith(("size (", "clothing size", "kids size", "shoe size", "accessory size")):
+            # the store's size lists ("Size (accessories)", "Clothing size"...) show on the product page as just "Size"
             fixed = [(v["id"], norm_size(v["name"])) for v in vals]
             if is_weight([f for _, f in fixed]):
                 new_name = "Weight"
