@@ -1,8 +1,10 @@
 """Show staff where the stock for each item of an order is, on the order page.
 
 Writes the order metafield $app:babasaleh.stock_from ("Stock from", pinned, read-only for staff):
-one line per item with the locations that hold it and how many, most first, e.g.
-    Track 3D Slip Swimsuit - Green / M ×1: October Branch 3 · Maadi Branch 1
+one line per item with what October Branch holds (website orders are fulfilled only from October,
+CLAUDE.md rules 8 and 10; other branches are never shown, so staff don't take stock from them), e.g.
+    Track 3D Slip Swimsuit - Green / M ×1: October Branch 3
+    Venum Headguard ×1: not in stock at October Branch
 Open (not yet fulfilled) orders of the last 30 days are refreshed on every run, so the note follows
 stock moves until the order ships; fulfilled and cancelled orders keep their last note (or get none).
 
@@ -17,12 +19,7 @@ from sync import gql, log
 NS, KEY = "$app:babasaleh", "stock_from"   # app-owned: staff see it but can't edit it
 DRY = "--dry-run" in sys.argv
 OPEN = {"UNFULFILLED", "PARTIALLY_FULFILLED", "ON_HOLD", "IN_PROGRESS", "OPEN", "PENDING_FULFILLMENT", "SCHEDULED"}
-# the app can't read location names (no read_locations scope); these are the store's locations
-LOCATIONS = {
-    "95443451952": "Al Ahram Branch", "95443615792": "Al Hadaba Storehouse", "95288852528": "Baba Saleh",
-    "95443583024": "Embaba Branch", "95443484720": "Giza New Branch", "95443517488": "Maadi Branch",
-    "95443550256": "October Branch",
-}
+OCTOBER = "95443550256"  # October Branch: the only location website orders are fulfilled from
 
 DEFINE = """mutation($d: MetafieldDefinitionInput!) { metafieldDefinitionCreate(definition: $d) {
   createdDefinition { id } userErrors { code message } } }"""
@@ -40,22 +37,16 @@ def line(li):
         return f"{head}: product deleted"
     if not item["tracked"]:
         return f"{head}: stock not tracked"
-    held = []
-    for lvl in item["inventoryLevels"]["nodes"]:
-        n = lvl["quantities"][0]["quantity"] if lvl["quantities"] else 0
-        if n > 0:
-            lid = lvl["location"]["id"].split("/")[-1]
-            held.append((n, LOCATIONS.get(lid, f"location {lid}")))
-    if not held:
-        return f"{head}: not in stock anywhere"
-    return f"{head}: " + " · ".join(f"{name} {n}" for n, name in sorted(held, key=lambda x: (-x[0], x[1])))
+    n = next((lvl["quantities"][0]["quantity"] if lvl["quantities"] else 0 for lvl in item["inventoryLevels"]["nodes"]
+              if lvl["location"]["id"].split("/")[-1] == OCTOBER), 0)
+    return f"{head}: October Branch {n}" if n > 0 else f"{head}: not in stock at October Branch"
 
 
 def main():
     if not DRY:
         errs = gql(DEFINE, {"d": {"name": "Stock from", "namespace": NS, "key": KEY, "type": "multi_line_text_field",
                                   "ownerType": "ORDER", "pin": True, "access": {"admin": "MERCHANT_READ"},
-                                  "description": "Where the stock for each item is (location and pieces on hand), for staff"}}
+                                  "description": "Pieces of each item on hand at October Branch, for staff"}}
                    )["metafieldDefinitionCreate"]["userErrors"]
         if errs and not any(e["code"] == "TAKEN" for e in errs):
             log("definition", errs)
