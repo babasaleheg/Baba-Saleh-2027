@@ -14,7 +14,8 @@ Fixes (active and draft products):
     built from the title plus brand/colour/category; Shopify redirects the old address.
   - Empty descriptions get a short English + Arabic description from the category.
 
-Reported for review (quality_report.json): missing Arabic titles, no image, price 0, no category.
+Reported for review (quality_report.json): missing Arabic titles, no image, price 0, no category,
+stock not tracked.
 """
 import html, json, os, re, sys
 from collections import Counter
@@ -30,7 +31,7 @@ PRODUCTS_Q = """query($a: String) { products(first: 100, after: $a, query: "stat
   pageInfo { hasNextPage endCursor }
   nodes { id title handle status vendor productType tags descriptionHtml totalInventory
     options { id name optionValues { id name } }
-    featuredMedia { id } variants(first: 100) { nodes { price sku } } } } }"""
+    featuredMedia { id } variants(first: 100) { nodes { price sku inventoryItem { tracked } } } } } }"""
 UPDATE = """mutation($p: ProductUpdateInput!) { productUpdate(product: $p) { product { handle } userErrors { field message } } }"""
 OPTION_UPDATE = """mutation($pid: ID!, $o: OptionUpdateInput!, $v: [OptionValueUpdateInput!]) {
   productOptionUpdate(productId: $pid, option: $o, optionValuesToUpdate: $v) { userErrors { field message } } }"""
@@ -322,7 +323,7 @@ def main():
         prod_res = resources("PRODUCT")
 
     # Report what needs a human (or the nightly assistant) to decide
-    report = {"no_arabic_title": [], "no_image": [], "price_zero_active": [], "no_category": []}
+    report = {"no_arabic_title": [], "no_image": [], "price_zero_active": [], "no_category": [], "stock_not_tracked": []}
     for p in products:
         res = prod_res.get(p["id"], {"ar": {}})
         if not res["ar"].get("title") or res["ar"]["title"][1]:
@@ -333,6 +334,10 @@ def main():
             report["price_zero_active"].append(p["title"])
         if not any(t.startswith("cat:") for t in p["tags"]):
             report["no_category"].append(p["title"])
+        # stock not tracked: the product never sells out and is hidden from the Inventory page (only reported:
+        # turning tracking on is the owner's call, CLAUDE.md rule 8)
+        if p["status"] == "ACTIVE" and any(not v["inventoryItem"]["tracked"] for v in p["variants"]["nodes"]):
+            report["stock_not_tracked"].append(p["title"])
     os.makedirs(os.path.dirname(REPORT), exist_ok=True)
     json.dump(report, open(REPORT, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     log(f"quality {dict(stats)} | to review: " + ", ".join(f"{k}={len(v)}" for k, v in report.items()) + f" -> {REPORT}")
