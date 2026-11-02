@@ -354,6 +354,7 @@ def create_with_retries(mutation, field, payload_key, payload, extra=None):
 
 
 def orders():
+    sys.exit("sync.py orders is retired: WooCommerce is gone and its order tags were removed.")
     P, V, idx, O = load_orders()
     done_path = f"{D}/orders_done.json"
     done = json.load(open(done_path)) if os.path.exists(done_path) else {}

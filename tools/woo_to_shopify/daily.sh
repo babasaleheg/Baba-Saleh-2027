@@ -22,6 +22,7 @@ step rules_check.py
 step sync.py reviews-sync
 step came_from.py
 step stock_from.py
+step order_note.py
 step recommendations.py
 step sold_counter.py
 step search_words.py
