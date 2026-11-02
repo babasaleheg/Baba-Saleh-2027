@@ -31,9 +31,11 @@ never bypass or undo them, in any change, app, script or scheduled task.
    colours/sizes. Tools here only read stock (`stock_from.py`). Portal: migration 0018, `lib/sync.ts`.
 9. **No product is ever live at EGP 0.** A product with any variant priced 0 is set to Draft
    (nightly `zero_price.py`); it goes live again only once it has a real price.
-10. **Every product tracks stock**, so nothing can be ordered when it is sold out. Tracking is
-    switched on every night for any product that has it off (`product_quality.py`); quantities are
-    never changed by this (rule 8). Website orders are fulfilled only from October Branch.
+10. **Every product tracks stock and stops selling at 0**, so nothing can be ordered when it is sold
+    out. Every night `product_quality.py` switches tracking on and "continue selling when out of
+    stock" off wherever needed; quantities are never changed by this (rule 8). Website orders are
+    fulfilled and take stock only from October Branch (Shopify: only October fulfils online orders;
+    portal: migration 0039). `store_audit.py` checks stock, offers, categories, size guides and SEO.
 
 ## Working on the theme
 - Live theme: `gid://shopify/OnlineStoreTheme/166776471600`. Push with

@@ -14,7 +14,8 @@ Fixes (active and draft products):
     built from the title plus brand/colour/category; Shopify redirects the old address.
   - Empty descriptions get a short English + Arabic description from the category.
 
-  - Stock tracking: switched on wherever it is off (rule 10); quantities are never changed (rule 8).
+  - Stock tracking: switched on wherever it is off, and "continue selling when out of stock" switched off
+    (rule 10); quantities are never changed (rule 8).
 
 Reported for review (quality_report.json): missing Arabic titles, no image, price 0, no category,
 stock tracking that couldn't be switched on.
@@ -33,7 +34,9 @@ PRODUCTS_Q = """query($a: String) { products(first: 100, after: $a, query: "stat
   pageInfo { hasNextPage endCursor }
   nodes { id title handle status vendor productType tags descriptionHtml totalInventory
     options { id name optionValues { id name } }
-    featuredMedia { id } variants(first: 100) { nodes { price sku inventoryItem { id tracked } } } } } }"""
+    featuredMedia { id } variants(first: 100) { nodes { id price sku inventoryPolicy inventoryItem { id tracked } } } } } }"""
+DENY = """mutation($p: ID!, $v: [ProductVariantsBulkInput!]!) { productVariantsBulkUpdate(productId: $p, variants: $v) {
+  userErrors { message } } }"""
 TRACK = """mutation($id: ID!) { inventoryItemUpdate(id: $id, input: { tracked: true }) { userErrors { message } } }"""
 UPDATE = """mutation($p: ProductUpdateInput!) { productUpdate(product: $p) { product { handle } userErrors { field message } } }"""
 OPTION_UPDATE = """mutation($pid: ID!, $o: OptionUpdateInput!, $v: [OptionValueUpdateInput!]) {
@@ -350,6 +353,18 @@ def main():
                         break
                 else:
                     stats["stock tracking switched on"] += len(untracked)
+            else:
+                report["stock_not_tracked"].append(p["title"])
+        # ... and stops selling at 0 ("continue selling when out of stock" off, rule 10)
+        keep_selling = [v["id"] for v in p["variants"]["nodes"] if v["inventoryPolicy"] != "DENY"]
+        if keep_selling:
+            if not dry:
+                errs = gql(DENY, {"p": p["id"], "v": [{"id": i, "inventoryPolicy": "DENY"} for i in keep_selling]})["productVariantsBulkUpdate"]["userErrors"]
+                if errs:
+                    log(f"  sell-when-sold-out error {p['title'][:40]}: {errs}")
+                    report["stock_not_tracked"].append(p["title"])
+                else:
+                    stats["stopped selling past 0"] += len(keep_selling)
             else:
                 report["stock_not_tracked"].append(p["title"])
     os.makedirs(os.path.dirname(REPORT), exist_ok=True)

@@ -2,11 +2,10 @@
   Size guide: a "Size guide" button next to the Size option opens the chart in a dialog.
   Which guide is shown:
     1. The product's own size guide (Products > Size guide field), if set.
-    2. Otherwise picked automatically for clothing and footwear from the product's
-       tags (for:men / for:women / for:kids) and its size values:
+    2. Otherwise picked automatically for clothing and footwear: the for:kids / for:women /
+       for:men tag decides first; without one, the size values:
          - footwear: EU 36+ -> adult-shoes, smaller numbers -> kids-shoes
-         - clothing: number sizes up to 18 -> kids-clothing,
-                     letter sizes -> womens-clothing (for:women) or mens-clothing
+         - clothing: number sizes up to 18 -> kids-clothing, letter sizes -> mens-clothing
     3. Otherwise the store default (shop metafield babasaleh.default_size_guide) for clothing.
 {%- endcomment -%}
 {%- liquid
@@ -47,17 +46,33 @@
     endif
 
     assign guide_handle = ''
+    comment
+      The men/women/kids tag decides first (a kids' item in S/M/L still gets the kids' chart, an
+      adult item in number sizes the adult one); without a tag, the first size decides.
+    endcomment
+    assign is_for_kids = false
+    if product.tags contains 'for:kids'
+      assign is_for_kids = true
+    endif
     if is_footwear
-      if first_num > 0 and first_num < 36
+      if is_for_kids
+        assign guide_handle = 'kids-shoes'
+      elsif is_for_men or product.tags contains 'for:women'
+        assign guide_handle = 'adult-shoes'
+      elsif first_num > 0 and first_num < 36
         assign guide_handle = 'kids-shoes'
       else
         assign guide_handle = 'adult-shoes'
       endif
     elsif is_clothing
-      if first_num > 0 and first_num <= 18
+      if is_for_kids
         assign guide_handle = 'kids-clothing'
       elsif product.tags contains 'for:women' and is_for_men == false
         assign guide_handle = 'womens-clothing'
+      elsif is_for_men
+        assign guide_handle = 'mens-clothing'
+      elsif first_num > 0 and first_num <= 18
+        assign guide_handle = 'kids-clothing'
       else
         assign guide_handle = 'mens-clothing'
       endif
