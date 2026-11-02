@@ -7,18 +7,23 @@ short enough to show in full on the phone:
     Time to order    2 min after the first visit
     Visits           1 visit
     Customer's order 2nd order
-    Previous orders  #3289 · 31 Oct 2026 · EGP 370 · Cancelled   (one line each, newest first)
+    Previous orders  each earlier order in full, newest first:
+                     #3289 · 31 Oct 2026 · EGP 435 · Shipped · Paid
+                       1× Track 3D Slip Swimsuit - Green / M · EGP 350 each
+                       Delivery EGP 85 · Cash on Delivery (COD) · To 12 Street, 6th of October, Giza
 "Came from" is also set on the draft orders that hold cancelled WooCommerce orders.
 
     python3 came_from.py            # new Shopify orders (from Shopify's visit tracking)
     python3 came_from.py --woo      # also past WooCommerce orders (from Woo's order attribution)
     python3 came_from.py --refresh-previous   # rewrite every "Previous orders" note
+    python3 came_from.py --previous-only      # quick: "Previous orders" of new and recent orders only
     python3 came_from.py --dry-run
 
-Orders that already have a value are left alone, so it is safe to run every night.
+Orders that already have a value are left alone (except "Previous orders" of the last 30 days,
+which is refreshed), so it is safe to run every night or every few minutes.
 """
 import json, os, re, sys
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from urllib.parse import urlparse
 
 from sync import gql, log
@@ -36,6 +41,8 @@ FIELDS = [  # key, name, type, description (pinned in this order on the order pa
 ]
 VISIT_KEYS = ("landing_page", "time_to_order", "visits", "customer_order")
 DRY = "--dry-run" in sys.argv
+PREVIOUS_ONLY = "--previous-only" in sys.argv  # quick run: only "Previous orders" of new and recent orders
+SINCE = (datetime.now(timezone.utc) - timedelta(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 DEFINE = """mutation($d: MetafieldDefinitionInput!) { metafieldDefinitionCreate(definition: $d) {
   createdDefinition { id } userErrors { code message } } }"""
@@ -44,7 +51,7 @@ ORDERS_Q = """query($a: String) { orders(first: 50, after: $a, reverse: true) { 
   nodes { id name createdAt processedAt
     notes: metafields(first: 10, namespace: "$app:babasaleh") { nodes { key value } }
     old: metafield(namespace: "babasaleh", key: "came_from") { value }
-    customer { orders(first: 15, sortKey: CREATED_AT, reverse: true) { nodes { id name createdAt cancelledAt
+    customer { id orders(first: 15, sortKey: CREATED_AT, reverse: true) { nodes { id name createdAt cancelledAt
       displayFulfillmentStatus totalPriceSet { shopMoney { amount } } } } }
     customerJourneySummary { ready customerOrderIndex momentsCount { count }
       firstVisit { occurredAt landingPage source sourceType referrerUrl utmParameters { source medium campaign } }
@@ -182,20 +189,58 @@ STATUS = {"FULFILLED": "Shipped", "PARTIALLY_FULFILLED": "Partly shipped", "UNFU
           "IN_PROGRESS": "Open", "SCHEDULED": "Open", "RESTOCKED": "Returned"}
 
 
+DETAIL_Q = """query($id: ID!, $q: String) { customer(id: $id) { orders(first: 10, query: $q, sortKey: CREATED_AT, reverse: true) {
+  nodes { name createdAt cancelledAt cancelReason displayFinancialStatus displayFulfillmentStatus returnStatus
+    paymentGatewayNames discountCodes totalPriceSet { shopMoney { amount } } totalShippingPriceSet { shopMoney { amount } }
+    shippingAddress { address1 address2 city province }
+    lineItems(first: 20) { nodes { name quantity discountedUnitPriceAfterAllDiscountsSet { shopMoney { amount } } } } } } } }"""
+PAYMENT = {"PAID": "Paid", "PENDING": "Payment pending (cash on delivery)", "REFUNDED": "Refunded",
+           "PARTIALLY_REFUNDED": "Partly refunded", "PARTIALLY_PAID": "Partly paid", "VOIDED": "Voided",
+           "AUTHORIZED": "Payment authorised", "EXPIRED": "Payment expired"}
+RETURNS = {"RETURNED": "Returned", "IN_PROGRESS": "Return in progress", "RETURN_REQUESTED": "Return requested",
+           "INSPECTION_COMPLETE": "Returned"}
+
+
+def egp(x):
+    return f"EGP {float(x['shopMoney']['amount']):,.0f}"
+
+
 def previous_orders(o):
-    """One short line per earlier order of the same customer, newest first (up to 10)."""
+    """Every earlier order of the same customer in full (up to 10, newest first): what they
+    bought at what price, payment, delivery, where it went and how it ended."""
     if not o.get("customer"):
         return "No customer on this order"
-    before = [x for x in o["customer"]["orders"]["nodes"] if x["id"] != o["id"] and x["createdAt"] < o["createdAt"]]
-    if not before:
+    if not any(x["id"] != o["id"] and x["createdAt"] < o["createdAt"] for x in o["customer"]["orders"]["nodes"]):
         return "None (first order)"
-    lines = []
-    for x in before[:10]:
+    nodes = gql(DETAIL_Q, {"id": o["customer"]["id"], "q": f"created_at:<'{o['createdAt']}'"})["customer"]["orders"]["nodes"]
+    nodes = [x for x in nodes if x["createdAt"] < o["createdAt"]]
+    if not nodes:
+        return "None (first order)"
+    blocks = []
+    for x in nodes:
         when = datetime.fromisoformat(x["createdAt"].replace("Z", "+00:00")).strftime("%-d %b %Y")
-        total = float(x["totalPriceSet"]["shopMoney"]["amount"])  # the order total as placed (also for cancelled ones)
-        status = "Cancelled" if x["cancelledAt"] else STATUS.get(x["displayFulfillmentStatus"], x["displayFulfillmentStatus"].title())
-        lines.append(f"{x['name']} · {when} · EGP {total:,.0f} · {status}")
-    return "\n".join(lines)
+        if x["cancelledAt"]:
+            status = "Cancelled" + (f" ({x['cancelReason'].lower()})" if x["cancelReason"] else "")
+        else:
+            f = x["displayFulfillmentStatus"]
+            status = STATUS.get(f, f.replace("_", " ").title())
+            if x["returnStatus"] in RETURNS:
+                status += " · " + RETURNS[x["returnStatus"]]
+        pay = PAYMENT.get(x["displayFinancialStatus"], (x["displayFinancialStatus"] or "").replace("_", " ").title())
+        lines = [f"{x['name']} · {when} · {egp(x['totalPriceSet'])} · {status} · {pay}"]
+        for li in x["lineItems"]["nodes"]:
+            lines.append(f"  {li['quantity']}× {li['name']} · {egp(li['discountedUnitPriceAfterAllDiscountsSet'])} each")
+        extra = [f"Delivery {egp(x['totalShippingPriceSet'])}"]
+        if x["discountCodes"]:
+            extra.append("Code " + ", ".join(x["discountCodes"]))
+        if x["paymentGatewayNames"]:
+            extra.append(", ".join(x["paymentGatewayNames"]))
+        a = x["shippingAddress"]
+        if a:
+            extra.append("To " + ", ".join(v for v in (a["address1"], a["address2"], a["city"], a["province"]) if v))
+        lines.append("  " + " · ".join(extra))
+        blocks.append("\n".join(lines))
+    return "\n\n".join(blocks)
 
 
 def shopify_orders(stats):
@@ -204,9 +249,18 @@ def shopify_orders(stats):
     while True:
         page = gql(ORDERS_Q, {"a": after})["orders"]
         for o in page["nodes"]:
-            have = {m["key"] for m in o["notes"]["nodes"]}
-            if "previous_orders" not in have or "--refresh-previous" in sys.argv:
-                rows["previous_orders"].append((o["id"], previous_orders(o)))
+            notes = {m["key"]: m["value"] for m in o["notes"]["nodes"]}
+            have = set(notes)
+            recent = o["createdAt"] > SINCE
+            if not recent and "previous_orders" in have and PREVIOUS_ONLY:
+                break  # orders come newest first: everything older is already filled in
+            # Recent orders are refreshed every run, so earlier orders' status (shipped, paid, returned) stays current.
+            if "previous_orders" not in have or recent or "--refresh-previous" in sys.argv:
+                v = previous_orders(o)
+                if v != notes.get("previous_orders"):
+                    rows["previous_orders"].append((o["id"], v))
+            if PREVIOUS_ONLY:
+                continue
             if KEY not in have and o["old"]:
                 rows[KEY].append((o["id"], o["old"]["value"]))  # from the earlier editable field
                 have.add(KEY)
@@ -223,9 +277,11 @@ def shopify_orders(stats):
             if first and last and last != first:
                 value += " · then came back directly" if last == "Direct" else f" · then came back via {last}"
             rows[KEY].append((o["id"], value))
-        if not page["pageInfo"]["hasNextPage"]:
-            break
-        after = page["pageInfo"]["endCursor"]
+        else:
+            if page["pageInfo"]["hasNextPage"]:
+                after = page["pageInfo"]["endCursor"]
+                continue
+        break
     for key, items in rows.items():
         stats[key] = len(items)
         for oid, v in items[:2]:
