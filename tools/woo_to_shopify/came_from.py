@@ -8,9 +8,8 @@ short enough to show in full on the phone:
     Visits           1 visit
     Customer's order 2nd order
     Previous orders  each earlier order in full, newest first:
-                     #3289 · 31 Oct 2026 · EGP 435 · Shipped · Paid
-                       1× Track 3D Slip Swimsuit - Green / M · EGP 350 each
-                       Delivery EGP 85 · Cash on Delivery (COD) · To 12 Street, 6th of October, Giza
+                     #3289 · 31 Oct 2026 · EGP 435 · Shipped
+                       1× Track 3D Slip Swimsuit - Green / M
 "Came from" is also set on the draft orders that hold cancelled WooCommerce orders.
 
     python3 came_from.py            # new Shopify orders (from Shopify's visit tracking)
@@ -217,30 +216,19 @@ def previous_orders(o):
     if not nodes:
         return "None (first order)"
     blocks = []
-    for x in nodes:
+    for x in nodes:  # short: the order, how it ended, and what was in it
         when = datetime.fromisoformat(x["createdAt"].replace("Z", "+00:00")).strftime("%-d %b %Y")
         if x["cancelledAt"]:
-            status = "Cancelled" + (f" ({x['cancelReason'].lower()})" if x["cancelReason"] else "")
+            status = "Cancelled"
+        elif x["returnStatus"] in RETURNS:
+            status = RETURNS[x["returnStatus"]]
         else:
             f = x["displayFulfillmentStatus"]
             status = STATUS.get(f, f.replace("_", " ").title())
-            if x["returnStatus"] in RETURNS:
-                status += " · " + RETURNS[x["returnStatus"]]
-        pay = PAYMENT.get(x["displayFinancialStatus"], (x["displayFinancialStatus"] or "").replace("_", " ").title())
-        lines = [f"{x['name']} · {when} · {egp(x['totalPriceSet'])} · {status} · {pay}"]
-        for li in x["lineItems"]["nodes"]:
-            lines.append(f"  {li['quantity']}× {li['name']} · {egp(li['discountedUnitPriceAfterAllDiscountsSet'])} each")
-        extra = [f"Delivery {egp(x['totalShippingPriceSet'])}"]
-        if x["discountCodes"]:
-            extra.append("Code " + ", ".join(x["discountCodes"]))
-        if x["paymentGatewayNames"]:
-            extra.append(", ".join(x["paymentGatewayNames"]))
-        a = x["shippingAddress"]
-        if a:
-            extra.append("To " + ", ".join(v for v in (a["address1"], a["address2"], a["city"], a["province"]) if v))
-        lines.append("  " + " · ".join(extra))
+        lines = [f"{x['name']} · {when} · {egp(x['totalPriceSet'])} · {status}"]
+        lines += [f"  {li['quantity']}× {li['name']}" for li in x["lineItems"]["nodes"]]
         blocks.append("\n".join(lines))
-    return "\n\n".join(blocks)
+    return "\n".join(blocks)
 
 
 def shopify_orders(stats):
