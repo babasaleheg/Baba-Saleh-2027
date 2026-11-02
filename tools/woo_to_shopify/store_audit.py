@@ -64,6 +64,11 @@ def main():
     F = defaultdict(list)
     active = [p for p in products if p["status"] == "ACTIVE"]
     seen_titles = Counter(p["title"].strip().lower() for p in active)
+    for p in products:  # drafts too: they must be safe the moment someone publishes them
+        if p["status"] != "ACTIVE":
+            for v in p["variants"]["nodes"]:
+                if not v["inventoryItem"]["tracked"] or v["inventoryPolicy"] != "DENY":
+                    F["stock: draft would sell when sold out (fixed nightly)"].append(f"{p['title']} – {v['title']}")
     for p in active:
         t, tags = p["title"], p["tags"]
         vs = p["variants"]["nodes"]
@@ -75,6 +80,8 @@ def main():
                 F["stock: not tracked"].append(name)
             if v["inventoryPolicy"] != "DENY":
                 F["stock: sells when sold out (policy CONTINUE)"].append(name)
+            if not (v["sku"] or "").strip():
+                F["stock: no item code, so October sheets can't update it (add the code in Shopify)"].append(name)
             for lvl in item["inventoryLevels"]["nodes"]:
                 q = {x["name"]: x["quantity"] for x in lvl["quantities"]}
                 if lvl["location"]["id"] == OCTOBER:

@@ -149,6 +149,9 @@ TRACK = """mutation($id: ID!, $input: InventoryItemInput!) {
 
 
 def products():
+    # Retired: this WooCommerce import set website stock from Woo and could create products that
+    # were not tracked or kept selling at 0 (CLAUDE.md rules 8 and 10). Never run it again.
+    sys.exit("sync.py products is retired (CLAUDE.md rules 8 and 10): it would overwrite website stock.")
     export_shopify()
     subprocess.run([sys.executable, "-I", f"{HERE}/build_products.py", D], check=True)
     S = [json.loads(l) for l in open(f"{D}/shopify.jsonl")]

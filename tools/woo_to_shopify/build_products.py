@@ -28,14 +28,13 @@ def stock(obj, parent):
     src = parent if ms == "parent" else obj
     if ms is True or ms == "parent":
         stats["stock_parent_pool" if ms == "parent" else "stock_own"] += 1
-        policy = "CONTINUE" if src.get("backorders") in ("notify", "yes") else "DENY"
-        return True, int(src["stock_quantity"] or 0), policy
+        return True, int(src["stock_quantity"] or 0), "DENY"  # never sell past 0 (rule 10)
     # Untracked in Woo: keep untracked unless explicitly out of stock.
     if obj["stock_status"] == "outofstock":
         stats["stock_untracked_oos"] += 1
         return True, 0, "DENY"
     stats["stock_untracked"] += 1
-    return False, None, "DENY"
+    return True, 0, "DENY"  # every product tracks stock (rule 10)
 
 
 def price_pair(o):
