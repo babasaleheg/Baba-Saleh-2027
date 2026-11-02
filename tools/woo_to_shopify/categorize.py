@@ -129,6 +129,8 @@ FIXES = {
     "Wolon Metallic Elbow Support": "cat:martial-arts-gear",
     "Cressi Clio Fins": "cat:diving",
     "Sweat T-Shirt": "cat:jackets",
+    "Kids’ Robot Tricycle with Seat": "cat:cycling",
+    "Rebound Ball Stand": "cat:boxing",
     "Sports Wristbands – Red, Blue, White & Yellow": "cat:sports-accessories",
     "Plain Sports Wristbands – White & Yellow": "cat:sports-accessories",
     "Wolon Curved Thai Kick Pad": "cat:martial-arts-gear",
