@@ -13,6 +13,7 @@ every run; first orders get nothing. Orders of the last 30 days are kept up to d
 
     python3 order_note.py            # hourly and nightly, after came_from.py
     python3 order_note.py --dry-run
+    python3 order_note.py --all      # every order, including the old website's (run once)
 """
 import re, sys
 from datetime import datetime, timedelta, timezone
@@ -20,6 +21,7 @@ from datetime import datetime, timedelta, timezone
 from sync import gql, log
 
 DRY = "--dry-run" in sys.argv
+ALL = "--all" in sys.argv  # once: every order, old-website (WooCommerce) ones too
 MARK = "Previous orders:"
 OLD_MARK = "── Baba Saleh info (updated automatically) ──"  # earlier, longer version (removed)
 LIMIT = 3000
@@ -67,7 +69,7 @@ def main():
     since = (datetime.now(timezone.utc) - timedelta(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
     stats, after = {"orders": 0, "updated": 0, "failed": 0}, None
     while True:
-        page = gql(Q, {"a": after, "q": f"created_at:>'{since}' AND -source_name:woocommerce"})["orders"]
+        page = gql(Q, {"a": after, "q": None if ALL else f"created_at:>'{since}' AND -source_name:woocommerce"})["orders"]
         for o in page["nodes"]:
             stats["orders"] += 1
             old = (o["note"] or "").rstrip()
