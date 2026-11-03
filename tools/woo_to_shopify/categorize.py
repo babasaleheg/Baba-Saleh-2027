@@ -49,6 +49,7 @@ RULES = [
 
 # Products whose existing category is wrong: title -> correct category.
 FIXES = {
+    "Table Tennis Table – 15mm Straight Legs": "cat:table-tennis",
     "Silicone Sports Bottle - Brown": "cat:water-bottles",
     "Sports Training Mesh Tank Vest": "cat:coaching",
     "Bar 180 cm": "cat:weights",
