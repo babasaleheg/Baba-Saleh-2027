@@ -15,7 +15,7 @@ short enough to show in full on the phone:
     python3 came_from.py            # new Shopify orders (from Shopify's visit tracking)
     python3 came_from.py --woo      # also past WooCommerce orders (from Woo's order attribution)
     python3 came_from.py --refresh-previous   # rewrite every "Previous orders" note
-    python3 came_from.py --previous-only      # quick: "Previous orders" of new and recent orders only
+    python3 came_from.py --previous-only      # quick (hourly): all notes, but only for orders of the last 30 days
     python3 came_from.py --dry-run
 
 Orders that already have a value are left alone (except "Previous orders" of the last 30 days,
@@ -40,7 +40,7 @@ FIELDS = [  # key, name, type, description (pinned in this order on the order pa
 ]
 VISIT_KEYS = ("landing_page", "time_to_order", "visits", "customer_order")
 DRY = "--dry-run" in sys.argv
-PREVIOUS_ONLY = "--previous-only" in sys.argv  # quick run: only "Previous orders" of new and recent orders
+PREVIOUS_ONLY = "--previous-only" in sys.argv  # quick run (hourly): only orders of the last 30 days
 SINCE = (datetime.now(timezone.utc) - timedelta(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 DEFINE = """mutation($d: MetafieldDefinitionInput!) { metafieldDefinitionCreate(definition: $d) {
@@ -81,6 +81,8 @@ def label(source, kind=None, medium=None, campaign=None):
         name = "Google search" if kind in {"organic", "seo", ""} and (medium or "").lower() not in PAID else "Google"
     if (medium or "").lower() in PAID or kind in {"sem", "paid"}:
         name += " ad"
+    if (campaign or "").lower() == "sag_organic":
+        return "Google Shopping (free listing)"  # Shopify's Google channel, unpaid listings
     if campaign and not campaign.isdigit() and campaign.lower() not in {"google_cpc", "(not set)"}:
         name += f" – {campaign}"  # Meta ad ids are just numbers: leave them out
     return name
@@ -247,8 +249,6 @@ def shopify_orders(stats):
                 v = previous_orders(o)
                 if v != notes.get("previous_orders"):
                     rows["previous_orders"].append((o["id"], v))
-            if PREVIOUS_ONLY:
-                continue
             if KEY not in have and o["old"]:
                 rows[KEY].append((o["id"], o["old"]["value"]))  # from the earlier editable field
                 have.add(KEY)
