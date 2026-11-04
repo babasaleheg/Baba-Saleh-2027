@@ -253,7 +253,7 @@ AUDIENCE_FIXES = {
 KIDS_CATS = ("cat:beach-toys", "cat:toys", "cat:kids-swimwear")
 AUDIENCE = [(r"\b(kids?|boys?|girls?|baby(?! blue)|junior|children)\b", "for:kids"), (r"\b(women|women’s|women's|ladies|hijab)\b", "for:women"), (r"\b(men|men’s|men's)\b", "for:men")]
 
-PRODUCTS_Q = """query($a: String) { products(first: 250, after: $a, query: "status:active") {
+PRODUCTS_Q = """query($a: String) { products(first: 250, after: $a, query: "status:active OR status:draft") {
   pageInfo { hasNextPage endCursor } nodes { id title productType tags options { name optionValues { name } } } } }"""
 UPDATE = """mutation($p: ProductUpdateInput!) { productUpdate(product: $p) { userErrors { field message } } }"""
 TAXONOMY_PREFIXES = ("cat:", "dept:", "group:")
