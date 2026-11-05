@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "main": { "type": "sale-1111", "settings": { "start": "1794348000", "end": "1794434400", "max_pct": "29" } }
+  },
+  "order": ["main"]
+}

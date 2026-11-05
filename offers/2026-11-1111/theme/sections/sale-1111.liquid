@@ -1,0 +1,187 @@
+{%- comment -%}
+  11.11 page: the biggest November discounts, open only on Nov 11 2026 (Cairo). Before: a countdown
+  and no products; on the day: the products (top discounts, snippets/sale-1111-top.liquid) with their
+  November offer prices (snippets/nov-offer-cards.liquid); after: a link to the November offers.
+  Times are Cairo (UTC+2), as Unix seconds. The visitor's clock also switches the state, so a cached
+  page never shows products outside the day.
+{%- endcomment -%}
+{%- liquid
+  assign s_start = section.settings.start | plus: 0
+  assign s_end = section.settings.end | plus: 0
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign state = 'live'
+  if now_ts < s_start
+    assign state = 'before'
+  elsif now_ts >= s_end
+    assign state = 'ended'
+  endif
+  if request.design_mode
+    assign state = 'live'
+  endif
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+  capture top
+    render 'sale-1111-top'
+  endcapture
+  assign top = top | strip | split: ','
+-%}
+<section class="s1111" data-s1111 data-state="{{ state }}" data-start="{{ s_start }}" data-end="{{ s_end }}" aria-labelledby="S1111Title">
+  <div class="s1111__hero page-width">
+    <p class="s1111__kicker">{% if is_ar %}يوم واحد بس · 11 نوفمبر{% else %}One day only · November 11{% endif %}</p>
+    <h1 id="S1111Title" class="s1111__title" dir="ltr">11<span>.</span>11</h1>
+    <p class="s1111__sub">
+      {%- if is_ar -%}أكبر خصومات نوفمبر في مكان واحد. خصم لحد <b>{{ section.settings.max_pct }}%</b>{%- else -%}The biggest November discounts in one place. Up to <b>{{ section.settings.max_pct }}%</b> off{%- endif -%}
+    </p>
+    <div class="s1111__clock">
+      <p class="s1111__label">
+        <span data-when="before">{% if is_ar %}يبدأ خلال{% else %}Starts in{% endif %}</span>
+        <span data-when="live">{% if is_ar %}العرض بدأ · ينتهي خلال{% else %}Live now · ends in{% endif %}</span>
+        <span data-when="ended">{% if is_ar %}يوم 11.11 خلص. عروض نوفمبر لسه مستمرة{% else %}11.11 is over. The November offers are still on{% endif %}</span>
+      </p>
+      <div class="s1111__pill" role="timer" aria-live="off" dir="ltr" data-when="before live">
+        <span data-days><b data-d>0</b><small>{% if is_ar %}يوم{% else %}days{% endif %}</small></span><i aria-hidden="true" data-days>:</i>
+        <span><b data-h>00</b><small>{% if is_ar %}ساعة{% else %}hrs{% endif %}</small></span><i aria-hidden="true">:</i>
+        <span><b data-m>00</b><small>{% if is_ar %}دقيقة{% else %}min{% endif %}</small></span><i aria-hidden="true">:</i>
+        <span><b data-s>00</b><small>{% if is_ar %}ثانية{% else %}sec{% endif %}</small></span>
+      </div>
+      <a class="s1111__cta" data-when="ended" href="{{ routes.collections_url }}/november-offers">{% if is_ar %}تسوق عروض نوفمبر{% else %}Shop the November offers{% endif %}</a>
+    </div>
+  </div>
+
+  {%- if state == 'live' -%}
+    <div class="s1111__grid page-width nov-dressed" data-s1111-list>
+      <ul class="s1111__list" role="list">
+        {%- comment -%} In stock first, sold out last (store rule 1). {%- endcomment -%}
+        {%- for handle in top -%}
+          {%- assign product = all_products[handle] -%}
+          {%- if product != blank and product.available -%}<li>{% render 'product-card', product: product, index: 99 %}</li>{%- endif -%}
+        {%- endfor -%}
+        {%- for handle in top -%}
+          {%- assign product = all_products[handle] -%}
+          {%- if product != blank and product.available == false -%}<li>{% render 'product-card', product: product, index: 99 %}</li>{%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+    {% render 'nov-offer-cards' %}
+  {%- endif -%}
+</section>
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-s1111]');
+    if (!root) return;
+    var start = +root.dataset.start * 1000, end = +root.dataset.end * 1000;
+    var shown = root.dataset.state;
+    var list = root.querySelector('[data-s1111-list]');
+    if (list && window.novDress) window.novDress(list, 'live');
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    function tick() {
+      var now = Date.now();
+      var state = now < start ? 'before' : now < end ? 'live' : 'ended';
+      if (state !== shown && {{ request.design_mode | json }} === false) {
+        if (state === 'live' && !list) { location.reload(); return; }  // the day started: load the products
+        if (list && state !== 'live') list.remove();
+        shown = state;
+      }
+      root.dataset.state = state;
+      var left = Math.max(0, Math.floor(((state === 'before' ? start : end) - now) / 1000));
+      var d = Math.floor(left / 86400);
+      root.querySelectorAll('[data-days]').forEach(function (el) { el.hidden = d === 0; });
+      root.querySelector('[data-d]').textContent = d;
+      root.querySelector('[data-h]').textContent = pad(Math.floor(left % 86400 / 3600));
+      root.querySelector('[data-m]').textContent = pad(Math.floor(left % 3600 / 60));
+      root.querySelector('[data-s]').textContent = pad(left % 60);
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>
+
+{% stylesheet %}
+  .s1111 {
+    --s1111-bg: #0b0b0b;
+    --s1111-fg: #ffffff;
+    --s1111-accent: #febd19;
+    background: var(--s1111-bg);
+    color: var(--s1111-fg);
+    padding-block: 2.5rem 3.5rem;
+  }
+  .s1111__hero { text-align: center; display: grid; justify-items: center; gap: 0.75rem; }
+  .s1111__kicker {
+    margin: 0;
+    padding: 0.35rem 1rem;
+    border: 1px solid var(--s1111-accent);
+    border-radius: 999px;
+    color: var(--s1111-accent);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .s1111__title {
+    margin: 0;
+    font-size: clamp(5rem, 22vw, 12rem);
+    line-height: 0.9;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--s1111-accent);
+  }
+  .s1111__title span { color: var(--s1111-fg); }
+  .s1111__sub { margin: 0; font-size: 1.15rem; max-width: 34rem; }
+  .s1111__sub b { color: var(--s1111-accent); }
+  .s1111__clock { display: grid; justify-items: center; gap: 0.75rem; margin-top: 0.75rem; }
+  .s1111__label { margin: 0; font-weight: 700; }
+  .s1111 [data-when] { display: none; }
+  .s1111[data-state='before'] [data-when~='before'],
+  .s1111[data-state='live'] [data-when~='live'],
+  .s1111[data-state='ended'] [data-when~='ended'] { display: revert; }
+  .s1111[data-state='before'] .s1111__pill,
+  .s1111[data-state='live'] .s1111__pill { display: flex; }
+  .s1111__pill { gap: 0.5rem; align-items: center; }
+  .s1111__pill [hidden] { display: none; }
+  .s1111__pill span {
+    display: grid;
+    justify-items: center;
+    min-width: 4.25rem;
+    padding: 0.6rem 0.5rem;
+    border-radius: 0.75rem;
+    background: var(--s1111-accent);
+    color: #111;
+  }
+  .s1111__pill b { font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
+  .s1111__pill small { font-size: 0.75rem; font-weight: 700; }
+  .s1111__pill i { font-style: normal; font-size: 1.5rem; color: var(--s1111-accent); }
+  .s1111__cta {
+    padding: 0.85rem 1.75rem;
+    border-radius: 999px;
+    background: var(--s1111-accent);
+    color: #111;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .s1111__grid { margin-top: 2.5rem; }
+  .s1111__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media screen and (min-width: 990px) {
+    .s1111__list { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1rem; }
+  }
+  .s1111__list > li { background: #fff; color: #111; border-radius: 0.75rem; overflow: hidden; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "11.11 sale",
+  "settings": [
+    { "type": "text", "id": "start", "default": "1794348000", "label": "Start (Unix seconds)", "info": "1794348000 = Nov 11 2026, 00:00 Cairo" },
+    { "type": "text", "id": "end", "default": "1794434400", "label": "End (Unix seconds)", "info": "1794434400 = Nov 12 2026, 00:00 Cairo" },
+    { "type": "text", "id": "max_pct", "default": "29", "label": "Highest % off" }
+  ],
+  "presets": [{ "name": "11.11 sale" }]
+}
+{% endschema %}
