@@ -429,9 +429,26 @@
       };
       prev.addEventListener('click', () => step(-1));
       next.addEventListener('click', () => step(1));
-      list.addEventListener('scroll', update, { passive: true });
-      window.addEventListener('resize', update);
+      // The slider takes the height of the photo on screen, so a shorter photo leaves no white gap.
+      let fitFrame = 0;
+      const fit = () => {
+        cancelAnimationFrame(fitFrame);
+        fitFrame = requestAnimationFrame(() => {
+          const left = list.getBoundingClientRect().left;
+          const shown = [...list.children].filter((item) => !item.hidden);
+          let best = shown[0];
+          for (const item of shown) {
+            if (Math.abs(item.getBoundingClientRect().left - left) < Math.abs(best.getBoundingClientRect().left - left)) best = item;
+          }
+          const height = best?.firstElementChild?.offsetHeight;
+          if (height) list.style.height = `${height}px`;
+        });
+      };
+      list.addEventListener('scroll', () => { update(); fit(); }, { passive: true });
+      window.addEventListener('resize', () => { update(); fit(); });
+      list.querySelectorAll('img').forEach((img) => img.addEventListener('load', fit, { once: true }));
       update();
+      fit();
 
       // Show only the chosen colour's photos (and photos that belong to no colour).
       const colorIndex = section.dataset.colorOption;
@@ -450,6 +467,7 @@
           if (current) current.textContent = 1;
           list.scrollTo({ left: 0 });
           update();
+          fit();
         };
         filter(section.dataset.selectedColor);
         document.addEventListener('variant:change', (event) => {
@@ -505,6 +523,10 @@
 
   .product__media-item[hidden] {
     display: none !important;
+  }
+  .product__media-list {
+    align-items: start;
+    transition: height 0.25s ease;
   }
   .product__media-list {
     display: grid;
