@@ -2,6 +2,20 @@
   assign current_variant = product.selected_or_first_available_variant
   assign product_form_id = 'ProductForm-' | append: section.id
   assign media_count = product.media.size
+  # Which colour each photo shows (tools/woo_to_shopify/variant_images.py): the gallery shows only
+  # the chosen colour's photos, plus photos that belong to no colour.
+  assign media_colors = product.metafields['app--433518804993--babasaleh'].media_colors.value
+  assign color_index = ''
+  if media_colors != blank
+    for option in product.options_with_values
+      assign option_name = option.name | downcase
+      if option_name == 'color' or option_name == 'colour' or option_name == 'eyewear frame color'
+        assign color_index = forloop.index0
+        assign selected_color = current_variant.options[forloop.index0]
+        break
+      endif
+    endfor
+  endif
 -%}
 
 <product-info
@@ -9,13 +23,15 @@
   data-section-id="{{ section.id }}"
   data-url="{{ product.url }}"
   style="--section-pt: 1.5rem; --section-pb: 4rem;"
+  {%- if color_index != '' %} data-color-option="{{ color_index }}" data-selected-color="{{ selected_color | escape }}"{% endif %}
 >
   <div class="page-width product__grid">
     {%- comment -%} Gallery {%- endcomment -%}
     <div class="product__gallery">
       <ul class="product__media-list product__media-list--{{ section.settings.gallery_layout }}" role="list" data-media-list>
         {%- for media in product.media -%}
-          <li class="product__media-item" data-media-id="{{ media.id }}">
+          {%- assign media_key = media.id | append: '' -%}
+          <li class="product__media-item" data-media-id="{{ media.id }}"{% if color_index != '' and media_colors[media_key] %} data-media-color="{{ media_colors[media_key] | escape }}"{% endif %}>
             <div class="media product__media" style="aspect-ratio: {{ media.aspect_ratio | default: 1 }}">
               {%- case media.media_type -%}
                 {%- when 'image' -%}
@@ -58,7 +74,7 @@
       </ul>
       {%- if media_count > 1 -%}
         <div class="product__media-counter" aria-hidden="true">
-          <span data-media-current>1</span> / {{ media_count }}
+          <span data-media-current>1</span> / <span data-media-total>{{ media_count }}</span>
         </div>
         <button type="button" class="product__media-nav product__media-nav--prev" data-media-prev aria-label="{{ 'general.slider.previous' | t }}" disabled>
           {% render 'icon', icon: 'chevron' %}
@@ -418,6 +434,31 @@
       window.addEventListener('resize', update);
       update();
 
+      // Show only the chosen colour's photos (and photos that belong to no colour).
+      const colorIndex = section.dataset.colorOption;
+      if (colorIndex !== undefined && colorIndex !== '') {
+        const items = [...list.querySelectorAll('[data-media-id]')];
+        const total = section.querySelector('[data-media-total]');
+        const current = section.querySelector('[data-media-current]');
+        const filter = (colour) => {
+          const own = items.some((item) => item.dataset.mediaColor === colour);
+          let shown = 0;
+          for (const item of items) {
+            item.hidden = own && Boolean(item.dataset.mediaColor) && item.dataset.mediaColor !== colour;
+            if (!item.hidden) shown += 1;
+          }
+          if (total) total.textContent = shown;
+          if (current) current.textContent = 1;
+          list.scrollTo({ left: 0 });
+          update();
+        };
+        filter(section.dataset.selectedColor);
+        document.addEventListener('variant:change', (event) => {
+          const variant = event.detail?.variant;
+          if (variant?.options) filter(variant.options[Number(colorIndex)]);
+        });
+      }
+
       // On variant change, slide to the variant's image instead of reordering the images.
       customElements.whenDefined('product-info').then(() => {
         const ProductInfo = customElements.get('product-info');
@@ -463,6 +504,9 @@
     position: relative;
   }
 
+  .product__media-item[hidden] {
+    display: none !important;
+  }
   .product__media-list {
     display: grid;
     grid-auto-flow: column;
