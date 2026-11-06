@@ -15,6 +15,7 @@ details). Products where fewer than two colours have their own photo are left ou
     python3 variant_images.py --dry-run --only <handle>
 """
 import json, os, re, sys
+from datetime import datetime, timedelta, timezone
 
 from sync import gql, log
 
@@ -87,7 +88,7 @@ def main():
                    )["metafieldDefinitionCreate"]["userErrors"]
         if errs and not any(e["code"] == "TAKEN" for e in errs):
             log("definition", errs)
-    q = f"handle:{ONLY}" if ONLY else ("status:active OR status:draft" if ALL else "(status:active OR status:draft) AND updated_at:>-2d")
+    q = f"handle:{ONLY}" if ONLY else ("status:active OR status:draft" if ALL else f"(status:active OR status:draft) AND updated_at:>'{(datetime.now(timezone.utc) - timedelta(days=2)).strftime('%Y-%m-%dT%H:%M:%SZ')}'")
     stats, after, sets, dels = {"products": 0, "colour photos": 0, "set": 0, "cleared": 0, "unchanged": 0}, None, [], []
     while True:
         page = gql(Q, {"a": after, "q": q})["products"]

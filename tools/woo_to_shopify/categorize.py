@@ -49,6 +49,7 @@ RULES = [
 
 # Products whose existing category is wrong: title -> correct category.
 FIXES = {
+    "Shark Beach Toy Truck Set": "cat:beach-toys",
     "Kimo Wrist & Ankle Weights – Pair": "cat:weights",
     "Table Tennis Table – 15mm Straight Legs": "cat:table-tennis",
     "Silicone Sports Bottle - Brown": "cat:water-bottles",
