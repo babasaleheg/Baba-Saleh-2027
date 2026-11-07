@@ -20,7 +20,7 @@
       soon: {% if is_ar %}'العرض يبدأ 1 نوفمبر'{% else %}'Offer starts Nov 1'{% endif %},
       ribbon: {% if is_ar %}'عرض'{% else %}'Offer'{% endif %},
       tonight: {% if is_ar %}'العرض يبدأ الليلة 11:59 م'{% else %}'Offer starts tonight, 11:59 pm'{% endif %},
-      tonightRibbon: {% if is_ar %}'يبدأ الليلة'{% else %}'Starts tonight'{% endif %}
+      tonightRibbon: {% if is_ar %}'الليلة'{% else %}'Tonight'{% endif %}
     };
     var prices = {};
     try { prices = JSON.parse(document.getElementById('NovPrices').textContent); } catch (e) {}
