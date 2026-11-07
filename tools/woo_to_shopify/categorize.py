@@ -49,6 +49,7 @@ RULES = [
 
 # Products whose existing category is wrong: title -> correct category.
 FIXES = {
+    "TRX Force Suspension Trainer": "cat:fitness-accessories",
     "Shark Beach Toy Truck Set": "cat:beach-toys",
     "Kimo Wrist & Ankle Weights – Pair": "cat:weights",
     "Table Tennis Table – 15mm Straight Legs": "cat:table-tennis",
@@ -223,7 +224,7 @@ AUDIENCE_FIXES = {
     "Track Girls’ Swimsuit": "for:women",
     "Track Kids’ 3D Swimsuit Set – Top & Pants": "for:women",
     "Kiko Modest Burkini Set": "for:women",
-    "Track Girls’ 3-Line Tracksuit": "for:women",
+    "Track Women’s 3-Line Tracksuit": "for:women",
     "Track Girls’ Tracksuit – Burgundy, Fuchsia & Navy Blue": "for:kids",  # sizes 10–16 are ages
     "Girls’ Flared Leggings": "for:women",
     "Women’s Flared Leggings": "for:women",
