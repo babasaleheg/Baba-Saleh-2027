@@ -23,3 +23,11 @@ from originals.json, the 51 products taken out of the collection and their handl
 One task at 2026-11-07T22:00Z (Nov 8 00:00 Cairo) applies plan.json again, puts the products and
 handles back (theme/snippets/nov-offer-prices.liquid, minus the robes), ends the 3D robe offer and sets
 the dates to "Nov 8 – 13". Ends as before: Nov 13 22:00Z week 1, 22:05Z Carbon, 22:10Z week 2.
+
+## Change (Nov 7, 16:35 Cairo)
+Owner: week-2 products live on the page now, sale from tonight 11:59 pm. The 51 products are back in the
+collection; snippets/nov-offer-prices.liquid has their entries with a 4th value, the start (1794088740 =
+Nov 7 23:59 Cairo), and snippets/nov-offer-cards.liquid shows such cards at their own price with
+"يبدأ الليلة / العرض يبدأ الليلة 11:59 م" until then (copies: theme/snippets/nov-offer-cards.liquid,
+theme/snippets/nov-offer-prices.week2-tonight.liquid). The start task moved to 2026-11-07T21:57Z (prices
+set 2 minutes before 11:59 pm).
