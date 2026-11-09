@@ -53,14 +53,10 @@
   {%- if state == 'live' -%}
     <div class="s1111__grid page-width nov-dressed" data-s1111-list>
       <ul class="s1111__list" role="list">
-        {%- comment -%} In stock first, sold out last (store rule 1). {%- endcomment -%}
+        {%- comment -%} Only offers in stock: sold-out ones are left out. {%- endcomment -%}
         {%- for handle in top -%}
           {%- assign product = all_products[handle] -%}
           {%- if product != blank and product.available -%}<li>{% render 'product-card', product: product, index: 99 %}</li>{%- endif -%}
-        {%- endfor -%}
-        {%- for handle in top -%}
-          {%- assign product = all_products[handle] -%}
-          {%- if product != blank and product.available == false -%}<li>{% render 'product-card', product: product, index: 99 %}</li>{%- endif -%}
         {%- endfor -%}
       </ul>
     </div>

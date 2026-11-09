@@ -78,7 +78,8 @@
         {%- assign top = top | strip | split: ',' -%}
         {%- for handle in top limit: section.settings.products_to_show -%}
           {%- assign product = all_products[handle] -%}
-          {%- if product != blank -%}<li>{% render 'product-card', product: product, index: 99 %}</li>{%- endif -%}
+          {%- comment -%} Sold-out offers are left out of the banner. {%- endcomment -%}
+          {%- if product != blank and product.available -%}<li>{% render 'product-card', product: product, index: 99 %}</li>{%- endif -%}
         {%- endfor -%}
       </ul>
     </div>
