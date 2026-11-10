@@ -1,0 +1,45 @@
+{%- comment -%}
+  "11.11" menu link, from now to the end of Nov 11 2026 Cairo (1794434400). Hidden/shown like the
+  عروض نوفمبر link (data-nov-link + the clock script in sections/header.liquid).
+  style: 'nav' (desktop row) or 'drawer' (mobile menu).
+{%- endcomment -%}
+{%- liquid
+  assign s_start = 0
+  assign s_end = 1794434400
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign s_live = false
+  if now_ts >= s_start and now_ts < s_end
+    assign s_live = true
+  endif
+  if request.design_mode
+    assign s_live = true
+  endif
+  assign s_url = routes.root_url | append: '/pages/11-11' | replace: '//', '/'
+  assign s_current = false
+  if page.handle == '11-11'
+    assign s_current = true
+  endif
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+-%}
+{%- if style == 'drawer' -%}
+  <li data-nov-link data-nov-start="{{ s_start }}" data-nov-end="{{ s_end }}"{% unless s_live %} hidden{% endunless %}>
+    <a href="{{ s_url }}" class="nov-drawer-link nov-drawer-link--1111"{% if s_current %} aria-current="page"{% endif %}>
+      <span class="nov-drawer-link__text">
+        <span class="nov-drawer-link__title" dir="ltr">11.11</span>
+        <span class="nov-drawer-link__sub">{% if is_ar %}أكبر خصومات نوفمبر، يوم واحد بس{% else %}Biggest November discounts, one day only{% endif %}</span>
+      </span>
+      <span class="nov-drawer-link__date">{% if is_ar %}11 نوفمبر{% else %}Nov 11{% endif %}</span>
+      {% render 'icon', icon: 'arrow' %}
+    </a>
+  </li>
+{%- else -%}
+  <li class="nav__item" data-nov-link data-nov-start="{{ s_start }}" data-nov-end="{{ s_end }}"{% unless s_live %} hidden{% endunless %}>
+    <a href="{{ s_url }}" class="nav__link nav__link--nov nav__link--1111{% if s_current %} is-active{% endif %}"{% if s_current %} aria-current="page"{% endif %}>
+      <span class="nav__nov-dot" aria-hidden="true"></span>
+      <span dir="ltr">11.11</span>
+    </a>
+  </li>
+{%- endif -%}

@@ -1,0 +1,83 @@
+{%- comment -%}
+  11.11 strip on the home page (header group): from now to the end of Nov 11 2026 Cairo. Before the
+  day: countdown to the start; on the day: "live now" and the time left. Links to /pages/11-11.
+  The visitor's clock hides it after the end (cached pages).
+{%- endcomment -%}
+{%- liquid
+  assign s_start = section.settings.start | plus: 0
+  assign s_end = section.settings.end | plus: 0
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign show = true
+  if request.page_type != 'index' or now_ts >= s_end
+    assign show = false
+  endif
+  if request.design_mode and request.page_type == 'index'
+    assign show = true
+  endif
+  assign state = 'live'
+  if now_ts < s_start
+    assign state = 'before'
+  endif
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+  assign s_url = routes.root_url | append: '/pages/11-11' | replace: '//', '/'
+-%}
+{%- if show -%}
+  <a class="s1111s" href="{{ s_url }}" data-s1111s data-state="{{ state }}" data-start="{{ s_start }}" data-end="{{ s_end }}">
+    <span class="s1111s__inner page-width">
+      <b class="s1111s__title" dir="ltr">11<i>.</i>11</b>
+      <span class="s1111s__text">
+        <span data-when="before">{% if is_ar %}يوم واحد بس · أكبر خصومات نوفمبر · يبدأ خلال{% else %}One day only · biggest November discounts · starts in{% endif %}</span>
+        <span data-when="live">{% if is_ar %}بدأ دلوقتي · أكبر خصومات نوفمبر · ينتهي خلال{% else %}Live now · biggest November discounts · ends in{% endif %}</span>
+      </span>
+      <span class="s1111s__clock" dir="ltr" role="timer" aria-live="off"><b data-h>00</b>:<b data-m>00</b>:<b data-s>00</b></span>
+      <span class="s1111s__cta">{% if is_ar %}شوف العروض{% else %}See the deals{% endif %}</span>
+    </span>
+  </a>
+  <script>
+    (function () {
+      var root = document.querySelector('[data-s1111s]');
+      if (!root) return;
+      var start = +root.dataset.start * 1000, end = +root.dataset.end * 1000;
+      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      function tick() {
+        var now = Date.now();
+        if (now >= end) { root.hidden = true; return; }
+        var state = now < start ? 'before' : 'live';
+        root.dataset.state = state;
+        var left = Math.max(0, Math.floor(((state === 'before' ? start : end) - now) / 1000));
+        root.querySelector('[data-h]').textContent = pad(Math.floor(left / 3600));
+        root.querySelector('[data-m]').textContent = pad(Math.floor(left % 3600 / 60));
+        root.querySelector('[data-s]').textContent = pad(left % 60);
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .s1111s { display: block; background: #0b0b0b; color: #fff; text-decoration: none; }
+  .s1111s[hidden] { display: none; }
+  .s1111s__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem 1rem; padding-block: 0.75rem; text-align: center; }
+  .s1111s__title { color: #febd19; font-size: 1.75rem; line-height: 1; font-weight: 800; letter-spacing: -0.02em; }
+  .s1111s__title i { font-style: normal; color: #fff; }
+  .s1111s__text { font-weight: 700; }
+  .s1111s [data-when] { display: none; }
+  .s1111s[data-state='before'] [data-when='before'], .s1111s[data-state='live'] [data-when='live'] { display: inline; }
+  .s1111s__clock { font-variant-numeric: tabular-nums; font-weight: 800; }
+  .s1111s__clock b { display: inline-block; min-width: 2.25ch; padding: 0.15rem 0.35rem; border-radius: 0.375rem; background: #febd19; color: #111; }
+  .s1111s__cta { padding: 0.4rem 1rem; border-radius: 999px; background: #febd19; color: #111; font-weight: 700; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "11.11 strip",
+  "settings": [
+    { "type": "text", "id": "start", "default": "1794348000", "label": "Start (Unix seconds)", "info": "Nov 11 2026, 00:00 Cairo" },
+    { "type": "text", "id": "end", "default": "1794434400", "label": "End (Unix seconds)", "info": "Nov 12 2026, 00:00 Cairo" }
+  ]
+}
+{% endschema %}
