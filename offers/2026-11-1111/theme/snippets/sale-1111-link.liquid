@@ -5,7 +5,7 @@
 {%- endcomment -%}
 {%- liquid
   assign s_start = 0
-  assign s_end = 1794434400
+  assign s_end = 1794434520
   assign now_ts = 'now' | date: '%s' | plus: 0
   assign s_live = false
   if now_ts >= s_start and now_ts < s_end

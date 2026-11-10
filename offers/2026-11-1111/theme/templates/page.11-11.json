@@ -1,6 +1,15 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "main": { "type": "sale-1111", "settings": { "start": "1794348000", "end": "1794434400", "max_pct": "29" } }
+    "main": { "type": "sale-1111", "settings": { "start": "1794334062", "end": "1794434520", "max_pct": "29" } }
   },
   "order": ["main"]
 }
