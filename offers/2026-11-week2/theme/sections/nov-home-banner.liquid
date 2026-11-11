@@ -310,7 +310,8 @@
 
   .novh__list > li {
     scroll-snap-align: start;
-    padding: 8px 8px 16px;
+    padding: 0 0 16px;
+    overflow: hidden;
     border-radius: 12px;
     background: #ffffff;
   }
@@ -318,7 +319,7 @@
   .novh .card,
   .novh .card__media { background: #ffffff; }
 
-  .novh .card__info { padding-inline: 8px; }
+  .novh .card__info { padding-inline: 12px; }
 
   @media screen and (min-width: 750px) {
     .novh__list { grid-auto-columns: calc((100% - 64px) / 5); }
