@@ -1,0 +1,103 @@
+{%- comment -%}
+  Where the customer came from, saved on the cart so every web order shows it under
+  "Additional details" in Shopify admin and the phone app:
+    Came from     first source (e.g. Facebook ad, Google search, Instagram, Direct)
+    Landing page  first page seen, e.g. /ar/products/headguard
+    First visit   date of the first visit, e.g. 2026-11-10
+    Last source   source of the visit that led to the order
+    Campaign      utm_campaign of the last campaign link (and the ad, utm_content), when there is one
+  Sources come from utm_* tags, Google/Meta/TikTok click ids, or the referring site.
+  The hourly order-notes task may later replace "Came from" with Shopify's own visit data
+  and adds "Visit details".
+{%- endcomment -%}
+<script>
+  (function () {
+    try {
+      var KEY = 'bs_order_source', l = location, q = new URLSearchParams(l.search);
+      var ref = '';
+      try { ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : ''; } catch (e) {}
+      if (ref && ref === l.hostname.replace(/^www\./, '')) ref = '';   // moving around our own site
+      if (/myshopify\.com$|shopify\.com$|shop\.app$/.test(ref)) ref = '';  // back from checkout
+
+      var NAMES = [['instagram', 'Instagram'], ['facebook', 'Facebook'], ['fb', 'Facebook'], ['meta', 'Facebook'],
+        ['ig', 'Instagram'], ['tiktok', 'TikTok'], ['youtube', 'YouTube'], ['whatsapp', 'WhatsApp'],
+        ['wa.me', 'WhatsApp'], ['wl.co', 'WhatsApp'], ['chatgpt', 'ChatGPT'], ['openai', 'ChatGPT'],
+        ['gemini', 'Gemini'], ['perplexity', 'Perplexity'], ['bing', 'Bing'], ['yahoo', 'Yahoo'],
+        ['duckduckgo', 'DuckDuckGo'], ['snapchat', 'Snapchat'], ['twitter', 'X'], ['t.co', 'X'],
+        ['google', 'Google']];
+      var name = function (s) {
+        s = (s || '').toLowerCase();
+        for (var i = 0; i < NAMES.length; i++) {
+          var k = NAMES[i][0];
+          if (k.length <= 2 ? s === k : s.indexOf(k) > -1) return NAMES[i][1];
+        }
+        return s;
+      };
+      var paid = /cpc|ppc|paid|ads?$|display|social_paid/i;
+
+      // This visit's source, or '' when it is just a page view inside the site
+      var src = '', medium = q.get('utm_medium') || '';
+      if (q.get('utm_source')) {
+        src = name(q.get('utm_source'));
+        if (paid.test(medium)) src += ' ad';
+        else if (/product_sync|shopping/i.test(medium)) src += ' Shopping';
+      } else if (q.get('gclid') || q.get('gbraid') || q.get('wbraid')) {
+        src = 'Google ad';
+      } else if (q.get('fbclid')) {
+        src = ref ? name(ref) : 'Facebook';
+      } else if (q.get('ttclid')) {
+        src = 'TikTok ad';
+      } else if (ref) {
+        src = name(ref);
+        if (src === 'Google') src = 'Google search';
+      }
+
+      var saved = {};
+      try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+      var today = new Date();
+      var day = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+      var newVisit = false;
+      try { newVisit = !sessionStorage.getItem(KEY); sessionStorage.setItem(KEY, '1'); } catch (e) {}
+
+      if (!saved.first) {
+        saved.first = src || 'Direct';
+        saved.landing = l.pathname;
+        saved.day = day;
+      }
+      if (src) saved.last = src;
+      else if (newVisit || !saved.last) saved.last = 'Direct';
+      if (q.get('utm_campaign')) {
+        saved.campaign = q.get('utm_campaign') + (q.get('utm_content') ? ' | ' + q.get('utm_content') : '');
+      }
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+
+      var attrs = {
+        'Came from': saved.first,
+        'Landing page': saved.landing,
+        'First visit': saved.day,
+        'Last source': saved.last,
+        'Campaign': saved.campaign || ''
+      };
+
+      // Save on the cart only when something changed (or the cart is new)
+      var cart = (document.cookie.match(/(?:^|; )cart=([^;]+)/) || [])[1] || '';
+      var stamp = JSON.stringify(attrs) + cart;
+      var done = '';
+      try { done = sessionStorage.getItem(KEY + '_sent') || ''; } catch (e) {}
+      if (done === stamp) return;
+      var send = function () {
+        fetch('/cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ attributes: attrs })
+        }).then(function (r) {
+          if (!r.ok) return;
+          var c = (document.cookie.match(/(?:^|; )cart=([^;]+)/) || [])[1] || '';
+          try { sessionStorage.setItem(KEY + '_sent', JSON.stringify(attrs) + c); } catch (e) {}
+        }).catch(function () {});
+      };
+      if (document.readyState === 'complete') setTimeout(send, 1500);
+      else window.addEventListener('load', function () { setTimeout(send, 1500); }, { once: true });
+    } catch (e) {}
+  })();
+</script>
