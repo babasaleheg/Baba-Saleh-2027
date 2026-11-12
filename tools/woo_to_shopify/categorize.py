@@ -49,6 +49,8 @@ RULES = [
 
 # Products whose existing category is wrong: title -> correct category.
 FIXES = {
+    "Taekwondo Kick Paddle": "cat:taekwondo",
+    "Swidon Tennis Ball Can": "cat:tennis",
     "TRX Force Suspension Trainer": "cat:fitness-accessories",
     "Shark Beach Toy Truck Set": "cat:beach-toys",
     "Kimo Wrist & Ankle Weights – Pair": "cat:weights",
