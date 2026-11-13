@@ -16,3 +16,4 @@ Source: owner's PDF "عروض الاسبوع الاول من نوفمبر" (110 
   mega countdown, "up to" %, button to the page, 16 biggest discounts (`snippets/nov-offer-top.liquid`).
 - Card dressing shared in `snippets/nov-offer-cards.liquid`. Before Nov 1 the cards on the page and banner have no
   add-to-cart button and say "Offer starts Nov 1".
+- Nov 14 00:00 Cairo: week-1 prices restored from originals.json (325 variants, all verified back to original).
