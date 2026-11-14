@@ -774,6 +774,12 @@
 "title": "Black",
 "price": "120.00",
 "compareAtPrice": null
+},
+{
+"id": "gid://shopify/ProductVariant/50899864780848",
+"title": "Pink",
+"price": "116.00",
+"compareAtPrice": null
 }
 ]
 },
@@ -784,6 +790,24 @@
 "id": "gid://shopify/ProductVariant/50899781845040",
 "title": "Blue",
 "price": "116.00",
+"compareAtPrice": null
+},
+{
+"id": "gid://shopify/ProductVariant/50899781877808",
+"title": "White",
+"price": "260.00",
+"compareAtPrice": null
+},
+{
+"id": "gid://shopify/ProductVariant/50899781910576",
+"title": "Black",
+"price": "152.00",
+"compareAtPrice": null
+},
+{
+"id": "gid://shopify/ProductVariant/50899781943344",
+"title": "Navy Blue",
+"price": "124.00",
 "compareAtPrice": null
 }
 ]
@@ -824,6 +848,24 @@
 "id": "gid://shopify/ProductVariant/50899747799088",
 "title": "Green",
 "price": "124.00",
+"compareAtPrice": null
+},
+{
+"id": "gid://shopify/ProductVariant/50899747831856",
+"title": "Purple",
+"price": "65.00",
+"compareAtPrice": null
+},
+{
+"id": "gid://shopify/ProductVariant/50899747864624",
+"title": "Yellow",
+"price": "185.00",
+"compareAtPrice": null
+},
+{
+"id": "gid://shopify/ProductVariant/50899747897392",
+"title": "Blue",
+"price": "48.00",
 "compareAtPrice": null
 }
 ]
