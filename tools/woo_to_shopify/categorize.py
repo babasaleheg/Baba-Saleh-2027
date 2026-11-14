@@ -49,6 +49,7 @@ RULES = [
 
 # Products whose existing category is wrong: title -> correct category.
 FIXES = {
+    "Boys’ Summer T-Shirt & Shorts Set": "cat:t-shirts",
     "Taekwondo Kick Paddle": "cat:taekwondo",
     "Swidon Tennis Ball Can": "cat:tennis",
     "TRX Force Suspension Trainer": "cat:fitness-accessories",
