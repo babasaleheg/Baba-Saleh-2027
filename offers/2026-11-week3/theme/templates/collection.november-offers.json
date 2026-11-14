@@ -1,0 +1,28 @@
+{
+  "sections": {
+    "hero": {
+      "type": "nov-week3",
+      "settings": {
+        "start": "1794607200",
+        "end": "1795212000",
+        "dates_ar": "من 14 لـ 20 نوفمبر",
+        "dates_en": "Nov 14 – 20"
+      }
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "show_image": false,
+        "show_description": false,
+        "products_per_page": 48,
+        "columns_desktop": 4,
+        "pagination": "load_more",
+        "color_scheme": "scheme-4"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main"
+  ]
+}

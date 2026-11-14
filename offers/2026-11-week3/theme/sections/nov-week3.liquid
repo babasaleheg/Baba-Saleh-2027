@@ -1,0 +1,382 @@
+{%- comment -%}
+  عروض نوفمبر – week 3 hero (new look, Nov 14–20 2026): ink background, brand-yellow accents, a big
+  week number, the categories on offer and a countdown to the end. Same behaviour as the
+  november-offers section: data-nov state (before / live / ended), "up to" % worked out from this
+  week's prices, and the product cards under it dressed by snippets/nov-offer-cards.liquid.
+  Times are Cairo (UTC+2), as Unix seconds.
+{%- endcomment -%}
+{%- liquid
+  assign nov_start = section.settings.start | plus: 0
+  assign nov_end = section.settings.end | plus: 0
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign state = 'live'
+  if now_ts < nov_start
+    assign state = 'before'
+  elsif now_ts >= nov_end
+    assign state = 'ended'
+  endif
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+-%}
+<section class="nw3" data-nov data-state="{{ state }}" data-start="{{ nov_start }}" data-end="{{ nov_end }}" aria-labelledby="NovTitle">
+  <div class="nw3__marquee" aria-hidden="true">
+    <div class="nw3__marquee-track">
+      {%- for i in (1..10) -%}
+        {%- if is_ar -%}
+          <span><bdi>عروض نوفمبر · الأسبوع التالت</bdi></span><span><bdi>خصم لحد <i data-nov-max data-ar>{{ section.settings.max_pct }}</i>%</bdi></span>
+        {%- else -%}
+          <span><bdi>November Sale · Week 3</bdi></span><span><bdi>Up to <i data-nov-max>{{ section.settings.max_pct }}</i>% off</bdi></span>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="nw3__inner page-width">
+    <div class="nw3__copy">
+      <p class="nw3__dates"><span class="nw3__dot" aria-hidden="true"></span>{% if is_ar %}{{ section.settings.dates_ar }}{% else %}{{ section.settings.dates_en }}{% endif %}</p>
+      <h1 id="NovTitle" class="nw3__title">
+        {%- if is_ar -%}
+          <span class="nw3__title-main">عروض نوفمبر</span>
+          <span class="nw3__title-sub">الأسبوع التالت</span>
+        {%- else -%}
+          <span class="nw3__title-main">November Sale</span>
+          <span class="nw3__title-sub">Week 3</span>
+        {%- endif -%}
+      </h1>
+      <p class="nw3__offer">{% if is_ar %}خصم لحد <b data-nov-max data-ar>{{ section.settings.max_pct }}</b>%{% else %}Up to <b data-nov-max>{{ section.settings.max_pct }}</b>% off{% endif %}</p>
+      <p class="nw3__text">{% if is_ar %}{{ section.settings.text_ar }}{% else %}{{ section.settings.text_en }}{% endif %}</p>
+
+      <ul class="nw3__chips" role="list">
+        {%- if is_ar -%}
+          <li>ألعاب أطفال</li><li>نظارات وزعانف السباحة</li><li>مايوهات</li><li>مستلزمات الجيم</li><li>ترينجات</li>
+        {%- else -%}
+          <li>Kids’ toys</li><li>Swim goggles &amp; fins</li><li>Swimwear</li><li>Gym gear</li><li>Tracksuits</li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+    <div class="nw3__side">
+      <div class="nw3__badge" aria-hidden="true">
+        <span class="nw3__badge-num">3</span>
+        <span class="nw3__badge-label">{% if is_ar %}الأسبوع{% else %}Week{% endif %}</span>
+      </div>
+
+      <div class="nw3__clock">
+        <p class="nw3__clock-label">
+          <span data-when="before">{% if is_ar %}العروض تبدأ خلال{% else %}Offers start in{% endif %}</span>
+          <span data-when="live">{% if is_ar %}العروض تنتهي خلال{% else %}Offers end in{% endif %}</span>
+          <span data-when="ended">{% if is_ar %}عروض الأسبوع ده خلصت. خليك متابع{% else %}This week's offers have ended. Stay tuned{% endif %}</span>
+        </p>
+        <div class="nw3__timer" role="timer" aria-live="off" dir="ltr">
+          <span><b data-d>00</b><small>{% if is_ar %}يوم{% else %}days{% endif %}</small></span>
+          <span><b data-h>00</b><small>{% if is_ar %}ساعة{% else %}hrs{% endif %}</small></span>
+          <span><b data-m>00</b><small>{% if is_ar %}دقيقة{% else %}min{% endif %}</small></span>
+          <span><b data-s>00</b><small>{% if is_ar %}ثانية{% else %}sec{% endif %}</small></span>
+        </div>
+      </div>
+
+      <a href="#NovProducts" class="nw3__cta" data-when="before live">
+        {% if is_ar %}تسوق العروض{% else %}Shop the offers{% endif %}
+        {% render 'icon', icon: 'arrow' %}
+      </a>
+      <a href="{{ routes.collections_url }}/sale" class="nw3__cta" data-when="ended">
+        {% if is_ar %}شوف عروض تانية{% else %}See other deals{% endif %}
+        {% render 'icon', icon: 'arrow' %}
+      </a>
+
+      <ul class="nw3__trust" role="list">
+        <li>{% render 'icon', icon: 'truck' %}{% if is_ar %}توصيل لكل محافظات مصر{% else %}Delivery across all of Egypt{% endif %}</li>
+        <li>{% render 'icon', icon: 'cash' %}{% if is_ar %}الدفع عند الاستلام{% else %}Cash on delivery{% endif %}</li>
+      </ul>
+    </div>
+  </div>
+  <span id="NovProducts" class="nw3__anchor"></span>
+</section>
+{% render 'nov-offer-cards' %}
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-nov]');
+    var start = +root.dataset.start * 1000, end = +root.dataset.end * 1000;
+    var el = { d: root.querySelector('[data-d]'), h: root.querySelector('[data-h]'), m: root.querySelector('[data-m]'), s: root.querySelector('[data-s]') };
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function tick() {
+      var now = Date.now();
+      var state = now < start ? 'before' : now < end ? 'live' : 'ended';
+      if (root.dataset.state !== state) {
+        root.dataset.state = state;
+        if (state === 'live') {
+          document.querySelectorAll('.nov-soon').forEach(function (c) { c.classList.remove('nov-soon'); });
+          document.querySelectorAll('.nov-price__soon').forEach(function (n) { n.remove(); });
+        }
+      }
+      var left = Math.max(0, Math.floor(((state === 'before' ? start : end) - now) / 1000));
+      el.d.textContent = pad(Math.floor(left / 86400));
+      el.h.textContent = pad(Math.floor(left % 86400 / 3600));
+      el.m.textContent = pad(Math.floor(left % 3600 / 60));
+      el.s.textContent = pad(left % 60);
+      if (state === 'ended') return;
+      setTimeout(tick, 1000 - now % 1000);
+    }
+    tick();
+
+    // This week's prices on every card (snippets/nov-offer-cards.liquid), also on cards infinite scroll adds.
+    var max = window.novMax();
+    if (max) root.querySelectorAll('[data-nov-max]').forEach(function (n) {
+      n.textContent = n.hasAttribute('data-ar') ? window.novArDigits(max) : max;
+    });
+    document.documentElement.classList.add('nov-dressed');
+    function dressAll() {
+      var grid = document.querySelector('[data-results]');
+      if (grid) window.novDress(grid, root.dataset.state);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      dressAll();
+      var grid = document.querySelector('[data-results]');
+      if (grid) new MutationObserver(dressAll).observe(grid, { childList: true, subtree: true });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .nw3 {
+    --nw3-yellow: #febd19;
+    --nw3-ink: #0a0a0a;
+    --nw3-ink-2: #1c1c1c;
+    --nw3-white: #ffffff;
+    --nw3-font: 'Century Gothic', 'CenturyGothic', 'Didact Gothic', 'Cairo', system-ui, sans-serif;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--nw3-ink);
+    color: var(--nw3-white);
+    font-family: var(--nw3-font);
+  }
+  [dir='rtl'] .nw3 { --nw3-font: 'Cairo', 'Century Gothic', 'Didact Gothic', system-ui, sans-serif; }
+
+  /* Diagonal yellow band behind the badge */
+  .nw3::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset-block: -20%;
+    inset-inline-end: -12%;
+    width: 46%;
+    background: var(--nw3-yellow);
+    transform: skewX(-14deg);
+  }
+  [dir='rtl'] .nw3::before { transform: skewX(14deg); }
+
+  .nw3__marquee {
+    overflow: hidden;
+    background: var(--nw3-yellow);
+    color: var(--nw3-ink);
+    font-weight: 800;
+    font-size: 14px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+  .nw3__marquee-track {
+    display: inline-flex;
+    gap: 24px;
+    padding-block: 8px;
+    animation: nw3-marquee 45s linear infinite;
+  }
+  .nw3__marquee-track span { display: inline-flex; align-items: center; gap: 24px; unicode-bidi: isolate; }
+  .nw3__marquee-track i { font-style: normal; }
+  .nw3__marquee-track span::after { content: '✦'; font-size: 12px; }
+  [dir='rtl'] .nw3__marquee-track { animation-name: nw3-marquee-rtl; }
+  @keyframes nw3-marquee { to { transform: translateX(-50%); } }
+  @keyframes nw3-marquee-rtl { to { transform: translateX(50%); } }
+
+  .nw3__inner {
+    display: grid;
+    gap: 32px;
+    padding-block: 36px 40px;
+  }
+
+  .nw3__copy { display: grid; justify-items: start; gap: 14px; }
+
+  .nw3__dates {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 6px 14px;
+    border: 1px solid var(--nw3-yellow);
+    border-radius: 999px;
+    color: var(--nw3-yellow);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .nw3__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--nw3-yellow);
+    animation: nw3-pulse 1.6s ease-out infinite;
+  }
+  @keyframes nw3-pulse { from { box-shadow: 0 0 0 0 rgba(254, 189, 25, 0.7); } to { box-shadow: 0 0 0 10px rgba(254, 189, 25, 0); } }
+
+  .nw3__title { display: grid; margin: 0; line-height: 1.1; }
+  .nw3__title-main {
+    font-weight: 800;
+    font-size: clamp(44px, 11vw, 104px);
+    letter-spacing: -0.02em;
+    animation: nw3-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  [dir='rtl'] .nw3__title-main { letter-spacing: 0; line-height: 1.3; }
+  .nw3__title-sub {
+    justify-self: start;
+    margin-top: 6px;
+    padding: 2px 14px;
+    background: var(--nw3-yellow);
+    color: var(--nw3-ink);
+    font-weight: 800;
+    font-size: clamp(22px, 5vw, 36px);
+    line-height: 1.35;
+    transform: rotate(-2deg);
+    animation: nw3-rise 0.7s 0.12s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  [dir='rtl'] .nw3__title-sub { transform: rotate(2deg); }
+  @keyframes nw3-rise { from { opacity: 0; transform: translateY(0.35em); } }
+
+  .nw3__offer { margin: 6px 0 0; font-weight: 700; font-size: clamp(24px, 5vw, 34px); line-height: 1.3; }
+  .nw3__offer b { color: var(--nw3-yellow); font-size: 1.25em; }
+  .nw3__text { max-width: 34rem; margin: 0; font-size: 16px; line-height: 26px; color: rgba(255, 255, 255, 0.85); }
+
+  .nw3__chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; padding: 0; list-style: none; }
+  .nw3__chips li {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--nw3-ink-2);
+    color: var(--nw3-white);
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .nw3__side { display: grid; justify-items: start; gap: 18px; }
+
+  .nw3__badge {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    background: var(--nw3-ink);
+    color: var(--nw3-yellow);
+    box-shadow: 0 0 0 6px var(--nw3-yellow), 0 0 0 12px var(--nw3-ink);
+    animation: nw3-spin-in 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .nw3__badge-num { font-weight: 800; font-size: 76px; line-height: 1; }
+  .nw3__badge-label { position: absolute; inset-block-end: 18px; font-weight: 700; font-size: 13px; color: var(--nw3-white); }
+  @keyframes nw3-spin-in { from { opacity: 0; transform: scale(0.6) rotate(-25deg); } }
+
+  .nw3__clock { display: grid; justify-items: start; gap: 8px; }
+  .nw3__clock-label { margin: 0; font-weight: 700; font-size: 16px; line-height: 24px; }
+  .nw3__timer { display: flex; gap: 8px; }
+  .nw3__timer span {
+    display: grid;
+    justify-items: center;
+    min-width: 64px;
+    padding: 8px 6px;
+    border-radius: 12px;
+    background: var(--nw3-yellow);
+    color: var(--nw3-ink);
+  }
+  .nw3__timer b { font-weight: 800; font-size: 30px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .nw3__timer small { font-weight: 700; font-size: 12px; line-height: 16px; }
+
+  .nw3__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 0 32px;
+    border-radius: 999px;
+    background: var(--nw3-white);
+    color: var(--nw3-ink);
+    font-weight: 800;
+    font-size: 16px;
+    text-decoration: none;
+    transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  .nw3__cta:hover { transform: translateY(-2px); }
+  .nw3__cta .icon { width: 20px; height: 20px; }
+  [dir='rtl'] .nw3__cta .icon { transform: scaleX(-1); }
+
+  .nw3__trust { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0; padding: 0; list-style: none; font-size: 14px; line-height: 22px; }
+  .nw3__trust li { display: inline-flex; align-items: center; gap: 8px; }
+  .nw3__trust .icon { width: 20px; height: 20px; }
+
+  .nw3__anchor { position: absolute; inset-block-end: 0; }
+
+  .nw3 [data-when] { display: none; }
+  .nw3[data-state='before'] [data-when~='before'],
+  .nw3[data-state='live'] [data-when~='live'],
+  .nw3[data-state='ended'] [data-when~='ended'] { display: inline-flex; }
+  .nw3[data-state='ended'] .nw3__timer,
+  .nw3[data-state='ended'] .nw3__dot { display: none; }
+
+  /* Small screens: the yellow band becomes a strip under the copy, the side panel sits on it */
+  @media screen and (max-width: 749px) {
+    .nw3::before { inset-block: auto -10%; inset-inline: -10%; width: auto; height: 46%; transform: skewY(-6deg); }
+    [dir='rtl'] .nw3::before { transform: skewY(6deg); }
+    .nw3__side { color: var(--nw3-ink); }
+    .nw3__badge { width: 104px; height: 104px; }
+    .nw3__badge-num { font-size: 60px; }
+    .nw3__timer span { min-width: 58px; background: var(--nw3-ink); color: var(--nw3-yellow); }
+    .nw3__cta { background: var(--nw3-ink); color: var(--nw3-white); }
+  }
+
+  @media screen and (min-width: 750px) {
+    .nw3__inner { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: center; padding-block: 56px; }
+    .nw3__side { justify-items: center; text-align: center; color: var(--nw3-ink); }
+    .nw3__clock { justify-items: center; }
+    .nw3__timer span { background: var(--nw3-ink); color: var(--nw3-yellow); }
+    .nw3__timer small { color: var(--nw3-white); }
+    .nw3__cta { background: var(--nw3-ink); color: var(--nw3-white); }
+    .nw3__trust { justify-content: center; }
+  }
+  @media screen and (max-width: 749px) {
+    .nw3__timer small { color: var(--nw3-white); }
+  }
+
+  /* Product grid under the hero: no second title; white cards on the page */
+  .shopify-section:has(.nw3) + .shopify-section .collection__header { display: none; }
+  .shopify-section:has(.nw3) + .shopify-section .product-grid > li {
+    padding: 0 0 16px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #0a0a0a;
+  }
+  .shopify-section:has(.nw3) + .shopify-section .card,
+  .shopify-section:has(.nw3) + .shopify-section .card__media { background: #ffffff; }
+  .shopify-section:has(.nw3) + .shopify-section .card__info { padding-inline: 12px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nw3__marquee-track, .nw3__dot, .nw3__title-main, .nw3__title-sub, .nw3__badge { animation: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "November offers – week 3",
+  "settings": [
+    { "type": "text", "id": "start", "default": "1794607200", "label": "Start (Unix seconds)", "info": "1794607200 = Nov 14 2026, 00:00 Cairo" },
+    { "type": "text", "id": "end", "default": "1795212000", "label": "End (Unix seconds)", "info": "1795212000 = Nov 21 2026, 00:00 Cairo (offers run through Fri Nov 20)" },
+    { "type": "text", "id": "dates_ar", "default": "من 14 لـ 20 نوفمبر", "label": "Dates (Arabic)" },
+    { "type": "text", "id": "dates_en", "default": "Nov 14 – 20", "label": "Dates (English)" },
+    { "type": "text", "id": "max_pct", "default": "25", "label": "Highest % off", "info": "Fallback; the page works it out from this week's prices" },
+    { "type": "text", "id": "text_ar", "default": "ألعاب الأطفال انضمت للعروض، ومعاها نظارات وزعانف السباحة والمايوهات ومستلزمات الجيم. لحد يوم الجمعة 20 نوفمبر.", "label": "Text (Arabic)" },
+    { "type": "text", "id": "text_en", "default": "Kids’ toys join the offers, alongside swim goggles, fins, swimwear and gym gear. Until Friday, Nov 20.", "label": "Text (English)" }
+  ],
+  "presets": [{ "name": "November offers – week 3" }]
+}
+{% endschema %}

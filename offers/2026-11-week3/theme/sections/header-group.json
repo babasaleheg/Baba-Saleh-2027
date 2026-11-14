@@ -1,0 +1,110 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "a1": {
+          "type": "message",
+          "settings": {
+            "text": "Delivery across all of Egypt",
+            "icon": "truck",
+            "link": ""
+          }
+        },
+        "a2": {
+          "type": "message",
+          "settings": {
+            "text": "Cash on delivery available",
+            "icon": "cash",
+            "link": ""
+          }
+        },
+        "a3": {
+          "type": "message",
+          "settings": {
+            "text": "Flash sale — up to 50% off",
+            "icon": "bolt",
+            "link": "shopify://collections/sale"
+          }
+        },
+        "a4": {
+          "type": "message",
+          "settings": {
+            "text": "Visit our 5 branches",
+            "icon": "pin",
+            "link": "shopify://pages/about-baba-saleh"
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3",
+        "a4"
+      ],
+      "settings": {
+        "interval": 5,
+        "color_scheme": "scheme-3",
+        "contact_text": "Need help? Chat on WhatsApp",
+        "contact_link": "",
+        "secondary_text": "Our branches",
+        "secondary_link": "shopify://pages/about-baba-saleh",
+        "show_language": true,
+        "secondary_anchor": "branches"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_width": 200,
+        "menu": "baba-saleh-main",
+        "info_menu": "baba-saleh-info",
+        "search_placeholder": "",
+        "sticky": "on-scroll-up",
+        "show_language_selector": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1",
+        "wordmark": "Baba Saleh",
+        "wordmark_tag": "Sports",
+        "auto_menu_images": true,
+        "logo": "shopify://shop_images/baba-saleh-logo-desktop.png",
+        "logo_mobile": "shopify://shop_images/baba-saleh-logo-mobile.png",
+        "logo_width_mobile": 130
+      }
+    },
+    "nov-home": {
+      "type": "nov-home-banner",
+      "settings": {
+        "start": "1794607200",
+        "end": "1795212000",
+        "dates_ar": "من 14 لـ 20 نوفمبر",
+        "dates_en": "Nov 14 – 20",
+        "products_to_show": 16
+      }
+    },
+    "s1111": {
+      "type": "sale-1111-strip",
+      "settings": {
+        "start": "1794334062",
+        "end": "1794434520"
+      }
+    }
+  },
+  "order": [
+    "announcement",
+    "header",
+    "s1111",
+    "nov-home"
+  ]
+}
