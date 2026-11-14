@@ -48,13 +48,19 @@
       <p class="nw3__offer">{% if is_ar %}خصم لحد <b data-nov-max data-ar>{{ section.settings.max_pct }}</b>%{% else %}Up to <b data-nov-max>{{ section.settings.max_pct }}</b>% off{% endif %}</p>
       <p class="nw3__text">{% if is_ar %}{{ section.settings.text_ar }}{% else %}{{ section.settings.text_en }}{% endif %}</p>
 
-      <ul class="nw3__chips" role="list">
-        {%- if is_ar -%}
-          <li>ألعاب أطفال</li><li>نظارات وزعانف السباحة</li><li>مايوهات</li><li>مستلزمات الجيم</li><li>ترينجات</li>
-        {%- else -%}
-          <li>Kids’ toys</li><li>Swim goggles &amp; fins</li><li>Swimwear</li><li>Gym gear</li><li>Tracksuits</li>
-        {%- endif -%}
-      </ul>
+      {%- comment -%} Each chip opens this page filtered by a tag (collection/<tag>); the current one is highlighted {%- endcomment -%}
+      {%- liquid
+        assign base = collection.url | default: '/collections/november-offers'
+        assign chips = 'dept-kids-toys|ألعاب أطفال|Kids’ toys,cat-goggles|نظارات السباحة|Swim goggles,group-swimwear|مايوهات|Swimwear,cat-swim-training|زعانف ومستلزمات السباحة|Fins & swim training,dept-fitness|مستلزمات الجيم|Gym gear' | split: ','
+        assign current = current_tags | first | handleize
+      -%}
+      <nav class="nw3__chips" aria-label="{% if is_ar %}أقسام العروض{% else %}Offer categories{% endif %}">
+        <a href="{{ base }}#NovProducts"{% if current == blank %} class="is-active" aria-current="page"{% endif %}>{% if is_ar %}كل العروض{% else %}All offers{% endif %}</a>
+        {%- for chip in chips -%}
+          {%- assign c = chip | split: '|' -%}
+          <a href="{{ base }}/{{ c[0] }}#NovProducts"{% if current == c[0] %} class="is-active" aria-current="page"{% endif %}>{% if is_ar %}{{ c[1] }}{% else %}{{ c[2] }}{% endif %}</a>
+        {%- endfor -%}
+      </nav>
     </div>
 
     <div class="nw3__side">
@@ -248,16 +254,22 @@
   .nw3__offer b { color: var(--nw3-yellow); font-size: 1.25em; }
   .nw3__text { max-width: 34rem; margin: 0; font-size: 16px; line-height: 26px; color: rgba(255, 255, 255, 0.85); }
 
-  .nw3__chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; padding: 0; list-style: none; }
-  .nw3__chips li {
-    padding: 6px 14px;
+  .nw3__chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; }
+  .nw3__chips a {
+    padding: 8px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 999px;
     background: var(--nw3-ink-2);
     color: var(--nw3-white);
     font-weight: 700;
     font-size: 14px;
     line-height: 20px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
   }
+  .nw3__chips a:hover { transform: translateY(-1px); border-color: var(--nw3-yellow); }
+  .nw3__chips a.is-active { background: var(--nw3-yellow); border-color: var(--nw3-yellow); color: var(--nw3-ink); }
+  .nw3__chips a:focus-visible { outline: 2px solid var(--nw3-yellow); outline-offset: 2px; }
 
   .nw3__side { display: grid; justify-items: start; gap: 18px; }
 
