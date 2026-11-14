@@ -54,19 +54,22 @@ UPSERT = """mutation($id: ID!, $files: [OnlineStoreThemeFilesUpsertFileInput!]!)
 def check_theme(problems):
     themes = gql("{ themes(first: 20) { nodes { id name role } } }")["themes"]["nodes"]
     main = next((t for t in themes if t["role"] == "MAIN"), None)
-    if not main or main["id"] != THEME_ID:
-        problems.append(f"live theme is now {main and main['name']!r}, not the one this repo deploys to: "
-                        "the sold-out-last code must be copied into it (tools/woo_to_shopify/push_files.py)")
+    if not main:
+        problems.append("no live theme found")
         return
-    nodes = gql(FILES_Q, {"id": THEME_ID, "f": list(MARKERS)})["theme"]["files"]["nodes"]
+    # Check whichever theme is live. Only the theme this repo deploys to is restored automatically;
+    # another live theme (e.g. an offers copy) is checked, and missing code is reported for a manual copy.
+    other = main["id"] != THEME_ID
+    nodes = gql(FILES_Q, {"id": main["id"], "f": list(MARKERS)})["theme"]["files"]["nodes"]
     live = {n["filename"]: n["body"]["content"] for n in nodes}
     for name, marks in MARKERS.items():
         missing = [m for m in marks if m not in live.get(name, "")]
         if not missing:
             continue
         log(f"{name}: sold-out-last code missing ({missing})")
-        if CHECK_ONLY:
-            problems.append(f"{name} lost the sold-out-last code")
+        if CHECK_ONLY or other:
+            problems.append(f"{name} lost the sold-out-last code" + (f" in live theme {main['name']!r}: copy it in "
+                            "with tools/woo_to_shopify/push_files.py" if other else ""))
             continue
         repo = open(os.path.join(ROOT, name), encoding="utf-8").read()
         if any(m not in repo for m in marks):
