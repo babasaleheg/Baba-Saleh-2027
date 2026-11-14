@@ -42,8 +42,14 @@
           {% if is_ar %}{{ section.settings.dates_ar }}{% else %}{{ section.settings.dates_en }}{% endif %}
         </p>
         <h2 id="NovhTitle" class="novh__title">
-          <span class="novh__title-ar" lang="ar" dir="rtl">عروض نوفمبر · الأسبوع التالت</span>
-          {%- unless is_ar -%}<span class="novh__title-en">November Sale · Week 3</span>{%- endunless -%}
+          {%- comment -%} One language per page: the Arabic page only Arabic, the English page only English {%- endcomment -%}
+          {%- if is_ar -%}
+            <span class="novh__title-ar" lang="ar" dir="rtl">عروض نوفمبر</span>
+            <span class="novh__wk">الأسبوع التالت</span>
+          {%- else -%}
+            <span class="novh__title-ar">November Sale</span>
+            <span class="novh__wk">Week 3</span>
+          {%- endif -%}
         </h2>
         <p class="novh__offer">
           {%- if is_ar -%}خصم لحد <span data-nov-max data-ar>{{ section.settings.max_ar }}</span>%{%- else -%}Up to <span data-nov-max>{{ section.settings.max_pct }}</span>% off{%- endif -%}
@@ -207,6 +213,9 @@
   }
 
   .novh__title { display: grid; margin: 0; }
+  .novh__wk { justify-self: start; margin-top: 4px; padding: 2px 14px; border-radius: 6px; background: #0a0a0a; color: #febd19;
+    font-weight: 800; font-size: clamp(24px, 6vw, 40px); line-height: 1.35; transform: rotate(-2deg); }
+  [dir='rtl'] .novh__wk { transform: rotate(2deg); }
 
   .novh__title-ar {
     justify-self: start;
