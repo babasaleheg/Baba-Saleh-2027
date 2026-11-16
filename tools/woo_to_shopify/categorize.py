@@ -49,6 +49,8 @@ RULES = [
 
 # Products whose existing category is wrong: title -> correct category.
 FIXES = {
+    "Sports Training Vest – Black & Green": "cat:coaching",
+    "Sports Training Vest – Orange & Red": "cat:coaching",
     "Boys’ Summer T-Shirt & Shorts Set": "cat:t-shirts",
     "Taekwondo Kick Paddle": "cat:taekwondo",
     "Swidon Tennis Ball Can": "cat:tennis",
