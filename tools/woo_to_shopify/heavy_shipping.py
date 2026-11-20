@@ -31,7 +31,7 @@ RULES = [  # (title pattern, minimum price or 0)
 KG = re.compile(r"(\d+(?:\.\d+)?)\s*kg", re.I)
 
 Q = """query($a: String) { products(first: 100, after: $a, query: "status:active OR status:draft") {
-  pageInfo { hasNextPage endCursor } nodes { id title tags variants(first: 100) { nodes { title price } } } } }"""
+  pageInfo { hasNextPage endCursor } nodes { id title tags variants(first: 100) { nodes { id title price inventoryItem { measurement { weight { value unit } } } } } } } }"""
 
 
 def heavy(p):
@@ -52,6 +52,66 @@ def heavy(p):
     return all(kgs) and min(float(m.group(1)) for m in kgs) >= 10
 
 
+WEIGHTED = re.compile(r"dumbbell|kettlebell", re.I)   # sold per size: each size gets its real weight
+NOT_WEIGHTED = re.compile(r"rack|holder|foam|water", re.I)
+W_Q = """query($a: String) { products(first: 100, after: $a, query: "(title:*dumbbell* OR title:*Dumbbell* OR title:*kettlebell* OR title:*Kettlebell*) AND (status:active OR status:draft)") {
+  pageInfo { hasNextPage endCursor } nodes { id title variants(first: 100) { nodes { id title
+  inventoryItem { measurement { weight { value unit } } } } } } } }"""
+W_SET = """mutation($p: ID!, $v: [ProductVariantsBulkInput!]!) { productVariantsBulkUpdate(productId: $p, variants: $v) {
+  userErrors { message } } }"""
+
+
+def kg_of(v):
+    w = (v["inventoryItem"]["measurement"] or {}).get("weight") or {}
+    return float(w.get("value") or 0) * {"GRAMS": 0.001, "POUNDS": 0.4536, "OUNCES": 0.02835}.get(w.get("unit"), 1)
+
+
+def fix_weight(p, want, dry):
+    """The shipping collections go by weight per size (5 kg and up = heavy). Heavy products get
+    30 kg on every size; other products (not dumbbells/kettlebells, which get their real weight)
+    must stay under 5 kg."""
+    if WEIGHTED.search(p["title"]) and not NOT_WEIGHTED.search(p["title"]):
+        return
+    todo = []
+    for v in p["variants"]["nodes"]:
+        kg = kg_of(v)
+        if want and kg < 5:
+            todo.append({"id": v["id"], "inventoryItem": {"measurement": {"weight": {"value": 30, "unit": "KILOGRAMS"}}}})
+        elif not want and kg >= 5:
+            todo.append({"id": v["id"], "inventoryItem": {"measurement": {"weight": {"value": 0, "unit": "KILOGRAMS"}}}})
+    if todo and not dry:
+        gql(W_SET, {"p": p["id"], "v": todo})
+
+
+def set_weights(dry):
+    """Dumbbells and kettlebells: each size's weight from its title (e.g. 10 kg). The shipping
+    collections use it per size: 5 kg and more = heavy shipping, lighter = light shipping."""
+    after, n = None, 0
+    while True:
+        page = gql(W_Q, {"a": after})["products"]
+        for p in page["nodes"]:
+            if not WEIGHTED.search(p["title"]) or NOT_WEIGHTED.search(p["title"]):
+                continue
+            todo = []
+            for v in p["variants"]["nodes"]:
+                m = KG.search(v["title"] or "") or KG.search(p["title"])
+                if not m:
+                    continue
+                kg = float(m.group(1))
+                w = (v["inventoryItem"]["measurement"] or {}).get("weight") or {}
+                have = float(w.get("value") or 0) * (1 if w.get("unit") in (None, "KILOGRAMS") else 0.001 if w.get("unit") == "GRAMS" else 0.4536)
+                if abs(have - kg) > 0.01:
+                    todo.append({"id": v["id"], "inventoryItem": {"measurement": {"weight": {"value": kg, "unit": "KILOGRAMS"}}}})
+            if todo:
+                n += len(todo)
+                if not dry:
+                    gql(W_SET, {"p": p["id"], "v": todo})
+        if not page["pageInfo"]["hasNextPage"]:
+            break
+        after = page["pageInfo"]["endCursor"]
+    return n
+
+
 def main():
     dry = "--dry-run" in sys.argv
     after, added, removed, n = None, [], [], 0
@@ -60,6 +120,7 @@ def main():
         for p in page["nodes"]:
             n += 1
             want, has = heavy(p), TAG in p["tags"]
+            fix_weight(p, want, dry)
             if want and not has:
                 added.append(p["title"])
                 if not dry:
@@ -75,7 +136,8 @@ def main():
         log(f"{'would mark' if dry else 'marked'} heavy: {t}")
     for t in removed:
         log(f"{'would unmark' if dry else 'unmarked'} heavy: {t}")
-    log(f"heavy-shipping {{'products': {n}, 'marked': {len(added)}, 'unmarked': {len(removed)}}}")
+    weights = set_weights(dry)
+    log(f"heavy-shipping {{'products': {n}, 'marked': {len(added)}, 'unmarked': {len(removed)}, 'sizes weighed': {weights}}}")
 
 
 if __name__ == "__main__":
