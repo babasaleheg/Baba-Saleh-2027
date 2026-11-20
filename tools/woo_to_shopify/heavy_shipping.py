@@ -19,8 +19,12 @@ HEAVY = {  # exact titles always heavy (full review Nov 20 2026)
     "Kids’ Basketball – 160 cm", "Rebound Ball Stand", "Boxing Speed Ball 125 cm", "Kids’ Punching Ball – 125 cm",
     "Airplane Kids’ Tricycle", "Kids’ Robot Tricycle with Seat", "Kids’ Tricycle with Seat & Backrest",
     "Balloon Kids’ Balance Bike", "Kids’ Balance Bike", "18 mm Flooring per Square Meter",
+    # owner, Nov 20 2026: these are heavy too
+    "Dome-Shaped Tent – 6 People", "Dome-Shaped Tent – 8 People", "Easy Open Camping Tent", "Triceps Bar",
+    "Zigzag Bar 25 mm", "Kids’ Ride-On Car", "Kids’ Excavator Ride-On Car", "2-Wheel Scooter", "Large Trophy 95 cm",
+    "Volleyball Net with Wire", "Mini Tennis Net", "Kids’ Boxing Stand",
 }
-LIGHT = {"Boxing Sandbag", "Venum Punching Bag", "Training Sandbag", "Kids’ Boxing Stand"}  # small, light
+LIGHT = {"Boxing Sandbag", "Venum Punching Bag", "Training Sandbag"}  # small, light
 
 RULES = [  # (title pattern, minimum price or 0)
     (r"standing (sand|punching) ?bag|standing punching|boxing dummy|combat training sandbag|pear-shaped sandbag|speed bag with stand", 0),
