@@ -14,7 +14,12 @@ import sys
 from sync import gql, log
 
 TAG = "ship:heavy"
-HEAVY = set()  # exact titles always heavy
+HEAVY = {  # exact titles always heavy (full review Nov 20 2026)
+    "Olympic Hex Bar", "Volleyball Posts", "Kids’ Ride-On ATV Car", "Basketball Backboard with Rim",
+    "Kids’ Basketball – 160 cm", "Rebound Ball Stand", "Boxing Speed Ball 125 cm", "Kids’ Punching Ball – 125 cm",
+    "Airplane Kids’ Tricycle", "Kids’ Robot Tricycle with Seat", "Kids’ Tricycle with Seat & Backrest",
+    "Balloon Kids’ Balance Bike", "Kids’ Balance Bike", "18 mm Flooring per Square Meter",
+}
 LIGHT = {"Boxing Sandbag", "Venum Punching Bag", "Training Sandbag", "Kids’ Boxing Stand"}  # small, light
 
 RULES = [  # (title pattern, minimum price or 0)
@@ -52,9 +57,9 @@ def heavy(p):
     return all(kgs) and min(float(m.group(1)) for m in kgs) >= 10
 
 
-WEIGHTED = re.compile(r"dumbbell|kettlebell", re.I)   # sold per size: each size gets its real weight
+WEIGHTED = re.compile(r"dumbbell|kettlebell|weight plate|medicine ball", re.I)   # sold per size: each size gets its real weight
 NOT_WEIGHTED = re.compile(r"rack|holder|foam|water", re.I)
-W_Q = """query($a: String) { products(first: 100, after: $a, query: "(title:*dumbbell* OR title:*Dumbbell* OR title:*kettlebell* OR title:*Kettlebell*) AND (status:active OR status:draft)") {
+W_Q = """query($a: String) { products(first: 100, after: $a, query: "(title:*dumbbell* OR title:*Dumbbell* OR title:*kettlebell* OR title:*Kettlebell* OR title:*Plate* OR title:*plate* OR title:*Medicine* OR title:*medicine*) AND (status:active OR status:draft)") {
   pageInfo { hasNextPage endCursor } nodes { id title variants(first: 100) { nodes { id title
   inventoryItem { measurement { weight { value unit } } } } } } } }"""
 W_SET = """mutation($p: ID!, $v: [ProductVariantsBulkInput!]!) { productVariantsBulkUpdate(productId: $p, variants: $v) {
