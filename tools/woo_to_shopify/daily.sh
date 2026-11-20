@@ -11,6 +11,7 @@ step() {
   python3 "$@" || { sleep 30; python3 "$@"; } || failed="$failed $*;"
 }
 step categorize.py
+step category_list.py
 step heavy_shipping.py
 step product_quality.py
 step variant_images.py
