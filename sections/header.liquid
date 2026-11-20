@@ -27,6 +27,9 @@
           {%- liquid
             assign logo_alt = 'seo.brand' | t
             assign logo_width_2x = section.settings.logo_width | times: 2
+            # Sharp on 2x and 3x screens: the browser picks a file at least 3 times the shown width
+            assign logo_sizes = section.settings.logo_width | append: 'px'
+            assign logo_mobile_sizes = section.settings.logo_width_mobile | append: 'px'
             assign desktop_class = 'header__logo-image'
             if section.settings.logo_mobile != blank
               assign desktop_class = 'header__logo-image header__logo-image--desktop'
@@ -34,9 +37,11 @@
           -%}
           {{
             section.settings.logo
-            | image_url: width: logo_width_2x
+            | image_url: width: 1000
             | image_tag:
               width: section.settings.logo_width,
+              widths: '200, 300, 400, 600, 800, 1000',
+              sizes: logo_sizes,
               alt: logo_alt,
               loading: 'eager',
               fetchpriority: 'high',
@@ -46,9 +51,11 @@
             {%- assign logo_mobile_width_2x = section.settings.logo_width_mobile | times: 2 -%}
             {{
               section.settings.logo_mobile
-              | image_url: width: logo_mobile_width_2x
+              | image_url: width: 1000
               | image_tag:
                 width: section.settings.logo_width_mobile,
+                widths: '130, 260, 390, 520, 800, 1000',
+                sizes: logo_mobile_sizes,
                 alt: logo_alt,
                 loading: 'eager',
                 class: 'header__logo-image header__logo-image--mobile'
