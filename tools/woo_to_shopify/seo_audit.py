@@ -14,13 +14,15 @@ P_Q = """query($a: String) { products(first: 100, after: $a, query: "status:acti
 T_Q = """query($ids: [ID!]!) { translatableResourcesByIds(first: 250, resourceIds: $ids) { nodes { resourceId
   translatableContent { key value } translations(locale: "ar") { key value outdated } } } }"""
 LATIN = re.compile(r"[A-Za-z]{4,}")
-BRANDS = re.compile(r"\b(Track|Mondial|Cressi|Venum|Wilson|Joola|Sponeta|LivePro|Molten|Everlast|Speedo|Arena|Adidas|Nike|Puma|ASIS|Crocs|Disney|Stitch|Kiko|Molten|Dunlop|Donic|Bosu|TRX)\b", re.I)
+BRANDS = re.compile(r"\b(Track|Mondial|Cressi|Venum|Wilson|Joola|Sponeta|LivePro|Molten|Everlast|Speedo|Arena|Adidas|Nike|Puma|ASIS|Crocs|Disney|Stitch|Kiko|Molten|Dunlop|Donic|Bosu|TRX|LaMer|La Mer)\b", re.I)
 
 
-def english_left(text):
-    """Arabic text that still has English words (other than brand names / codes)."""
+def english_left(text, english=""):
+    """Arabic text that still has English words (other than brand names / codes, i.e. words that
+    also stand in the English title, like Kuna, Wesing or Derby Star)."""
     text = re.sub(r"<[^>]+>", " ", text or "")
-    return bool(LATIN.search(BRANDS.sub("", text)))
+    keep = {w.lower() for w in re.findall(r"[A-Za-z]+", english or "")}
+    return any(w.lower() not in keep for w in LATIN.findall(BRANDS.sub("", text)))
 
 
 def main():
@@ -35,7 +37,8 @@ def main():
                               "ar_seo_title", "ar_meta_description", "ar_alt", "ar_has_english")}
     media_ids = []
     for p in products:
-        if not (p["seo"]["title"] or "").strip():
+        # an empty SEO title is fine: Shopify then uses the product title (it stores an equal one as empty)
+        if not (p["seo"]["title"] or "").strip() and len(p["title"]) > 70:
             issues["en_seo_title"].append(p["title"])
         if not (p["seo"]["description"] or "").strip():
             issues["en_meta_description"].append(p["title"])
@@ -54,11 +57,11 @@ def main():
                 issues["ar_title"].append(title)
             if content.get("body_html") and not ar.get("body_html"):
                 issues["ar_description"].append(title)
-            if not ar.get("meta_title"):
+            if not ar.get("meta_title") and not ar.get("title"):
                 issues["ar_seo_title"].append(title)
             if not ar.get("meta_description"):
                 issues["ar_meta_description"].append(title)
-            if any(english_left(ar.get(k)) for k in ("title", "body_html", "meta_title", "meta_description")):
+            if any(english_left(ar.get(k), title) for k in ("title", "meta_title", "meta_description")):
                 issues["ar_has_english"].append(title)
     # Arabic image alt text (MEDIA_IMAGE translations)
     mids = [m for _, m in media_ids]
