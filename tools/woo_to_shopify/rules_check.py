@@ -114,9 +114,31 @@ def check_categories(problems):
         problems.append(f"{len(bad)} product(s) without exactly one category: {bad[:10]}")
 
 
+def check_languages(problems):
+    """English is the store's default language and Arabic is published (rule 5). On Nov 18 2026 the
+    default was switched to Arabic in the admin, which deleted every Arabic translation."""
+    locs = {l["locale"]: l for l in gql("{ shopLocales { locale primary published } }")["shopLocales"]}
+    if not locs.get("en", {}).get("primary"):
+        problems.append("store default language is not English: in Shopify admin Settings > Languages set English "
+                        "as default, then add/publish Arabic and run translations_backup.py restore")
+    if not locs.get("ar", {}).get("published"):
+        problems.append("Arabic is not a published store language: publish it, then run translations_backup.py restore")
+    for path in ("/", "/ar"):
+        try:
+            html = urllib.request.urlopen(urllib.request.Request(SITE + path + "?nc=" + str(int(time.time())),
+                                          headers={"User-Agent": "Mozilla/5.0"}), timeout=60).read().decode("utf-8", "ignore")
+        except Exception as e:
+            problems.append(f"{path} does not load ({e})")
+            continue
+        want = 'lang="en"' if path == "/" else 'lang="ar"'
+        if want not in html[:3000]:
+            problems.append(f"{path} is not served in {'English' if path == '/' else 'Arabic'}")
+
+
 def main():
     problems = []
     check_theme(problems)
+    check_languages(problems)
     check_pages(problems)
     check_categories(problems)
     for p in problems:

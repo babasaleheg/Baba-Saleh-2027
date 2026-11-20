@@ -942,6 +942,8 @@
     font-weight: 600;
     text-decoration: none;
   }
+  /* Arabic (RTL): mirror the menu icon so its short line sits on the reading side */
+  [dir='rtl'] .header__menu-toggle .icon { transform: scaleX(-1); }
 {% endstylesheet %}
 
 {% schema %}

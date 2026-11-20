@@ -28,6 +28,7 @@ step order_note.py
 step recommendations.py
 step sold_counter.py
 step search_words.py
+step translations_backup.py
 if [ -n "$failed" ]; then
   echo "FAILED:$failed"
   exit 1
