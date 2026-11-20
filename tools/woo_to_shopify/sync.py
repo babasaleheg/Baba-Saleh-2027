@@ -462,6 +462,8 @@ def sort_stock():
         for c in page["nodes"]:
             if os.environ.get("COLLECTION") and c["handle"] != os.environ["COLLECTION"]:
                 continue
+            if c["handle"].startswith("shipping-"):
+                continue  # shipping-only collections (heavy / light), never shown to shoppers
             stats["collections"] += 1
             base = (c["metafield"] or {}).get("value") or c["sortOrder"]
             if not c["metafield"]:
