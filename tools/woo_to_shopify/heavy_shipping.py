@@ -25,7 +25,7 @@ RULES = [  # (title pattern, minimum price or 0)
     (r"table tennis table|game table|billiards? table|air hockey table|pool table", 0),
     (r"\bgoal\b(?!keeper)", 3000),
     (r"basketball (hoop|stand)", 1500),
-    (r"dumbbell rack|weight rack|squat rack|power rack|smith machine|treadmill|exercise bike|spinning bike|elliptical|rowing machine|multi[- ]?gym|home gym", 0),
+    (r"dumbbell rack|weight rack|squat rack|power rack|smith machine|treadmill|exercise bike|spinning bike|elliptical|rowing machine|multi[- ]?gym|home gym|bars station|pull-up station|power tower|battle rope", 0),
     (r"olympic bar|\bbar 1[2-9]0 ?cm", 0),
 ]
 KG = re.compile(r"(\d+(?:\.\d+)?)\s*kg", re.I)
