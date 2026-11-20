@@ -41,6 +41,13 @@ never bypass or undo them, in any change, app, script or scheduled task.
     The nightly saves every Arabic translation to `tools/woo_to_shopify/backups/translations_ar.json.gz`
     (`translations_backup.py`; `restore` puts them back) and `rules_check.py` checks the languages.
 
+12. **Heavy items always pay heavy shipping** (250 Cairo & Giza / 350 Alexandria, Delta & Canal / 450 Upper
+    Egypt; light items 85 / 120 / 140). Heavy = standing sandbags, punching bags 1 m+, benches, machines, racks,
+    long bars, trampolines, tables, goals, hoops, and every dumbbell / kettlebell / hex dumbbell size of 5 kg+.
+    The nightly `heavy_shipping.py` tags heavy products `ship:heavy` and sets weights (heavy 30 kg, dumbbells and
+    kettlebells their real kg, others under 5 kg); the market rates use the collections "Heavy items (shipping)"
+    (5 kg+) and "Light items (shipping)" (under 5 kg). `rules_check.py` checks every heavy product at checkout.
+
 ## Working on the theme
 - Live theme: `gid://shopify/OnlineStoreTheme/166776471600`. Push with
   `python3 tools/woo_to_shopify/push_files.py 166776471600 <files>` after checking the live
