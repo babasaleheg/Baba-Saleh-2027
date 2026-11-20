@@ -36,14 +36,14 @@ SET = """mutation($m: [MetafieldsSetInput!]!) { metafieldsSet(metafields: $m) { 
 
 # Sensible add-ons per category, best first (used before order history, which is noisy for small samples)
 COMPLEMENTS = {
-    "boxing": ["martial-arts-gear", "jump-ropes", "speedball", "water-bottles"],
-    "taekwondo": ["martial-arts-gear", "water-bottles", "backpacks"], "karate": ["martial-arts-gear", "water-bottles", "backpacks"],
-    "martial-arts-gear": ["boxing", "jump-ropes", "water-bottles"], "speedball": ["boxing", "jump-ropes"],
+    "boxing": ["jump-ropes", "water-bottles", "supports"],
+    "taekwondo": ["water-bottles", "backpacks"], "karate": ["water-bottles", "backpacks"],
+    "martial-arts-gear": ["water-bottles", "backpacks"], "speedball": ["water-bottles", "backpacks"],
     "football": ["football-shoes", "water-bottles", "backpacks", "coaching"], "football-shoes": ["football", "sports-accessories", "backpacks"],
-    "basketball": ["water-bottles", "backpacks", "running-shoes"], "volleyball": ["supports", "water-bottles"], "handball": ["supports", "water-bottles"],
-    "tennis": ["water-bottles", "sports-accessories", "backpacks"], "padel": ["water-bottles", "sports-accessories", "backpacks"],
-    "squash": ["goggles", "water-bottles"], "badminton": ["water-bottles", "backpacks"], "table-tennis": ["games", "water-bottles"],
-    "weights": ["fitness-accessories", "resistance-bands", "water-bottles"], "gym-machines": ["weights", "fitness-accessories", "resistance-bands"],
+    "basketball": ["water-bottles", "backpacks", "running-shoes"], "volleyball": ["water-bottles", "backpacks"], "handball": ["water-bottles", "backpacks"],
+    "tennis": ["water-bottles", "backpacks"], "padel": ["water-bottles", "backpacks"],
+    "squash": ["water-bottles", "backpacks"], "badminton": ["water-bottles", "backpacks"], "table-tennis": ["water-bottles", "backpacks"],
+    "weights": ["fitness-accessories", "resistance-bands", "water-bottles"], "gym-machines": ["resistance-bands", "water-bottles"],
     "fitness-accessories": ["water-bottles", "resistance-bands", "jump-ropes"], "resistance-bands": ["yoga", "fitness-accessories", "jump-ropes"],
     "yoga": ["resistance-bands", "water-bottles", "fitness-accessories"], "jump-ropes": ["resistance-bands", "water-bottles"],
     "supports": ["fitness-accessories", "water-bottles"], "running-shoes": ["t-shirts", "shorts", "water-bottles"],
@@ -55,12 +55,17 @@ COMPLEMENTS = {
     "men-swimwear": ["goggles", "swim-caps", "slippers"], "women-swimwear": ["swim-caps", "goggles", "beach-bags-hats"],
     "kids-swimwear": ["goggles", "swim-safety", "pool-floats"], "swim-safety": ["goggles", "kids-swimwear"],
     "pool-floats": ["beach-toys", "swim-safety"], "beach-toys": ["pool-floats", "beach-bags-hats"],
-    "beach-shoes": ["beach-bags-hats", "goggles"], "beach-bags-hats": ["slippers", "beach-shoes"], "slippers": ["beach-bags-hats", "t-shirts"],
-    "diving": ["swim-accessories", "beach-shoes"], "cycling": ["water-bottles", "supports"], "scooters": ["supports", "skating"],
-    "skating": ["supports", "skateboards"], "skateboards": ["supports", "skating"], "camping": ["water-bottles", "backpacks"],
-    "medals": ["trophies"], "trophies": ["medals"], "coaching": ["football", "sports-accessories"],
-    "backpacks": ["water-bottles"], "water-bottles": ["backpacks", "fitness-accessories"], "toys": ["games"], "games": ["toys"],
+    "beach-shoes": ["beach-bags-hats", "goggles"], "beach-bags-hats": ["slippers", "beach-shoes"], "slippers": ["beach-bags-hats"],
+    "diving": ["swim-accessories", "beach-shoes"], "cycling": ["water-bottles"], "scooters": ["water-bottles"],
+    "skating": ["supports", "skateboards"], "skateboards": ["supports", "skating"], "camping": ["backpacks"],
+    "medals": ["trophies"], "trophies": ["medals"], "coaching": ["coaching", "water-bottles"],
+    "backpacks": ["water-bottles"], "water-bottles": ["backpacks"], "toys": ["games"], "games": ["toys"],
+    "handbags": ["water-bottles"], "billiards": ["billiards"], "ballet": ["ballet"], "hockey": ["water-bottles"],
+    "hats": ["water-bottles"], "flags": [], "sports-accessories": [],
 }
+
+# Never suggested as an add-on: odd one-offs that fit no basket
+NO_ADDON = re.compile(r"phone case|mini fan|stand fan|floor pump|nunchak|ball needle", re.I)
 
 
 APPAREL = {"t-shirts", "shorts", "pants", "jackets", "tracksuits", "running-shoes", "football-shoes", "slippers", "beach-shoes", "sports-bras"}
@@ -171,7 +176,11 @@ def main():
 
     def bought_together(p):
         pid = p["id"]
-        ok = lambda q: q != pid and q in in_stock and q in by_id and fits(p, by_id[q])
+        kid = audience(p)[0] == "kids"
+        ok = lambda q: (q != pid and q in in_stock and q in by_id and fits(p, by_id[q])
+                        and not NO_ADDON.search(by_id[q]["title"])
+                        and (kid or audience(by_id[q])[0] != "kids")  # kids' items only next to kids' items
+                        and not (kid and re.search(r"shaker|protein", by_id[q]["title"], re.I)))  # kids' items only next to kids' items
         # 1. bought together often (3+ orders), and from a category that makes sense next to this one
         good = set(COMPLEMENTS.get((cat[pid] or "").removeprefix("cat:"), []))
         hist = [(n, q) for q, n in pair[pid].items() if n >= 3 and ok(q) and (cat[q] or "").removeprefix("cat:") in good]
@@ -179,10 +188,10 @@ def main():
         used_cats = {cat[pid]} | {cat[q] for q in picks}
         # 2. best sellers from the matching categories, then from categories customers buy with this one
         wanted = ["cat:" + c for c in COMPLEMENTS.get((cat[pid] or "").removeprefix("cat:"), [])]
-        for c in wanted + [c for c in cat_rank(cat[pid]) if c not in wanted][:2 if not wanted else 0]:
+        for c in wanted:  # only categories that make sense next to this one (no blind fill-ins)
             if len(picks) >= 2:
                 break
-            if c in used_cats:
+            if c in used_cats and c != cat[pid]:
                 continue
             # a best seller from that category, ideally not dearer than this product
             pool = [q for q in by_cat[c] if ok(q) and q not in picks]
@@ -196,22 +205,30 @@ def main():
                 used_cats.add(c)
         return picks
 
-    rows, examples = [], 0
+    rows, drop, examples = [], [], 0
     for p in products:
         for key, ids, current in (("related", related(p), p["rel"]), ("bought_together", bought_together(p), p["fbt"])):
             value = "[" + ",".join(f'"{i}"' for i in ids) + "]"
             if ids and (not current or current["value"].replace(" ", "") != value):
                 rows.append({"ownerId": p["id"], "namespace": NS, "key": key, "type": "list.product_reference", "value": value})
+            elif not ids and current:  # nothing fits any more: remove the old (wrong) suggestions
+                drop.append({"ownerId": p["id"], "namespace": NS, "key": key})
         if DRY and examples < 6 and p["id"] in pair:
             examples += 1
             log(p["title"], "| together:", [by_id[q]["title"] for q in bought_together(p)], "| related:", [by_id[q]["title"] for q in related(p)[:3]])
-    stats = {"products": len(products), "orders_with_2+": len(baskets), "updates": len(rows), "failed": 0}
+    stats = {"products": len(products), "orders_with_2+": len(baskets), "updates": len(rows), "cleared": len(drop), "failed": 0}
     if not DRY:
         for i in range(0, len(rows), 25):
             errs = gql(SET, {"m": rows[i:i + 25]})["metafieldsSet"]["userErrors"]
             if errs:
                 stats["failed"] += 1
                 log("metafieldsSet", errs[:2])
+        for i in range(0, len(drop), 25):
+            errs = gql("""mutation($m: [MetafieldIdentifierInput!]!) { metafieldsDelete(metafields: $m) { userErrors { field message } } }""",
+                       {"m": drop[i:i + 25]})["metafieldsDelete"]["userErrors"]
+            if errs:
+                stats["failed"] += 1
+                log("metafieldsDelete", errs[:2])
     log("recommendations", stats)
 
 

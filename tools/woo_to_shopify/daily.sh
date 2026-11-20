@@ -19,6 +19,7 @@ step collection_audit.py
 step sync.py seo
 step seo_bilingual.py
 step ar_descriptions.py export
+step seo_audit.py
 step sync.py sort-stock
 step rules_check.py
 step sync.py reviews-sync

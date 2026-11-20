@@ -135,10 +135,38 @@ def check_languages(problems):
             problems.append(f"{path} is not served in {'English' if path == '/' else 'Arabic'}")
 
 
+HEAVY_MIN = {"GZ": 250, "ALX": 350, "AST": 450}  # heavy rate per zone: Cairo & Giza / Alexandria, Delta & Canal / Upper Egypt
+CALC = """mutation($i: DraftOrderInput!) { draftOrderCalculate(input: $i) { calculatedDraftOrder {
+  availableShippingRates { title price { amount } } } userErrors { message } } }"""
+
+
+def check_heavy_shipping(problems):
+    """Every product tagged ship:heavy (heavy_shipping.py) can only be shipped at the heavy rate of its zone."""
+    after, cheap = None, []
+    while True:
+        page = gql("""query($a: String) { products(first: 100, after: $a, query: "tag:'ship:heavy' AND status:active") {
+          pageInfo { hasNextPage endCursor } nodes { title variants(first: 1) { nodes { id } } } } }""", {"a": after})["products"]
+        for p in page["nodes"]:
+            vid = p["variants"]["nodes"][0]["id"]
+            for prov, low in HEAVY_MIN.items():
+                r = gql(CALC, {"i": {"lineItems": [{"variantId": vid, "quantity": 1}],
+                                     "shippingAddress": {"address1": "x", "city": "x", "provinceCode": prov, "countryCode": "EG"}}})
+                rates = [float(x["price"]["amount"]) for x in (r["draftOrderCalculate"]["calculatedDraftOrder"] or {}).get("availableShippingRates", [])]
+                if rates and min(rates) < low:
+                    cheap.append(f"{p['title']} ({prov}: {min(rates):g})")
+        if not page["pageInfo"]["hasNextPage"]:
+            break
+        after = page["pageInfo"]["endCursor"]
+    if cheap:
+        problems.append(f"{len(cheap)} heavy-product checks can still pick a light shipping rate, e.g. {cheap[:3]}: "
+                        "in Settings > Markets limit each market's light rate to 'Light items (shipping)'")
+
+
 def main():
     problems = []
     check_theme(problems)
     check_languages(problems)
+    check_heavy_shipping(problems)
     check_pages(problems)
     check_categories(problems)
     for p in problems:
