@@ -49,6 +49,7 @@ RULES = [
 
 # Products whose existing category is wrong: title -> correct category.
 FIXES = {
+    "Foam Hand Grip": "cat:fitness-accessories",
     "Sports Training Vest – Black & Green": "cat:coaching",
     "Sports Training Vest – Orange & Red": "cat:coaching",
     "Boys’ Summer T-Shirt & Shorts Set": "cat:t-shirts",
@@ -200,6 +201,7 @@ FIXES = {
 
 # Products whose audience tag is wrong: title -> correct for: tag
 AUDIENCE_FIXES = {
+    "Inflatable Swim Vest": "for:kids",
     "Women’s Dinosaur Slides": "for:women",
     "Track Women’s Swimsuit": "for:women",
     "Track Men’s 3-Line Tracksuit": "for:men",
@@ -250,7 +252,7 @@ AUDIENCE_FIXES = {
     "Venum Combat Sports Shorts": "for:men",
     "Venum Combat Sports Shorts Black, Red & White": "for:men",
     "Disney Water Bottle": "for:kids",
-    "Slide Sandals": "for:kids",
+    "Slide Sandals": "for:women",
     "Girls’ Beach Sun Hat": "for:kids",
     "Small Football Set": "for:kids",
     "Venum Combat Sports Shorts – Black, Red & White": "for:men",
