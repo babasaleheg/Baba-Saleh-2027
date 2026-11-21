@@ -1,0 +1,66 @@
+{%- comment -%}
+  White Friday strip on every page (under the header): ink bar, sparkles, "عروض الجمعة البيضاء",
+  a small live countdown and a link to the offers page. Hidden on the offers page itself and after
+  the end (Liquid, and re-checked in the browser so a cached page never shows it late).
+{%- endcomment -%}
+{%- liquid
+  assign wf_end = section.settings.end | plus: 0
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign show = true
+  if now_ts >= wf_end or collection.handle == 'november-offers'
+    assign show = false
+  endif
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+-%}
+{%- if show -%}
+  <a class="wfs" href="{{ routes.collections_url }}/november-offers" data-wfs data-end="{{ wf_end }}">
+    <svg class="wfs__spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0c.6 6.2 5.8 11.4 12 12-6.2.6-11.4 5.8-12 12-.6-6.2-5.8-11.4-12-12C6.2 11.4 11.4 6.2 12 0z"/></svg>
+    <span class="wfs__title">{% if is_ar %}عروض الجمعة البيضاء{% else %}White Friday{% endif %}</span>
+    <span class="wfs__pct">{% if is_ar %}خصم لحد {{ section.settings.max_pct }}%{% else %}Up to {{ section.settings.max_pct }}% off{% endif %}</span>
+    <span class="wfs__clock"><span data-wfs-d></span> <bdi dir="ltr" data-wfs-t>--:--:--</bdi></span>
+    <span class="wfs__go">{% if is_ar %}تسوق دلوقتي{% else %}Shop now{% endif %}{% render 'icon', icon: 'arrow' %}</span>
+  </a>
+  <script>
+    (function () {
+      var a = document.querySelector('[data-wfs]'); if (!a) return;
+      var end = +a.dataset.end * 1000, t = a.querySelector('[data-wfs-t]'), dd = a.querySelector('[data-wfs-d]'), ar = document.documentElement.lang.indexOf('ar') === 0;
+      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      (function tick() {
+        var now = Date.now(); if (now >= end) { a.hidden = true; return; }
+        var s = Math.floor((end - now) / 1000), d = Math.floor(s / 86400);
+        dd.textContent = d ? d + (ar ? ' يوم' : 'd') : ''; t.textContent = pad(Math.floor(s % 86400 / 3600)) + ':' + pad(Math.floor(s % 3600 / 60)) + ':' + pad(s % 60);
+        setTimeout(tick, 1000 - now % 1000);
+      })();
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .wfs { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 14px; min-height: 44px; padding: 8px 16px;
+    background: #0a0a0a; color: #fff; font-weight: 700; font-size: 14px; line-height: 20px; text-decoration: none; text-align: center; }
+  .wfs[hidden] { display: none; }
+  .wfs__spark { width: 16px; height: 16px; color: #febd19; animation: wfs-tw 2.2s ease-in-out infinite; }
+  @keyframes wfs-tw { 50% { transform: rotate(45deg) scale(1.25); } }
+  .wfs__title { color: #febd19; font-weight: 900; letter-spacing: .02em; text-transform: uppercase; }
+  .wfs__clock { padding: 2px 10px; border-radius: 999px; background: #febd19; color: #0a0a0a; font-weight: 900; font-variant-numeric: tabular-nums; }
+  .wfs__go { display: inline-flex; align-items: center; gap: 4px; text-decoration: underline; text-decoration-color: #febd19; text-underline-offset: 3px; }
+  .wfs__go .icon { width: 16px; height: 16px; }
+  [dir='rtl'] .wfs__go .icon { transform: scaleX(-1); }
+  .wfs:hover .wfs__go { color: #febd19; }
+  .wfs:focus-visible { outline: 3px solid #febd19; outline-offset: -3px; }
+  @media screen and (max-width: 749px) { .wfs__pct, .wfs__go { display: none; } .wfs { gap: 6px 10px; font-size: 13px; } }
+  @media (prefers-reduced-motion: reduce) { .wfs__spark { animation: none; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "White Friday strip",
+  "settings": [
+    { "type": "text", "id": "end", "default": "1796076000", "label": "End (Unix seconds)" },
+    { "type": "text", "id": "max_pct", "default": "29", "label": "Highest % off" }
+  ]
+}
+{% endschema %}

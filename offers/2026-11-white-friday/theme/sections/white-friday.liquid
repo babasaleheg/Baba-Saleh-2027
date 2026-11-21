@@ -1,0 +1,239 @@
+{%- comment -%}
+  White Friday – عروض الجمعة البيضاء (Nov 21–30 2026): hero of the offers page (collection november-offers).
+  White page, brand-yellow circles and rings, ink type, sparkles, a burst badge with the highest % off,
+  a countdown to the end with the exact deadline in text, and category chips that filter the page.
+  Same behaviour as the week-3 hero: data-nov state, cards dressed by snippets/nov-offer-cards.liquid.
+  Times are Cairo (UTC+2), as Unix seconds.
+{%- endcomment -%}
+{%- liquid
+  assign nov_start = section.settings.start | plus: 0
+  assign nov_end = section.settings.end | plus: 0
+  assign now_ts = 'now' | date: '%s' | plus: 0
+  assign state = 'live'
+  if now_ts < nov_start
+    assign state = 'before'
+  elsif now_ts >= nov_end
+    assign state = 'ended'
+  endif
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+  assign base = collection.url | default: '/collections/november-offers'
+  assign chips = 'dept-kids-toys|ألعاب أطفال|Kids’ toys,cat-goggles|نظارات السباحة|Swim goggles,group-swimwear|مايوهات|Swimwear,cat-swim-training|زعانف ومستلزمات السباحة|Fins & swim training,dept-fitness|مستلزمات الجيم|Gym gear'
+  assign chips = chips | split: ','
+  assign current = current_tags | first | handleize
+-%}
+<section class="wf" data-nov data-state="{{ state }}" data-start="{{ nov_start }}" data-end="{{ nov_end }}" aria-labelledby="NovTitle">
+  <div class="wf__marquee" aria-hidden="true">
+    <div class="wf__marquee-track">
+      {%- for i in (1..10) -%}
+        {%- if is_ar -%}
+          <span><bdi>عروض الجمعة البيضاء</bdi></span><span><bdi>خصم لحد <i data-nov-max>{{ section.settings.max_pct }}</i>%</bdi></span><span><bdi>لحد 30 نوفمبر</bdi></span>
+        {%- else -%}
+          <span><bdi>White Friday</bdi></span><span><bdi>Up to <i data-nov-max>{{ section.settings.max_pct }}</i>% off</bdi></span><span><bdi>Until Nov 30</bdi></span>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="wf__stage">
+    {% render 'wf-shapes', pct: section.settings.max_pct, is_ar: is_ar %}
+    <div class="wf__inner page-width">
+      <p class="wf__eyebrow wf-pop" style="--d:0"><span class="wf__live" aria-hidden="true"></span>{% if is_ar %}{{ section.settings.dates_ar }}{% else %}{{ section.settings.dates_en }}{% endif %}</p>
+
+      <h1 id="NovTitle" class="wf__title">
+        {%- if is_ar -%}
+          <span class="wf__title-1 wf-pop" style="--d:1">عروض</span>
+          <span class="wf__title-2 wf-pop" style="--d:2"><mark>الجمعة البيضاء</mark></span>
+        {%- else -%}
+          <span class="wf__title-1 wf-pop" style="--d:1">White</span>
+          <span class="wf__title-2 wf-pop" style="--d:2"><mark>Friday</mark></span>
+        {%- endif -%}
+      </h1>
+
+      <p class="wf__offer wf-pop" style="--d:3">{% if is_ar %}خصم لحد <b data-nov-max>{{ section.settings.max_pct }}</b>% على كل عروض نوفمبر{% else %}Up to <b data-nov-max>{{ section.settings.max_pct }}</b>% off every November offer{% endif %}</p>
+
+      <div class="wf__clock wf-pop" style="--d:4">
+        <p class="wf__clock-label">
+          <span data-when="before">{% if is_ar %}العروض تبدأ خلال{% else %}Starts in{% endif %}</span>
+          <span data-when="live">{% if is_ar %}العرض ينتهي خلال{% else %}Ends in{% endif %}</span>
+          <span data-when="ended">{% if is_ar %}عروض الجمعة البيضاء خلصت{% else %}White Friday has ended{% endif %}</span>
+        </p>
+        <div class="wf__timer" role="timer" aria-live="off" dir="ltr">
+          <span><b data-d>00</b><small>{% if is_ar %}يوم{% else %}days{% endif %}</small></span>
+          <span><b data-h>00</b><small>{% if is_ar %}ساعة{% else %}hrs{% endif %}</small></span>
+          <span><b data-m>00</b><small>{% if is_ar %}دقيقة{% else %}min{% endif %}</small></span>
+          <span><b data-s>00</b><small>{% if is_ar %}ثانية{% else %}sec{% endif %}</small></span>
+        </div>
+        <p class="wf__deadline">{% if is_ar %}آخر يوم: الاثنين 30 نوفمبر، 11:59 مساءً{% else %}Last day: Monday, Nov 30, 11:59 pm{% endif %}</p>
+      </div>
+
+      <div class="wf__actions wf-pop" style="--d:5">
+        <a href="#NovProducts" class="wf__cta" data-when="before live">
+          {% if is_ar %}تسوق العروض{% else %}Shop the offers{% endif %}
+          {% render 'icon', icon: 'arrow' %}
+        </a>
+        <ul class="wf__perks" role="list">
+          <li>{% render 'icon', icon: 'truck' %}{% if is_ar %}توصيل لكل مصر{% else %}Delivery across Egypt{% endif %}</li>
+          <li>{% render 'icon', icon: 'cash' %}{% if is_ar %}الدفع عند الاستلام{% else %}Cash on delivery{% endif %}</li>
+        </ul>
+      </div>
+
+      <nav class="wf__chips wf-pop" style="--d:6" aria-label="{% if is_ar %}أقسام العروض{% else %}Offer categories{% endif %}">
+        <a href="{{ base }}#NovProducts"{% if current == blank %} class="is-active" aria-current="page"{% endif %}>{% if is_ar %}كل العروض{% else %}All offers{% endif %}</a>
+        {%- for chip in chips -%}
+          {%- assign c = chip | split: '|' -%}
+          <a href="{{ base }}/{{ c[0] }}#NovProducts"{% if current == c[0] %} class="is-active" aria-current="page"{% endif %}>{% if is_ar %}{{ c[1] }}{% else %}{{ c[2] }}{% endif %}</a>
+        {%- endfor -%}
+      </nav>
+    </div>
+  </div>
+  <span id="NovProducts" class="wf__anchor"></span>
+</section>
+{% render 'nov-offer-cards' %}
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-nov]');
+    var start = +root.dataset.start * 1000, end = +root.dataset.end * 1000;
+    var el = { d: root.querySelector('[data-d]'), h: root.querySelector('[data-h]'), m: root.querySelector('[data-m]'), s: root.querySelector('[data-s]') };
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function tick() {
+      var now = Date.now();
+      var state = now < start ? 'before' : now < end ? 'live' : 'ended';
+      root.dataset.state = state;
+      var left = Math.max(0, Math.floor(((state === 'before' ? start : end) - now) / 1000));
+      el.d.textContent = pad(Math.floor(left / 86400));
+      el.h.textContent = pad(Math.floor(left % 86400 / 3600));
+      el.m.textContent = pad(Math.floor(left % 3600 / 60));
+      el.s.textContent = pad(left % 60);
+      if (state === 'ended') return;
+      setTimeout(tick, 1000 - now % 1000);
+    }
+    tick();
+    var max = window.novMax && window.novMax();
+    if (max) root.querySelectorAll('[data-nov-max]').forEach(function (n) { n.textContent = max; });
+    document.documentElement.classList.add('nov-dressed');
+    function dressAll() { var g = document.querySelector('[data-results]'); if (g && window.novDress) window.novDress(g, root.dataset.state); }
+    document.addEventListener('DOMContentLoaded', function () {
+      dressAll();
+      var g = document.querySelector('[data-results]');
+      if (g) new MutationObserver(dressAll).observe(g, { childList: true, subtree: true });
+      // Cards pop in as they scroll into view
+      if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches && g) {
+        var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('wf-in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+        var watch = function () { g.querySelectorAll('.product-grid > li:not(.wf-seen)').forEach(function (li, i) { li.classList.add('wf-seen'); li.style.setProperty('--i', i % 6); io.observe(li); }); };
+        watch(); new MutationObserver(watch).observe(g, { childList: true, subtree: true });
+      }
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .wf { --wf-y: #febd19; --wf-ink: #0a0a0a; --wf-white: #fff; --wf-font: 'Century Gothic', 'CenturyGothic', 'Didact Gothic', 'Cairo', system-ui, sans-serif;
+    position: relative; background: var(--wf-white); color: var(--wf-ink); font-family: var(--wf-font); }
+  [dir='rtl'] .wf { --wf-font: 'Cairo', 'Century Gothic', system-ui, sans-serif; }
+
+  .wf__marquee { overflow: hidden; background: var(--wf-ink); color: var(--wf-y); font-weight: 800; font-size: 14px; line-height: 20px; white-space: nowrap; }
+  .wf__marquee-track { display: inline-flex; gap: 22px; padding-block: 9px; animation: wf-marquee 38s linear infinite; }
+  .wf__marquee-track span { display: inline-flex; align-items: center; gap: 22px; unicode-bidi: isolate; }
+  .wf__marquee-track span:nth-child(3n+2) { color: var(--wf-white); }
+  .wf__marquee-track i { font-style: normal; }
+  .wf__marquee-track span::after { content: '✦'; color: var(--wf-y); font-size: 11px; }
+  [dir='rtl'] .wf__marquee-track { animation-name: wf-marquee-rtl; }
+  @keyframes wf-marquee { to { transform: translateX(-50%); } }
+  @keyframes wf-marquee-rtl { to { transform: translateX(50%); } }
+
+  .wf__stage { position: relative; isolation: isolate; overflow: hidden;
+    background: radial-gradient(120% 80% at 0% 100%, #fff7df 0%, #fff 55%); border-bottom: 4px solid var(--wf-ink); }
+  .wf__inner { position: relative; display: grid; justify-items: start; gap: 14px; padding-block: 34px 30px; }
+
+  .wf__eyebrow { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 7px 14px; border-radius: 999px;
+    background: var(--wf-ink); color: var(--wf-white); font-weight: 700; font-size: 13px; }
+  .wf__live { width: 9px; height: 9px; border-radius: 50%; background: var(--wf-y); animation: wf-pulse 1.6s ease-out infinite; }
+  @keyframes wf-pulse { from { box-shadow: 0 0 0 0 rgba(254,189,25,.8); } to { box-shadow: 0 0 0 10px rgba(254,189,25,0); } }
+
+  .wf__title { display: grid; margin: 0; line-height: 0.95; font-weight: 900; letter-spacing: -0.03em; }
+  .wf__title-1 { font-size: clamp(56px, 15vw, 150px); color: transparent; -webkit-text-stroke: 2.5px var(--wf-ink); text-transform: uppercase; }
+  .wf__title-2 { font-size: clamp(56px, 15vw, 150px); text-transform: uppercase; }
+  .wf__title-2 mark { background: none; color: var(--wf-ink); position: relative; padding-inline: 4px; }
+  .wf__title-2 mark::before { content: ''; position: absolute; z-index: -1; inset: 52% -6px 2% -6px; background: var(--wf-y); transform: skewX(-8deg) rotate(-1.5deg); border-radius: 6px; }
+  [dir='rtl'] .wf__title { letter-spacing: 0; line-height: 1.25; }
+  [dir='rtl'] .wf__title-1 { font-size: clamp(44px, 11vw, 112px); -webkit-text-stroke: 0; color: var(--wf-ink); }
+  [dir='rtl'] .wf__title-2 { font-size: clamp(46px, 12vw, 120px); }
+
+  .wf__offer { margin: 4px 0 0; font-size: clamp(20px, 4vw, 30px); font-weight: 700; }
+  .wf__offer b { display: inline-block; padding: 0 10px; border-radius: 10px; background: var(--wf-ink); color: var(--wf-y); font-size: 1.25em; }
+
+  .wf__clock { display: grid; gap: 8px; margin-top: 6px; }
+  .wf__clock-label { margin: 0; font-weight: 800; font-size: 15px; }
+  .wf__timer { display: flex; gap: 8px; }
+  .wf__timer span { display: grid; justify-items: center; min-width: 66px; padding: 10px 6px 8px; border-radius: 14px; background: var(--wf-ink);
+    color: var(--wf-y); box-shadow: 4px 4px 0 var(--wf-y); }
+  .wf__timer b { font-size: 32px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+  .wf__timer small { margin-top: 4px; color: var(--wf-white); font-size: 11px; font-weight: 700; }
+  .wf__deadline { margin: 0; font-size: 13px; font-weight: 600; opacity: .75; }
+
+  .wf__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 6px; }
+  .wf__cta { display: inline-flex; align-items: center; gap: 10px; min-height: 54px; padding: 0 30px; border-radius: 999px; border: 3px solid var(--wf-ink);
+    background: var(--wf-y); color: var(--wf-ink); font-weight: 900; font-size: 17px; text-decoration: none; box-shadow: 5px 5px 0 var(--wf-ink);
+    transition: transform .2s cubic-bezier(.3,1.6,.5,1), box-shadow .2s; }
+  .wf__cta:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--wf-ink); }
+  .wf__cta:active { transform: translate(3px,3px); box-shadow: 2px 2px 0 var(--wf-ink); }
+  .wf__cta .icon { width: 20px; height: 20px; }
+  [dir='rtl'] .wf__cta .icon { transform: scaleX(-1); }
+  .wf__cta:focus-visible, .wf__chips a:focus-visible { outline: 3px solid var(--wf-ink); outline-offset: 3px; }
+  .wf__perks { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; list-style: none; font-weight: 700; font-size: 14px; }
+  .wf__perks li { display: inline-flex; align-items: center; gap: 6px; }
+  .wf__perks .icon { width: 20px; height: 20px; }
+
+  .wf__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .wf__chips a { padding: 9px 16px; border-radius: 999px; border: 2px solid var(--wf-ink); background: var(--wf-white); color: var(--wf-ink);
+    font-weight: 800; font-size: 14px; text-decoration: none; transition: transform .2s, background .2s; }
+  .wf__chips a:hover { transform: translateY(-2px); background: #fff3cf; }
+  .wf__chips a.is-active { background: var(--wf-ink); color: var(--wf-y); }
+
+  .wf__anchor { position: absolute; inset-block-end: 0; }
+  .wf [data-when] { display: none; }
+  .wf[data-state='before'] [data-when~='before'], .wf[data-state='live'] [data-when~='live'], .wf[data-state='ended'] [data-when~='ended'] { display: inline-flex; }
+  .wf[data-state='ended'] .wf__timer { display: none; }
+
+  /* Entrance: elements pop in one after another */
+  .wf-pop { animation: wf-pop .6s cubic-bezier(.2,1.4,.4,1) both; animation-delay: calc(var(--d, 0) * 90ms); }
+  @keyframes wf-pop { from { opacity: 0; transform: translateY(18px) scale(.96); } }
+
+  /* Product grid under the hero: white page, cards with an ink outline and yellow shadow on hover */
+  .shopify-section:has(.wf) + .shopify-section { background: #fff; }
+  .shopify-section:has(.wf) + .shopify-section .collection__header { display: none; }
+  .shopify-section:has(.wf) + .shopify-section .product-grid > li { padding: 0 0 16px; overflow: hidden; border-radius: 16px; border: 2px solid #0a0a0a;
+    background: #fff; transition: transform .25s cubic-bezier(.3,1.4,.5,1), box-shadow .25s; }
+  .shopify-section:has(.wf) + .shopify-section .product-grid > li:hover { transform: translateY(-4px); box-shadow: 6px 6px 0 #febd19; }
+  .shopify-section:has(.wf) + .shopify-section .card__info { padding-inline: 12px; }
+  .shopify-section:has(.wf) + .shopify-section .product-grid > li.wf-seen { opacity: 0; transform: translateY(16px); }
+  .shopify-section:has(.wf) + .shopify-section .product-grid > li.wf-in { opacity: 1; transform: none; transition: opacity .45s ease calc(var(--i,0) * 60ms), transform .45s cubic-bezier(.2,1.3,.4,1) calc(var(--i,0) * 60ms); }
+
+  @media screen and (min-width: 750px) {
+    .wf__inner { padding-block: 56px 44px; max-width: 1200px; }
+    .wf__timer span { min-width: 80px; }
+    .wf__timer b { font-size: 40px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wf-pop, .wf__marquee-track, .wf__live { animation: none !important; }
+    .shopify-section:has(.wf) + .shopify-section .product-grid > li.wf-seen { opacity: 1; transform: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "White Friday hero",
+  "settings": [
+    { "type": "text", "id": "start", "default": "1795212000", "label": "Start (Unix seconds)", "info": "1795212000 = Nov 21 2026, 00:00 Cairo" },
+    { "type": "text", "id": "end", "default": "1796076000", "label": "End (Unix seconds)", "info": "1796076000 = Dec 1 2026, 00:00 Cairo (offers run through Nov 30)" },
+    { "type": "text", "id": "dates_ar", "default": "من 21 لـ 30 نوفمبر", "label": "Dates (Arabic)" },
+    { "type": "text", "id": "dates_en", "default": "Nov 21 – 30", "label": "Dates (English)" },
+    { "type": "text", "id": "max_pct", "default": "29", "label": "Highest % off (fallback)" }
+  ],
+  "presets": [{ "name": "White Friday hero" }]
+}
+{% endschema %}

@@ -1,0 +1,29 @@
+{
+  "sections": {
+    "hero": {
+      "type": "white-friday",
+      "settings": {
+        "start": "1795212000",
+        "end": "1796076000",
+        "dates_ar": "من 21 لـ 30 نوفمبر",
+        "dates_en": "Nov 21 – 30",
+        "max_pct": "29"
+      }
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "show_image": false,
+        "show_description": false,
+        "products_per_page": 48,
+        "columns_desktop": 4,
+        "pagination": "load_more",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main"
+  ]
+}
