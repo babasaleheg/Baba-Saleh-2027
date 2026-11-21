@@ -24,9 +24,9 @@
         "a3": {
           "type": "message",
           "settings": {
-            "text": "Flash sale — up to 50% off",
+            "text": "White Friday — up to 29% off until Nov 30",
             "icon": "bolt",
-            "link": "shopify://collections/sale"
+            "link": "shopify://collections/november-offers"
           }
         },
         "a4": {
