@@ -103,12 +103,13 @@ def restore(path=None):
                         skipped += 1  # English changed since the backup: the nightly writes a fresh one
                         continue
                     batch.append({"locale": AR, "key": k, "value": v, "translatableContentDigest": digest[k][1]})
-                if batch:
-                    errs = gql(REGISTER, {"id": node["resourceId"], "t": batch})["translationsRegister"]["userErrors"]
+                for i in range(0, len(batch), 90):  # Shopify takes at most 100 keys per call
+                    part = batch[i:i + 90]
+                    errs = gql(REGISTER, {"id": node["resourceId"], "t": part})["translationsRegister"]["userErrors"]
                     if errs:
                         log(f"{node['resourceId']}: {errs[:1]}")
                     else:
-                        done += len(batch)
+                        done += len(part)
             if not page["pageInfo"]["hasNextPage"]:
                 break
             after = page["pageInfo"]["endCursor"]
