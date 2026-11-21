@@ -4,7 +4,7 @@
      the search dropdown. Checked in the live theme code and on the live storefront.
   2. Every active product has exactly one category (cat: tag).
   3. The live theme is the one this repo deploys to.
-  4. No item code (SKU) in a product title (rule 13): the code belongs only in the variant SKU.
+  4. No item code (SKU) or model number in a product title (rule 13): codes belong only in the SKU.
      A code is removed from the English and Arabic title (and SEO title) when the shorter title is
      still unique; otherwise it is reported, so a real difference (colour, case, kids...) is named.
 
@@ -164,7 +164,8 @@ def check_heavy_shipping(problems):
         problems.append(f"{len(cheap)} heavy-product checks can still pick a light shipping rate, e.g. {cheap[:3]}: "
                         "in Settings > Markets limit each market's light rate to 'Light items (shipping)'")
 
-SKU_CODE = re.compile(r"\s*[-–(]?\s*\b(\d{6})(?:##-?\d+)?\b\)?")   # store item codes are 6 digits
+# store item codes (6 digits, e.g. 331508##-1) and maker model numbers (LS3201, J500A, B303)
+SKU_CODE = re.compile(r"\s*[-–(]?\s*\b(\d{6}(?:##-?\d+)?|[A-Z]{1,3}-?\d{3,5}[A-Z]?)\b\)?")
 
 
 def check_sku_titles(problems):
@@ -181,13 +182,12 @@ def check_sku_titles(problems):
     titles = {p["title"].strip().lower() for p in products}
     left = []
     for p in products:
-        skus = " ".join(v["sku"] or "" for v in p["variants"]["nodes"])
         codes = [m for m in SKU_CODE.findall(p["title"])]
         if not codes:
             continue
         clean = re.sub(r"\s{2,}", " ", SKU_CODE.sub("", p["title"])).strip(" -–")
-        if CHECK_ONLY or clean.lower() in titles or not all(c in skus for c in codes):
-            left.append(p["title"] + ("" if all(c in skus for c in codes) else " (code not in its SKU)"))
+        if CHECK_ONLY or not clean or clean.lower() in titles:
+            left.append(p["title"])
             continue
         seo = (p["seo"]["title"] or "").replace(p["title"], clean)
         gql("""mutation($p: ProductUpdateInput!) { productUpdate(product: $p) { userErrors { message } } }""",

@@ -48,9 +48,10 @@ never bypass or undo them, in any change, app, script or scheduled task.
     kettlebells their real kg, others under 5 kg); the market rates use the collections "Heavy items (shipping)"
     (5 kg+) and "Light items (shipping)" (under 5 kg). `rules_check.py` checks every heavy product at checkout.
 
-13. **Item codes (SKU) only in the SKU, never in the title** (English, Arabic or SEO). Products that would
-    share a name are told apart by what really differs (colour, case, kids/adults, size), e.g. "Track Junior
-    Swimming Goggles with Clear Case", not "... 331838". Maker model names (LiveUp LS3201, Joola J500A) may stay.
+13. **No item codes (SKU) or model numbers in titles** (English, Arabic or SEO); codes live only in the SKU.
+    Products that would share a name are told apart by what really differs (colour, case, kids/adults, size),
+    e.g. "Track Junior Swimming Goggles with Clear Case", not "... 331838"; "Gold Cup Trophy – Medium", not
+    "Trophy B303"; "Joola Outdoor Table Tennis Table", not "... J500A".
     `rules_check.py` removes codes nightly where the title stays unique and reports the rest to rename.
 
 ## Working on the theme
