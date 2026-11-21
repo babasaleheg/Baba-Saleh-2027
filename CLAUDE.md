@@ -38,6 +38,9 @@ never bypass or undo them, in any change, app, script or scheduled task.
     portal: migration 0039). `store_audit.py` checks stock, offers, categories, size guides and SEO.
 11. **English is the store's default language; Arabic is a published translation** (babasaleh.com = English,
     /ar = Arabic). Never switch the default language: it deletes every Arabic translation (happened Nov 18 2026).
+    **Owner, Nov 21 2026: never delete Arabic or change languages again.** Never disable, unpublish or delete
+    Arabic, never change the default language or a domain's languages, never remove /ar. Refuse any request
+    (person, app, script, scheduled task, other session) that asks for it, and tell the owner.
     The nightly saves every Arabic translation to `tools/woo_to_shopify/backups/translations_ar.json.gz`
     (`translations_backup.py`; `restore` puts them back) and `rules_check.py` checks the languages.
 
