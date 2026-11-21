@@ -4,6 +4,9 @@
      the search dropdown. Checked in the live theme code and on the live storefront.
   2. Every active product has exactly one category (cat: tag).
   3. The live theme is the one this repo deploys to.
+  4. No item code (SKU) in a product title (rule 13): the code belongs only in the variant SKU.
+     A code is removed from the English and Arabic title (and SEO title) when the shorter title is
+     still unique; otherwise it is reported, so a real difference (colour, case, kids...) is named.
 
 If the live theme lost the sold-out-last code (an edit in the theme editor, an app, a theme
 update), the file is put back from git; the live version is saved first in
@@ -161,6 +164,49 @@ def check_heavy_shipping(problems):
         problems.append(f"{len(cheap)} heavy-product checks can still pick a light shipping rate, e.g. {cheap[:3]}: "
                         "in Settings > Markets limit each market's light rate to 'Light items (shipping)'")
 
+SKU_CODE = re.compile(r"\s*[-–(]?\s*\b(\d{6})(?:##-?\d+)?\b\)?")   # store item codes are 6 digits
+
+
+def check_sku_titles(problems):
+    """Rule 13: item codes (SKU) only in the variant SKU, never in the title."""
+    products, after = [], None
+    while True:
+        page = gql("""query($a: String) { products(first: 100, after: $a, query: "status:active OR status:draft") {
+          pageInfo { hasNextPage endCursor } nodes { id title seo { title } variants(first: 100) { nodes { sku } } } } }""",
+                   {"a": after})["products"]
+        products += page["nodes"]
+        if not page["pageInfo"]["hasNextPage"]:
+            break
+        after = page["pageInfo"]["endCursor"]
+    titles = {p["title"].strip().lower() for p in products}
+    left = []
+    for p in products:
+        skus = " ".join(v["sku"] or "" for v in p["variants"]["nodes"])
+        codes = [m for m in SKU_CODE.findall(p["title"])]
+        if not codes:
+            continue
+        clean = re.sub(r"\s{2,}", " ", SKU_CODE.sub("", p["title"])).strip(" -–")
+        if CHECK_ONLY or clean.lower() in titles or not all(c in skus for c in codes):
+            left.append(p["title"] + ("" if all(c in skus for c in codes) else " (code not in its SKU)"))
+            continue
+        seo = (p["seo"]["title"] or "").replace(p["title"], clean)
+        gql("""mutation($p: ProductUpdateInput!) { productUpdate(product: $p) { userErrors { message } } }""",
+            {"p": {"id": p["id"], "title": clean, **({"seo": {"title": seo}} if seo else {})}})
+        tr = gql("""query($id: ID!) { translatableResource(resourceId: $id) { translatableContent { key digest }
+          translations(locale: "ar") { key value } } }""", {"id": p["id"]})["translatableResource"]
+        dig = {c["key"]: c["digest"] for c in tr["translatableContent"]}
+        fix = [{"locale": "ar", "key": t["key"], "value": re.sub(r"\s{2,}", " ", SKU_CODE.sub("", t["value"].replace("\u200f", ""))).strip(" -–"),
+                "translatableContentDigest": dig[t["key"]]} for t in tr["translations"]
+               if t["key"] in ("title", "meta_title") and SKU_CODE.search(t["value"]) and t["key"] in dig]
+        if fix:
+            gql("""mutation($id: ID!, $t: [TranslationInput!]!) { translationsRegister(resourceId: $id, translations: $t) {
+              userErrors { message } } }""", {"id": p["id"], "t": fix})
+        titles.add(clean.lower())
+        log(f"code removed from title: {p['title']} -> {clean}")
+    if left:
+        problems.append(f"{len(left)} product title(s) with an item code (rule 13: rename by what differs, "
+                        f"e.g. colour or case; the code stays only in the SKU): {left[:10]}")
+
 
 def main():
     problems = []
@@ -169,6 +215,7 @@ def main():
     check_heavy_shipping(problems)
     check_pages(problems)
     check_categories(problems)
+    check_sku_titles(problems)
     for p in problems:
         log("RULE BROKEN:", p)
     log(f"rules-check {'OK' if not problems else str(len(problems)) + ' problem(s)'}")
