@@ -49,6 +49,7 @@ RULES = [
 
 # Products whose existing category is wrong: title -> correct category.
 FIXES = {
+    "Men’s Turf Football Shoes": "cat:football-shoes",  # was "Men’s Tartan Socks" (photo: turf shoes)
     "Foam Hand Grip": "cat:fitness-accessories",
     "Sports Training Vest – Black & Green": "cat:coaching",
     "Sports Training Vest – Orange & Red": "cat:coaching",
