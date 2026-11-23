@@ -165,7 +165,7 @@ def check_heavy_shipping(problems):
                         "in Settings > Markets limit each market's light rate to 'Light items (shipping)'")
 
 # store item codes (6 digits, e.g. 331508##-1) and maker model numbers (LS3201, J500A, B303)
-SKU_CODE = re.compile(r"\s*[-–(]?\s*\b(\d{6}(?:##-?\d+)?|[A-Z]{1,3}-?\d{3,5}[A-Z]?)\b\)?")
+SKU_CODE = re.compile(r"\s*[-–(]?\s*\b(\d{6}(?:##-?\d+)?|[A-Z]{1,3}-?\d{3,5}[A-Z]?|[Mm]odel\s+\d{3,6}[A-Z]?)\b\)?")
 
 
 def check_sku_titles(problems):
