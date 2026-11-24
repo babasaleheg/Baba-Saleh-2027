@@ -1,5 +1,5 @@
-"""No product is ever on sale at EGP 0 (owner's rule): any active product with a variant priced 0
-is set to Draft, and listed in quality_report.json ("drafted_zero_price") for the nightly summary.
+"""No product is ever on sale at EGP 0 or below EGP 5 (owner's rule, Nov 24 2026: a Chest Expander sold at
+EGP 1 instead of 250): any active product with a variant priced under 5 is set to Draft, and listed in quality_report.json ("drafted_zero_price") for the nightly summary.
 It goes live again only when someone gives it a real price and activates it.
 
     python3 zero_price.py            # runs nightly (daily.sh); safe to run any time
@@ -11,6 +11,7 @@ from sync import gql, log
 
 D = os.environ.get("DATA_DIR", "woo_data")
 REPORT = os.path.join(D, "quality_report.json")
+MIN_PRICE = 5  # EGP: anything cheaper is a price mistake
 DRY = "--dry-run" in sys.argv
 PRODUCTS_Q = """query($a: String) { products(first: 250, after: $a, query: "status:active") {
   pageInfo { hasNextPage endCursor } nodes { id title variants(first: 100) { nodes { price } } } } }"""
@@ -21,7 +22,7 @@ def main():
     zero, after = [], None
     while True:
         page = gql(PRODUCTS_Q, {"a": after})["products"]
-        zero += [p for p in page["nodes"] if any(float(v["price"] or 0) <= 0 for v in p["variants"]["nodes"])]
+        zero += [p for p in page["nodes"] if any(float(v["price"] or 0) < MIN_PRICE for v in p["variants"]["nodes"])]
         if not page["pageInfo"]["hasNextPage"]:
             break
         after = page["pageInfo"]["endCursor"]
@@ -33,7 +34,7 @@ def main():
                 log("could not draft", p["title"], errs)
                 continue
         drafted.append(p["title"])
-        log(f"{'would draft' if DRY else 'drafted'} (price 0): {p['title']}")
+        log(f"{'would draft' if DRY else 'drafted'} (price under 5 EGP): {p['title']}")
     if not DRY:
         report = json.load(open(REPORT, encoding="utf-8")) if os.path.exists(REPORT) else {}
         report["drafted_zero_price"] = drafted

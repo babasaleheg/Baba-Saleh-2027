@@ -29,8 +29,9 @@ never bypass or undo them, in any change, app, script or scheduled task.
    inventory: no script, app, scheduled task, till sale or the staff portal's daily sync may
    overwrite a quantity the owner set (e.g. 0 = sold out), or split one item code's stock across
    colours/sizes. Tools here only read stock (`stock_from.py`). Portal: migration 0018, `lib/sync.ts`.
-9. **No product is ever live at EGP 0.** A product with any variant priced 0 is set to Draft
-   (nightly `zero_price.py`); it goes live again only once it has a real price.
+9. **No product is ever live at EGP 0 or under EGP 5.** A product with any variant priced under 5 is set to
+   Draft and flagged (nightly `zero_price.py`); it goes live again only once it has a real price. The staff
+   portal never sends a website price under 5 (`websitePrice`, PR #210). (Nov 24 2026: Chest Expander sold at 1, not 250.)
 10. **Every product tracks stock and stops selling at 0**, so nothing can be ordered when it is sold
     out. Every night `product_quality.py` switches tracking on and "continue selling when out of
     stock" off wherever needed; quantities are never changed by this (rule 8). Website orders are
