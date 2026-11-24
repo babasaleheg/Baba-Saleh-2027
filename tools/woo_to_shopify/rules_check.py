@@ -195,9 +195,10 @@ def check_sku_titles(problems):
         tr = gql("""query($id: ID!) { translatableResource(resourceId: $id) { translatableContent { key digest }
           translations(locale: "ar") { key value } } }""", {"id": p["id"]})["translatableResource"]
         dig = {c["key"]: c["digest"] for c in tr["translatableContent"]}
+        # re-register every Arabic title (the English change makes the old one outdated), without the code
         fix = [{"locale": "ar", "key": t["key"], "value": re.sub(r"\s{2,}", " ", SKU_CODE.sub("", t["value"].replace("\u200f", ""))).strip(" -–"),
                 "translatableContentDigest": dig[t["key"]]} for t in tr["translations"]
-               if t["key"] in ("title", "meta_title") and SKU_CODE.search(t["value"]) and t["key"] in dig]
+               if t["key"] in ("title", "meta_title") and t["key"] in dig]
         if fix:
             gql("""mutation($id: ID!, $t: [TranslationInput!]!) { translationsRegister(resourceId: $id, translations: $t) {
               userErrors { message } } }""", {"id": p["id"], "t": fix})
