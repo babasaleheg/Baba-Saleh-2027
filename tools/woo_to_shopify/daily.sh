@@ -16,6 +16,7 @@ step heavy_shipping.py
 step product_quality.py
 step variant_images.py
 step zero_price.py
+step no_photo.py
 step collection_audit.py
 step sync.py seo
 step seo_bilingual.py

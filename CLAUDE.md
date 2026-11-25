@@ -58,6 +58,10 @@ never bypass or undo them, in any change, app, script or scheduled task.
     "Trophy B303"; "Joola Outdoor Table Tennis Table", not "... J500A".
     `rules_check.py` removes codes nightly where the title stays unique and reports the rest to rename.
 
+14. **No product without a photo stays on the store** (owner, Nov 25 2026): every active or draft product with no
+    image is set to Archived every night (`no_photo.py`, listed in the nightly summary). Stock is never touched
+    (rule 8). It comes back only when it has a photo and someone sets it Active again.
+
 ## Working on the theme
 - Live theme: `gid://shopify/OnlineStoreTheme/166776471600`. Push with
   `python3 tools/woo_to_shopify/push_files.py 166776471600 <files>` after checking the live
