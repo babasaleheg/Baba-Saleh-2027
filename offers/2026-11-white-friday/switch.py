@@ -91,10 +91,10 @@ def main(phase):
     p = PHASES[phase]
     en, ar = p["coll"]
     gql("""mutation($i: CollectionInput!) { collectionUpdate(input: $i) { userErrors { message } } }""",
-        {"i": {"id": COLL, "title": en, "seo": {"title": f"{en} – up to 29% off | Baba Saleh"}}})
+        {"i": {"id": COLL, "title": en, "seo": {"title": f"{en} – up to 29% off | Baba Saleh", "description": f"{en} at Baba Saleh: up to 29% off kids' toys, swim and gym gear. Delivery across Egypt, cash on delivery."}}})
     content = {c["key"]: c for c in gql(TR_Q, {"id": COLL})["translatableResource"]["translatableContent"]}
     gql(REG, {"id": COLL, "t": [{"locale": "ar", "key": k, "value": v, "translatableContentDigest": content[k]["digest"]}
-                                for k, v in (("title", ar), ("meta_title", f"{ar} – خصم لحد 29% | بابا صالح"))]})
+                                for k, v in (("title", ar), ("meta_title", f"{ar} – خصم لحد 29% | بابا صالح"), ("meta_description", f"{ar} من بابا صالح: خصم لحد 29% على ألعاب الأطفال ومستلزمات السباحة والجيم. توصيل لكل مصر والدفع عند الاستلام."))]})
     ann["blocks"]["a3"]["settings"].update({"text": p["a3"][0], "icon": "bolt", "link": "shopify://collections/november-offers"})
     if "a3" not in ann["block_order"]:
         ann["block_order"].insert(2, "a3")
