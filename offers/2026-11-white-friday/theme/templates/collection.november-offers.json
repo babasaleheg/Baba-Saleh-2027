@@ -4,10 +4,16 @@
       "type": "white-friday",
       "settings": {
         "start": "1795212000",
-        "end": "1796076000",
-        "dates_ar": "من 21 لـ 30 نوفمبر",
-        "dates_en": "Nov 21 – 30",
-        "max_pct": "29"
+        "end": "1795816800",
+        "dates_ar": "الجمعة 27 نوفمبر",
+        "dates_en": "Friday, Nov 27",
+        "max_pct": "29",
+        "kicker_ar": "ميجا سيل · النهارده بس",
+        "kicker_en": "Mega Sale · Today only",
+        "until_ar": "النهارده بس",
+        "until_en": "Today only",
+        "deadline_ar": "ينتهي النهارده 11:59 مساءً",
+        "deadline_en": "Ends tonight, 11:59 pm"
       }
     },
     "main": {
@@ -20,10 +26,28 @@
         "pagination": "load_more",
         "color_scheme": "scheme-1"
       }
+    },
+    "hero_nov": {
+      "type": "nov-week3",
+      "settings": {
+        "start": "1795816800",
+        "end": "1796076000",
+        "dates_ar": "من 28 لـ 30 نوفمبر",
+        "dates_en": "Nov 28 – 30",
+        "max_pct": "29",
+        "sub_ar": "لحد 30 نوفمبر",
+        "sub_en": "Until Nov 30",
+        "badge_num": "30",
+        "badge_ar": "نوفمبر",
+        "badge_en": "Nov",
+        "text_ar": "آخر أيام عروض نوفمبر: ألعاب الأطفال ونظارات وزعانف السباحة والمايوهات ومستلزمات الجيم. لحد الاثنين 30 نوفمبر.",
+        "text_en": "The last days of the November Sale: kids’ toys, swim goggles, fins, swimwear and gym gear. Until Monday, Nov 30."
+      }
     }
   },
   "order": [
     "hero",
+    "hero_nov",
     "main"
   ]
 }

@@ -18,3 +18,12 @@ big facelift (popping shapes, circles, icons, vectors, motion).
 - Collection `november-offers` renamed "White Friday" (AR "عروض الجمعة البيضاء") with new SEO.
 - End: everything hides itself at 1796076000 (Dec 1 00:00 Cairo). Scheduled task
   "White Friday end: restore prices" (2026-11-30T22:05Z) restores `originals.json` with compareAt cleared.
+
+## Nov 27 change (owner): Mega Sale today only, then November Sale, then normal
+- Fri Nov 27 (until 1795816800 = Nov 28 00:00 Cairo): "Mega Sale · White Friday – today only" on the strip,
+  home banner, offers-page hero, menu pill, announcement bar and home sale section.
+- Nov 28 – 30 (until 1796076000): the yellow November Sale look (`nov-week3` hero, `nov-home-banner`,
+  a second `wf-strip` "عروض نوفمبر"), all switched by time in the theme; `switch.py nov` (scheduled
+  Nov 27 22:01Z) renames the collection and sets the bar / home section text.
+- Dec 1: sections hide themselves; `switch.py end` (scheduled Nov 30 22:07Z) removes the sale line and hides
+  the home sale section; "White Friday end: restore prices" restores the prices.

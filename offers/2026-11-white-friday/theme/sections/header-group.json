@@ -24,7 +24,7 @@
         "a3": {
           "type": "message",
           "settings": {
-            "text": "White Friday — up to 29% off until Nov 30",
+            "text": "White Friday – up to 29% off until Nov 30",
             "icon": "bolt",
             "link": "shopify://collections/november-offers"
           }
@@ -77,26 +77,60 @@
     "wf-strip": {
       "type": "wf-strip",
       "settings": {
-        "end": "1796076000",
-        "max_pct": "29"
+        "end": "1795816800",
+        "max_pct": "29",
+        "title_ar": "ميجا سيل الجمعة البيضاء · النهارده بس",
+        "title_en": "Mega Sale · White Friday · Today only"
       }
     },
     "wf-home": {
       "type": "wf-home-banner",
       "settings": {
         "start": "1795212000",
-        "end": "1796076000",
-        "dates_ar": "من 21 لـ 30 نوفمبر",
-        "dates_en": "Nov 21 – 30",
+        "end": "1795816800",
+        "dates_ar": "الجمعة 27 نوفمبر",
+        "dates_en": "Friday, Nov 27",
         "max_pct": "29",
-        "products_to_show": 16
+        "products_to_show": 16,
+        "kicker_ar": "ميجا سيل · النهارده بس",
+        "kicker_en": "Mega Sale · Today only",
+        "deadline_ar": "ينتهي النهارده 11:59 مساءً",
+        "deadline_en": "Ends tonight, 11:59 pm"
+      }
+    },
+    "nov-strip": {
+      "type": "wf-strip",
+      "settings": {
+        "start": "1795816800",
+        "end": "1796076000",
+        "title_ar": "عروض نوفمبر",
+        "title_en": "November Sale",
+        "max_pct": "29"
+      }
+    },
+    "nov-home": {
+      "type": "nov-home-banner",
+      "settings": {
+        "start": "1795816800",
+        "end": "1796076000",
+        "dates_ar": "من 28 لـ 30 نوفمبر",
+        "dates_en": "Nov 28 – 30",
+        "max_pct": "29",
+        "max_ar": "29",
+        "products_to_show": 16,
+        "wk_ar": "لحد 30 نوفمبر",
+        "wk_en": "Until Nov 30",
+        "live_ar": "آخر أيام عروض نوفمبر",
+        "live_en": "Last days of the November Sale"
       }
     }
   },
   "order": [
     "wf-strip",
+    "nov-strip",
     "announcement",
     "header",
-    "wf-home"
+    "wf-home",
+    "nov-home"
   ]
 }

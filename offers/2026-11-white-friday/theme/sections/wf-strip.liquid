@@ -4,10 +4,11 @@
   the end (Liquid, and re-checked in the browser so a cached page never shows it late).
 {%- endcomment -%}
 {%- liquid
+  assign wf_start = section.settings.start | plus: 0
   assign wf_end = section.settings.end | plus: 0
   assign now_ts = 'now' | date: '%s' | plus: 0
   assign show = true
-  if now_ts >= wf_end or collection.handle == 'november-offers'
+  if now_ts < wf_start or now_ts >= wf_end or collection.handle == 'november-offers'
     assign show = false
   endif
   assign is_ar = false
@@ -18,7 +19,7 @@
 {%- if show -%}
   <a class="wfs" href="{{ routes.collections_url }}/november-offers" data-wfs data-end="{{ wf_end }}">
     <svg class="wfs__spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0c.6 6.2 5.8 11.4 12 12-6.2.6-11.4 5.8-12 12-.6-6.2-5.8-11.4-12-12C6.2 11.4 11.4 6.2 12 0z"/></svg>
-    <span class="wfs__title">{% if is_ar %}عروض الجمعة البيضاء{% else %}White Friday{% endif %}</span>
+    <span class="wfs__title">{% if is_ar %}{{ section.settings.title_ar }}{% else %}{{ section.settings.title_en }}{% endif %}</span>
     <span class="wfs__pct">{% if is_ar %}خصم لحد {{ section.settings.max_pct }}%{% else %}Up to {{ section.settings.max_pct }}% off{% endif %}</span>
     <span class="wfs__clock"><span data-wfs-d></span> <bdi dir="ltr" data-wfs-t>--:--:--</bdi></span>
     <span class="wfs__go">{% if is_ar %}تسوق دلوقتي{% else %}Shop now{% endif %}{% render 'icon', icon: 'arrow' %}</span>
@@ -59,6 +60,9 @@
 {
   "name": "White Friday strip",
   "settings": [
+    { "type": "text", "id": "start", "default": "0", "label": "Start (Unix seconds)" },
+    { "type": "text", "id": "title_ar", "default": "عروض الجمعة البيضاء", "label": "Title (Arabic)" },
+    { "type": "text", "id": "title_en", "default": "White Friday", "label": "Title (English)" },
     { "type": "text", "id": "end", "default": "1796076000", "label": "End (Unix seconds)" },
     { "type": "text", "id": "max_pct", "default": "29", "label": "Highest % off" }
   ]

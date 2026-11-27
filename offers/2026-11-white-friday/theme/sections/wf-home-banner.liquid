@@ -33,6 +33,7 @@
       <div class="wfh__inner page-width">
         <div class="wfh__text">
           <p class="wfh__eyebrow wf-pop" style="--d:0"><span class="wfh__live" aria-hidden="true"></span>{% if is_ar %}{{ section.settings.dates_ar }}{% else %}{{ section.settings.dates_en }}{% endif %}</p>
+          {%- if section.settings.kicker_en != blank -%}<p class="wfh__kicker wf-pop" style="--d:1">{% if is_ar %}{{ section.settings.kicker_ar }}{% else %}{{ section.settings.kicker_en }}{% endif %}</p>{%- endif -%}
           <h2 id="WfhTitle" class="wfh__title">
             {%- if is_ar -%}
               <span class="wf-pop" style="--d:1">عروض</span>
@@ -53,7 +54,7 @@
             <span><b data-m>00</b><small>{% if is_ar %}دقيقة{% else %}min{% endif %}</small></span>
             <span><b data-s>00</b><small>{% if is_ar %}ثانية{% else %}sec{% endif %}</small></span>
           </div>
-          <p class="wfh__deadline">{% if is_ar %}آخر يوم: الاثنين 30 نوفمبر، 11:59 مساءً{% else %}Last day: Monday, Nov 30, 11:59 pm{% endif %}</p>
+          <p class="wfh__deadline">{% if is_ar %}{{ section.settings.deadline_ar }}{% else %}{{ section.settings.deadline_en }}{% endif %}</p>
           <a href="{{ offers.url }}" class="wfh__cta">
             {% if is_ar %}تسوق عروض الجمعة البيضاء{% else %}Shop White Friday{% endif %}
             {% render 'icon', icon: 'arrow' %}
@@ -121,6 +122,8 @@
   .wfh__mark mark { position: relative; background: none; color: var(--wf-ink); padding-inline: 4px; }
   .wfh__mark mark::before { content: ''; position: absolute; z-index: -1; inset: 52% -6px 2% -6px; background: var(--wf-y); border-radius: 6px; transform: skewX(-8deg) rotate(-1.5deg); }
   [dir='rtl'] .wfh__title { font-family: 'Cairo', var(--font-heading-family); letter-spacing: 0; line-height: 1.25; font-size: clamp(44px, 11vw, 108px); }
+  .wfh__kicker { margin: 0; padding: 4px 16px; border-radius: 8px; background: var(--wf-y); color: var(--wf-ink); font-weight: 900; font-size: clamp(22px, 5vw, 38px); letter-spacing: .04em; text-transform: uppercase; transform: rotate(-2deg); box-shadow: 4px 4px 0 var(--wf-ink); }
+  [dir='rtl'] .wfh__kicker { transform: rotate(2deg); letter-spacing: 0; }
   .wfh__offer { margin: 0; font-weight: 800; font-size: clamp(22px, 4.6vw, 34px); }
   .wfh__offer b { display: inline-block; padding: 0 10px; border-radius: 10px; background: var(--wf-ink); color: var(--wf-y); font-size: 1.2em; }
 
@@ -173,6 +176,10 @@
     { "type": "text", "id": "end", "default": "1796076000", "label": "End (Unix seconds)", "info": "1796076000 = Dec 1 2026, 00:00 Cairo" },
     { "type": "text", "id": "dates_ar", "default": "من 21 لـ 30 نوفمبر", "label": "Dates (Arabic)" },
     { "type": "text", "id": "dates_en", "default": "Nov 21 – 30", "label": "Dates (English)" },
+    { "type": "text", "id": "kicker_ar", "label": "Kicker (Arabic)" },
+    { "type": "text", "id": "kicker_en", "label": "Kicker (English)" },
+    { "type": "text", "id": "deadline_ar", "default": "آخر يوم: الاثنين 30 نوفمبر، 11:59 مساءً", "label": "Deadline (Arabic)" },
+    { "type": "text", "id": "deadline_en", "default": "Last day: Monday, Nov 30, 11:59 pm", "label": "Deadline (English)" },
     { "type": "text", "id": "max_pct", "default": "29", "label": "Highest % off (fallback)" },
     { "type": "range", "id": "products_to_show", "min": 4, "max": 20, "step": 1, "default": 16, "label": "Products" }
   ]

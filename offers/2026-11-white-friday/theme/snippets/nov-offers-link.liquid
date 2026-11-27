@@ -20,6 +20,10 @@
   if collection.handle == 'november-offers'
     assign nov_current = true
   endif
+  assign wf_today = false
+  if now_ts < 1795816800
+    assign wf_today = true
+  endif
   assign is_ar = false
   if request.locale.iso_code contains 'ar'
     assign is_ar = true
@@ -29,7 +33,7 @@
   <li data-nov-link data-nov-start="{{ nov_start }}" data-nov-end="{{ nov_end }}"{% unless nov_live %} hidden{% endunless %}>
     <a href="{{ nov_url }}" class="nov-drawer-link"{% if nov_current %} aria-current="page"{% endif %}>
       <span class="nov-drawer-link__text">
-        <span class="nov-drawer-link__title">{% if is_ar %}عروض الجمعة البيضاء{% else %}White Friday{% endif %}</span>
+        <span class="nov-drawer-link__title">{% if wf_today %}{% if is_ar %}ميجا سيل الجمعة البيضاء{% else %}Mega Sale · White Friday{% endif %}{% else %}{% if is_ar %}عروض نوفمبر{% else %}November Sale{% endif %}{% endif %}</span>
         <span class="nov-drawer-link__sub">{% if is_ar %}خصم لحد 29%{% else %}Up to 29% off{% endif %}</span>
       </span>
       <span class="nov-drawer-link__date">{% if is_ar %}لحد 30 نوفمبر{% else %}Until Nov 30{% endif %}</span>
@@ -40,7 +44,7 @@
   <li class="nav__item" data-nov-link data-nov-start="{{ nov_start }}" data-nov-end="{{ nov_end }}"{% unless nov_live %} hidden{% endunless %}>
     <a href="{{ nov_url }}" class="nav__link nav__link--nov{% if nov_current %} is-active{% endif %}"{% if nov_current %} aria-current="page"{% endif %}>
       <span class="nav__nov-dot" aria-hidden="true"></span>
-      <span>{% if is_ar %}الجمعة البيضاء{% else %}White Friday{% endif %}</span>
+      <span>{% if wf_today %}{% if is_ar %}الجمعة البيضاء{% else %}White Friday{% endif %}{% else %}{% if is_ar %}عروض نوفمبر{% else %}November Sale{% endif %}{% endif %}</span>
     </a>
   </li>
 {%- endif -%}

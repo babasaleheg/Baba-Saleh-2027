@@ -24,14 +24,15 @@
   assign chips = chips | split: ','
   assign current = current_tags | first | handleize
 -%}
+{%- if state != 'ended' or request.design_mode -%}
 <section class="wf" data-nov data-state="{{ state }}" data-start="{{ nov_start }}" data-end="{{ nov_end }}" aria-labelledby="NovTitle">
   <div class="wf__marquee" aria-hidden="true">
     <div class="wf__marquee-track">
       {%- for i in (1..10) -%}
         {%- if is_ar -%}
-          <span><bdi>عروض الجمعة البيضاء</bdi></span><span><bdi>خصم لحد <i data-nov-max>{{ section.settings.max_pct }}</i>%</bdi></span><span><bdi>لحد 30 نوفمبر</bdi></span>
+          <span><bdi>عروض الجمعة البيضاء</bdi></span><span><bdi>خصم لحد <i data-nov-max>{{ section.settings.max_pct }}</i>%</bdi></span><span><bdi>{{ section.settings.until_ar }}</bdi></span>
         {%- else -%}
-          <span><bdi>White Friday</bdi></span><span><bdi>Up to <i data-nov-max>{{ section.settings.max_pct }}</i>% off</bdi></span><span><bdi>Until Nov 30</bdi></span>
+          <span><bdi>White Friday</bdi></span><span><bdi>Up to <i data-nov-max>{{ section.settings.max_pct }}</i>% off</bdi></span><span><bdi>{{ section.settings.until_en }}</bdi></span>
         {%- endif -%}
       {%- endfor -%}
     </div>
@@ -42,6 +43,7 @@
     <div class="wf__inner page-width">
       <p class="wf__eyebrow wf-pop" style="--d:0"><span class="wf__live" aria-hidden="true"></span>{% if is_ar %}{{ section.settings.dates_ar }}{% else %}{{ section.settings.dates_en }}{% endif %}</p>
 
+      {%- if section.settings.kicker_en != blank -%}<p class="wf__kicker wf-pop" style="--d:1">{% if is_ar %}{{ section.settings.kicker_ar }}{% else %}{{ section.settings.kicker_en }}{% endif %}</p>{%- endif -%}
       <h1 id="NovTitle" class="wf__title">
         {%- if is_ar -%}
           <span class="wf__title-1 wf-pop" style="--d:1">عروض</span>
@@ -66,7 +68,7 @@
           <span><b data-m>00</b><small>{% if is_ar %}دقيقة{% else %}min{% endif %}</small></span>
           <span><b data-s>00</b><small>{% if is_ar %}ثانية{% else %}sec{% endif %}</small></span>
         </div>
-        <p class="wf__deadline">{% if is_ar %}آخر يوم: الاثنين 30 نوفمبر، 11:59 مساءً{% else %}Last day: Monday, Nov 30, 11:59 pm{% endif %}</p>
+        <p class="wf__deadline">{% if is_ar %}{{ section.settings.deadline_ar }}{% else %}{{ section.settings.deadline_en }}{% endif %}</p>
       </div>
 
       <div class="wf__actions wf-pop" style="--d:5">
@@ -129,6 +131,7 @@
     });
   })();
 </script>
+{%- endif -%}
 
 {% stylesheet %}
   .wf { --wf-y: #febd19; --wf-ink: #0a0a0a; --wf-white: #fff; --wf-font: 'Century Gothic', 'CenturyGothic', 'Didact Gothic', 'Cairo', system-ui, sans-serif;
@@ -163,6 +166,8 @@
   [dir='rtl'] .wf__title-1 { font-size: clamp(44px, 11vw, 112px); -webkit-text-stroke: 0; color: var(--wf-ink); }
   [dir='rtl'] .wf__title-2 { font-size: clamp(46px, 12vw, 120px); }
 
+  .wf__kicker { margin: 0; padding: 4px 16px; border-radius: 8px; background: var(--wf-y); color: var(--wf-ink); font-weight: 900; font-size: clamp(22px, 5vw, 40px); letter-spacing: .04em; text-transform: uppercase; transform: rotate(-2deg); box-shadow: 4px 4px 0 var(--wf-ink); }
+  [dir='rtl'] .wf__kicker { transform: rotate(2deg); letter-spacing: 0; }
   .wf__offer { margin: 4px 0 0; font-size: clamp(20px, 4vw, 30px); font-weight: 700; }
   .wf__offer b { display: inline-block; padding: 0 10px; border-radius: 10px; background: var(--wf-ink); color: var(--wf-y); font-size: 1.25em; }
 
@@ -204,14 +209,14 @@
   @keyframes wf-pop { from { opacity: 0; transform: translateY(18px) scale(.96); } }
 
   /* Product grid under the hero: white page, cards with an ink outline and yellow shadow on hover */
-  .shopify-section:has(.wf) + .shopify-section { background: #fff; }
-  .shopify-section:has(.wf) + .shopify-section .collection__header { display: none; }
-  .shopify-section:has(.wf) + .shopify-section .product-grid > li { padding: 0 0 16px; overflow: hidden; border-radius: 16px; border: 2px solid #0a0a0a;
+  .shopify-section:has(.wf) ~ .shopify-section { background: #fff; }
+  .shopify-section:has(.wf) ~ .shopify-section .collection__header { display: none; }
+  .shopify-section:has(.wf) ~ .shopify-section .product-grid > li { padding: 0 0 16px; overflow: hidden; border-radius: 16px; border: 2px solid #0a0a0a;
     background: #fff; transition: transform .25s cubic-bezier(.3,1.4,.5,1), box-shadow .25s; }
-  .shopify-section:has(.wf) + .shopify-section .product-grid > li:hover { transform: translateY(-4px); box-shadow: 6px 6px 0 #febd19; }
-  .shopify-section:has(.wf) + .shopify-section .card__info { padding-inline: 12px; }
-  .shopify-section:has(.wf) + .shopify-section .product-grid > li.wf-seen { opacity: 0; transform: translateY(16px); }
-  .shopify-section:has(.wf) + .shopify-section .product-grid > li.wf-in { opacity: 1; transform: none; transition: opacity .45s ease calc(var(--i,0) * 60ms), transform .45s cubic-bezier(.2,1.3,.4,1) calc(var(--i,0) * 60ms); }
+  .shopify-section:has(.wf) ~ .shopify-section .product-grid > li:hover { transform: translateY(-4px); box-shadow: 6px 6px 0 #febd19; }
+  .shopify-section:has(.wf) ~ .shopify-section .card__info { padding-inline: 12px; }
+  .shopify-section:has(.wf) ~ .shopify-section .product-grid > li.wf-seen { opacity: 0; transform: translateY(16px); }
+  .shopify-section:has(.wf) ~ .shopify-section .product-grid > li.wf-in { opacity: 1; transform: none; transition: opacity .45s ease calc(var(--i,0) * 60ms), transform .45s cubic-bezier(.2,1.3,.4,1) calc(var(--i,0) * 60ms); }
 
   @media screen and (min-width: 750px) {
     .wf__inner { padding-block: 56px 44px; max-width: 1200px; }
@@ -220,7 +225,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .wf-pop, .wf__marquee-track, .wf__live { animation: none !important; }
-    .shopify-section:has(.wf) + .shopify-section .product-grid > li.wf-seen { opacity: 1; transform: none; }
+    .shopify-section:has(.wf) ~ .shopify-section .product-grid > li.wf-seen { opacity: 1; transform: none; }
   }
 {% endstylesheet %}
 
@@ -232,6 +237,12 @@
     { "type": "text", "id": "end", "default": "1796076000", "label": "End (Unix seconds)", "info": "1796076000 = Dec 1 2026, 00:00 Cairo (offers run through Nov 30)" },
     { "type": "text", "id": "dates_ar", "default": "من 21 لـ 30 نوفمبر", "label": "Dates (Arabic)" },
     { "type": "text", "id": "dates_en", "default": "Nov 21 – 30", "label": "Dates (English)" },
+    { "type": "text", "id": "kicker_ar", "label": "Kicker (Arabic)" },
+    { "type": "text", "id": "kicker_en", "label": "Kicker (English)" },
+    { "type": "text", "id": "until_ar", "default": "لحد 30 نوفمبر", "label": "Until (Arabic)" },
+    { "type": "text", "id": "until_en", "default": "Until Nov 30", "label": "Until (English)" },
+    { "type": "text", "id": "deadline_ar", "default": "آخر يوم: الاثنين 30 نوفمبر، 11:59 مساءً", "label": "Deadline (Arabic)" },
+    { "type": "text", "id": "deadline_en", "default": "Last day: Monday, Nov 30, 11:59 pm", "label": "Deadline (English)" },
     { "type": "text", "id": "max_pct", "default": "29", "label": "Highest % off (fallback)" }
   ],
   "presets": [{ "name": "White Friday hero" }]
