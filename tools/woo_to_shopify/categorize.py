@@ -49,6 +49,8 @@ RULES = [
 
 # Products whose existing category is wrong: title -> correct category.
 FIXES = {
+    "Koala Swim Ring": "cat:pool-floats",  # was "Disney Float" (photo)
+    "Baby Character Slide Slippers": "cat:slippers",  # was "Baby Disney Character Slipper" (photo)
     "School Police Armband": "cat:camping",  # was "School Police Badge" (photo: armband)
     "Men’s Turf Football Shoes": "cat:football-shoes",  # was "Men’s Tartan Socks" (photo: turf shoes)
     "Foam Hand Grip": "cat:fitness-accessories",
